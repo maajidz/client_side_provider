@@ -1,0 +1,59 @@
+.container {
+    border: 1px solid #D5D5D5;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color 0.3s; 
+  }
+  
+  .container.selected {
+    border-color: #84012A;
+    border-width: 2px;
+  }
+  
+  .radioButton {
+    margin-right: 10px;
+    accent-color: #84012A;
+  }
+  
+  .radioButton:checked {
+    color: #84012A;
+  }
+  
+  .label {
+    color: #344054;
+    transition: color 0.3s;
+    cursor: pointer;
+  }
+  
+  .container.selected .label {
+    color: #84012A;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .button {
+    padding: 10px 20px;
+    border: 2px solid #84012A;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .button.primary {
+    background-color: #84012A;
+    color: white;
+  }
+  
+  .button.secondary {
+    background-color: white;
+    color: #84012A;
+  }
+  
+    
