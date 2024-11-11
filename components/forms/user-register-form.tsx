@@ -17,6 +17,8 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { registerProvider } from '@/services/registerServices';
+import { useDispatch } from 'react-redux';
+import { setLoginData } from '@/store/slices/loginSlice';
 
 const formSchema = z.object({
   firstname: z.string().min(3, 'Firstname is required'),
@@ -33,6 +35,7 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserRegisterForm() {
+  const dispatch = useDispatch();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -66,6 +69,7 @@ export default function UserRegisterForm() {
     const response = await registerProvider({ requestData: requestData });
 
     if (response) {
+      dispatch(setLoginData({providerAuthId: response.providerId}))
       // const signInResponse = await signIn('credentials', {
       //   username: data.username,
       //   email: data.email,

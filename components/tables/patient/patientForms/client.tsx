@@ -29,7 +29,7 @@ export const PatientFormClient = ({ userDetailsId }: { userDetailsId: string }) 
 
     fetchAndSetResponse(selectedType);
     console.log('Selected form type:', selectedType);
-  }, [selectedType, pageNo]);
+  }, [selectedType, pageNo, userDetailsId]);
 
   const handleTypeChange = (value: string) => {
     setSelectedType(value);

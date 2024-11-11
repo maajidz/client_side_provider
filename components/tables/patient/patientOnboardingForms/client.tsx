@@ -11,7 +11,7 @@ import { UserFormInterface } from '@/types/userInterface';
 export const PatientOnboardingFormClient = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<UserFormInterface>()
   const [loading, setLoading] = useState(true);
-  const [selectedType, setSelectedType] = useState<string>('onboarding');
+  // const [selectedType, setSelectedType] = useState<string>('onboarding');
   const [pageNo, setPageNo] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
@@ -27,8 +27,8 @@ export const PatientOnboardingFormClient = ({ userDetailsId }: { userDetailsId: 
       setLoading(false);
     };
 
-    fetchAndSetResponse(selectedType);
-  }, [selectedType, pageNo]);
+    fetchAndSetResponse('onboarding');
+  }, [ pageNo, userDetailsId]);
 
   // const handleTypeChange = (value: string) => {
   //   setSelectedType(value);
@@ -53,7 +53,6 @@ export const PatientOnboardingFormClient = ({ userDetailsId }: { userDetailsId: 
         />
       </div>
       <Separator />
-      {selectedType}
       {/* <Select onValueChange={handleTypeChange}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Type" />

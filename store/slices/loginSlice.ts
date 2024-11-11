@@ -2,19 +2,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface LoginState {
-    adminId: string,
-    roleName: string,
-    adminUsername: string;
-    authToken: string;
-    roleId: string;
+    providerAuthId: string,
+    token: string,
+    providerId: string
 }
 
 const initialState: LoginState = {
-    adminId: '',
-    roleName: '',
-    adminUsername: '',
-    authToken: '',
-    roleId: ''
+    providerAuthId: '',
+    providerId: '',
+    token: ''
 };
 
 const loginSlice = createSlice({

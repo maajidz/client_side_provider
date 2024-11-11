@@ -117,12 +117,12 @@ export const navItems: NavItem[] = [
     icon: 'dashboard',
     label: 'Dashboard'
   },
-  {
-    title: 'Patients',
-    href: '/dashboard/patient',
-    icon: 'user',
-    label: 'patient'
-  },
+  // {
+  //   title: 'Patients',
+  //   href: '/dashboard/patient',
+  //   icon: 'user',
+  //   label: 'patient'
+  // },
   {
     title: 'Calendar',
     href: '/dashboard/calendar',

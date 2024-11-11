@@ -109,16 +109,12 @@ export const fetchUserForms = async ({ formType, userDetailsId }: { formType: st
 }
 
 export const fetchOnboardingUserForms = async ({ formType, userDetailsId }: { formType: string, userDetailsId: string }) => {
-  try {
-    const response = await ApiFetch({
-      method: 'get',
-      url: `/user-answers/${formType}/${userDetailsId}`
-    });
-    console.log(response.data);
-    const data: UserFormInterface = await response.data;
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching response", error);
-  }
+  const response = await ApiFetch({
+    method: 'get',
+    url: `/user-answers/${formType}/${userDetailsId}`
+  });
+  console.log(response.data);
+  const data: UserFormInterface = await response.data;
+  console.log(data);
+  return data;
 }

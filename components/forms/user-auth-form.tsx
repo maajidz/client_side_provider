@@ -15,8 +15,13 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, X } from 'lucide-react';
 import { providerLogin } from '@/services/loginServices';
+import { useDispatch } from 'react-redux';
+import { setLoginData } from '@/store/slices/loginSlice';
+import { checkProviderExistsOrNot } from '@/services/registerServices';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -26,6 +31,8 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
+  const dispatch = useDispatch();
+  const {toast} = useToast();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -49,28 +56,45 @@ export default function UserAuthForm() {
 
     console.log(requestData)
 
-   try {
-     await providerLogin({ requestData: requestData });
+    try {
+      const response = await providerLogin({ requestData: requestData });
 
-      // if (response) {
-      //   const signInResponse = await signIn('credentials', {
-      //     username: data.username,
-      //     email: data.email,
-      //     password: data.password,
-      //     callbackUrl: callbackUrl ?? '/dashboard',
-      //     redirect: false,
-      //   });
-
-      //   if (signInResponse?.error) {
-      //     alert('Sign-in failed: ' + signInResponse.error);
-      //   } else {
-      //     window.location.href = callbackUrl ?? '/dashboard';
-      //   }
-      // }
-      router.push('/dashboard')
+      if (response) {
+        dispatch(setLoginData({ providerAuthId: response.providerId, token: response.token }))
+        const checkUserDetails = await checkProviderExistsOrNot({ Authid: response.providerId })
+        if (checkUserDetails?.providerDetails.id) {
+          router.push('/dashboard')
+          dispatch(setLoginData({providerId: checkUserDetails.providerDetails.id}))
+        } else{
+          router.push('/dashboard/profile')
+        }
+      }
+      else {
+        toast({
+          className: cn(
+              "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+          ),
+          variant: "default",
+          description: <div className='flex flex-row items-center gap-4'>
+              <div className='flex bg-[#84012A] h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
+              <div>Login failed: Please check your credentials.</div>
+          </div>
+      });
+      }
     } catch (error) {
-      console.error('Error submitting form:', error);
       alert('Login failed: Please check your credentials.');
+      toast({
+        className: cn(
+            "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+        ),
+        variant: "default",
+        description: <div className='flex flex-row items-center gap-4'>
+            <div className='flex bg-[#84012A] h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
+            <div>Login failed: Please check your credentials. </div>
+        </div>
+
+    });
+    console.log(error)
     } finally {
       setLoading(false);
     }
