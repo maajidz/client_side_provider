@@ -1,5 +1,5 @@
 "use client"
-import { UserInfo } from '@/interfaces/userInterface';
+import { UserInfo } from '@/types/userInterface';
 import { fetchUserInfo } from '@/services/userServices';
 import React, { useEffect, useState } from 'react'
 import LoadingButton from '../LoadingButton';
