@@ -1,68 +1,66 @@
 'use client';
 
-import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
-import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
-import { columns } from './columns';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import LoadingButton from '@/components/LoadingButton';
 import { ProviderAvailability } from '@/types/calendarInterface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import React from 'react';
-import { DateRange } from 'react-day-picker';
-import { addDays, format } from 'date-fns';
 import { fetchProviderAvaialability } from '@/services/availabilityServices';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import CalendarComponent from '@/components/CalendarComponent';
 
 export const CalendarClient = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [providerAvailability, setProviderAvailability] = useState<ProviderAvailability | null>(null);
   const router = useRouter();
   const providerID = useSelector((state: RootState) => state.login.providerId);
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 20),
-  });
-  const [customRange, setCustomRange] = useState(false);
-  const [pageNo, setPageNo] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  // const [date, setDate] = React.useState<DateRange | undefined>({
+  //   from: new Date(),
+  //   to: addDays(new Date(), 20),
+  // });
+
   const handleClick = () => {
     router.push('/dashboard/calendar/availability')
   }
 
-  useEffect(() => {
-    const fetchAndSetResponse = async () => {
-      if (date?.from && date?.to) {
+  const fetchAvailability = useCallback(
+    async () => {
+      if (providerID) {
+        setLoading(true);
         try {
-          const startDate = format(date.from, 'yyyy-MM-dd');
-          const endDate = format(date.to, 'yyyy-MM-dd');
-          const fetchedAvailabilties = await fetchProviderAvaialability({ providerID: providerID, startDate: startDate, endDate: endDate, limit: 7, page: 1 });
+          // const startDate = format(date.from, 'yyyy-MM-dd');
+          // const endDate = format(date.to, 'yyyy-MM-dd');
+          const fetchedAvailabilties = await fetchProviderAvaialability({
+            providerID, 
+            startDate: '', 
+            endDate: '', 
+            limit: 7, 
+            page: 1
+          });
+
           console.log("Fetched Availabilties:", fetchedAvailabilties);
+
           if (fetchedAvailabilties) {
-            setProviderAvailability(fetchedAvailabilties);
-            console.log(providerAvailability)
-            setTotalPages(fetchedAvailabilties.total)
+            setProviderAvailability(fetchedAvailabilties)
           }
-          setLoading(false);
         }
         catch (error) {
-          console.log(error)
+          console.error('Error fetching availability:', error);
         }
         finally {
           setLoading(false)
         }
       }
-    };
+    }, [providerID]
+  )
 
-    fetchAndSetResponse();
-  }, [date, providerAvailability, providerID]);
+  useEffect(() => {
+    fetchAvailability();
+  }, [fetchAvailability]);
 
 
   if (loading) {
@@ -93,86 +91,56 @@ export const CalendarClient = () => {
           </Button>
         </div>
       </div>
-      <Separator />
-      <div className='p-3'>
-        <div className={cn("grid gap-2")}>
-          <Popover open={customRange} onOpenChange={setCustomRange}>
-            <PopoverTrigger asChild>
-              <div>
-                <Select
-                  onValueChange={(value) => {
-                    if (value === 'custom') {
-                      setCustomRange(true);
-                    } else {
-                      setCustomRange(false);
-                      const days = parseInt(value);
-                      const newDate = addDays(new Date(), days);
-                      setDate({
-                        from: newDate,
-                        to: addDays(newDate, days),
-                      });
-                    }
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    <SelectItem value="0">Today</SelectItem>
-                    <SelectItem value="1">Tomorrow</SelectItem>
-                    <SelectItem value="3">In 3 days</SelectItem>
-                    <SelectItem value="7">In a week</SelectItem>
-                    <SelectItem value="14">In two week</SelectItem>
-                    <SelectItem value="30">In a month</SelectItem>
-                    <SelectItem value="custom">Custom</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="range"
-                defaultMonth={date?.from}
-                selected={date}
-                onSelect={setDate}
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        {providerAvailability && providerAvailability?.total > 0 ? (
-          <div>
-            {providerAvailability.data.flatMap((da) =>
-              <div key={da.id}>
-                Date: {da.date}
-              {da.slots.map((sl) =>
-                <div className='flex flex-col' key={sl.id}>
-                  <div>
-                    Start Time: {sl.startTime}
-                  </div>
-                  <div>
-                    End Time: {sl.endTime}
-                  </div>
-                </div>
-                )}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className='flex flex-col justify-center items-center justify-items-center pt-20'> Nothing to display</div>
-        )}
-      </div >
-      <Separator />
       {providerAvailability && (
+        <div>
+          {!loading && providerAvailability && (
+            <CalendarComponent
+              appointments={providerAvailability?.data}
+            />
+          )}
+        </div>
+      )
+      }
+      {/* {providerAvailability && providerAvailability.data && (
+        <div className="grid grid-cols-7 gap-2 w-full">
+          {Object.keys(groupByDate(providerAvailability.data)).map((day, index) => {
+            const dayAvailability = groupByDate(providerAvailability.data)[day];
+            return (
+              <div key={index} className="flex flex-col items-center border-2 p-3 ">
+                <div className="font-semibold">{day}</div>
+                <div className="mt-2 space-y-2">
+                  {dayAvailability.map((slot) => (
+                    <div key={slot.id}>
+                      {slot.slots.map((timeSlot) => {
+                        const startTime = new Date(`1970-01-01T${timeSlot.startTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const endTime = new Date(`1970-01-01T${timeSlot.endTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        return (
+                          <div key={slot.id} className="flex flex-col items-center">
+                            <span className="text-xs text-[#84012A]">{startTime} - {endTime}</span>
+                          </div>
+                        )
+                      }
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )} */}
+      {/* {providerAvailability  && providerAvailability.data && (
         <DataTable
           searchKey="name"
           columns={columns()}
-          data={providerAvailability.data}
+          data={Object.values(groupByDate(providerAvailability.data))
+            .flat()
+            .sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime())}
           pageNo={pageNo}
           totalPages={totalPages}
           onPageChange={(newPage: number) => setPageNo(newPage)}
         />
-      )}
+      )}  */}
     </>
   );
 };

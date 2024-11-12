@@ -50,10 +50,10 @@ export const updateProviderAvailabilityRequest = async ({
     return data;
 };
 
-export const deleteProviderAvaialability = async ({providerID}:{providerID:string}) => {
+export const deleteProviderAvaialability = async ({availabilityID}:{availabilityID:string}) => {
     const response = await ApiFetch({
       method: "DELETE",
-      url: `/provider/availability/${providerID}`,
+      url: `/provider/availability/${availabilityID}`,
     });
     console.log(response.data);
     const data: DeleteAvailabiltyInterface = await response.data;

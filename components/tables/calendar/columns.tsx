@@ -5,23 +5,16 @@ import { AvailabilityData } from '@/types/calendarInterface';
 
 export const columns = (): ColumnDef<AvailabilityData>[] => [
   {
-    accessorKey: 'id',
-    header: 'ID'
-  },
-  {
     accessorKey: 'date',
-    header: 'Date'
-  },
-  {
-    id: 'isAvailable',
-    header: 'is Available',
-    // cell: ({ row }) => (
-    //   <Badge className='bg-white border-[#84012A] border-2 text-[#84012A] hover:bg-white'>{row.original.status}</Badge>
-    // )
-  },
-  {
-    accessorKey: 'notes',
-    header: 'Notes'
+    header: 'Date',
+    enableSorting: true,
+    sortingFn: (a, b) =>
+      new Date(a.original.date).getTime() - new Date(b.original.date).getTime(),
+    cell: ({ row, table }) => {
+      const isFirstRow =
+        row.index === 0 || row.original.date !== table.getRowModel().rows[row.index - 1]?.original.date;
+      return isFirstRow ? row.original.date : '';
+    },
   },
   {
     accessorKey: 'slots',
@@ -36,5 +29,9 @@ export const columns = (): ColumnDef<AvailabilityData>[] => [
         </Badge>
       )
     )
-  }
+  },
+  {
+    accessorKey: 'id',
+    header: 'ID'
+  },
 ];
