@@ -135,12 +135,6 @@ export const navItems: NavItem[] = [
     icon: 'user',
     label: 'Profile'
   },
-  {
-    title: 'Extra',
-    href: '/dashboard/extra',
-    icon: 'user',
-    label: 'Extra'
-  },
 ];
 
 export const roles = [
