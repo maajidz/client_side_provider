@@ -11,17 +11,21 @@ import React from 'react';
 import { fetchProviderAvaialability } from '@/services/availabilityServices';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
-import CalendarComponent from '@/components/CalendarComponent';
+import CalendarComponent from '@/components/calendar/CalendarComponent';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import ListViewBody from '@/components/calendar/ListViewBody';
 
-export const CalendarClient = () => {
+
+export const CalendarBody = () => {
   const [loading, setLoading] = useState(false);
   const [providerAvailability, setProviderAvailability] = useState<ProviderAvailability | null>(null);
   const router = useRouter();
   const providerID = useSelector((state: RootState) => state.login.providerId);
-  // const [date, setDate] = React.useState<DateRange | undefined>({
-  //   from: new Date(),
-  //   to: addDays(new Date(), 20),
-  // });
 
   const handleClick = () => {
     router.push('/dashboard/calendar/availability')
@@ -32,13 +36,11 @@ export const CalendarClient = () => {
       if (providerID) {
         setLoading(true);
         try {
-          // const startDate = format(date.from, 'yyyy-MM-dd');
-          // const endDate = format(date.to, 'yyyy-MM-dd');
           const fetchedAvailabilties = await fetchProviderAvaialability({
-            providerID, 
-            startDate: '', 
-            endDate: '', 
-            limit: 7, 
+            providerID,
+            startDate: '',
+            endDate: '',
+            limit: 7,
             page: 1
           });
 
@@ -91,44 +93,27 @@ export const CalendarClient = () => {
           </Button>
         </div>
       </div>
-      {providerAvailability && (
-        <div>
-          {!loading && providerAvailability && (
-            <CalendarComponent
-              appointments={providerAvailability?.data}
-            />
-          )}
-        </div>
-      )
-      }
-      {/* {providerAvailability && providerAvailability.data && (
-        <div className="grid grid-cols-7 gap-2 w-full">
-          {Object.keys(groupByDate(providerAvailability.data)).map((day, index) => {
-            const dayAvailability = groupByDate(providerAvailability.data)[day];
-            return (
-              <div key={index} className="flex flex-col items-center border-2 p-3 ">
-                <div className="font-semibold">{day}</div>
-                <div className="mt-2 space-y-2">
-                  {dayAvailability.map((slot) => (
-                    <div key={slot.id}>
-                      {slot.slots.map((timeSlot) => {
-                        const startTime = new Date(`1970-01-01T${timeSlot.startTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        const endTime = new Date(`1970-01-01T${timeSlot.endTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        return (
-                          <div key={slot.id} className="flex flex-col items-center">
-                            <span className="text-xs text-[#84012A]">{startTime} - {endTime}</span>
-                          </div>
-                        )
-                      }
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )} */}
+      <Tabs defaultValue="listView" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="listView">List View</TabsTrigger>
+          <TabsTrigger value="calendarView">Calendar View</TabsTrigger>
+        </TabsList>
+        <TabsContent value="listView">
+          <ListViewBody />
+        </TabsContent>
+        <TabsContent value="calendarView">
+          {providerAvailability && (
+            <div>
+              {!loading && providerAvailability && (
+                <CalendarComponent
+                  appointments={providerAvailability?.data}
+                />
+              )}
+            </div>
+          )
+          }
+        </TabsContent>
+      </Tabs>
       {/* {providerAvailability  && providerAvailability.data && (
         <DataTable
           searchKey="name"
@@ -144,3 +129,6 @@ export const CalendarClient = () => {
     </>
   );
 };
+
+
+

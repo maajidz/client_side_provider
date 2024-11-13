@@ -1,8 +1,8 @@
-//dashboard/qyestionnaire
+//dashboard/calendar
 'use client'
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { CalendarBody } from '@/components/calendar/CalendarBody';
 import PageContainer from '@/components/layout/page-container';
-import { CalendarClient } from '@/components/tables/calendar/client';
 
 
 
@@ -16,7 +16,7 @@ export default function Calendar() {
     <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
-        <CalendarClient />
+        <CalendarBody />
       </div>
     </PageContainer>
   );
