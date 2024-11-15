@@ -17,7 +17,7 @@ export const updateApointmentDateSchema = z.object({
   date: z.date(),
   isAvailable: z.boolean(),
   notes: z.string(),
-  timeSlot: z.array(
+  slots: z.array(
     z.object({
       startTime: z.string().min(1, 'Start time is required'),
       endTime: z.string().min(1, 'End time is required'),
