@@ -89,7 +89,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
         const formValues = methods.getValues();
         console.log("Form Values", formValues);
         const requestData = {
-            date: formValues.date.toISOString(),
+            date: formValues.date.toISOString().split('T')[0],
             isAvailable: formValues.isAvailable,
             notes: formValues.notes,
             slots: formValues.slots
