@@ -16,24 +16,25 @@ export const CalendarListViewComponent = (
     return (
         <div className='flex flex-col border-2 p-3'>
             <div className='flex justify-between font-semibold'>
-                <div>{patientName}  [{patientID}]</div>
+                <div className="text-lg font-semibold">{patientName}  <span className="text-[#444]">[{patientID}]</span>
+                </div>
                 <div className='flex gap-3'>
-                    <div>
-                        {providerName}
+                    <div className="text-sm text-[#444] flex items-center gap-2">
+                        <span>{providerName}</span>
+                        <span className="text-[#555] text-base">|</span>
+                        <span>{startTime} - {endTime}</span>
                     </div>
-                    <div>|</div>
-                    <div>{startTime} - {endTime}</div>
                 </div>
             </div>
-            <div className='flex justify-between'>
-                <div className='flex gap-3 items-center'>
-                    <Avatar>
-                        <AvatarImage src="https://github.com/shadcn" alt="@shadcn" />
+            <div className='flex justify-between items-start'>
+                <div className='flex gap-4 items-center'>
+                    <Avatar className="w-14 h-14">
+                        <AvatarImage src="https://github.com/shadcn" alt="Patient Avatar" />
                         <AvatarFallback>N/A</AvatarFallback>
                     </Avatar>
                     <div className='flex flex-col gap-2'>
                         <LabelComponent label='Reason' value='Weight loss continue with glp' />
-                        <div className='flex gap-3'>
+                        <div className="flex gap-4 items-center">
                             <LabelComponent label='DOB' value={dob} />
                             <div className='flex gap-1 items-center'>
                                 <MobileIcon fontSize={20} className='text-[#4b5563]' />
@@ -41,7 +42,7 @@ export const CalendarListViewComponent = (
                             </div>
                         </div>
                         <div className='flex gap-2'>
-                            <div className='flex gap-3 items-center'>
+                        <div className="flex gap-4 items-center">
                                 <span className='font-medium text-[#4b5563]'>Status</span>
                                 <Select>
                                     <SelectTrigger className="w-fit">
@@ -61,16 +62,14 @@ export const CalendarListViewComponent = (
                         </div>
                     </div>
                 </div>
-                <div className='flex gap-3  justify-center items-center'>
-                    <div className='flex flex-col gap-2'>
+                    <div className='flex flex-col gap-2 justify-start items-start'>
                         <LabelComponent label='Vist Type' value={vistType} />
-                        <LabelComponent label='Last Vist' value={lastVist} />
+                        <LabelComponent label='Vist On' value={lastVist} />
                         <div className='flex gap-3 items-center'>
                             <span className='font-medium text-[#4b5563]'>Encounter</span>
                             <span> Start</span>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     )
@@ -79,9 +78,9 @@ export const CalendarListViewComponent = (
 
 const LabelComponent = ({ label, value }: { label: string, value: string }) => {
     return (
-        <div className='flex gap-3'>
+        <div className='flex gap-3 text-sm'>
             <span className='font-medium text-[#4b5563]'>{label}</span>
-            <span>{value}</span>
+            <span className="font-medium">{value}</span>
         </div>
     )
 }

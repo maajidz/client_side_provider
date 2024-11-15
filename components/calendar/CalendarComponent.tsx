@@ -96,7 +96,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
         }
         try {
             setLoading(true);
-            const response = await updateProviderAvailabilityRequest({ requestData:requestData , providerId: providerID });
+            const response = await updateProviderAvailabilityRequest({ requestData:requestData , providerId: "01ab2c92-e75d-48b5-88ff-3c701a0e8fd5" });
             console.log(response)
             toast({
                 className: cn(
