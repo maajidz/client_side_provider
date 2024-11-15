@@ -26,8 +26,6 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
 
 interface EventData {
     id: string;
@@ -59,7 +57,6 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
     appointments,
 }) => {
     const { toast } = useToast();
-    const providerID = useSelector((state: RootState) => state.login.providerId);
     const [currentView, setCurrentView] = useState<View>(Views.MONTH);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [events, setEvents] = useState<EventData[]>([]);
