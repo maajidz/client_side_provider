@@ -14,6 +14,7 @@ const ListViewBody = ({ appointments }: { appointments: ProviderAppointmentsData
               patientID={data.id}
               phoneNumber='9876098765'
               vistType='Weight loss'
+              status={data.status}
               lastVist={data.dateOfAppointment}
               startTime={data.timeOfAppointment}
               endTime='10:00 am'
