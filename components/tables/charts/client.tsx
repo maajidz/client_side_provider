@@ -21,7 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { EncounterSchema, encounterSchema } from '@/schema/encounterSchema';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
