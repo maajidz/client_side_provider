@@ -19,3 +19,7 @@ export interface Encounter {
     note: string
     mode: string
 }
+
+export interface ProviderAppointmentsStatus {
+    status: string
+}

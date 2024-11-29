@@ -9,10 +9,24 @@ import {
 } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MobileIcon } from '@radix-ui/react-icons';
+import { updateAppointmentStatus } from "@/services/providerAppointments";
 
 export const CalendarListViewComponent = (
-    { patientName, patientID, providerName, startTime, endTime, dob, phoneNumber, vistType, lastVist }
-        : { patientName: string, patientID: string, providerName: string, startTime: string, endTime: string, dob: string, phoneNumber: string, vistType: string, lastVist: string }) => {
+    { patientName, patientID, providerName, startTime, endTime, dob, phoneNumber, vistType, lastVist, status }
+        : { patientName: string, patientID: string, providerName: string, startTime: string, endTime: string, dob: string, phoneNumber: string, vistType: string, lastVist: string, status: string }) => {
+
+    const handleStatusChange = async (newStatus: string) => {
+         console.log(newStatus)
+         const requestData ={
+            status: newStatus
+         }
+        try {
+            await updateAppointmentStatus({appointmentID: patientID, requestData}); 
+            console.log(`Status updated to ${newStatus} for patient ${patientName}`);
+        } catch (error) {
+            console.error('Failed to update status:', error);
+        }
+    };
     return (
         <div className='flex flex-col border-2 p-3'>
             <div className='flex justify-between font-semibold'>
@@ -42,11 +56,11 @@ export const CalendarListViewComponent = (
                             </div>
                         </div>
                         <div className='flex gap-2'>
-                        <div className="flex gap-4 items-center">
+                            <div className="flex gap-4 items-center">
                                 <span className='font-medium text-[#4b5563]'>Status</span>
-                                <Select>
+                                <Select onValueChange={handleStatusChange}>
                                     <SelectTrigger className="w-fit">
-                                        <SelectValue placeholder="Schedule" />
+                                        <SelectValue placeholder={status} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
@@ -62,14 +76,14 @@ export const CalendarListViewComponent = (
                         </div>
                     </div>
                 </div>
-                    <div className='flex flex-col gap-2 justify-start items-start'>
-                        <LabelComponent label='Vist Type' value={vistType} />
-                        <LabelComponent label='Vist On' value={lastVist} />
-                        <div className='flex gap-3 items-center'>
-                            <span className='font-medium text-[#4b5563]'>Encounter</span>
-                            <span> Start</span>
-                        </div>
+                <div className='flex flex-col gap-2 justify-start items-start'>
+                    <LabelComponent label='Vist Type' value={vistType} />
+                    <LabelComponent label='Vist On' value={lastVist} />
+                    <div className='flex gap-3 items-center'>
+                        <span className='font-medium text-[#4b5563]'>Encounter</span>
+                        <span> Start</span>
                     </div>
+                </div>
             </div>
         </div>
     )
