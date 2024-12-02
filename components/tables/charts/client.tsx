@@ -25,6 +25,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { EncounterSchema, encounterSchema } from '@/schema/encounterSchema';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import RadioButton from '@/components/custom_buttons/radio_button/RadioButton';
+import { createEncounterRequest } from '@/services/chartsServices';
 
 export const CalendarClient = () => {
   const [userResponse, setUserResponse] = useState<UserData[] | undefined>([])
@@ -86,7 +88,24 @@ export const CalendarClient = () => {
     );
   }
 
-  const onSubmit = () => {}
+  const onSubmit = async (data: EncounterSchema) => {
+    router.push('/dashboard/charts/encounter')
+    if(selectedPatient){
+      const requestData = {
+        note: data.note,
+        mode: data.encounterMode,
+        isVerified: false,
+        userDetailsId: selectedPatient.id,
+        providerId: '',
+        appointmentId: '',
+      }
+      try {
+        createEncounterRequest({ requestData: requestData })
+      } catch (e) {
+  console.log("Error", e)
+      }
+    }
+  }
 
   return (
     <>
@@ -97,12 +116,14 @@ export const CalendarClient = () => {
         />
         <Dialog>
           <DialogTrigger>
-            <Button
-              className='bg-[#84012A] hover:bg-[#555]'
-              onClick={() => { }}
-            >
-              Encounter
-            </Button>
+            <div>
+              <Button
+                className='bg-[#84012A] hover:bg-[#555]'
+                onClick={() => { }}
+              >
+                Encounter
+              </Button>
+            </div>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -179,10 +200,27 @@ export const CalendarClient = () => {
                             control={methods.control}
                             name="encounterMode"
                             render={({ field }) => (
-                              <FormItem className='flex gap-2 items-center'>
-                                <FormLabel className='w-40'>Encounter Mode:</FormLabel>
+                              <FormItem className='flex gap-2 items-center '>
+                                <FormLabel className='w-28'>Encounter Mode:</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Encounter Mode" {...field} />
+                                  <div className="flex flex-col gap-2 items-start justify-start ">
+                                    <RadioButton
+                                      label="In Person"
+                                      name="encounterMode"
+                                      value="in_person"
+                                      selectedValue={field.value.toString()}
+                                      onChange={() => field.onChange("in_person")}
+                                    />
+                                    <div className='flex items-start justify-start'>
+                                      <RadioButton
+                                        label="Phone Call"
+                                        name="encounterMode"
+                                        value="phone_call"
+                                        selectedValue={field.value.toString()}
+                                        onChange={() => field.onChange("phone_call")}
+                                      />
+                                    </div>
+                                  </div>
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
