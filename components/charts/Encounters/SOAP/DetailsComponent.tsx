@@ -1,0 +1,63 @@
+import FormLabels from '@/components/custom_buttons/FormLabels'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverTrigger,PopoverContent } from '@/components/ui/popover'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from '@/components/ui/select'
+import { cn } from '@/lib/utils'
+import { format } from 'date-fns'
+import { CalendarIcon } from 'lucide-react'
+import React from 'react'
+
+const DetailsComponent = () => {
+    const [date, setDate] = React.useState<Date | undefined>(new Date());
+    return (
+        <div className='grid grid-cols-3 gap-2 p-5 border-b pb-3'>
+            <FormLabels label='Provider' value='provider name' />
+            <FormLabels label='Date' value={
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant={"outline"}
+                            className={cn(
+                                "w-[280px] justify-start text-left font-normal",
+                                !date && "text-muted-foreground"
+                            )}
+                        >
+                            <CalendarIcon />
+                            {date ? format(date, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                        <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            initialFocus
+                        />
+                    </PopoverContent>
+                </Popover>
+            } />
+            <FormLabels label='Facility' value='Pomegranate' />
+            <FormLabels label='Session Duration' value='Pomegranate' />
+            <FormLabels label='Vist Type' value={
+                <Select>
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select vist type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectItem value="apple">Refill Wellness Vist</SelectItem>
+                            <SelectItem value="banana">Asynchronous Refill Request</SelectItem>
+                            <SelectItem value="blueberry">Dermatology Consultation</SelectItem>
+                            <SelectItem value="grapes">Fitness Counselling</SelectItem>
+                            <SelectItem value="pineapple">Follow Up Vist</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+            } />
+            <FormLabels label='Reason' value='Pomegranate' />
+        </div>
+    )
+}
+
+export default DetailsComponent

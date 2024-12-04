@@ -6,3 +6,13 @@ export interface CreateEncounterInterface {
     providerId: string
     appointmentId: string
 }
+
+export interface LabsDataResponse {
+    data: LabsData[],
+    total: number
+}
+
+export interface LabsData{
+    id: string,
+    name: string
+}
