@@ -13,6 +13,7 @@ import PageContainer from '@/components/layout/page-container'
 import DetailsComponent from '@/components/charts/Encounters/SOAP/DetailsComponent'
 import TabMenu from '@/components/charts/Encounters/SOAP/TabMenu'
 import ChartNotesTabBody from '@/components/charts/Encounters/SOAP/ChartNotesTabBody';
+import MUBody from '@/components/charts/Encounters/MU/MUBody';
 
 const Encounter = () => {
     
@@ -34,7 +35,7 @@ const Encounter = () => {
                         <ChartNotesTabBody />
                     </TabsContent>
                     <TabsContent value="mu">
-                        <div>MU</div>
+                        <MUBody />
                     </TabsContent>
                 </Tabs>
             </div>

@@ -8,27 +8,27 @@ import { Button } from '@/components/ui/button'
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
 import { LabsDataResponse } from '@/types/chartsInterface'
 import { getLabsData } from '@/services/chartsServices'
 import { Input } from '@/components/ui/input'
-import LoadingButton from '@/components/LoadingButton'
 
-const SearchAndAddDrawer = () => {
+const AddImagesDrawer = () => {
     const [response, setResponse] = useState<LabsDataResponse>()
     const [loading, setLoading] = useState<boolean>(false)
-    const page = 1;
 
     useEffect(() => {
         const fetchAndSetResponse = async () => {
             setLoading(true)
             try {
-                const data = await getLabsData({ page: page, limit: 10 });
+                const data = await getLabsData({ page: 1, limit: 10 });
                 if (data) {
-                    setResponse(data);
+                    setResponse(response);
                 }
             } catch (e) {
                 console.log("Error", e);
@@ -38,43 +38,46 @@ const SearchAndAddDrawer = () => {
             }
         }
         fetchAndSetResponse();
-    }, [page])
+    })
 
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button variant="ghost" className='text-blue-500 underline'>Search & Add</Button>
+                <Button variant="ghost" className='text-blue-500 underline'>Add Images</Button>
             </DrawerTrigger>
             <DrawerContent>
-                {loading ? <LoadingButton /> : (
-                    <div className="flex justify-between mx-auto w-full max-w-sm p-3 gap-5">
-                        <div className='flex items-center gap-3'>
-                            <div className=''>Labs</div>
-                            <Select>
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder={"Select a lab"} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {response && response.data && response.data.length > 0 && (
+                <div className="flex justify-between mx-auto w-full max-w-sm p-3 gap-5">
+                    <div className='flex items-center gap-3'>
+                        <div className='w-full'>Image Type</div>
+                        <Select>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder={loading ? "Loading..." : "Select Image Type"} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Labs</SelectLabel>
+                                    {response && response.data ? (
                                         response.data.map((lab) => (
                                             <SelectItem key={lab.id} value={lab.id}>
                                                 {lab.name}
                                             </SelectItem>
                                         ))
+                                    ) : (
+                                        <div>No Images Found</div>
                                     )
                                     }
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className='flex items-center gap-3 w-full'>
-                            <div className=''>Test</div>
-                            <Input placeholder='Enter test name' className='w-96' />
-                        </div>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </div>
-                )}
+                    <div className='flex items-center gap-3 w-full'>
+                        <div className=''>Test</div>
+                        <Input  placeholder='Enter test name' className='w-96'/>
+                    </div>
+                </div>
             </DrawerContent>
         </Drawer>
     )
 }
 
-export default SearchAndAddDrawer
+export default AddImagesDrawer

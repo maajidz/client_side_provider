@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateEncounterInterface, LabsDataResponse } from "@/types/chartsInterface";
+import { CreateEncounterInterface, LabsDataResponse, LabsRequestData } from "@/types/chartsInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -32,3 +32,20 @@ export const getLabsData = async ({page, limit}: {page: number, limit: number}) 
   return data;
 };
 
+export const createLabs = async ({
+  requestData,
+}: {
+  requestData: LabsRequestData;
+}) => {
+  const response = await ApiFetch({
+    method: "POST",
+    url: "/provider/lab",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};

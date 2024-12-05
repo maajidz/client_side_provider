@@ -8,11 +8,19 @@ export interface CreateEncounterInterface {
 }
 
 export interface LabsDataResponse {
-    data: LabsData[],
+    data: LabsData[]
     total: number
 }
 
-export interface LabsData{
-    id: string,
+export interface LabsData {
+    id: string
     name: string
+    addtionalText: string
+    createdAt: string
+    updatedAt: string
+}
+
+export interface LabsRequestData {
+    name: string,
+    additionalText: string
 }
