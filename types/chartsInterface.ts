@@ -24,3 +24,12 @@ export interface LabsRequestData {
     name: string,
     additionalText: string
 }
+
+export interface SOAPInterface {
+    subjective: string
+    objective: string
+    assessment: string
+    plan: string
+    additionalText: string
+    encounterId: string
+}

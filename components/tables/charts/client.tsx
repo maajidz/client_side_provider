@@ -89,7 +89,7 @@ export const CalendarClient = () => {
   }
 
   const onSubmit = async (data: EncounterSchema) => {
-    router.push('/dashboard/charts/encounter')
+    router.push('/encounter')
     if(selectedPatient){
       const requestData = {
         note: data.note,
