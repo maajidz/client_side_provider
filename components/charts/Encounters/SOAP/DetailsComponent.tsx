@@ -4,22 +4,25 @@ import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverTrigger,PopoverContent } from '@/components/ui/popover'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
+import { RootState } from '@/store/store'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import React from 'react'
+import { useSelector } from 'react-redux'
 
 const DetailsComponent = () => {
     const [date, setDate] = React.useState<Date | undefined>(new Date());
+    const providerDetails = useSelector((state: RootState)=> state.login)
     return (
         <div className='grid grid-cols-3 gap-2 p-5 border-b pb-3'>
-            <FormLabels label='Provider' value='provider name' />
+            <FormLabels label='Provider' value={`${providerDetails.firstName} ${providerDetails.lastName}`} />
             <FormLabels label='Date' value={
                 <Popover>
                     <PopoverTrigger asChild>
                         <Button
                             variant={"outline"}
                             className={cn(
-                                "w-[280px] justify-start text-left font-normal",
+                                " justify-start text-left font-normal",
                                 !date && "text-muted-foreground"
                             )}
                         >
