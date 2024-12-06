@@ -1,9 +1,10 @@
-import { boolean, z } from 'zod';
+import { z } from 'zod';
 
 export const encounterSchema = z.object({
-    note: z.string(),
+    vist_type: z.string(),
     encounterMode: z.string(),
     chartType: z.string(),
+    date: z.string()
 });
 
 export type EncounterSchema = z.infer<typeof encounterSchema>;

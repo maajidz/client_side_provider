@@ -7,11 +7,11 @@ import ImagesBody from './Images/ImagesBody'
 import FolllowUp from './Follow-Up/FolllowUp'
 import ReferralBody from './Referral/ReferralBody'
 
-const ChartNotesTabBody = () => {
+const ChartNotesTabBody = ({encounterId}: {encounterId: string}) => {
 
     return (
         <div className='flex flex-col gap-4 p-5'>
-            <ChartNotesAccordion />
+            <ChartNotesAccordion encounterId={encounterId}/>
             <DxCodeBody />
             <PrescriptionBody />
             <LabsBody />

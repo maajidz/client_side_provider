@@ -1,12 +1,17 @@
 import { Button } from '@/components/ui/button'
-import { DropdownMenu,DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import { UserEncounterData } from '@/types/chartsInterface'
 import { MoreHorizontal } from 'lucide-react'
 import React from 'react'
 
-const TabMenu = () => {
+const TabMenu = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     return (
         <div className='flex flex-row gap-5'>
-            <Button>Save</Button>
+            {patientDetails.chart === null ? (
+                <div> </div>
+            ): (
+                <Button>Save</Button>
+            )}
             <Button variant={'outline'} className=''>Preview</Button>
             <Button variant={'outline'} className=''>Sign</Button>
             <DropdownMenu>

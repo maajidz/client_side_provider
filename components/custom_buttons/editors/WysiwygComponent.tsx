@@ -21,7 +21,7 @@ const WysiwygComponent = () => {
 
   const getHtmlOutput = () => {
     const content = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-    console.log(content);
+    console.log("content",content);
     return content;
   };
 

@@ -4,13 +4,19 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface LoginState {
     providerAuthId: string,
     token: string,
-    providerId: string
+    providerId: string,
+    firstName: string,
+    lastName: string,
+    email: string,
 }
 
 const initialState: LoginState = {
     providerAuthId: '',
     providerId: '',
-    token: ''
+    token: '',
+    firstName: '',
+    lastName: '',
+    email: '',
 };
 
 const loginSlice = createSlice({

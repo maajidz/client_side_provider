@@ -24,9 +24,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { EncounterSchema, encounterSchema } from '@/schema/encounterSchema';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import RadioButton from '@/components/custom_buttons/radio_button/RadioButton';
 import { createEncounterRequest } from '@/services/chartsServices';
+import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from '@/components/ui/select';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 export const CalendarClient = () => {
   const [userResponse, setUserResponse] = useState<UserData[] | undefined>([])
@@ -36,16 +43,17 @@ export const CalendarClient = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showEncounterForm, setShowEncounterForm] = useState<boolean>(false);
   const [patient, setPatient] = useState<string>("");
-  const [selectedPatient, setSeletedPatient] = useState<UserData | undefined>()
+  const [selectedPatient, setSeletedPatient] = useState<UserData | undefined>();
+  const providerDetails = useSelector((state: RootState) => state.login)
 
   const router = useRouter();
 
   const methods = useForm<EncounterSchema>({
     resolver: zodResolver(encounterSchema),
     defaultValues: {
-      note: '',
       encounterMode: '',
-      chartType: ''
+      chartType: '',
+      vist_type: ''
     },
   });
 
@@ -89,20 +97,27 @@ export const CalendarClient = () => {
   }
 
   const onSubmit = async (data: EncounterSchema) => {
-    router.push('/encounter')
-    if(selectedPatient){
+    console.log(data.date)
+    // router.push('/encounter')
+    if (selectedPatient) {
+      const formattedDate = data.date?.split("T")[0];
+      console.log(formattedDate)
       const requestData = {
-        note: data.note,
+        visit_type: data.vist_type,
         mode: data.encounterMode,
         isVerified: false,
-        userDetailsId: selectedPatient.id,
-        providerId: '',
-        appointmentId: '',
+        userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+        // selectedPatient.id,
+        providerId: providerDetails.providerId,
+        date: `${formattedDate}`,
       }
       try {
-        createEncounterRequest({ requestData: requestData })
+        const encounterResponse = await createEncounterRequest({ requestData: requestData })
+        if(encounterResponse){
+          router.push(`/encounter/${encounterResponse.id}`) 
+        }
       } catch (e) {
-  console.log("Error", e)
+        console.log("Error", e)
       }
     }
   }
@@ -192,10 +207,71 @@ export const CalendarClient = () => {
                     <div >
                       <div className='flex flex-row gap-2 items-center'>
                         <Label className='w-40'>Encounter with:</Label>
-                        <Input placeholder="Provider Name" value={patient} />
+                        <Input placeholder="Provider Name" value={`${providerDetails.firstName} ${providerDetails.lastName}`} />
                       </div>
                       <Form {...methods}>
                         <form onSubmit={methods.handleSubmit(onSubmit)}>
+                          <FormField
+                            control={methods.control}
+                            name="date"
+                            render={({ field }) => (
+                              <FormItem className='flex gap-2 items-center '>
+                                <FormLabel className='w-28'>Date:</FormLabel>
+                                <FormControl>
+                                  <div className="flex flex-row md:gap-2 items-center">
+                                    <Popover>
+                                      <PopoverTrigger asChild>
+                                        <Button
+                                          variant={"outline"}
+                                          className={cn(
+                                            "w-[280px] justify-start text-left font-normal",
+                                            !field.value && "text-muted-foreground"
+                                          )}
+                                        >
+                                          <CalendarIcon />
+                                          {field.value ? format(new Date(field.value), "PPP") : format(new Date(), "PPP")}
+                                        </Button>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-auto p-0">
+                                        <Calendar
+                                          mode="single"
+                                          selected={field.value ? new Date(field.value) : undefined}
+                                          onSelect={(date) => field.onChange(date ? date.toISOString() : undefined)}
+                                          initialFocus
+                                        />
+                                      </PopoverContent>
+                                    </Popover>
+                                  </div>
+                                </FormControl>
+                                <FormMessage className="text-[10px]" />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={methods.control}
+                            name="vist_type"
+                            render={({ field }) => (
+                              <FormItem className='flex gap-2 items-center '>
+                                <FormLabel className='w-28'>Encounter Mode:</FormLabel>
+                                <FormControl>
+                                  <div className="flex flex-col gap-2 items-start justify-start ">
+                                    <Select value={field.value} onValueChange={(value: string) => {
+                                      field.onChange(value);
+                                    }}>
+                                      <SelectTrigger >
+                                        <SelectValue placeholder="Select" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="follow_up">Follow Up</SelectItem>
+                                        <SelectItem value="vist_type_2">Vist Type 2</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                           <FormField
                             control={methods.control}
                             name="encounterMode"
@@ -221,19 +297,6 @@ export const CalendarClient = () => {
                                       />
                                     </div>
                                   </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={methods.control}
-                            name="note"
-                            render={({ field }) => (
-                              <FormItem className='flex flex-row gap-2 items-center'>
-                                <FormLabel className='w-40'>Note</FormLabel>
-                                <FormControl>
-                                  <Textarea placeholder="note" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
