@@ -9,9 +9,14 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { TrashIcon } from 'lucide-react'
+import { Check, TrashIcon, X } from 'lucide-react'
+import { UserEncounterData } from '@/types/chartsInterface'
+import { cn } from '@/lib/utils'
+import { useToast } from '@/hooks/use-toast'
+import { createDiagnoses, createSOAPChart } from '@/services/chartsServices'
 
-const AddDx = () => {
+const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
+    const { toast } = useToast();
     const [rows, setRows] = useState([
         { diagnosis: '', icdCode: '', notes: '' },
     ]);
@@ -32,8 +37,65 @@ const AddDx = () => {
         setRows(updatedRows);
     };
 
-    const handleSubmit = () => {
-        console.log('Submitted Diagnoses:', rows);
+    const handleSubmit = async () => {
+        console.log('Diagnoses:', rows);
+        try {
+            if (patientDetails.chart?.id) {
+                const chartId = patientDetails.chart?.id;
+                const requestData = rows.map((row) => ({
+                    ...row,
+                    chartId,
+                }));
+                await createDiagnoses({ requestData: requestData })
+                toast({
+                    className: cn(
+                        "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                    ),
+                    variant: "default",
+                    description: <div className='flex flex-row items-center gap-4'>
+                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
+                        <div>Saved!</div>
+                    </div>,
+                });
+            } else {
+                const data = {
+                    subjective: "",
+                    assessment: `Diagnoses: ${rows} `,
+                    encounterId: encounterId
+                }
+                const response = await createSOAPChart({ requestData: data })
+                if (response) {
+                    const chartId = response.id;
+                    const requestData = rows.map((row) => ({
+                        ...row,
+                        chartId,
+                    }));
+                    await createDiagnoses({ requestData: requestData })
+                    toast({
+                        className: cn(
+                            "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                        ),
+                        variant: "default",
+                        description: <div className='flex flex-row items-center gap-4'>
+                            <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
+                            <div>Saved!</div>
+                        </div>,
+                    });
+                }
+            }
+        } catch (e) {
+            toast({
+                className: cn(
+                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                ),
+                variant: "default",
+                description: <div className='flex flex-row items-center gap-4'>
+                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
+                    <div>Error while saving</div>
+                </div>
+            });
+            console.log("Error", e);
+        }
     };
 
     return (

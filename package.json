@@ -58,6 +58,7 @@
   "devDependencies": {
     "@types/draft-js": "^0.11.18",
     "@types/draftjs-to-html": "^0.8.4",
+    "@types/html-to-draftjs": "^1.4.3",
     "@types/node": "^20",
     "@types/react": "^18.3.12",
     "@types/react-big-calendar": "^1.15.0",

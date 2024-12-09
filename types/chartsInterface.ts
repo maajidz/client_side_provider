@@ -60,6 +60,15 @@ export interface SOAPInterface {
     encounterId: string
 }
 
+export interface UpdateSOAPInterface {
+    subjective?: string
+    objective?: string
+    assessment?: string
+    plan?: string
+    additionalText?: string
+}
+
+
 export interface UserEncounterInterface {
     data: UserEncounterData[]
     total: number
@@ -100,4 +109,38 @@ export interface UserDetails {
     gender: string
     createdAt: string
     updatedAt: string
+}
+
+export interface PatientPhysicalStats {
+    height: number,
+    weight: number
+}
+
+export interface CreateDiagnosesRequestBody {
+    diagnosis: string
+    icdCode: string
+    notes: string
+    chartId: string
+}
+
+
+export interface PastDiagnosesInterface {
+  id: string
+  name: string
+  ICD_Code: string
+  notes: string
+  createdAt: string
+  updatedAt: string
+  chart: DiagnosesChart
+}
+
+export interface DiagnosesChart {
+  id: string
+  subjective: string
+  objective: string
+  assessment: string
+  plan: string
+  additionalText: any
+  createdAt: string
+  updatedAt: string
 }

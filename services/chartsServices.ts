@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateEncounterInterface, CreateEncounterResponseInterface, LabsDataResponse, LabsRequestData, SOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
+import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, LabsDataResponse, LabsRequestData, PatientPhysicalStats, SOAPInterface, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -75,6 +75,62 @@ export const createSOAPChart = async ({
   const response = await ApiFetch({
     method: "POST",
     url: "/provider/charts",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
+
+export const updateSOAPChart = async ({chartId,
+  requestData,
+}: {
+  chartId: string,
+  requestData: UpdateSOAPInterface;
+}) => {
+  const response = await ApiFetch({
+    method: "PATCH",
+    url: `/provider/charts/${chartId}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
+
+export const updatePatientPhysicalStatus = async ({userDetailsID,
+  requestData,
+}: {
+  userDetailsID: string,
+  requestData: PatientPhysicalStats;
+}) => {
+  const response = await ApiFetch({
+    method: "PATCH",
+    url: `/provider/user-details/update-physical-stats/${userDetailsID}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
+
+export const createDiagnoses= async ({
+  requestData,
+}: {
+  requestData: CreateDiagnosesRequestBody[];
+}) => {
+  const response = await ApiFetch({
+    method: "POST",
+    url: "/provider/diagnosis",
     headers: {
       "Content-Type": "application/json",
     },

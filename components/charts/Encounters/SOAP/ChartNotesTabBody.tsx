@@ -6,13 +6,14 @@ import LabsBody from './Labs/LabsBody'
 import ImagesBody from './Images/ImagesBody'
 import FolllowUp from './Follow-Up/FolllowUp'
 import ReferralBody from './Referral/ReferralBody'
+import { UserEncounterData } from '@/types/chartsInterface'
 
-const ChartNotesTabBody = ({encounterId}: {encounterId: string}) => {
+const ChartNotesTabBody = ({encounterId, patientDetails}: {encounterId: string, patientDetails: UserEncounterData}) => {
 
     return (
         <div className='flex flex-col gap-4 p-5'>
-            <ChartNotesAccordion encounterId={encounterId}/>
-            <DxCodeBody />
+            <ChartNotesAccordion encounterId={encounterId} subjective={patientDetails.chart?.subjective ? patientDetails.chart.subjective : ''} patientDetails={patientDetails}/>
+            <DxCodeBody patientDetails={patientDetails} encounterId={encounterId}/>
             <PrescriptionBody />
             <LabsBody />
             <ImagesBody />
