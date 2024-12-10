@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import LoadingButton from '../LoadingButton';
 import { cn } from '@/lib/utils';
 import { CalendarIcon, Check, X } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast'
 import { Textarea } from '@/components/ui/textarea';
 import RadioButton from '../custom_buttons/radio_button/RadioButton';
 import { AvailabilityData } from '@/types/calendarInterface';

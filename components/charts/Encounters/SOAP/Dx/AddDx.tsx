@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Check, TrashIcon, X } from 'lucide-react'
 import { UserEncounterData } from '@/types/chartsInterface'
 import { cn } from '@/lib/utils'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 import { createDiagnoses, createSOAPChart } from '@/services/chartsServices'
 
 const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
@@ -95,6 +95,8 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                 </div>
             });
             console.log("Error", e);
+        } finally {
+            setRows([{ diagnosis: '', icdCode: '', notes: '' }]);
         }
     };
 
@@ -148,11 +150,8 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                 </div>
                 <DialogFooter>
                     <div className='flex justify-between w-full'>
-                        <Button variant={'ghost'} onClick={handleAddRow}> More</Button>
-                        <div className='flex gap-3'>
-                            <Button type="submit" onClick={handleSubmit} className='bg-[#84012A]'>Save changes</Button>
-                            <Button variant={'outline'} onClick={handleAddRow}> Cancel</Button>
-                        </div>
+                        <Button variant={'ghost'} onClick={handleAddRow}> Add Row</Button>
+                        <Button type="submit" onClick={handleSubmit} className='bg-[#84012A]'>Save changes</Button>
                     </div>
                 </DialogFooter>
             </DialogContent>

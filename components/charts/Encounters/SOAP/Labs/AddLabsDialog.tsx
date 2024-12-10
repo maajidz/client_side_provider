@@ -14,7 +14,7 @@ import { createLabs, getLabsData } from '@/services/chartsServices'
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/LoadingButton'
 import { cn } from '@/lib/utils'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 
 const AddLabsDialog = () => {
     const [response, setResponse] = useState<LabsDataResponse>()

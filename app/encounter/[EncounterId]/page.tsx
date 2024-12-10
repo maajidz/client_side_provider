@@ -10,6 +10,7 @@ import LoadingButton from '@/components/LoadingButton';
 import { UserEncounterData } from '@/types/chartsInterface';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { ArrowBigLeft } from 'lucide-react';
+import { Toaster } from '@/components/ui/toaster';
 
 const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => {
     const [encounterId, setEncounterId] = useState<string | null>(null);
@@ -18,17 +19,21 @@ const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => 
 
     useEffect(() => {
         const unwrapParams = async () => {
-            const resolvedParams = await params;
-            setEncounterId(resolvedParams.EncounterId);
+            if (!encounterId) {
+                const resolvedParams = await params;
+                setEncounterId(resolvedParams.EncounterId);
+            }
         };
         unwrapParams();
-    }, [params]);
+    }, [params, encounterId]);
 
     useEffect(() => {
         if (!encounterId) return;
 
-        setLoading(true);
         const fetchData = async () => {
+
+            setLoading(true);
+
             try {
                 const encounterData = await getUserEncounterDetails({ encounterId: encounterId });
                 if (encounterData) {
@@ -41,37 +46,38 @@ const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => 
             }
         }
         fetchData();
+
     }, [encounterId])
-    // const [chiefComplaints, setChiefComplaints] = useState("");
 
     if (loading) {
-        <div className='flex w-screen h-screen justify-center items-center'>
-            <LoadingButton />
-        </div>
+        return (
+            <div className='flex w-screen h-screen justify-center items-center'>
+                <LoadingButton />
+            </div>
+        )
+    }
+
+    if (!data) {
+        return <div>No encounter data available.</div>;
     }
 
     return (
-        <>
-            {
-                data && (
-                    <div className='flex'>
-                        <DetailsBody patientDetails={data} />
-                        <ResizablePanelGroup
-                            direction="horizontal"
-                            className="rounded-lg border"
-                        >
-                            <ResizablePanel defaultSize={25}>
-                                <PreviewBody />
-                            </ResizablePanel>
-                            <ResizableHandle><ArrowBigLeft /></ResizableHandle>
-                            <ResizablePanel>
-                                {encounterId && <SOAPSection encounterId={encounterId} patientDetails={data}/>}
-                            </ResizablePanel>
-                        </ResizablePanelGroup>
-                    </div>
-                )
-            }
-        </>
+        <div className='flex'>
+            <Toaster />
+            <DetailsBody patientDetails={data} />
+            <ResizablePanelGroup
+                direction="horizontal"
+                className="rounded-lg border"
+            >
+                <ResizablePanel defaultSize={25}>
+                    <PreviewBody />
+                </ResizablePanel>
+                <ResizableHandle><ArrowBigLeft /></ResizableHandle>
+                <ResizablePanel>
+                    {encounterId && <SOAPSection encounterId={encounterId} patientDetails={data} />}
+                </ResizablePanel>
+            </ResizablePanelGroup>
+        </div>
     )
 }
 

@@ -21,7 +21,7 @@ import { useDispatch } from 'react-redux';
 import { setLoginData } from '@/store/slices/loginSlice';
 import { checkProviderExistsOrNot } from '@/services/registerServices';
 import { cn } from '@/lib/utils';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),

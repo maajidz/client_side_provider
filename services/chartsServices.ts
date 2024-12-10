@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, LabsDataResponse, LabsRequestData, PatientPhysicalStats, SOAPInterface, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
+import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, DiagnosesChart, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -138,5 +138,39 @@ export const createDiagnoses= async ({
   });
   console.log(response.data);
   const data = await response.data;
+  return data;
+};
+
+export const fetchDiagnoses= async ({
+  chartId
+}: {
+  chartId: string
+}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/diagnosis/${chartId}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response.data);
+  const data: PastDiagnosesInterface[] = await response.data;
+  return data;
+};
+
+export const deleteDiagnoses= async ({
+  diagnosisId
+}: {
+  diagnosisId: string
+}) => {
+  const response = await ApiFetch({
+    method: "DELETE",
+    url: `/provider/diagnosis/${diagnosisId}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response.data);
+  const data: PastDiagnosesInterface[] = await response.data;
   return data;
 };

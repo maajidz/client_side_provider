@@ -14,7 +14,7 @@ import htmlToDraft from 'html-to-draftjs';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { Button } from '@/components/ui/button';
 import { createSOAPChart, updatePatientPhysicalStatus, updateSOAPChart } from '@/services/chartsServices';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast'
 import { cn } from '@/lib/utils';
 import { Check, X } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -200,8 +200,8 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
         }
     }
 
-    if(loading) {
-        <div><LoadingButton /></div>
+    if (loading) {
+        return <div className="flex justify-center items-center"><LoadingButton /></div>;
     }
 
 
