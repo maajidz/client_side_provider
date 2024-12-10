@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateTestsRequestBody, DiagnosesChart, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, UpdateDiagnosesRequestBody, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
+import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateFollowUp, CreateTestsRequestBody, DiagnosesChart, FollowUpInterface, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, UpdateDiagnosesRequestBody, UpdateFollowUp, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -227,5 +227,77 @@ export const createLabOrder= async ({
   });
   console.log(response.data);
   const data = await response.data;
+  return data;
+};
+
+export const createFollowUp= async ({
+  requestData,
+}: {
+  requestData: CreateFollowUp[];
+}) => {
+  const response = await ApiFetch({
+    method: "POST",
+    url: "/provider/follow-up",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
+
+export const getFollowUpData = async ({
+  chartId
+}: {
+  chartId: string
+}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/follow-up/${chartId}`,
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+  console.log(response.data);
+  const data: FollowUpInterface[] = await response.data;
+  return data;
+};
+
+export const updateFollowUp= async ({
+  followUpId,
+  requestData
+}: {
+  followUpId: string
+  requestData: UpdateFollowUp
+}) => {
+  const response = await ApiFetch({
+    method: "PATCH",
+    url: `/provider/follow-up/${followUpId}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData
+  });
+  console.log(response.data);
+  const data: PastDiagnosesInterface[] = await response.data;
+  return data;
+};
+
+export const deleteFollowUp = async ({
+  followUpId
+}: {
+  followUpId: string
+}) => {
+  const response = await ApiFetch({
+    method: "DELETE",
+    url: `/provider/follow-up/${followUpId}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response.data);
+  const data: PastDiagnosesInterface[] = await response.data;
   return data;
 };

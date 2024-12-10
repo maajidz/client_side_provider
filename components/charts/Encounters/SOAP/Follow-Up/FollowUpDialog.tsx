@@ -12,15 +12,29 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Trash2Icon } from 'lucide-react';
+import {  Check, Trash2Icon, X } from 'lucide-react';
+import { UserEncounterData } from '@/types/chartsInterface';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
+import { createFollowUp, createSOAPChart } from '@/services/chartsServices';
 
-const FollowUpDialog = () => {
-    const [rows, setRows] = useState([
-        { type: '', notes: '', dateUnit: 'after', duration: '', unit: 'weeks', reminders: { email: false, text: false, voice: false } },
+interface Row {
+    type: string;
+    notes: string;
+    sectionDateType: 'after' | 'before';
+    sectionDateNumber: number;
+    sectionDateUnit: 'days' | 'weeks' | 'months';
+    reminders: Array<'email' | 'text' | 'voice'>;
+}
+
+const FollowUpDialog = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
+    const { toast } = useToast();
+    const [rows, setRows] = useState<Row[]>([
+        { type: '', notes: '', sectionDateType: 'after', sectionDateNumber: 0, sectionDateUnit: 'weeks', reminders: [] },
     ]);
 
     const handleAddRow = () => {
-        setRows([...rows, { type: '', notes: '', dateUnit: 'after', duration: '', unit: 'weeks', reminders: { email: false, text: false, voice: false } }]);
+        setRows([...rows, { type: '', notes: '', sectionDateType: 'after', sectionDateNumber: 0, sectionDateUnit: 'weeks', reminders: [] }]);
     };
 
     const handleDeleteRow = (index: number) => {
@@ -34,17 +48,81 @@ const FollowUpDialog = () => {
         setRows(updatedRows);
     };
 
-    const handleReminderChange = (index: number, reminderType: string, value: boolean) => {
-        const updatedRows = rows.map((row, i) =>
-            i === index
-                ? { ...row, reminders: { ...row.reminders, [reminderType]: value } }
-                : row
-        );
+    const handleReminderChange = (index: number, reminderType: 'email' | 'text' | 'voice', value: boolean) => {
+        const updatedRows = rows.map((row, i) => {
+            if (i === index) {
+                const updatedReminders = value
+                  ? [...new Set([...row.reminders, reminderType])]
+                  : row.reminders.filter(reminder => reminder !== reminderType);
+                return { ...row, reminders: updatedReminders };
+            }
+            return row;
+        });
         setRows(updatedRows);
     };
 
-    const handleSubmit = () => {
-        console.log('Follow-up Data:', rows);
+    const handleSubmit = async() => {
+        console.log('Follow-Up:', rows);
+        try {
+            if (patientDetails.chart?.id) {
+                const chartId = patientDetails.chart?.id;
+                const requestData = rows.map((row) => ({
+                    ...row,
+                    chartId
+                }));
+                console.log('Follow-Up:', requestData)
+                await createFollowUp({ requestData: requestData })
+                toast({
+                    className: cn(
+                        "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                    ),
+                    variant: "default",
+                    description: <div className='flex flex-row items-center gap-4'>
+                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
+                        <div>Saved!</div>
+                    </div>,
+                });
+            } else {
+                const data = {
+                    subjective: "",
+                    plan: `Follow Up: ${rows} `,
+                    encounterId: encounterId
+                }
+                const response = await createSOAPChart({ requestData: data })
+                if (response) {
+                    const chartId = response.id;
+                    const requestData = rows.map((row) => ({
+                        ...row,
+                        chartId
+                    }));
+                    await createFollowUp({ requestData: requestData })
+                    toast({
+                        className: cn(
+                            "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                        ),
+                        variant: "default",
+                        description: <div className='flex flex-row items-center gap-4'>
+                            <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
+                            <div>Saved!</div>
+                        </div>,
+                    });
+                }
+            }
+        } catch (e) {
+            toast({
+                className: cn(
+                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                ),
+                variant: "default",
+                description: <div className='flex flex-row items-center gap-4'>
+                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
+                    <div>Error while saving</div>
+                </div>
+            });
+            console.log("Error", e);
+        } finally {
+            setRows([ { type: '', notes: '', sectionDateType: 'after', sectionDateNumber: 0, sectionDateUnit: 'weeks', reminders: [] }]);
+        }
     };
 
     return (
@@ -90,11 +168,11 @@ const FollowUpDialog = () => {
                                     />
                                     <div className='flex gap-3'>
                                         <Select
-                                            value={row.dateUnit}
-                                            onValueChange={(value) => handleChange(index, 'dateUnit', value)}
+                                            value={row.sectionDateType}
+                                            onValueChange={(value) => handleChange(index, 'sectionDateType', value)}
                                         >
                                             <SelectTrigger className="w-fit border rounded">
-                                                <SelectValue placeholder="Select Date Unit" />
+                                                <SelectValue placeholder="Select Date sectionDateUnit" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
@@ -105,16 +183,16 @@ const FollowUpDialog = () => {
                                         </Select>
                                         <Input
                                             type="number"
-                                            value={row.duration}
-                                            onChange={(e) => handleChange(index, 'duration', e.target.value)}
+                                            value={row.sectionDateNumber}
+                                            onChange={(e) => handleChange(index, 'sectionDateNumber', e.target.value)}
                                             className="w-16 border rounded"
                                         />
                                         <Select
-                                            value={row.unit}
-                                            onValueChange={(value) => handleChange(index, 'unit', value)}
+                                            value={row.sectionDateUnit}
+                                            onValueChange={(value) => handleChange(index, 'sectionDateUnit', value)}
                                         >
                                             <SelectTrigger className="w-fit border rounded">
-                                                <SelectValue placeholder="Select Unit" />
+                                                <SelectValue placeholder="Select sectionDateUnit" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
@@ -128,7 +206,7 @@ const FollowUpDialog = () => {
                                     <div className='flex flex-col gap-3 '>
                                         <div className="flex items-center gap-2">
                                             <Checkbox
-                                                checked={row.reminders.email}
+                                                checked={row.reminders.includes('email')}
                                                 onCheckedChange={(checked) =>
                                                     handleReminderChange(index, "email", Boolean(checked))
                                                 }
@@ -137,7 +215,7 @@ const FollowUpDialog = () => {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <Checkbox
-                                                checked={row.reminders.text}
+                                                checked={row.reminders.includes('text')}
                                                 onCheckedChange={(checked) =>
                                                     handleReminderChange(index, "text", Boolean(checked))
                                                 }
@@ -146,7 +224,7 @@ const FollowUpDialog = () => {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <Checkbox
-                                                checked={row.reminders.voice}
+                                                checked={row.reminders.includes('voice')}
                                                 onCheckedChange={(checked) =>
                                                     handleReminderChange(index, "voice", Boolean(checked))
                                                 }

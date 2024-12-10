@@ -170,13 +170,44 @@ export interface TestResponse {
     id: string
     createdAt: string
     updatedAt: string
-  }
-  
-  export interface Lab {
+}
+
+export interface Lab {
     id: string
     name: string
     addtionalText: string
     createdAt: string
     updatedAt: string
+}
+
+export interface CreateFollowUp {
+    type: string
+    notes: string
+    sectionDateType: string
+    sectionDateNumber: number
+    sectionDateUnit: string
+    chartId: string
+    reminders: string[]
+}
+
+export interface UpdateFollowUp {
+    type: string
+    notes: string
+    sectionDateType: string
+    sectionDateNumber: number
+    sectionDateUnit: string
+    reminders: string[]
+}
+
+
+export interface FollowUpInterface {
+    id: string
+    type: string
+    notes: string
+    sectionDateType: string
+    sectionDateNumber: number
+    sectionDateUnit: string
+    reminders: string[]
+    createdAt: string
+    updatedAt: string
   }
-  
