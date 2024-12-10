@@ -2,7 +2,7 @@ import React from 'react'
 import { Separator } from '@/components/ui/separator'
 import AddImagesDrawer from './AddImagesDrawer'
 import PastImageOrders from './PastImageOrders'
-import MapDx from './MapDx'
+// import MapDx from './MapDx'
 
 const ImagesBody = () => {
   return (
@@ -12,8 +12,8 @@ const ImagesBody = () => {
                     <AddImagesDrawer />
                     <Separator orientation="vertical" />
                     <PastImageOrders />
-                    <Separator orientation="vertical" />
-                    <MapDx />
+                    {/* <Separator orientation="vertical" />
+                    <MapDx /> */}
                 </div>
             </div>
   )
