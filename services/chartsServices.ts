@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, DiagnosesChart, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, UpdateDiagnosesRequestBody, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
+import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateTestsRequestBody, DiagnosesChart, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, UpdateDiagnosesRequestBody, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -192,5 +192,40 @@ export const deleteDiagnoses= async ({
   });
   console.log(response.data);
   const data: PastDiagnosesInterface[] = await response.data;
+  return data;
+};
+
+export const createTests= async ({
+  requestData,
+}: {
+  requestData: CreateTestsRequestBody;
+}) => {
+  const response = await ApiFetch({
+    method: "POST",
+    url: "/provider/lab/tests",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  const data: TestResponse = await response.data;
+  return data;
+};
+
+export const createLabOrder= async ({
+  requestData,
+}: {
+  requestData: LabOrdersInterface;
+}) => {
+  const response = await ApiFetch({
+    method: "POST",
+    url: "/provider/lab/orders",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
   return data;
 };

@@ -119,9 +119,9 @@ const AddLabsDialog = () => {
                     <div className="grid grid-cols-4 gap-4 py-4">
                         {response && response.data && response.data.length > 0 &&
                             response.data.map((lab) => (
-                                <div key={lab.id}>
+                                <Button variant={'link'} key={lab.id}>
                                     {lab.name}
-                                </div>
+                                </Button >
                             ))
                         }
                     </div>

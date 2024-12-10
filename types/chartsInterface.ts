@@ -130,22 +130,53 @@ export interface UpdateDiagnosesRequestBody {
 }
 
 export interface PastDiagnosesInterface {
-  id: string
-  name: string
-  ICD_Code: string
-  notes: string
-  createdAt: string
-  updatedAt: string
-  chart: DiagnosesChart
+    id: string
+    name: string
+    ICD_Code: string
+    notes: string
+    createdAt: string
+    updatedAt: string
+    chart: DiagnosesChart
 }
 
 export interface DiagnosesChart {
-  id: string
-  subjective: string
-  objective: string
-  assessment: string
-  plan: string
-  additionalText: any
-  createdAt: string
-  updatedAt: string
+    id: string
+    subjective: string
+    objective: string
+    assessment: string
+    plan: string
+    additionalText: any
+    createdAt: string
+    updatedAt: string
 }
+
+export interface LabOrdersInterface {
+    userDetailsId: string
+    orderedBy: string
+    date: string
+    labs: string[]
+    tests: string[]
+    isSigned: boolean
+}
+
+export interface CreateTestsRequestBody {
+    name: string
+    labId: string
+}
+
+export interface TestResponse {
+    name: string
+    lab: Lab
+    id: string
+    createdAt: string
+    updatedAt: string
+  }
+  
+  export interface Lab {
+    id: string
+    name: string
+    addtionalText: string
+    createdAt: string
+    updatedAt: string
+  }
+  

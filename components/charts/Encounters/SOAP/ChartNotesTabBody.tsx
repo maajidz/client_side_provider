@@ -15,7 +15,7 @@ const ChartNotesTabBody = ({encounterId, patientDetails}: {encounterId: string, 
             <ChartNotesAccordion encounterId={encounterId} subjective={patientDetails.chart?.subjective ? patientDetails.chart.subjective : ''} patientDetails={patientDetails}/>
             <DxCodeBody patientDetails={patientDetails} encounterId={encounterId}/>
             <PrescriptionBody />
-            <LabsBody />
+            <LabsBody patientDetails={patientDetails}/>
             <ImagesBody />
             <FolllowUp />
             <ReferralBody />
