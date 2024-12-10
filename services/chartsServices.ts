@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, DiagnosesChart, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
+import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, DiagnosesChart, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, UpdateDiagnosesRequestBody, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -152,6 +152,26 @@ export const fetchDiagnoses= async ({
     headers: {
       "Content-Type": "application/json",
     },
+  });
+  console.log(response.data);
+  const data: PastDiagnosesInterface[] = await response.data;
+  return data;
+};
+
+export const updateDiagnoses= async ({
+  diagnosisId,
+  requestData
+}: {
+  diagnosisId: string
+  requestData: UpdateDiagnosesRequestBody
+}) => {
+  const response = await ApiFetch({
+    method: "PATCH",
+    url: `/provider/diagnosis/${diagnosisId}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData
   });
   console.log(response.data);
   const data: PastDiagnosesInterface[] = await response.data;

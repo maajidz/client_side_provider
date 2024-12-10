@@ -123,6 +123,11 @@ export interface CreateDiagnosesRequestBody {
     chartId: string
 }
 
+export interface UpdateDiagnosesRequestBody {
+    diagnosis: string
+    icdCode: string
+    notes: string
+}
 
 export interface PastDiagnosesInterface {
   id: string

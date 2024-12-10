@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import "react-quill/dist/quill.snow.css";
 import SOAPSection from '@/components/charts/Encounters/SOAPSection';
 import PreviewBody from '@/components/charts/Encounters/Preview/PreviewBody';
 import DetailsBody from '@/components/charts/Encounters/Details/DetailsBody';

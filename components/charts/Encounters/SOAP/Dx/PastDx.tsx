@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PastDiagnosesInterface, UserEncounterData } from '@/types/chartsInterface'
 import { Check, TrashIcon, X } from 'lucide-react'
-import { deleteDiagnoses, fetchDiagnoses } from '@/services/chartsServices'
+import { deleteDiagnoses, fetchDiagnoses, updateDiagnoses } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
 import { cn } from '@/lib/utils'
 import { useToast } from "@/components/ui/use-toast";
@@ -72,29 +72,52 @@ const PastDx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
         }
     }
 
-    const [rows, setRows] = useState([
-        { diagnosis: '', icdCode: '', notes: '' },
-    ]);
-
-    const handleAddRow = () => {
-        setRows([...rows, { diagnosis: '', icdCode: '', notes: '' }]);
-    };
-
-    const handleDeleteRow = (index: number) => {
-        const updatedRows = rows.filter((_, i) => i !== index);
-        setRows(updatedRows);
-    };
-
     const handleChange = (index: number, field: string, value: string) => {
-        const updatedRows = rows.map((row, i) =>
-            i === index ? { ...row, [field]: value } : row
-        );
-        setRows(updatedRows);
-    };
-
-    const handleSubmit = async () => {
-
+        const updatedDiagnoses = [...prevDiagnosis];
+        updatedDiagnoses[index] = { ...updatedDiagnoses[index], [field]: value };
+        setPrevDiagnosis(updatedDiagnoses);
     }
+
+    const handleUpdateDiagnoses = async (diagnosisId: string, updatedData: PastDiagnosesInterface) => {
+        setLoading(true);
+        try {
+            const requestBody = {
+                diagnosis: updatedData.name,
+                icdCode: updatedData.ICD_Code,
+                notes: updatedData.notes,
+            }
+            const response = await updateDiagnoses({ diagnosisId, requestData: requestBody });
+            if (response) {
+                toast({
+                    className: cn("top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"),
+                    variant: "default",
+                    description: <div className='flex flex-row items-center gap-4'>
+                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
+                        <div>Updated successfully!</div>
+                    </div>,
+                });
+
+                setPrevDiagnosis(prev =>
+                    prev.map(diagnosis =>
+                        diagnosis.id === diagnosisId ? { ...diagnosis, ...updatedData } : diagnosis
+                    )
+                );
+            }
+        } catch (e) {
+            console.log("Error", e);
+            toast({
+                className: cn("top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"),
+                variant: "default",
+                description: <div className='flex flex-row items-center gap-4'>
+                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
+                    <div>Failed to update Diagnosis</div>
+                </div>,
+            });
+        } finally {
+            setLoading(false);
+        }
+    }
+
 
     if (loading) {
         <div>
@@ -118,27 +141,27 @@ const PastDx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                         <div className='w-32'>Notes</div>
                     </div>
                     <div className='flex flex-col gap-2'>
-                        {prevDiagnosis && prevDiagnosis.length > 0 ? prevDiagnosis.map((diagnoses) => (
+                        {prevDiagnosis && prevDiagnosis.length > 0 ? prevDiagnosis.map((diagnoses, index) => (
                             <div className="flex justify-between" key={diagnoses.id}>
                                 <Input
                                     type="text"
                                     placeholder="Enter Diagnosis"
                                     value={diagnoses.name}
-                                    readOnly
+                                    onChange={(e) => handleChange(index, 'name', e.target.value)}
                                     className="col-span-4 border rounded sm:max-w-32"
                                 />
                                 <Input
                                     type="text"
                                     placeholder="ICD Codes"
                                     value={diagnoses.ICD_Code}
-                                    readOnly
+                                    onChange={(e) => handleChange(index, 'ICD_Code', e.target.value)}
                                     className="col-span-4 border rounded sm:max-w-32 "
                                 />
                                 <Input
                                     type="text"
                                     placeholder="Notes"
                                     value={diagnoses.notes}
-                                    readOnly
+                                    onChange={(e) => handleChange(index, 'notes', e.target.value)}
                                     className="col-span-3 border rounded sm:max-w-32"
                                 />
                                 <Button variant={'ghost'}
@@ -149,49 +172,17 @@ const PastDx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                                 >
                                     <TrashIcon />
                                 </Button>
+                                <Button type="submit" onClick={() => handleUpdateDiagnoses(diagnoses.id, diagnoses)} className='bg-[#84012A]'>Save changes</Button>
                             </div>
                         )) : (
                             <div>
                                 No Past Diagnoses found!
                             </div>
                         )}
-                        {rows.map((row, index) => (
-                            <div className="flex justify-between" key={index}>
-                                <Input
-                                    type="text"
-                                    placeholder="Enter Diagnosis"
-                                    value={row.diagnosis}
-                                    onChange={(e) => handleChange(index, 'diagnosis', e.target.value)}
-                                    className="col-span-4 border rounded sm:max-w-32"
-                                />
-                                <Input
-                                    type="text"
-                                    placeholder="ICD Codes"
-                                    value={row.icdCode}
-                                    onChange={(e) => handleChange(index, 'icdCode', e.target.value)}
-                                    className="col-span-4 border rounded sm:max-w-32 "
-                                />
-                                <Input
-                                    type="text"
-                                    placeholder="Notes"
-                                    value={row.notes}
-                                    onChange={(e) => handleChange(index, 'notes', e.target.value)}
-                                    className="col-span-3 border rounded sm:max-w-32"
-                                />
-                                <Button variant={'ghost'}
-                                    onClick={() => handleDeleteRow(index)}
-                                >
-                                    <TrashIcon />
-                                </Button>
-                            </div>
-                        ))}
                     </div>
                 </div>
                 <DialogFooter>
-                    <div className='flex justify-between w-full'>
-                        <Button variant={'ghost'} onClick={handleAddRow}> Add Row</Button>
-                        <Button type="submit" onClick={handleSubmit} className='bg-[#84012A]'>Save changes</Button>
-                    </div>
+                       
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -150,8 +150,8 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                 </div>
                 <DialogFooter>
                     <div className='flex justify-between w-full'>
-                        <Button variant={'ghost'} onClick={handleAddRow}> Add Row</Button>
-                        <Button type="submit" onClick={handleSubmit} className='bg-[#84012A]'>Save changes</Button>
+                        <Button variant={'ghost'} onClick={handleAddRow} > Add Row</Button>
+                        <Button type="submit" onClick={handleSubmit} className='bg-[#84012A]' disabled = {rows[0].diagnosis == '' ? true: false}>Save changes</Button>
                     </div>
                 </DialogFooter>
             </DialogContent>
