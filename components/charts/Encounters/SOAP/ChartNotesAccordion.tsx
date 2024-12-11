@@ -47,9 +47,9 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            weightInLbs: patientDetails.userDetails.weight? Number(patientDetails.userDetails.weight) : 0,
+            weightInLbs: patientDetails.userDetails.weight ? Number(patientDetails.userDetails.weight) : 0,
             weightInOzs: 0,
-            heightInFt:patientDetails.userDetails.height? Number(patientDetails.userDetails.height) : 0,
+            heightInFt: patientDetails.userDetails.height ? Number(patientDetails.userDetails.height) : 0,
             heightInInches: 0,
             bmi: 0,
         },
@@ -158,7 +158,7 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                         <div>Saved!</div>
                     </div>,
                 });
-            } else { 
+            } else {
                 const requestBody = {
                     subjective: '',
                     objective: `Weight is ${values.weightInLbs} lbs ${values.weightInOzs} ozs. Height is ${values.heightInFt} ft ${values.heightInInches} inches. BMI is ${values.bmi}. The starting weight is ${values.startingWeight} and the goal Weight is ${values.goalWeight}`,
@@ -210,14 +210,29 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
             <AccordionItem value="chiefComplaints">
                 <AccordionTrigger>Chief Complaints</AccordionTrigger>
                 <AccordionContent>
-                    <div className='flex flex-col gap-2border rounded-lg p-2'>
+                    <div className='flex flex-col gap-2 border rounded-lg p-2'>
                         <Editor
                             editorState={editorState}
                             wrapperClassName="demo-wrapper"
                             editorClassName="demo-editor"
                             onEditorStateChange={onEditorStateChange}
+                            toolbar={{
+                                options: ['inline', 'list', 'textAlign', 'link'], // Only show selected options
+                                inline: {
+                                    options: ['bold', 'italic', 'underline', 'strikethrough'], // Limit to basic inline styles
+                                },
+                                list: {
+                                    options: ['unordered', 'ordered'], // Only show list options
+                                },
+                                textAlign: {
+                                    options: ['left', 'center', 'right'], // Text alignment
+                                },
+                                link: {
+                                    options: ['link'], // Only link option
+                                },
+                            }}
                         />
-                        <Button onClick={handleSaveContent}>Save Content</Button>
+                        <div className='flex justify-end items-end w-full'><Button className='bg-[#84012A]' onClick={handleSaveContent}>Save Content</Button></div>
                     </div>
                 </AccordionContent>
             </AccordionItem>
@@ -227,8 +242,8 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                     <div >
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)}>
-                                <div className='flex flex-col justify-center gap-2'>
-                                    <div className='grid grid-cols-2 gap-3'>
+                                <div className='flex flex-col gap-2 border rounded-lg p-2'>
+                                    <div className='flex flex-wrap gap-3'>
                                         <FormLabels
                                             label='Weight'
                                             value={
@@ -239,7 +254,7 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                                                         render={({ field }) => (
                                                             <FormItem className='flex gap-1 items-center'>
                                                                 <FormControl>
-                                                                    <Input placeholder="Weight" {...field} className='text-base font-semibold' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
+                                                                    <Input placeholder="Weight" {...field} className='text-base font-semibold w-32' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
                                                                 </FormControl>
                                                                 <FormLabel className='text-base font-normal text-center'>lbs</FormLabel>
                                                                 <FormMessage />
@@ -252,7 +267,7 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                                                         render={({ field }) => (
                                                             <FormItem className='flex gap-1 items-center'>
                                                                 <FormControl>
-                                                                    <Input placeholder="Weight" {...field} className='text-base font-semibold' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
+                                                                    <Input placeholder="Weight" {...field} className='text-base font-semibold w-32' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
                                                                 </FormControl>
                                                                 <FormLabel className='text-base font-normal'>ozs</FormLabel>
                                                                 <FormMessage />
@@ -272,7 +287,7 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                                                         render={({ field }) => (
                                                             <FormItem className='flex gap-1 items-center'>
                                                                 <FormControl>
-                                                                    <Input placeholder="Height" {...field} className='text-base font-semibold' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
+                                                                    <Input placeholder="Height" {...field} className='text-base font-semibold w-32' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
                                                                 </FormControl>
                                                                 <FormLabel className='text-base font-normal text-center'>ft</FormLabel>
                                                                 <FormMessage />
@@ -285,7 +300,7 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                                                         render={({ field }) => (
                                                             <FormItem className='flex gap-1 items-center'>
                                                                 <FormControl>
-                                                                    <Input placeholder="Height" {...field} className='text-base font-semibold' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
+                                                                    <Input placeholder="Height" {...field} className='text-base font-semibold w-32' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
                                                                 </FormControl>
                                                                 <FormLabel className='text-base font-normal'>inches</FormLabel>
                                                                 <FormMessage />
@@ -300,9 +315,9 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                                             name="bmi"
                                             render={({ field }) => (
                                                 <FormItem className='flex gap-1 items-center'>
-                                                    <FormLabel className='text-base font-normal'>BMI</FormLabel>
+                                                    <FormLabel className='text-base font-normal'>BMI:</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="BMI" {...field} className='text-base font-semibold' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
+                                                        <Input placeholder="BMI" {...field} className='text-base font-semibold w-32' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -313,9 +328,9 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                                             name="startingWeight"
                                             render={({ field }) => (
                                                 <FormItem className='flex gap-1 items-center'>
-                                                    <FormLabel className='text-base font-normal'>Starting Weight</FormLabel>
+                                                    <FormLabel className='text-base font-normal'>Starting Weight: </FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="Starting Weight" {...field} className='text-base font-semibold' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
+                                                        <Input placeholder="Starting Wt" {...field} className='text-base font-semibold w-32' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -326,16 +341,20 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                                             name="goalWeight"
                                             render={({ field }) => (
                                                 <FormItem className='flex gap-1 items-center'>
-                                                    <FormLabel className='text-base font-normal'>Goal Weight</FormLabel>
+                                                    <FormLabel className='text-base text-center font-normal'>Goal Weight: </FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="Goal Weight" {...field} className='text-base font-semibold' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
+                                                        <Input placeholder="Goal Weight" {...field} className='text-base font-semibold w-32' onChange={(e) => field.onChange(Number(e.target.value))} type='number' inputMode='numeric' />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
                                     </div>
-                                    <Button>Save</Button>
+                                    <div className='flex justify-end items-end w-full'>
+                                        <Button type='submit' className='bg-[#84012A]' onClick={handleSaveContent}>
+                                            Save Content
+                                        </Button>
+                                    </div>
                                 </div>
                             </form>
                         </Form>

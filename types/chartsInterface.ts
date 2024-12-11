@@ -210,4 +210,25 @@ export interface FollowUpInterface {
     reminders: string[]
     createdAt: string
     updatedAt: string
-  }
+}
+
+export interface TestsResponseInterface {
+    data: TestsResponseData[]
+    total: number
+}
+
+export interface TestsResponseData {
+    id: string
+    name: string
+    createdAt: string
+    updatedAt: string
+    lab: Lab
+}
+
+export interface Lab {
+    id: string
+    name: string
+    addtionalText: string
+    createdAt: string
+    updatedAt: string
+}

@@ -21,7 +21,7 @@ const SOAPSection = ({encounterId, patientDetails}: {encounterId: string, patien
                         <TabsTrigger value="chartNotes">Chart Notes</TabsTrigger>
                         <TabsTrigger value="mu">MU</TabsTrigger>
                     </TabsList>
-                    <TabMenu />
+                    <TabMenu patientDetails={patientDetails}/>
                 </div>
                 <TabsContent value="chartNotes">
                     <ChartNotesTabBody encounterId={encounterId} patientDetails={patientDetails}/>

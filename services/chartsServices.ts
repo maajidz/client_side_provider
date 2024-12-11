@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateFollowUp, CreateTestsRequestBody, DiagnosesChart, FollowUpInterface, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, UpdateDiagnosesRequestBody, UpdateFollowUp, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
+import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateFollowUp, CreateTestsRequestBody, DiagnosesChart, FollowUpInterface, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, TestsResponseInterface, UpdateDiagnosesRequestBody, UpdateFollowUp, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -19,7 +19,7 @@ export const createEncounterRequest = async ({
   return data;
 };
 
-export const getLabsData = async ({page, limit}: {page: number, limit: number}) => {
+export const getLabsData = async ({ page, limit }: { page: number, limit: number }) => {
   const response = await ApiFetch({
     method: "GET",
     url: `/provider/lab/all?page=${page}&limit=${limit}`,
@@ -85,7 +85,7 @@ export const createSOAPChart = async ({
   return data;
 };
 
-export const updateSOAPChart = async ({chartId,
+export const updateSOAPChart = async ({ chartId,
   requestData,
 }: {
   chartId: string,
@@ -104,7 +104,7 @@ export const updateSOAPChart = async ({chartId,
   return data;
 };
 
-export const updatePatientPhysicalStatus = async ({userDetailsID,
+export const updatePatientPhysicalStatus = async ({ userDetailsID,
   requestData,
 }: {
   userDetailsID: string,
@@ -123,7 +123,7 @@ export const updatePatientPhysicalStatus = async ({userDetailsID,
   return data;
 };
 
-export const createDiagnoses= async ({
+export const createDiagnoses = async ({
   requestData,
 }: {
   requestData: CreateDiagnosesRequestBody[];
@@ -141,7 +141,7 @@ export const createDiagnoses= async ({
   return data;
 };
 
-export const fetchDiagnoses= async ({
+export const fetchDiagnoses = async ({
   chartId
 }: {
   chartId: string
@@ -158,7 +158,7 @@ export const fetchDiagnoses= async ({
   return data;
 };
 
-export const updateDiagnoses= async ({
+export const updateDiagnoses = async ({
   diagnosisId,
   requestData
 }: {
@@ -178,7 +178,7 @@ export const updateDiagnoses= async ({
   return data;
 };
 
-export const deleteDiagnoses= async ({
+export const deleteDiagnoses = async ({
   diagnosisId
 }: {
   diagnosisId: string
@@ -195,7 +195,7 @@ export const deleteDiagnoses= async ({
   return data;
 };
 
-export const createTests= async ({
+export const createTests = async ({
   requestData,
 }: {
   requestData: CreateTestsRequestBody;
@@ -212,7 +212,7 @@ export const createTests= async ({
   return data;
 };
 
-export const createLabOrder= async ({
+export const createLabOrder = async ({
   requestData,
 }: {
   requestData: LabOrdersInterface;
@@ -230,7 +230,7 @@ export const createLabOrder= async ({
   return data;
 };
 
-export const createFollowUp= async ({
+export const createFollowUp = async ({
   requestData,
 }: {
   requestData: CreateFollowUp[];
@@ -265,7 +265,7 @@ export const getFollowUpData = async ({
   return data;
 };
 
-export const updateFollowUp= async ({
+export const updateFollowUp = async ({
   followUpId,
   requestData
 }: {
@@ -299,5 +299,24 @@ export const deleteFollowUp = async ({
   });
   console.log(response.data);
   const data: PastDiagnosesInterface[] = await response.data;
+  return data;
+};
+
+export const getLabTestsData = async ({
+  limit,
+  page
+}: {
+  limit: number,
+  page: number
+}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/lab/tests/all?limit=${limit}&page=${page}`,
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+  console.log(response.data);
+  const data: TestsResponseInterface = await response.data;
   return data;
 };
