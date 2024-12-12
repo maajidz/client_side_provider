@@ -1,4 +1,4 @@
-import React, {useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Dialog,
     DialogContent,
@@ -9,22 +9,33 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
 import { Check, PlusIcon, X } from 'lucide-react'
-import { LabsDataResponse } from '@/types/chartsInterface'
-import { createLabs, getLabsData } from '@/services/chartsServices'
+import { LabsDataResponse, TestsResponseInterface, UserEncounterData } from '@/types/chartsInterface'
+import { createLabOrder, createLabs, getLabsData, getLabTestsData } from '@/services/chartsServices'
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/LoadingButton'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/components/ui/use-toast'
+import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from '@/components/ui/select'
+import FormLabels from '@/components/custom_buttons/FormLabels'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store/store'
 
-const AddLabsDialog = () => {
+const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData }) => {
     const [response, setResponse] = useState<LabsDataResponse>()
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loadingLabs, setLoadingLabs] = useState<boolean>(false)
+    const [loadingTests, setLoadingTests] = useState<boolean>(false)
+    const [loadingOrder, setLoadingOrder] = useState<boolean>(false)
+    const [selectedLab, setSelectedLab] = useState<string>("")
     const [showNewLab, setShowNewLab] = useState<boolean>(false)
+    const [labTestResponse, setLabTestResponse] = useState<TestsResponseInterface>()
+    const [selectedTest, setSelectedTest] = useState<string>("")
     const [newLab, setNewLab] = useState<string>("");
     const { toast } = useToast();
+    const providerDetails = useSelector((state: RootState) => state.login)
+    const [isOpen, setIsOpen] = useState(false) 
 
     const fetchAndSetResponse = async () => {
-        setLoading(true)
+        setLoadingLabs(true)
         try {
             const data = await getLabsData({ page: 1, limit: 10 });
             if (data) {
@@ -32,20 +43,20 @@ const AddLabsDialog = () => {
             }
         } catch (e) {
             console.log("Error", e);
-            setLoading(false);
+            setLoadingLabs(false);
         } finally {
-            setLoading(false);
+            setLoadingLabs(false);
         }
     }
 
-    const createNewLab = async() => {
+    const createNewLab = async () => {
         if (newLab) {
             const requestData = {
                 name: newLab,
                 additionalText: ""
             }
             try {
-                setLoading(true)
+                setLoadingLabs(true)
                 await createLabs({ requestData: requestData })
                 toast({
                     className: cn(
@@ -71,16 +82,81 @@ const AddLabsDialog = () => {
                         <div>Faild to add New Lab</div>
                     </div>,
                 });
-                console.log("Error",e)
+                console.log("Error", e)
             } finally {
-                setLoading(false);
+                setLoadingLabs(false);
             }
         }
     }
 
+    const fetchLabTestsData = async () => {
+        setLoadingTests(true)
+        try {
+            const responseData = await getLabTestsData({ limit: 10, page: 1 })
+            if (responseData) {
+                setLabTestResponse(responseData)
+            }
+        } catch (e) {
+            console.log("Error", e)
+        } finally {
+            setLoadingTests(false);
+        }
+    }
+
+    const handleLabOrder = async () => {
+        if (!selectedLab || !selectedTest) {
+            console.log("Please select both lab and test.")
+            return
+        }
+
+        setLoadingOrder(true);
+        const requestData = {
+            userDetailsId: patientDetails.userDetails.id,
+            orderedBy: providerDetails.providerId,
+            date: new Date().toISOString().split('T')[0],
+            labs: [
+                selectedLab
+            ],
+            tests: [
+                selectedTest
+            ],
+            isSigned: true
+        }
+        console.log("Labs", requestData)
+        try {
+            await createLabOrder({ requestData });
+            toast({
+                className: cn(
+                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                ),
+                variant: "default",
+                description: <div className='flex flex-row items-center gap-4'>
+                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
+                    <div>Successfully placed order.</div>
+                </div>,
+            });
+            setIsOpen(false);
+        } catch (e) {
+            console.log("Error", e);
+            setLoadingOrder(false);
+        } finally {
+            setLoadingOrder(false);
+        }
+    }
+
+    useEffect(() => {
+        if (selectedLab) {
+            fetchLabTestsData()
+        }
+    }, [selectedLab])
+
+    if (loadingOrder) {
+        <LoadingButton />
+    }
+
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button variant="ghost" className='text-blue-500 underline' onClick={fetchAndSetResponse}>Add Labs</Button>
             </DialogTrigger>
@@ -97,7 +173,7 @@ const AddLabsDialog = () => {
                         </div>
                     </DialogDescription>
                 </DialogHeader>
-                {loading ? <LoadingButton /> : <div className='flex flex-col gap-3'>
+                {loadingLabs ? <LoadingButton /> : <div className='flex flex-col gap-3'>
                     {showNewLab ?
                         <div className='flex w-full justify-between gap-2'>
                             <div className='flex gap-2 w-full items-center'>
@@ -119,9 +195,36 @@ const AddLabsDialog = () => {
                     <div className="grid grid-cols-4 gap-4 py-4">
                         {response && response.data && response.data.length > 0 &&
                             response.data.map((lab) => (
-                                <Button variant={'link'} key={lab.id}>
-                                    {lab.name}
-                                </Button >
+                                <Dialog key={lab.id}>
+                                    <DialogTrigger key={lab.id} onClick={()=> setSelectedLab(lab.id)}>{lab.name}</DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Book test for {lab.name}</DialogTitle>
+                                        </DialogHeader>
+                                        {loadingTests ? <LoadingButton /> : <div className='flex items-center gap-3 justtify-center'>
+                                            <FormLabels label='Test' value={
+                                                <Select onValueChange={(value) => {
+                                                    setSelectedTest(value)
+                                                }}>
+                                                    <SelectTrigger className="w-[180px]">
+                                                        <SelectValue placeholder={"Select a Test"} />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {labTestResponse && labTestResponse.data && labTestResponse.data.length > 0 && (
+                                                            labTestResponse.data.map((test) => (
+                                                                <SelectItem key={test.id} value={test.id}>
+                                                                    {test.name}
+                                                                </SelectItem>
+                                                            ))
+                                                        )
+                                                        }
+                                                    </SelectContent>
+                                                </Select>
+                                            } />
+                                            <Button className='bg-[#84012A]' onClick={handleLabOrder}>Order Lab</Button>
+                                        </div>}
+                                    </DialogContent>
+                                </Dialog>
                             ))
                         }
                     </div>

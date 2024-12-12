@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateFollowUp, CreateTestsRequestBody, DiagnosesChart, FollowUpInterface, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, TestsResponseInterface, UpdateDiagnosesRequestBody, UpdateFollowUp, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
+import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateFollowUp, CreateTestsRequestBody, DiagnosesChart, FollowUpInterface, ImagesResponseInterface, ImagesTestsResponseInterface, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, TestsResponseInterface, UpdateDiagnosesRequestBody, UpdateFollowUp, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -64,7 +64,7 @@ export const getUserEncounterDetails = async ({
   });
   console.log(response.data);
   const data: UserEncounterInterface = await response.data;
-  return data.data;
+  return data.response;
 };
 
 export const createSOAPChart = async ({
@@ -318,5 +318,32 @@ export const getLabTestsData = async ({
   });
   console.log(response.data);
   const data: TestsResponseInterface = await response.data;
+  return data;
+};
+
+export const getImagesData = async ({ page, limit }: { page: number, limit: number }) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/images/types?limit=${limit}&page=${page}`,
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+  console.log(response.data);
+  const data: ImagesResponseInterface = await response.data;
+  return data;
+};
+
+
+export const getImagesTestsData = async ({ page, limit }: { page: number, limit: number }) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/images/tests?limit=${limit}&page=${page}`,
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+  console.log(response.data);
+  const data: ImagesTestsResponseInterface = await response.data;
   return data;
 };

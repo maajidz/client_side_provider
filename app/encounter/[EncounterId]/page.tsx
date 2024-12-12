@@ -9,7 +9,6 @@ import LoadingButton from '@/components/LoadingButton';
 import { UserEncounterData } from '@/types/chartsInterface';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { ArrowBigLeft } from 'lucide-react';
-import { Toaster } from '@/components/ui/toaster';
 
 const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => {
     const [encounterId, setEncounterId] = useState<string | null>(null);
@@ -35,7 +34,7 @@ const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => 
 
             try {
                 const encounterData = await getUserEncounterDetails({ encounterId: encounterId });
-                if (encounterData) {
+                if (encounterData !== undefined && encounterData) {
                     setData(encounterData[0])
                 }
             } catch (e) {
@@ -57,12 +56,12 @@ const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => 
     }
 
     if (!data) {
-        return <div>No encounter data available.</div>;
+        return <div>{encounterId} No encounter data available.</div>;
     }
 
     return (
         <div className='flex'>
-            <Toaster />
+            
             <DetailsBody patientDetails={data} />
             <ResizablePanelGroup
                 direction="horizontal"

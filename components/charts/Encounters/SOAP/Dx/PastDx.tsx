@@ -82,8 +82,8 @@ const PastDx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
         setLoading(true);
         try {
             const requestBody = {
-                diagnosis: updatedData.name,
-                icdCode: updatedData.ICD_Code,
+                diagnosis_name: updatedData.diagnosis_name,
+                ICD_Code: updatedData.ICD_Code,
                 notes: updatedData.notes,
             }
             const response = await updateDiagnoses({ diagnosisId, requestData: requestBody });
@@ -146,7 +146,7 @@ const PastDx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                                 <Input
                                     type="text"
                                     placeholder="Enter Diagnosis"
-                                    value={diagnoses.name}
+                                    value={diagnoses.diagnosis_name}
                                     onChange={(e) => handleChange(index, 'name', e.target.value)}
                                     className="col-span-4 border rounded sm:max-w-32"
                                 />

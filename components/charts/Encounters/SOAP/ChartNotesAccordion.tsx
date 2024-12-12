@@ -47,9 +47,9 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            weightInLbs: patientDetails.userDetails.weight ? Number(patientDetails.userDetails.weight) : 0,
+            weightInLbs: patientDetails.userDetails?.weight ? Number(patientDetails.userDetails?.weight) : 0,
             weightInOzs: 0,
-            heightInFt: patientDetails.userDetails.height ? Number(patientDetails.userDetails.height) : 0,
+            heightInFt: patientDetails.userDetails?.height ? Number(patientDetails.userDetails?.height) : 0,
             heightInInches: 0,
             bmi: 0,
         },

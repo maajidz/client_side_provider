@@ -24,19 +24,19 @@ const DetailsBody = ({ patientDetails }: { patientDetails: UserEncounterData }) 
             <div className='flex flex-col border-b py-2'>
                 <div>Patient Name</div>
                 <div>
-                    {patientDetails.userDetails.gender}/ age
+                    {patientDetails.userDetails?.gender}/ age
                 </div>
                 <div className='flex gap-2'>
-                    <FormLabels label='ID' value={patientDetails.id} />
-                    <FormLabels label='DOB' value={patientDetails.userDetails.dob} />
+                    <FormLabels label='ID' value={patientDetails?.id} />
+                    <FormLabels label='DOB' value={patientDetails.userDetails?.dob} />
                 </div>
             </div>
             <div className='grid grid-cols-2 gap-2 border-b py-2'>
-                <FormLabels label='Wt' value={`${patientDetails.userDetails.weight} ${patientDetails.userDetails.weightType}`} />
-                <FormLabels label='Ht' value={`${patientDetails.userDetails.height} ${patientDetails.userDetails.heightType}`} />
+                <FormLabels label='Wt' value={`${patientDetails.userDetails?.weight} ${patientDetails.userDetails?.weightType}`} />
+                <FormLabels label='Ht' value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`} />
                 <FormLabels label='BMI' value={`BMI`} />
-                <FormLabels label='Vist type' value={patientDetails.visit_type} />
-                <FormLabels label='Mode' value={patientDetails.mode} />
+                <FormLabels label='Vist type' value={patientDetails?.visit_type} />
+                <FormLabels label='Mode' value={patientDetails?.mode} />
                 <FormLabels label='Phone' value={`Phone`} />
             </div>
             <ScrollArea className="h-96 overflow-y-scroll">

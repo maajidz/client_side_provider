@@ -18,11 +18,11 @@ import { createDiagnoses, createSOAPChart } from '@/services/chartsServices'
 const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
     const { toast } = useToast();
     const [rows, setRows] = useState([
-        { diagnosis: '', icdCode: '', notes: '' },
+        { diagnosis_name: '', ICD_Code: '', notes: '' },
     ]);
 
     const handleAddRow = () => {
-        setRows([...rows, { diagnosis: '', icdCode: '', notes: '' }]);
+        setRows([...rows, { diagnosis_name: '', ICD_Code: '', notes: '' }]);
     };
 
     const handleDeleteRow = (index: number) => {
@@ -96,7 +96,7 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
             });
             console.log("Error", e);
         } finally {
-            setRows([{ diagnosis: '', icdCode: '', notes: '' }]);
+            setRows([{ diagnosis_name: '', ICD_Code: '', notes: '' }]);
         }
     };
 
@@ -121,15 +121,15 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                                 <Input
                                     type="text"
                                     placeholder="Enter Diagnosis"
-                                    value={row.diagnosis}
-                                    onChange={(e) => handleChange(index, 'diagnosis', e.target.value)}
+                                    value={row.diagnosis_name}
+                                    onChange={(e) => handleChange(index, 'diagnosis_name', e.target.value)}
                                     className="col-span-4 border rounded sm:max-w-32"
                                 />
                                 <Input
                                     type="text"
                                     placeholder="ICD Codes"
-                                    value={row.icdCode}
-                                    onChange={(e) => handleChange(index, 'icdCode', e.target.value)}
+                                    value={row.ICD_Code}
+                                    onChange={(e) => handleChange(index, 'ICD_Code', e.target.value)}
                                     className="col-span-4 border rounded sm:max-w-32 "
                                 />
                                 <Input
@@ -151,7 +151,7 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                 <DialogFooter>
                     <div className='flex justify-between w-full'>
                         <Button variant={'ghost'} onClick={handleAddRow} > Add Row</Button>
-                        <Button type="submit" onClick={handleSubmit} className='bg-[#84012A]' disabled = {rows[0].diagnosis == '' ? true: false}>Save changes</Button>
+                        <Button type="submit" onClick={handleSubmit} className='bg-[#84012A]' disabled = {rows[0].diagnosis_name == '' ? true: false}>Save changes</Button>
                     </div>
                 </DialogFooter>
             </DialogContent>

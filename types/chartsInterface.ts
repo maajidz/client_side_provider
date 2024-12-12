@@ -70,7 +70,7 @@ export interface UpdateSOAPInterface {
 
 
 export interface UserEncounterInterface {
-    data: UserEncounterData[]
+    response: UserEncounterData[]
     total: number
 }
 
@@ -99,6 +99,8 @@ export interface UserChart {
 }
 
 export interface UserDetails {
+    createdAt: string
+    updatedAt: string
     id: string
     dob: string
     height: number
@@ -107,8 +109,6 @@ export interface UserDetails {
     weightType: string
     location: string
     gender: string
-    createdAt: string
-    updatedAt: string
 }
 
 export interface PatientPhysicalStats {
@@ -117,21 +117,21 @@ export interface PatientPhysicalStats {
 }
 
 export interface CreateDiagnosesRequestBody {
-    diagnosis: string
-    icdCode: string
+    diagnosis_name: string
+    ICD_Code: string
     notes: string
     chartId: string
 }
 
 export interface UpdateDiagnosesRequestBody {
-    diagnosis: string
-    icdCode: string
+    diagnosis_name: string
+    ICD_Code: string
     notes: string
 }
 
 export interface PastDiagnosesInterface {
     id: string
-    name: string
+    diagnosis_name: string
     ICD_Code: string
     notes: string
     createdAt: string
@@ -232,3 +232,38 @@ export interface Lab {
     createdAt: string
     updatedAt: string
 }
+
+export interface ImagesTestsResponseInterface {
+    data: ImagesTestData[]
+    total: number
+}
+
+export interface ImagesTestData {
+    id: string
+    name: string
+    additionalText: any
+    createdAt: string
+    updatedAt: string
+    imageType: ImageType
+}
+
+export interface ImageType {
+    id: string
+    name: string
+    createdAt: string
+    updatedAt: string
+}
+
+export interface ImagesResponseInterface {
+    data: ImagesResponse[]
+    total: number
+  }
+  
+  export interface ImagesResponse {
+    id: string
+    name: string
+    createdAt: string
+    updatedAt: string
+  }
+  
+

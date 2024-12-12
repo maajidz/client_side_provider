@@ -25,7 +25,7 @@ const TabMenu = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>Preview</DialogTitle>
+                        <DialogTitle>Preview SOAP Note</DialogTitle>
                     </DialogHeader>
                     <div className="flex flex-col gap-4 py-4">
                         <div className='flex flex-col gap-2'>

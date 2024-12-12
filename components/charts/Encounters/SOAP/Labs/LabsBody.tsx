@@ -11,9 +11,9 @@ const LabsBody = ({ patientDetails}: {patientDetails: UserEncounterData}) => {
     <div className='flex justify-between border-b pb-3'>
                 <div>Labs</div>
                 <div className="flex h-5 items-center space-x-4 text-sm">
-                    <SearchAndAddDrawer patientDetails={patientDetails}/>
+                    <SearchAndAddDrawer patientDetails={patientDetails} />
                     <Separator orientation="vertical" />
-                    <AddLabsDialog />
+                    <AddLabsDialog patientDetails={patientDetails} />
                     <Separator orientation="vertical" />
                     <PastOrdersDialog />
                     {/* <Separator orientation="vertical" />
