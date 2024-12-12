@@ -89,10 +89,10 @@ const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData 
         }
     }
 
-    const fetchLabTestsData = async () => {
+    const fetchLabTestsData = async (labId: string) => {
         setLoadingTests(true)
         try {
-            const responseData = await getLabTestsData({ limit: 10, page: 1 })
+            const responseData = await getLabTestsData({ limit: 10, page: 1, query: labId})
             if (responseData) {
                 setLabTestResponse(responseData)
             }
@@ -146,7 +146,7 @@ const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData 
 
     useEffect(() => {
         if (selectedLab) {
-            fetchLabTestsData()
+            fetchLabTestsData(selectedLab)
         }
     }, [selectedLab])
 

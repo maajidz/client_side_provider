@@ -5,12 +5,13 @@ import { Popover, PopoverTrigger,PopoverContent } from '@/components/ui/popover'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { RootState } from '@/store/store'
+import { UserEncounterData } from '@/types/chartsInterface'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const DetailsComponent = () => {
+const DetailsComponent = ({patientDetails}:{patientDetails: UserEncounterData}) => {
     const [date, setDate] = React.useState<Date | undefined>(new Date());
     const providerDetails = useSelector((state: RootState)=> state.login)
     return (
@@ -45,7 +46,7 @@ const DetailsComponent = () => {
             <FormLabels label='Vist Type' value={
                 <Select>
                     <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select vist type" />
+                        <SelectValue placeholder="Select vist type" defaultValue={patientDetails.visit_type}/>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>

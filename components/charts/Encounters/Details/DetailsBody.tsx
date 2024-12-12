@@ -22,7 +22,7 @@ const DetailsBody = ({ patientDetails }: { patientDetails: UserEncounterData }) 
     return (
         <div className='flex flex-col border w-96 p-3 h-full'>
             <div className='flex flex-col border-b py-2'>
-                <div>Patient Name</div>
+                <div>{patientDetails.firstName} {patientDetails.lastName}</div>
                 <div>
                     {patientDetails.userDetails?.gender}/ age
                 </div>
@@ -34,7 +34,7 @@ const DetailsBody = ({ patientDetails }: { patientDetails: UserEncounterData }) 
             <div className='grid grid-cols-2 gap-2 border-b py-2'>
                 <FormLabels label='Wt' value={`${patientDetails.userDetails?.weight} ${patientDetails.userDetails?.weightType}`} />
                 <FormLabels label='Ht' value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`} />
-                <FormLabels label='BMI' value={`BMI`} />
+                <FormLabels label='BMI' value={`${patientDetails.bmiRecords?.[0].currentBmi}`} />
                 <FormLabels label='Vist type' value={patientDetails?.visit_type} />
                 <FormLabels label='Mode' value={patientDetails?.mode} />
                 <FormLabels label='Phone' value={`Phone`} />

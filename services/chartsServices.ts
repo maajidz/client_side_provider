@@ -304,14 +304,16 @@ export const deleteFollowUp = async ({
 
 export const getLabTestsData = async ({
   limit,
+  query,
   page
 }: {
   limit: number,
-  page: number
+  page: number,
+  query: string
 }) => {
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/lab/tests/all?limit=${limit}&page=${page}`,
+    url: `/provider/lab/tests/all?search=${query}&limit=${limit}&page=${page}`,
     headers: {
       "Content-Type": "application/json",
     }

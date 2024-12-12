@@ -11,7 +11,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 
-const TabMenu = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+const TabMenu = ({ patientDetails, onClose }: { patientDetails: UserEncounterData, onClose: () => void; }) => {
     return (
         <div className='flex flex-row gap-5'>
             {/* {patientDetails.chart === null ? (
@@ -68,7 +68,7 @@ const TabMenu = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                     <DropdownMenuItem>Surveillance Report</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant={'outline'} className=''>Close</Button>
+            <Button variant={'outline'} className='' onClick={onClose}>Close</Button>
         </div>
     )
 }

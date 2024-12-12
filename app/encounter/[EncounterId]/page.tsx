@@ -9,11 +9,13 @@ import LoadingButton from '@/components/LoadingButton';
 import { UserEncounterData } from '@/types/chartsInterface';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { ArrowBigLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => {
     const [encounterId, setEncounterId] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [data, setData] = useState<UserEncounterData>()
+    const [data, setData] = useState<UserEncounterData>();
+    const [isSOAPSectionVisible, setIsSOAPSectionVisible] = useState<boolean>(true);
 
     useEffect(() => {
         const unwrapParams = async () => {
@@ -61,7 +63,7 @@ const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => 
 
     return (
         <div className='flex'>
-            
+
             <DetailsBody patientDetails={data} />
             <ResizablePanelGroup
                 direction="horizontal"
@@ -71,9 +73,15 @@ const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => 
                     <PreviewBody />
                 </ResizablePanel>
                 <ResizableHandle><ArrowBigLeft /></ResizableHandle>
-                <ResizablePanel>
-                    {encounterId && <SOAPSection encounterId={encounterId} patientDetails={data} />}
+                {isSOAPSectionVisible ? (<ResizablePanel>
+
+                    <SOAPSection
+                        encounterId={encounterId!}
+                        patientDetails={data}
+                        onClose={() => setIsSOAPSectionVisible(false)}
+                    />
                 </ResizablePanel>
+                ) : <Button className='bg-[#84012A]' onClick={() => setIsSOAPSectionVisible(true)}>Show SOAP</Button>}
             </ResizablePanelGroup>
         </div>
     )

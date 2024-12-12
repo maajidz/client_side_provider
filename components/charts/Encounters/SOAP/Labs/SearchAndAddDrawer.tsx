@@ -44,10 +44,10 @@ const SearchAndAddDrawer = ({ patientDetails }: { patientDetails: UserEncounterD
         }
     }
 
-    const fetchLabTestsData = async () => {
+    const fetchLabTestsData = async (labId: string) => {
         setLoadingTests(true)
         try {
-            const responseData = await getLabTestsData({ limit: 10, page: 1 })
+            const responseData = await getLabTestsData({ limit: 10, page: 1 , query: labId})
             if (responseData) {
                 setLabTestResponse(responseData)
             }
@@ -116,7 +116,7 @@ const SearchAndAddDrawer = ({ patientDetails }: { patientDetails: UserEncounterD
 
     useEffect(() => {
         if (selectedLab) {
-            fetchLabTestsData()
+            fetchLabTestsData(selectedLab)
         }
     }, [selectedLab])
 

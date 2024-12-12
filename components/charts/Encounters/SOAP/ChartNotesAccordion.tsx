@@ -142,7 +142,7 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                 }
                 await updateSOAPChart({ requestData: requestBody, chartId: patientDetails.chart.id });
                 await updatePatientPhysicalStatus({
-                    userDetailsID: patientDetails.userDetails.id,
+                    userDetailsID: patientDetails?.userDetails?.id,
                     requestData: {
                         height: Number(values.heightInInches),
                         weight: Number(values.weightInLbs)

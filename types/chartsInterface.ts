@@ -75,17 +75,33 @@ export interface UserEncounterInterface {
 }
 
 export interface UserEncounterData {
+    chart?: UserChart | null
+    userDetails: UserDetails
+    id?: string
+    visit_type?: string
+    mode?: string
+    date?: string
+    isVerified?: boolean
+    providerID?: string
+    createdAt?: string
+    updatedAt?: string
+    currentWeight?: string
+    targetWeight?: string
+    startDate?: string
+    targetDate?: string
+    bmiRecords?: BmiRecord[]
+    firstName?: string
+    lastName?: string
+}
+
+export interface BmiRecord {
     id: string
-    visit_type: string
-    mode: string
     date: string
-    isVerified: boolean
-    providerID: string
+    currentBmi: number
+    goalBmi: number
     createdAt: string
     updatedAt: string
-    chart: UserChart | null
-    userDetails: UserDetails
-}
+  }
 
 export interface UserChart {
     id: string
