@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateFollowUp, CreatePrescriptionInterface, CreateTestsRequestBody, DiagnosesChart, FollowUpInterface, ImagesResponseInterface, ImagesTestsResponseInterface, LabOrdersDataInterface, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, TestsResponseInterface, UpdateDiagnosesRequestBody, UpdateFollowUp, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
+import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateFollowUp, CreatePrescriptionInterface, CreateTestsRequestBody, DiagnosesChart, FetchPrescription, FollowUpInterface, ImagesResponseInterface, ImagesTestsResponseInterface, LabOrdersDataInterface, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, TestsResponseInterface, UpdateDiagnosesRequestBody, UpdateFollowUp, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -377,5 +377,19 @@ export const createPrescriptions = async ({
   });
   console.log(response.data);
   const data = await response.data;
+  return data;
+};
+
+
+export const getPrescriptionsData = async ({ chartId }: { chartId: string, }) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/prescriptions/${chartId}`,
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+  console.log(response.data);
+  const data: FetchPrescription = await response.data;
   return data;
 };

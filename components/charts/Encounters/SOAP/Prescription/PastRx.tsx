@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import {
     Dialog,
@@ -9,8 +9,40 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
+import LoadingButton from '@/components/LoadingButton'
+import { FetchPrescription, UserEncounterData } from '@/types/chartsInterface'
+import { getPrescriptionsData } from '@/services/chartsServices'
 
-const PastRx = () => {
+const PastRx = ({patientDetails}: {patientDetails: UserEncounterData }) => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [response, setResponse] = useState<FetchPrescription>()
+
+    useEffect(()=>{
+        const fetchAndSetResponse = async () => {
+            if(patientDetails.chart?.id){
+                setLoading(true)
+            try {
+                const data = await getPrescriptionsData({ chartId: patientDetails.chart.id });
+                if (data) {
+                    setResponse(data);
+                }
+            } catch (e) {
+                console.log("Error", e);
+                setLoading(false);
+            } finally {
+                setLoading(false);
+            }
+            }
+        }
+        fetchAndSetResponse()    
+    }, [patientDetails.chart?.id])
+
+    if(loading){
+        return(
+            <LoadingButton />
+        )
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -57,7 +89,14 @@ const PastRx = () => {
                     <div className='flex flex-col p-3 rounded-lg border'>
                         <div>Past Rx</div>
                         <div className='flex items-center'>
-
+                            {response?.prescriptions.map((prescription) => (
+                                <div key={prescription.id}>
+                                    <div>{prescription.drug_name}</div>
+                                    <div>{prescription.directions}</div>
+                                    <div>{prescription.primary_diagnosis}</div>
+                                    <div>{prescription.secondary_diagnosis}</div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

@@ -17,7 +17,7 @@ const PrescriptionBody = ({patientDetails}: {patientDetails: UserEncounterData }
             <div className="flex h-5 items-center space-x-4 text-sm">
                 <AddRx patientDetails={patientDetails}/>
                 <Separator orientation="vertical" />
-                <PastRx />
+                <PastRx patientDetails={patientDetails}/>
                 <Separator orientation="vertical" />
                 {/* <Popover>
                     <PopoverTrigger asChild>

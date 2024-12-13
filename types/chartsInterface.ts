@@ -334,4 +334,27 @@ export interface Dosage {
     duration_unit: string
 }
 
+export interface FetchPrescription {
+    message: string
+    prescriptions: Prescription[]
+}
 
+export interface Prescription {
+    id: string
+    drug_name: string
+    dispense_as_written: boolean
+    primary_diagnosis: string
+    secondary_diagnosis: string
+    directions: string
+    dispense_quantity: number
+    dispense_unit: string
+    prior_auth: string
+    prior_auth_decision: string
+    internal_comments: string
+    days_of_supply: number
+    additional_refills: number
+    Note_to_Pharmacy: string
+    earliest_fill_date: string
+    createdAt: string
+    updatedAt: string
+}
