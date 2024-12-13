@@ -15,7 +15,7 @@ const LabsBody = ({ patientDetails}: {patientDetails: UserEncounterData}) => {
                     <Separator orientation="vertical" />
                     <AddLabsDialog patientDetails={patientDetails} />
                     <Separator orientation="vertical" />
-                    <PastOrdersDialog />
+                    <PastOrdersDialog patientDetails={patientDetails}/>
                     {/* <Separator orientation="vertical" />
                     <MapDxDialog /> */}
                     <Separator orientation="vertical" />

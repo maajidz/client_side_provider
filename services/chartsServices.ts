@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateFollowUp, CreateTestsRequestBody, DiagnosesChart, FollowUpInterface, ImagesResponseInterface, ImagesTestsResponseInterface, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, TestsResponseInterface, UpdateDiagnosesRequestBody, UpdateFollowUp, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
+import { CreateDiagnosesRequestBody, CreateEncounterInterface, CreateEncounterResponseInterface, CreateFollowUp, CreatePrescriptionInterface, CreateTestsRequestBody, DiagnosesChart, FollowUpInterface, ImagesResponseInterface, ImagesTestsResponseInterface, LabOrdersDataInterface, LabOrdersInterface, LabsDataResponse, LabsRequestData, PastDiagnosesInterface, PatientPhysicalStats, SOAPInterface, TestResponse, TestsResponseInterface, UpdateDiagnosesRequestBody, UpdateFollowUp, UpdateSOAPInterface, UserEncounterInterface } from "@/types/chartsInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -336,7 +336,6 @@ export const getImagesData = async ({ page, limit }: { page: number, limit: numb
   return data;
 };
 
-
 export const getImagesTestsData = async ({ page, limit }: { page: number, limit: number }) => {
   const response = await ApiFetch({
     method: "GET",
@@ -347,5 +346,36 @@ export const getImagesTestsData = async ({ page, limit }: { page: number, limit:
   });
   console.log(response.data);
   const data: ImagesTestsResponseInterface = await response.data;
+  return data;
+};
+
+export const getLabOrdersData = async ({ userDetailsId, providerId, page, limit }: { userDetailsId?: string, providerId?: string, page?: number, limit?: number }) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/lab/orders?userDetailsId=${userDetailsId}&providerId=${providerId? providerId : ''}&limit=${limit ? limit : 10 }&page=${page ? page : 1 }`,
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+  console.log(response.data);
+  const data: LabOrdersDataInterface = await response.data;
+  return data;
+};
+
+export const createPrescriptions = async ({
+  requestData,
+}: {
+  requestData: CreatePrescriptionInterface;
+}) => {
+  const response = await ApiFetch({
+    method: "POST",
+    url: "/provider/prescriptions",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
   return data;
 };

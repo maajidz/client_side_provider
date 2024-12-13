@@ -2,18 +2,20 @@ import React from 'react'
 import { Separator } from '@/components/ui/separator'
 import AddRx from './AddRx'
 import PastRx from './PastRx'
+import { UserEncounterData } from '@/types/chartsInterface'
 // import {
 //     Popover,
 //     PopoverContent,
 //     PopoverTrigger,
 // } from "@/components/ui/popover"
 
-const PrescriptionBody = () => {
+const PrescriptionBody = ({patientDetails}: {patientDetails: UserEncounterData }) => {
+    
     return (
         <div className='flex justify-between border-b pb-3'>
             <div>Prescriptions</div>
             <div className="flex h-5 items-center space-x-4 text-sm">
-                <AddRx />
+                <AddRx patientDetails={patientDetails}/>
                 <Separator orientation="vertical" />
                 <PastRx />
                 <Separator orientation="vertical" />

@@ -101,7 +101,7 @@ export interface BmiRecord {
     goalBmi: number
     createdAt: string
     updatedAt: string
-  }
+}
 
 export interface UserChart {
     id: string
@@ -273,13 +273,65 @@ export interface ImageType {
 export interface ImagesResponseInterface {
     data: ImagesResponse[]
     total: number
-  }
-  
-  export interface ImagesResponse {
+}
+
+export interface ImagesResponse {
     id: string
     name: string
     createdAt: string
     updatedAt: string
-  }
-  
+}
+
+export interface LabOrdersDataInterface {
+    data: LabOrdersData[]
+    total: number
+}
+
+export interface LabOrdersData {
+    id: string
+    orderedBy: string
+    date: string
+    isSigned: boolean
+    createdAt: string
+    updatedAt: string
+    labs: Lab[]
+    tests: Test[]
+}
+
+export interface Test {
+    id: string
+    name: string
+    createdAt: string
+    updatedAt: string
+}
+
+export interface CreatePrescriptionInterface {
+    drug_name: string
+    dispense_as_written: boolean
+    primary_diagnosis: string
+    secondary_diagnosis: string
+    directions: string
+    dispense_quantity: number
+    dispense_unit: string
+    prior_auth: string
+    prior_auth_decision: string
+    internal_comments: string
+    days_of_supply: number
+    additional_refills: number
+    Note_to_Pharmacy: string
+    earliest_fill_date: string
+    dosages: Dosage[]
+    chartId: string
+}
+
+export interface Dosage {
+    dosage_quantity: number
+    dosage_unit: string
+    route: string
+    frequency: string
+    when: string
+    duration_quantity: string
+    duration_unit: string
+}
+
 

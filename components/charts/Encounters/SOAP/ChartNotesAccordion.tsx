@@ -206,7 +206,9 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
 
 
     return (
-        <Accordion type="multiple" className="w-full" defaultValue={["chiefComplaints", "vitals"]}>
+        <Accordion type="multiple" className="w-full" 
+        //defaultValue={["chiefComplaints", "vitals"]}
+        >
             <AccordionItem value="chiefComplaints">
                 <AccordionTrigger>Chief Complaints</AccordionTrigger>
                 <AccordionContent>
