@@ -176,6 +176,17 @@ export interface LabOrdersInterface {
     isSigned: boolean
 }
 
+export interface ImageOrdersInterface {
+    userDetailsId: string
+    ordered_date: string
+    providerId: string
+    imageTypeId: string
+    imageTestIds: string[]
+    note_to_patients: string
+    intra_office_notes: string
+}
+
+
 export interface CreateTestsRequestBody {
     name: string
     labId: string
@@ -358,4 +369,23 @@ export interface Prescription {
     earliest_fill_date: string
     createdAt: string
     updatedAt: string
+}
+
+export interface ImagesOrdersDataInterface {
+    data: LabOrdersData[]
+    total: number
+}
+
+export interface CreateTransferInterface {
+    referringToProviderID: string
+    referringFromProviderID: string
+    referralType: string
+    referralReason: string
+    priority: string
+    notes: string
+    relatedEncounterId: string
+    diagnoses: string[]
+    insuranceId: string
+    attachments: string[]
+    userDetailsID: string
 }

@@ -13,11 +13,14 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { ImagesResponseInterface, ImagesTestsResponseInterface, UserEncounterData } from '@/types/chartsInterface'
-import { createLabOrder, getImagesData, getImagesTestsData } from '@/services/chartsServices'
+import { createImageOrder, getImagesData, getImagesTestsData } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
 import FormLabels from '@/components/custom_buttons/FormLabels'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
+import { Check, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { useToast } from '@/hooks/use-toast'
 
 const AddImagesDrawer = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [response, setResponse] = useState<ImagesResponseInterface>()
@@ -28,6 +31,7 @@ const AddImagesDrawer = ({ patientDetails }: { patientDetails: UserEncounterData
     const [selectedImage, setSelectedImage] = useState<string>("")
     const [selectedTest, setSelectedTest] = useState<string>("")
     const providerDetails = useSelector((state: RootState) => state.login)
+    const {toast} = useToast();
 
     const fetchAndSetResponse = async () => {
         setLoadingImages(true)
@@ -67,23 +71,43 @@ const AddImagesDrawer = ({ patientDetails }: { patientDetails: UserEncounterData
         setLoadingOrder(true);
         const requestData = {
             userDetailsId: patientDetails.userDetails.id,
-            orderedBy: providerDetails.providerId,
-            date: new Date().toISOString().split('T')[0],
-            labs: [
-                selectedImage
-            ],
-            tests: [
-                selectedTest
-            ],
-            isSigned: true
+            providerId: providerDetails.providerId,
+            ordered_date: new Date().toISOString().split('T')[0],
+            imageTypeId: selectedImage,
+            imageTestIds: 
+                [selectedTest],
+            note_to_patients: "",
+            intra_office_notes: ""
         }
         console.log("Labs", requestData)
         try {
-            await createLabOrder({ requestData });
+            await createImageOrder({ requestData });
+            toast({
+                className: cn(
+                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                ),
+                variant: "default",
+                description: <div className='flex flex-row items-center gap-4'>
+                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
+                    <div>Order places successfully!</div>
+                </div>
+            });
+            setSelectedImage("");
+            setSelectedTest("");
 
         } catch (e) {
             console.log("Error", e);
             setLoadingOrder(false);
+            toast({
+                className: cn(
+                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                ),
+                variant: "default",
+                description: <div className='flex flex-row items-center gap-4'>
+                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
+                    <div>error</div>
+                </div>
+            });
         } finally {
             setLoadingOrder(false);
         }
@@ -111,7 +135,7 @@ const AddImagesDrawer = ({ patientDetails }: { patientDetails: UserEncounterData
                     <div className="flex flex-col  justify-between mx-auto w-full max-w-sm p-3 gap-5">
                         <div className='flex items-center gap-3'>
                             <div className=''>Images</div>
-                            <Select onValueChange={(value) => setSelectedImage(value)}>
+                            <Select onValueChange={(value) => setSelectedImage(value)} defaultValue={selectedImage}>
                                 <SelectTrigger className="w-[180px]">
                                     <SelectValue placeholder={"Select a lab"} />
                                 </SelectTrigger>

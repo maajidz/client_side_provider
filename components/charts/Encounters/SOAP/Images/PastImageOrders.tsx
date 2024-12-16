@@ -1,46 +1,92 @@
-import React from 'react'
-import { Input } from '@/components/ui/input'
+import React, { useState } from 'react'
 import {
     Dialog,
     DialogContent,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
+import LoadingButton from '@/components/LoadingButton'
+import { getImagesOrdersData } from '@/services/chartsServices'
+import { ImagesOrdersDataInterface, UserEncounterData } from '@/types/chartsInterface'
 
-const PastImageOrders = () => {
+const PastImageOrders = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+    const [open, setOpen] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [response, setResponse] = useState<ImagesOrdersDataInterface>();
+
+    const fetchAndSetResponse = async () => {
+        setLoading(true)
+        try {
+            const data = await getImagesOrdersData({ userDetailsId: patientDetails?.userDetails.id });
+            if (data) {
+                setResponse(data);
+            }
+        } catch (e) {
+            console.log("Error", e);
+            setLoading(false);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleDialogOpenChange = (isOpen: boolean) => {
+        setOpen(isOpen);
+        if (isOpen) {
+            fetchAndSetResponse(); 
+        }
+    };
+
+    if (loading) {
+        return (
+            <div><LoadingButton /></div>
+        )
+    }
+
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={handleDialogOpenChange}>
             <DialogTrigger asChild>
-                <Button variant="ghost" className='text-blue-500 underline'>Past Orders</Button>
+                <Button variant="ghost" className='text-blue-500 underline' onClick={fetchAndSetResponse}>Past Orders</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
-                    <DialogTitle>Edit profile</DialogTitle>
+                    <DialogTitle>Past Orders</DialogTitle>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-
-                        <Input
-                            id="name"
-                            defaultValue="Pedro Duarte"
-                            className="col-span-3"
-                        />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-
-                        <Input
-                            id="username"
-                            defaultValue="@peduarte"
-                            className="col-span-3"
-                        />
-                    </div>
-                </div>
-                <DialogFooter>
-                    <Button type="submit">Save changes</Button>
-                </DialogFooter>
+                <table>
+                    <tr className='border font-semibold text-lg text-[#84012A]'>
+                        <td>Lab Name</td>
+                        <td>Test Name</td>
+                        <td>Created At</td>
+                    </tr>
+                    {response?.data ?
+                        response?.data.map((labOrder) => (
+                            <tr key={labOrder.id} className='border p-3 my-3'>
+                                <td>
+                                    {labOrder.labs.map((lab) => (
+                                        <div key={lab.id} >
+                                            {lab.name}
+                                        </div>
+                                    ))}</td>
+                                <td>
+                                    {labOrder.tests.map((test) => (
+                                        <div key={test.id}>
+                                            {test.name}
+                                        </div>
+                                    ))}
+                                </td>
+                                <td>
+                                    {labOrder.tests.map((test) => (
+                                        <div key={test.id}>
+                                            {test.updatedAt.split('T')[0]}
+                                        </div>
+                                    ))}
+                                </td>
+                            </tr>
+                        )) :
+                        <div>No previous orders</div>
+                    }
+                </table>
             </DialogContent>
         </Dialog>
     )

@@ -12,7 +12,7 @@ const ImagesBody = ({ patientDetails}: { patientDetails: UserEncounterData}) => 
                 <div className="flex h-5 items-center space-x-4 text-sm">
                     <AddImagesDrawer patientDetails={patientDetails} />
                     <Separator orientation="vertical" />
-                    <PastImageOrders />
+                    <PastImageOrders patientDetails={patientDetails}/>
                     {/* <Separator orientation="vertical" />
                     <MapDx /> */}
                 </div>
