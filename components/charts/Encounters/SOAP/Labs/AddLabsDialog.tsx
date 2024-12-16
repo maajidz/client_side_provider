@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
     Dialog,
     DialogContent,
@@ -9,37 +9,42 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
 import { Check, PlusIcon, X } from 'lucide-react'
-import { LabsDataResponse, TestsResponseInterface, UserEncounterData } from '@/types/chartsInterface'
-import { createLabOrder, createLabs, getLabsData, getLabTestsData } from '@/services/chartsServices'
+import { LabsDataResponse, Test, UserEncounterData } from '@/types/chartsInterface'
+import { createLabOrder, createLabs, getLabsData } from '@/services/chartsServices'
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/LoadingButton'
 import { cn } from '@/lib/utils'
-import { useToast } from '@/components/ui/use-toast'
 import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from '@/components/ui/select'
 import FormLabels from '@/components/custom_buttons/FormLabels'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
+import { useToast } from '@/hooks/use-toast'
 
-const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData }) => {
-    const [response, setResponse] = useState<LabsDataResponse>()
+const AddLabsDialog = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+    const [response, setResponse] = useState<LabsDataResponse>({ data: [], total: 0 })
     const [loadingLabs, setLoadingLabs] = useState<boolean>(false)
-    const [loadingTests, setLoadingTests] = useState<boolean>(false)
     const [loadingOrder, setLoadingOrder] = useState<boolean>(false)
     const [selectedLab, setSelectedLab] = useState<string>("")
     const [showNewLab, setShowNewLab] = useState<boolean>(false)
-    const [labTestResponse, setLabTestResponse] = useState<TestsResponseInterface>()
+    const [labTestResponse, setLabTestResponse] = useState<Test[]>([])
     const [selectedTest, setSelectedTest] = useState<string>("")
     const [newLab, setNewLab] = useState<string>("");
     const { toast } = useToast();
     const providerDetails = useSelector((state: RootState) => state.login)
-    const [isOpen, setIsOpen] = useState(false) 
+    const [isOpen, setIsOpen] = useState(false)
 
-    const fetchAndSetResponse = async () => {
+    const fetchAndSetResponse = async (page = 1) => {
         setLoadingLabs(true)
         try {
-            const data = await getLabsData({ page: 1, limit: 10 });
+            const data = await getLabsData({ page, limit: 10 });
             if (data) {
-                setResponse(data);
+                setResponse((prev) => ({
+                    data: [...prev.data, ...data.data],
+                    total: data.total
+                }));
+                if (data.data.length < data.total) {
+                    await fetchAndSetResponse(page + 1);
+                }
             }
         } catch (e) {
             console.log("Error", e);
@@ -79,7 +84,7 @@ const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData 
                     variant: "destructive",
                     description: <div className='flex flex-row items-center gap-4'>
                         <div className='flex bg-red-700 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                        <div>Faild to add New Lab</div>
+                        <div>Failed to add New Lab</div>
                     </div>,
                 });
                 console.log("Error", e)
@@ -89,19 +94,14 @@ const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData 
         }
     }
 
-    const fetchLabTestsData = async (labId: string) => {
-        setLoadingTests(true)
-        try {
-            const responseData = await getLabTestsData({ limit: 10, page: 1, query: labId})
-            if (responseData) {
-                setLabTestResponse(responseData)
+    const fetchLabTestsData = useCallback(async (labId: string) => {
+        if (response && response.data) {
+            const selectedLab = response.data.find((lab) => lab.id === labId);
+            if (selectedLab) {
+                setLabTestResponse(selectedLab ? selectedLab.tests : []);
             }
-        } catch (e) {
-            console.log("Error", e)
-        } finally {
-            setLoadingTests(false);
         }
-    }
+    }, [response])
 
     const handleLabOrder = async () => {
         if (!selectedLab || !selectedTest) {
@@ -148,7 +148,7 @@ const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData 
         if (selectedLab) {
             fetchLabTestsData(selectedLab)
         }
-    }, [selectedLab])
+    }, [selectedLab, fetchLabTestsData])
 
     if (loadingOrder) {
         <LoadingButton />
@@ -158,7 +158,7 @@ const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button variant="ghost" className='text-blue-500 underline' onClick={fetchAndSetResponse}>Add Labs</Button>
+                <Button variant="ghost" className='text-blue-500 underline' onClick={()=> fetchAndSetResponse(1)}>Add Labs</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[625px]">
                 <DialogHeader>
@@ -196,12 +196,12 @@ const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData 
                         {response && response.data && response.data.length > 0 &&
                             response.data.map((lab) => (
                                 <Dialog key={lab.id}>
-                                    <DialogTrigger key={lab.id} onClick={()=> setSelectedLab(lab.id)}>{lab.name}</DialogTrigger>
+                                    <DialogTrigger key={lab.id} onClick={() => setSelectedLab(lab.id)}>{lab.name}</DialogTrigger>
                                     <DialogContent>
                                         <DialogHeader>
                                             <DialogTitle>Book test for {lab.name}</DialogTitle>
                                         </DialogHeader>
-                                        {loadingTests ? <LoadingButton /> : <div className='flex items-center gap-3 justtify-center'>
+                                        <div className='flex items-center gap-3 justtify-center'>
                                             <FormLabels label='Test' value={
                                                 <Select onValueChange={(value) => {
                                                     setSelectedTest(value)
@@ -210,8 +210,8 @@ const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData 
                                                         <SelectValue placeholder={"Select a Test"} />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        {labTestResponse && labTestResponse.data && labTestResponse.data.length > 0 && (
-                                                            labTestResponse.data.map((test) => (
+                                                        {labTestResponse && labTestResponse.length > 0 && (
+                                                            labTestResponse.map((test) => (
                                                                 <SelectItem key={test.id} value={test.id}>
                                                                     {test.name}
                                                                 </SelectItem>
@@ -222,7 +222,7 @@ const AddLabsDialog = ({ patientDetails } : { patientDetails: UserEncounterData 
                                                 </Select>
                                             } />
                                             <Button className='bg-[#84012A]' onClick={handleLabOrder}>Order Lab</Button>
-                                        </div>}
+                                        </div>
                                     </DialogContent>
                                 </Dialog>
                             ))

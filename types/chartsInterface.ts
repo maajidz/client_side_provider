@@ -44,6 +44,7 @@ export interface LabsData {
     addtionalText: string
     createdAt: string
     updatedAt: string
+    tests: Test[]
 }
 
 export interface LabsRequestData {

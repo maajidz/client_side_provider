@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
     Drawer,
     DrawerContent,
@@ -12,29 +12,38 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { LabsDataResponse, TestsResponseInterface, UserEncounterData } from '@/types/chartsInterface'
-import { createLabOrder, getLabsData, getLabTestsData } from '@/services/chartsServices'
+import { LabsDataResponse, Test, UserEncounterData } from '@/types/chartsInterface'
+import { createLabOrder, getLabsData } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
 import FormLabels from '@/components/custom_buttons/FormLabels'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
+import { cn } from '@/lib/utils'
+import { Check, X } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast'
 
 const SearchAndAddDrawer = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
-    const [response, setResponse] = useState<LabsDataResponse>()
-    const [labTestResponse, setLabTestResponse] = useState<TestsResponseInterface>()
-    const [loadingLabs, setLoadingLabs] = useState<boolean>(false)
-    const [loadingTests, setLoadingTests] = useState<boolean>(false)
-    const [loadingOrder, setLoadingOrder] = useState<boolean>(false)
-    const [selectedLab, setSelectedLab] = useState<string>("")
-    const [selectedTest, setSelectedTest] = useState<string>("")
-    const providerDetails = useSelector((state: RootState) => state.login)
+    const [response, setResponse] = useState<LabsDataResponse>({ data: [], total: 0 });
+    const [labTestResponse, setLabTestResponse] = useState<Test[]>([]);
+    const [loadingLabs, setLoadingLabs] = useState<boolean>(false);
+    const [loadingOrder, setLoadingOrder] = useState<boolean>(false);
+    const [selectedLab, setSelectedLab] = useState<string>("");
+    const [selectedTest, setSelectedTest] = useState<string>("");
+    const providerDetails = useSelector((state: RootState) => state.login);
+    const {toast} = useToast();
 
-    const fetchAndSetResponse = async () => {
+    const fetchAndSetResponse = async (page = 1) => {
         setLoadingLabs(true)
         try {
-            const data = await getLabsData({ page: 1, limit: 10 });
+            const data = await getLabsData({ page, limit: 10 });
             if (data) {
-                setResponse(data);
+                setResponse((prev) => ({
+                    data: [...prev.data, ...data.data],
+                    total: data.total
+                }));
+                if (data.data.length < data.total) {
+                    await fetchAndSetResponse(page + 1);
+                }
             }
         } catch (e) {
             console.log("Error", e);
@@ -44,44 +53,14 @@ const SearchAndAddDrawer = ({ patientDetails }: { patientDetails: UserEncounterD
         }
     }
 
-    const fetchLabTestsData = async (labId: string) => {
-        setLoadingTests(true)
-        try {
-            const responseData = await getLabTestsData({ limit: 10, page: 1 , query: labId})
-            if (responseData) {
-                setLabTestResponse(responseData)
+    const fetchLabTestsData = useCallback(async (labId: string) => {
+        if (response && response.data) {
+            const selectedLab = response.data.find((lab) => lab.id === labId);
+            if (selectedLab) {
+                setLabTestResponse(selectedLab? selectedLab.tests: []);
             }
-        } catch (e) {
-            console.log("Error", e)
-        } finally {
-            setLoadingTests(false);
         }
-    }
-
-    // useEffect(() => {
-
-    //     fetchLabTests()
-    // }, [selectedLab])
-
-
-    // const handleLabSelection = async (value: string) => {
-    //     try {
-    //         const selectedLab = response?.data.find(lab => lab.id === value);
-    //         if (selectedLab) {
-    //             const requestData = {
-    //                 name: selectedLab.name,
-    //                 labId: value
-    //             };
-    //             console.log("Test", requestData);
-    //             const testResponse = await createTests({ requestData });
-    //             console.log(" Res", testResponse);
-    //         }
-    //     } catch (e) {
-    //         console.log("Error", e);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // }
+    }, [response])
 
     const handleLabOrder = async () => {
         if (!selectedLab || !selectedTest) {
@@ -105,10 +84,32 @@ const SearchAndAddDrawer = ({ patientDetails }: { patientDetails: UserEncounterD
         console.log("Labs", requestData)
         try {
             await createLabOrder({ requestData });
-
+            toast({
+                className: cn(
+                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                ),
+                variant: "default",
+                description: <div className='flex flex-row items-center gap-4'>
+                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
+                    <div>Order placed successfully</div>
+                </div>,
+            });
+            setSelectedLab("");
+            setSelectedTest("");
         } catch (e) {
             console.log("Error", e);
             setLoadingOrder(false);
+            toast({
+                className: cn(
+                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
+                ),
+                variant: "default",
+                description: <div className='flex flex-row items-center gap-4'>
+                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
+                    <div>error</div>
+                </div>
+            });
+            
         } finally {
             setLoadingOrder(false);
         }
@@ -118,7 +119,7 @@ const SearchAndAddDrawer = ({ patientDetails }: { patientDetails: UserEncounterD
         if (selectedLab) {
             fetchLabTestsData(selectedLab)
         }
-    }, [selectedLab])
+    }, [selectedLab, fetchLabTestsData])
 
     if (loadingOrder) {
         <LoadingButton />
@@ -127,18 +128,18 @@ const SearchAndAddDrawer = ({ patientDetails }: { patientDetails: UserEncounterD
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button variant="ghost" className='text-blue-500 underline' onClick={fetchAndSetResponse}>Search & Add</Button>
+                <Button variant="ghost" className='text-blue-500 underline' onClick={()=> fetchAndSetResponse(1)}>Search & Add</Button>
             </DrawerTrigger>
             <DrawerContent>
-                {loadingLabs || loadingTests ? (
+                {loadingLabs  ? (
                     <LoadingButton />
                 ) : (
                     <div className="flex flex-col  justify-between mx-auto w-full max-w-sm p-3 gap-5">
                         <div className='flex items-center gap-3'>
                             <div className=''>Labs</div>
-                            <Select onValueChange={(value) => setSelectedLab(value)}>
+                            <Select onValueChange={(value) => setSelectedLab(value)} defaultValue={ selectedLab }>
                                 <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder={"Select a lab"} />
+                                    <SelectValue placeholder="Select a lab"/>
                                 </SelectTrigger>
                                 <SelectContent>
                                     {response && response.data && response.data.length > 0 && (
@@ -160,8 +161,8 @@ const SearchAndAddDrawer = ({ patientDetails }: { patientDetails: UserEncounterD
                                             <SelectValue placeholder={"Select a Test"} />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {labTestResponse && labTestResponse.data && labTestResponse.data.length > 0 && (
-                                                labTestResponse.data.map((test) => (
+                                            {labTestResponse && labTestResponse.length > 0 && (
+                                                labTestResponse.map((test) => (
                                                     <SelectItem key={test.id} value={test.id}>
                                                         {test.name}
                                                     </SelectItem>

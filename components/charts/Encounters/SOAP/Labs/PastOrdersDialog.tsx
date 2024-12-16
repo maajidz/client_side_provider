@@ -12,6 +12,7 @@ import { getLabOrdersData } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
 
 const PastOrdersDialog = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+    const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [response, setResponse] = useState<LabOrdersDataInterface>();
 
@@ -30,42 +31,62 @@ const PastOrdersDialog = ({ patientDetails }: { patientDetails: UserEncounterDat
         }
     }
 
-    if(loading){
-        return(
+    const handleDialogOpenChange = (isOpen: boolean) => {
+        setOpen(isOpen);
+        if (isOpen) {
+            fetchAndSetResponse(); 
+        }
+    };
+
+    if (loading) {
+        return (
             <div><LoadingButton /></div>
         )
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={handleDialogOpenChange}>
             <DialogTrigger asChild>
                 <Button variant="ghost" className='text-blue-500 underline' onClick={fetchAndSetResponse}>Past Orders</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
                     <DialogTitle>Past Orders</DialogTitle>
                 </DialogHeader>
-                {response?.data ?
-                    response?.data.map((labOrder) => (
-                            <div className='flex flex-row justify-between gap-3' key={labOrder.id}>
-                                <div>
+                <table>
+                    <tr className='border font-semibold text-lg text-[#84012A]'>
+                        <td>Lab Name</td>
+                        <td>Test Name</td>
+                        <td>Created At</td>
+                    </tr>
+                    {response?.data ?
+                        response?.data.map((labOrder) => (
+                            <tr key={labOrder.id} className='border p-3 my-3'>
+                                <td>
                                     {labOrder.labs.map((lab) => (
                                         <div key={lab.id} >
                                             {lab.name}
                                         </div>
-                                    ))}
-                                </div>
-                                <div>
+                                    ))}</td>
+                                <td>
                                     {labOrder.tests.map((test) => (
                                         <div key={test.id}>
                                             {test.name}
                                         </div>
                                     ))}
-                                </div>
-                            </div>
+                                </td>
+                                <td>
+                                    {labOrder.tests.map((test) => (
+                                        <div key={test.id}>
+                                            {test.updatedAt.split('T')[0]}
+                                        </div>
+                                    ))}
+                                </td>
+                            </tr>
                         )) :
-                    <div>No previous orders</div>
-                }
+                        <div>No previous orders</div>
+                    }
+                </table>
             </DialogContent>
         </Dialog>
     )
