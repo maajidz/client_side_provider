@@ -1,9 +1,9 @@
 'use client';
 import { ColumnDef } from '@tanstack/react-table';
-import { UserData } from '@/types/userInterface';
 import { Checkbox } from '@/components/ui/checkbox';
+import { PastDiagnosesInterface } from '@/types/chartsInterface';
 
-export const columns = (handleRowSelection: (row: UserData, isSelected: boolean) => void): ColumnDef<UserData>[] => [
+export const columns = (handleRowSelection: (row: PastDiagnosesInterface, isSelected: boolean) => void): ColumnDef<PastDiagnosesInterface>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -30,11 +30,11 @@ export const columns = (handleRowSelection: (row: UserData, isSelected: boolean)
     enableHiding: false,
   },
   {
-    accessorKey: 'lastName',
+    accessorKey: 'diagnosis_name',
     header: 'Title',
   },
   {
-    accessorKey: 'firstName',
-    header: 'Patient',
+    accessorKey: 'ICD_Code',
+    header: 'ICD Code',
   },
 ];

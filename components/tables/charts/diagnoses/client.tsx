@@ -4,36 +4,44 @@ import { DataTable } from '@/components/ui/data-table';
 import { columns } from './columns'
 import { useEffect, useState } from 'react';
 import LoadingButton from '@/components/LoadingButton';
-import { UserData } from '@/types/userInterface';
-import { fetchUserDataResponse } from '@/services/userServices';
+import { PastDiagnosesInterface, UserEncounterData } from '@/types/chartsInterface';
+import { fetchDiagnoses } from '@/services/chartsServices';
 
-export const DiagnosesClient = ({ onSelectionChange }: {
-  onSelectionChange: (selected: UserData[]) => void;
+export const DiagnosesClient = ({ onSelectionChange, patientDetails }: {
+  onSelectionChange: (selected: PastDiagnosesInterface[]) => void;
+  patientDetails: UserEncounterData
 }) => {
-  const [userResponse, setUserResponse] = useState<UserData[] | undefined>([])
+  const [prevDiagnosis, setPrevDiagnosis] = useState<PastDiagnosesInterface[]>([]);
   const [loading, setLoading] = useState(true);
-  const [pageNo, setPageNo] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [selectedRows, setSelectedRows] = useState<UserData[]>([]);
+  const [selectedRows, setSelectedRows] = useState<PastDiagnosesInterface[]>([]);
 
   useEffect(() => {
-    const fetchAndSetResponse = async (pageNo: number) => {
-      const userData = await fetchUserDataResponse({ pageNo: pageNo });
-      if (userData) {
-        setUserResponse(userData.data);
-        setTotalPages(Math.ceil(userData.total / userData.pageSize));
-      }
-      setLoading(false);
-    };
 
-    fetchAndSetResponse(pageNo);
-  }, [pageNo]);
+    const fetchAndSetResponse = async () => {
+      if (patientDetails.chart?.id) {
+        setLoading(true);
+        try {
+          const response = await fetchDiagnoses({ chartId: patientDetails.chart?.id });
+          if (response) {
+            setPrevDiagnosis(response);
+            console.log("Prev", prevDiagnosis)
+          }
+        } catch (e) {
+          console.log("Error", e)
+        } finally {
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchAndSetResponse();
+  }, [patientDetails.chart?.id]);
 
   useEffect(() => {
     onSelectionChange(selectedRows);
   }, [selectedRows, onSelectionChange]);
 
-  const handleRowSelection = (row: UserData, isSelected: boolean) => {
+  const handleRowSelection = (row: PastDiagnosesInterface, isSelected: boolean) => {
     setSelectedRows((prev) =>
       isSelected
         ? [...prev, row]
@@ -52,14 +60,14 @@ export const DiagnosesClient = ({ onSelectionChange }: {
 
   return (
     <>
-      {userResponse && (
+      {prevDiagnosis && (
         <DataTable
           searchKey="name"
           columns={columns(handleRowSelection)}
-          data={userResponse}
-          pageNo={pageNo}
-          totalPages={totalPages}
-          onPageChange={(newPage: number) => setPageNo(newPage)}
+          data={prevDiagnosis}
+          pageNo={1}
+          totalPages={1}
+          onPageChange={()=> {}}
         />
       )}
 

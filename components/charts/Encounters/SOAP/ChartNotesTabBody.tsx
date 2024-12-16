@@ -18,7 +18,7 @@ const ChartNotesTabBody = ({encounterId, patientDetails}: {encounterId: string, 
             <LabsBody patientDetails={patientDetails}/>
             <ImagesBody patientDetails={patientDetails}/>
             <FolllowUp  patientDetails={patientDetails} encounterId={encounterId}/>
-            <ReferralBody />
+            <ReferralBody patientDetails={patientDetails} encounterId={encounterId}/>
         </div>
     )
 }
