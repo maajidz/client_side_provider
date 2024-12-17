@@ -13,9 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MedicationList } from './Medications';
 
 const AddMedicationBody = ({onAddClick}:{
-    onAddClick: () => void; 
+    onAddClick: (medication: MedicationList) => void; 
   }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [strengthFilter, setStrengthFilter] = useState("all");
@@ -103,7 +104,7 @@ const AddMedicationBody = ({onAddClick}:{
                             <TableCell>{med.productName}</TableCell>
                             <TableCell>{med.tradeName}</TableCell>
                             <TableCell className="text-right">
-                                <Button variant="link" className="text-blue-500" onClick={onAddClick}>
+                                <Button variant="link" className="text-blue-500" onClick={()=> {onAddClick(med)}}>
                                     Add
                                 </Button>
                             </TableCell>
