@@ -64,7 +64,7 @@ const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => 
     return (
         <div className='flex'>
 
-            <DetailsBody patientDetails={data} />
+            <DetailsBody patientDetails={data}   encounterId={encounterId!} />
             <ResizablePanelGroup
                 direction="horizontal"
                 className="rounded-lg border"

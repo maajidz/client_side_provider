@@ -35,7 +35,7 @@ export const DiagnosesClient = ({ onSelectionChange, patientDetails }: {
     }
 
     fetchAndSetResponse();
-  }, [patientDetails.chart?.id]);
+  }, [patientDetails.chart?.id, prevDiagnosis]);
 
   useEffect(() => {
     onSelectionChange(selectedRows);
