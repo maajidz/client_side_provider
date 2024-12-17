@@ -49,7 +49,7 @@ const ReferralDialog = ({ patientDetails, encounterId }: { patientDetails: UserE
         console.log("Form Values:", values);
         const requestData = {
             // referringToProviderID: values.referralTo,
-            referringToProviderID: providerDetails.providerId,
+            referringToProviderID: "3abdd291-9a25-4390-8558-0059734de538",
             referringFromProviderID: providerDetails.providerId,
             referralType: "",
             referralReason: values.referralReason,
