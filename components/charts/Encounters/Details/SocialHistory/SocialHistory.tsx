@@ -6,7 +6,7 @@ import React from 'react'
 const SocialHistory = () => {
     return (
         <div className='flex justify-between border-b pb-3 items-center'>
-            <div>SocialHistory</div>
+            <div>SocialHistory   ---Pending</div>
             <Dialog>
                 <DialogTrigger asChild>
                     <Button variant="ghost"><PlusCircle /></Button>

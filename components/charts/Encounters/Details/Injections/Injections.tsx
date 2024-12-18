@@ -6,7 +6,7 @@ import React from 'react'
 const Injections = () => {
     return (
         <div className='flex justify-between border-b pb-3 items-center'>
-            <div>Injections</div>
+            <div>Injections   ---Pending</div>
             <Dialog>
                 <DialogTrigger asChild>
                     <Button variant="ghost"><PlusCircle /></Button>

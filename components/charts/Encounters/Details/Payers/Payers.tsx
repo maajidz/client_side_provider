@@ -6,7 +6,7 @@ import React from 'react'
 const Payers = () => {
     return (
         <div className='flex justify-between border-b pb-3 items-center'>
-            <div>Payers</div>
+            <div>Payers   ---Pending</div>
             <Dialog>
                 <DialogTrigger asChild>
                     <Button variant="ghost"><PlusCircle /></Button>
