@@ -76,7 +76,7 @@ export interface UserEncounterInterface {
 }
 
 export interface UserEncounterData {
-    chart?: UserChart | null
+    chart: UserChart
     userDetails: UserDetails
     id?: string
     visit_type?: string

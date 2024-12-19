@@ -1,7 +1,7 @@
 import ApiFetch from "@/config/api";
 import { AlertInterface, AlertResponseInterface, UpdateAlertInterface } from "@/types/alertInterface";
 import { RecallsInterface, UpdateRecallsInterface } from "@/types/recallsInterface";
-import { StickyNotesInterface, UpdateStickyNotesInterface } from "@/types/stickyNotesInterface";
+import { StickyNotesInterface, StickyNotesResponse, StickyNotesResponseInterface, UpdateStickyNotesInterface } from "@/types/stickyNotesInterface";
 
 //Alerts
 
@@ -88,7 +88,7 @@ export const createStickyNotes = async ({
         data: requestData,
     });
     console.log(response.data);
-    const data = await response.data;
+    const data: StickyNotesResponse = await response.data;
     return data;
 };
 
@@ -101,7 +101,7 @@ export const getStickyNotesData = async ({ chartId }: { chartId: string }) => {
         }
     });
     console.log(response.data);
-    const data = await response.data;
+    const data: StickyNotesResponseInterface = await response.data;
     return data;
 };
 
