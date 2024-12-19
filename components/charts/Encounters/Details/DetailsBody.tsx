@@ -36,7 +36,7 @@ const DetailsBody = ({ patientDetails, encounterId }: { patientDetails: UserEnco
 
 
     return (
-        <div className='flex flex-col border w-96 p-3 h-full'>
+        <div className='flex flex-col border w-[30rem] p-3 h-full'>
             <div className='flex flex-col border-b py-2'>
                 <div>{patientDetails.firstName} {patientDetails.lastName}</div>
                 <div>
@@ -58,7 +58,7 @@ const DetailsBody = ({ patientDetails, encounterId }: { patientDetails: UserEnco
             <ScrollArea className="h-96 overflow-y-scroll">
                 <div className="h-full ">
                     <div>
-                        <Alerts />
+                        <Alerts patientDetails={patientDetails} />
                         <StickyNotes />
                         <Allergies />
                         <Medications />

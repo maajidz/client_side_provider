@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { AlertInterface, UpdateAlertInterface } from "@/types/alertInterface";
+import { AlertInterface, AlertResponseInterface, UpdateAlertInterface } from "@/types/alertInterface";
 import { RecallsInterface, UpdateRecallsInterface } from "@/types/recallsInterface";
 import { StickyNotesInterface, UpdateStickyNotesInterface } from "@/types/stickyNotesInterface";
 
@@ -32,7 +32,7 @@ export const getAlertData = async ({ userDetailsId }: { userDetailsId: string })
         }
     });
     console.log(response.data);
-    const data = await response.data;
+    const data: AlertResponseInterface = await response.data;
     return data;
 };
 
