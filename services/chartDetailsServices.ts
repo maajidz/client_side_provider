@@ -1,6 +1,6 @@
 import ApiFetch from "@/config/api";
 import { AlertInterface, AlertResponseInterface, AlertTypeInterface, UpdateAlertInterface } from "@/types/alertInterface";
-import { RecallsInterface, UpdateRecallsInterface } from "@/types/recallsInterface";
+import { RecallsData, RecallsInterface, RecallsResponseInterface, UpdateRecallsInterface } from "@/types/recallsInterface";
 import { StickyNotesInterface, StickyNotesResponse, StickyNotesResponseInterface, UpdateStickyNotesInterface } from "@/types/stickyNotesInterface";
 
 //Alerts
