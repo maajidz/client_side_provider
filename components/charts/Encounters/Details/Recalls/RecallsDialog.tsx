@@ -15,9 +15,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
 import { useToast } from '@/hooks/use-toast'
 import { RecallsEditData } from '@/types/recallsInterface'
-import { cn } from '@/lib/utils'
-import { Check, X } from 'lucide-react'
 import { createRecalls, updateRecallsData } from '@/services/chartDetailsServices'
+import { showToast } from '@/utils/utils'
 
 const RecallsDialog = ({ patientDetails, recallsData, onClose, isOpen }: {
     patientDetails: UserEncounterData,
@@ -32,16 +31,25 @@ const RecallsDialog = ({ patientDetails, recallsData, onClose, isOpen }: {
     const form = useForm<z.infer<typeof recallFormSchema>>({
         resolver: zodResolver(recallFormSchema),
         defaultValues: {
-            type: "",
-            notes: "",
-            dueDate: { period: "", value: 1, unit: "" },
-            provider: "",
+            type: recallsData?.type || "",
+            notes: recallsData?.notes || "",
+            dueDate: { period: recallsData?.due_date_period || "", value: recallsData?.due_date_value || 1, unit: recallsData?.due_date_unit || "" },
+            provider: `${providerDetails.firstName} ${providerDetails.lastName}`,
             sendAutoReminders: false,
         },
     });
     useEffect(() => {
         if (recallsData) {
-            form.reset();
+            form.reset({
+                type: recallsData.type || "",
+                notes: recallsData.notes || "",
+                dueDate: {
+                    period: recallsData.due_date_period || "",
+                    value: recallsData.due_date_value || 1,
+                    unit: recallsData.due_date_unit || "",
+                },
+                sendAutoReminders: recallsData.auto_reminders || false,
+            });
         }
     }, [recallsData, form]);
 
@@ -73,32 +81,14 @@ const RecallsDialog = ({ patientDetails, recallsData, onClose, isOpen }: {
                 }
                 await createRecalls({ requestData: requestData })
             }
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                    <div>Recalls added successfully</div>
-                </div>,
-            });
+            showToast({ toast, type: "success", message: "Recalls added successfully" })
             onClose();
         } catch (e) {
             console.log("Error:", e)
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Error</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: "Error while adding Recalls " })
         } finally {
             setLoading(false)
-            
+
         }
     };
 
@@ -218,15 +208,7 @@ const RecallsDialog = ({ patientDetails, recallsData, onClose, isOpen }: {
                                 <FormItem>
                                     <FormLabel>Provider</FormLabel>
                                     <FormControl>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select Provider" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Abbey Reau">Abbey Reau</SelectItem>
-                                                <SelectItem value="John Doe">John Doe</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                        <Input  {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

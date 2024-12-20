@@ -38,7 +38,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
         } finally {
             setLoading(false);
         }
-    }, [patientDetails.userDetails.id]);
+    }, [patientDetails.userDetails.id, providerDetails.providerId]);
 
     useEffect(() => {
         fetchRecalls();
