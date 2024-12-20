@@ -60,6 +60,7 @@ const AlertDialog = ({ patientDetails, alertData, onClose, isOpen }: {
                 }
                 await createAlert({ requestData: requestData })
             }
+            onClose();
             toast({
                 className: cn(
                     "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"

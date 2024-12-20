@@ -6,11 +6,11 @@ export const recallFormSchema = z.object({
   type: z.string().min(1, { message: "Type is required." }),
   notes: z.string().min(1, { message: "Notes are required." }),
   dueDate: z.object({
-    period: z.enum(["after", "before"], {
+    period: z.string().min(1,{
       message: "Select a valid period.",
     }),
     value: z.number().min(1, { message: "Enter a valid duration." }),
-    unit: z.enum(["days", "weeks", "months"], {
+    unit: z.string().min(1, {
       message: "Select a valid unit.",
     }),
   }),
