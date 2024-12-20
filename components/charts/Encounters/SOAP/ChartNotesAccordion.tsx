@@ -15,14 +15,13 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { Button } from '@/components/ui/button';
 import { createSOAPChart, updatePatientPhysicalStatus, updateSOAPChart } from '@/services/chartsServices';
 import { useToast } from '@/components/ui/use-toast'
-import { cn } from '@/lib/utils';
-import { Check, X } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { UserEncounterData } from '@/types/chartsInterface';
 import LoadingButton from '@/components/LoadingButton';
+import { showToast } from '@/utils/utils';
 
 const formSchema = z.object({
     weightInLbs: z.number(),
@@ -87,16 +86,7 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                 }
                 if (patientDetails.chart?.id) {
                     await updateSOAPChart({ requestData: requestBody, chartId: patientDetails.chart?.id })
-                    toast({
-                        className: cn(
-                            "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                        ),
-                        variant: "default",
-                        description: <div className='flex flex-row items-center gap-4'>
-                            <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                            <div>Saved!</div>
-                        </div>,
-                    });
+                    showToast({ toast, type: "success", message: "Saved!" })
                 }
             } else {
                 const requestBody = {
@@ -104,29 +94,11 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                     encounterId: encounterId
                 }
                 await createSOAPChart({ requestData: requestBody })
-                toast({
-                    className: cn(
-                        "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                    ),
-                    variant: "default",
-                    description: <div className='flex flex-row items-center gap-4'>
-                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                        <div>Saved!</div>
-                    </div>,
-                });
+                showToast({ toast, type: "success", message: "Saved!" })
             }
         } catch (e) {
             console.log("Error", e)
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Error while saving</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: "Error!" })
         } finally {
             setLoading(false)
         }
@@ -148,16 +120,7 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                         weight: Number(values.weightInLbs)
                     }
                 })
-                toast({
-                    className: cn(
-                        "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                    ),
-                    variant: "default",
-                    description: <div className='flex flex-row items-center gap-4'>
-                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                        <div>Saved!</div>
-                    </div>,
-                });
+                showToast({ toast, type: "success", message: "Saved!" })
             } else {
                 const requestBody = {
                     subjective: '',
@@ -172,29 +135,11 @@ const ChartNotesAccordion = ({ encounterId, subjective, patientDetails }: { enco
                         weight: Number(values.weightInLbs)
                     }
                 })
-                toast({
-                    className: cn(
-                        "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                    ),
-                    variant: "default",
-                    description: <div className='flex flex-row items-center gap-4'>
-                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                        <div>Saved!</div>
-                    </div>,
-                });
+                showToast({ toast, type: "success", message: "Saved!" })
             }
         } catch (e) {
             console.log("Error", e)
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Error while saving</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: "Error while Saving!" })
         } finally {
             setLoading(false)
         }

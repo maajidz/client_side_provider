@@ -2,10 +2,10 @@ import LoadingButton from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
 import { deleteDiagnoses, updateDiagnoses } from '@/services/chartsServices';
 import { PastDiagnosesInterface } from '@/types/chartsInterface';
-import { Check, TrashIcon, X } from 'lucide-react';
+import { showToast } from '@/utils/utils';
+import { TrashIcon } from 'lucide-react';
 import React, { useState } from 'react'
 
 const PastDxBody = () => {
@@ -16,31 +16,13 @@ const PastDxBody = () => {
         setLoading(true);
         try {
             await deleteDiagnoses({ diagnosisId: diagnosesId });
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                    <div>Deleted succesfully!</div>
-                </div>,
-            });
+            showToast({ toast, type: "success", message: "Deleted succesfully!" })
             setPrevDiagnosis((prev) =>
                 prev.filter((diagnosis) => diagnosis.id !== diagnosesId)
             );
         } catch (e) {
             console.log("Error", e)
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Failed to delete Diagnosis</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: "Failed to delete Diagnosis" })
         } finally {
             setLoading(false)
         }
@@ -62,15 +44,7 @@ const PastDxBody = () => {
             }
             const response = await updateDiagnoses({ diagnosisId, requestData: requestBody });
             if (response) {
-                toast({
-                    className: cn("top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"),
-                    variant: "default",
-                    description: <div className='flex flex-row items-center gap-4'>
-                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                        <div>Updated successfully!</div>
-                    </div>,
-                });
-
+                showToast({ toast, type: "success", message: "Updated successfully!" })
                 setPrevDiagnosis(prev =>
                     prev.map(diagnosis =>
                         diagnosis.id === diagnosisId ? { ...diagnosis, ...updatedData } : diagnosis
@@ -79,14 +53,7 @@ const PastDxBody = () => {
             }
         } catch (e) {
             console.log("Error", e);
-            toast({
-                className: cn("top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Failed to update Diagnosis</div>
-                </div>,
-            });
+            showToast({ toast, type: "error", message: "Failed to update Diagnosis" })
         } finally {
             setLoading(false);
         }

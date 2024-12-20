@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import LoadingButton from '../LoadingButton';
 import { cn } from '@/lib/utils';
-import { CalendarIcon, Check, X } from 'lucide-react';
+import { CalendarIcon, X } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast'
 import { Textarea } from '@/components/ui/textarea';
 import RadioButton from '../custom_buttons/radio_button/RadioButton';
@@ -26,6 +26,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import { showToast } from '@/utils/utils';
 
 interface EventData {
     id: string;
@@ -95,27 +96,9 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
             setLoading(true);
             const response = await updateProviderAvailabilityRequest({ requestData:requestData , providerId: "01ab2c92-e75d-48b5-88ff-3c701a0e8fd5" });
             console.log(response)
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                    <div>{response.message}</div>
-                </div>,
-            });
+            showToast({ toast, type: "success", message: `Success`})
         } catch (error) {
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>error</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: `Error`})
             console.log(error);
             setSelectedSlot(null);
             window.location.reload();
@@ -187,27 +170,9 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
             setLoading(true);
             const response = await deleteProviderAvaialability({ availabilityID: slotID });
             console.log(response)
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                    <div>{response.message}</div>
-                </div>,
-            });
+            showToast({ toast, type: "success", message: `Success`})
         } catch (error) {
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>error</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: `Error`})
             console.log(error);
             setSelectedSlot(null);
             window.location.reload();

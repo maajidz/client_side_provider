@@ -9,15 +9,15 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
 import { FollowUpInterface, UserEncounterData } from '@/types/chartsInterface'
-import { Check, Trash2Icon, X } from 'lucide-react'
+import { Trash2Icon } from 'lucide-react'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { deleteFollowUp, getFollowUpData, updateFollowUp } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
-import { cn } from '@/lib/utils'
 import { useToast } from "@/components/ui/use-toast";
+import { showToast } from '@/utils/utils'
 
 const ViewFollowUps = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -44,31 +44,13 @@ const ViewFollowUps = ({ patientDetails }: { patientDetails: UserEncounterData }
         setLoading(true);
         try {
             await deleteFollowUp({ followUpId: followUpId });
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                    <div>Deleted succesfully!</div>
-                </div>,
-            });
+            showToast({ toast, type: "success", message: "Deleted succesfully!" })
             setPrevFollowUps((prev) =>
                 prev.filter((followUps) => followUps.id !== followUpId)
             );
         } catch (e) {
             console.log("Error", e)
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Failed to delete Diagnosis</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: "Failed to delete Diagnosis" })
         } finally {
             setLoading(false)
         }
@@ -107,15 +89,7 @@ const ViewFollowUps = ({ patientDetails }: { patientDetails: UserEncounterData }
             }
             const response = await updateFollowUp({ followUpId, requestData: requestBody });
             if (response) {
-                toast({
-                    className: cn("top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"),
-                    variant: "default",
-                    description: <div className='flex flex-row items-center gap-4'>
-                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                        <div>Updated successfully!</div>
-                    </div>,
-                });
-
+                showToast({ toast, type: "success", message: "Updated successfully!" })
                 setPrevFollowUps(prev =>
                     prev.map(followUp =>
                         followUp.id === followUpId ? { ...followUp, ...updatedData } : followUp
@@ -124,14 +98,7 @@ const ViewFollowUps = ({ patientDetails }: { patientDetails: UserEncounterData }
             }
         } catch (e) {
             console.log("Error", e);
-            toast({
-                className: cn("top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Failed to update Diagnosis</div>
-                </div>,
-            });
+            showToast({ toast, type: "error", message: "Failed to update Diagnosis" })
         } finally {
             setLoading(false);
         }

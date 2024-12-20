@@ -8,17 +8,17 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
-import { Check, PlusIcon, X } from 'lucide-react'
+import { PlusIcon } from 'lucide-react'
 import { LabsDataResponse, Test, UserEncounterData } from '@/types/chartsInterface'
 import { createLabOrder, createLabs, getLabsData } from '@/services/chartsServices'
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/LoadingButton'
-import { cn } from '@/lib/utils'
 import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from '@/components/ui/select'
 import FormLabels from '@/components/custom_buttons/FormLabels'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
 import { useToast } from '@/hooks/use-toast'
+import { showToast } from '@/utils/utils'
 
 const AddLabsDialog = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [response, setResponse] = useState<LabsDataResponse>({ data: [], total: 0 })
@@ -63,30 +63,12 @@ const AddLabsDialog = ({ patientDetails }: { patientDetails: UserEncounterData }
             try {
                 setLoadingLabs(true)
                 await createLabs({ requestData: requestData })
-                toast({
-                    className: cn(
-                        "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                    ),
-                    variant: "default",
-                    description: <div className='flex flex-row items-center gap-4'>
-                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                        <div>New Lab added successfully</div>
-                    </div>,
-                });
+                showToast({ toast, type: "success", message: "New Lab added successfully" })
                 setNewLab("");
                 await fetchAndSetResponse();
                 setShowNewLab(!showNewLab)
             } catch (e) {
-                toast({
-                    className: cn(
-                        "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                    ),
-                    variant: "destructive",
-                    description: <div className='flex flex-row items-center gap-4'>
-                        <div className='flex bg-red-700 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                        <div>Failed to add New Lab</div>
-                    </div>,
-                });
+                showToast({ toast, type: "error", message: "Failed to add New Lab" })
                 console.log("Error", e)
             } finally {
                 setLoadingLabs(false);
@@ -125,16 +107,7 @@ const AddLabsDialog = ({ patientDetails }: { patientDetails: UserEncounterData }
         console.log("Labs", requestData)
         try {
             await createLabOrder({ requestData });
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                    <div>Successfully placed order.</div>
-                </div>,
-            });
+            showToast({ toast, type: "success", message: "Successfully placed order." })
             setIsOpen(false);
         } catch (e) {
             console.log("Error", e);

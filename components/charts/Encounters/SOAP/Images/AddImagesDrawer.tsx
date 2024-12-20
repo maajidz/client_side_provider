@@ -18,9 +18,8 @@ import LoadingButton from '@/components/LoadingButton'
 import FormLabels from '@/components/custom_buttons/FormLabels'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
-import { Check, X } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
+import { showToast } from '@/utils/utils'
 
 const AddImagesDrawer = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [response, setResponse] = useState<ImagesResponseInterface>()
@@ -82,32 +81,14 @@ const AddImagesDrawer = ({ patientDetails }: { patientDetails: UserEncounterData
         console.log("Labs", requestData)
         try {
             await createImageOrder({ requestData });
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                    <div>Order places successfully!</div>
-                </div>
-            });
+            showToast({ toast, type: "success", message: "Order places successfully!" })
             setSelectedImage("");
             setSelectedTest("");
 
         } catch (e) {
             console.log("Error", e);
             setLoadingOrder(false);
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>error</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: "Error!" })
         } finally {
             setLoadingOrder(false);
         }

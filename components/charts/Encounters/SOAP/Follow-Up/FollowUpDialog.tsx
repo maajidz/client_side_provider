@@ -12,11 +12,11 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import {  Check, Trash2Icon, X } from 'lucide-react';
+import { Trash2Icon } from 'lucide-react';
 import { UserEncounterData } from '@/types/chartsInterface';
-import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { createFollowUp, createSOAPChart } from '@/services/chartsServices';
+import { showToast } from '@/utils/utils';
 
 interface Row {
     type: string;
@@ -72,16 +72,7 @@ const FollowUpDialog = ({ patientDetails, encounterId }: { patientDetails: UserE
                 }));
                 console.log('Follow-Up:', requestData)
                 await createFollowUp({ requestData: requestData })
-                toast({
-                    className: cn(
-                        "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                    ),
-                    variant: "default",
-                    description: <div className='flex flex-row items-center gap-4'>
-                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                        <div>Saved!</div>
-                    </div>,
-                });
+                showToast({ toast, type: "success", message: "Saved!" })
             } else {
                 const data = {
                     subjective: "",
@@ -96,29 +87,11 @@ const FollowUpDialog = ({ patientDetails, encounterId }: { patientDetails: UserE
                         chartId
                     }));
                     await createFollowUp({ requestData: requestData })
-                    toast({
-                        className: cn(
-                            "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                        ),
-                        variant: "default",
-                        description: <div className='flex flex-row items-center gap-4'>
-                            <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                            <div>Saved!</div>
-                        </div>,
-                    });
+                    showToast({ toast, type: "success", message: "Saved!" })
                 }
             }
         } catch (e) {
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Error while saving</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: "Error while saving" })
             console.log("Error", e);
         } finally {
             setRows([ { type: '', notes: '', sectionDateType: 'after', sectionDateNumber: 0, sectionDateUnit: 'weeks', reminders: [] }]);

@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Check, TrashIcon, X } from 'lucide-react'
+import { TrashIcon} from 'lucide-react'
 import { UserEncounterData } from '@/types/chartsInterface'
-import { cn } from '@/lib/utils'
 import { useToast } from '@/components/ui/use-toast'
 import { createDiagnoses, createSOAPChart } from '@/services/chartsServices'
+import { showToast } from '@/utils/utils'
 
 const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
     const { toast } = useToast();
@@ -47,16 +47,7 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                     chartId,
                 }));
                 await createDiagnoses({ requestData: requestData })
-                toast({
-                    className: cn(
-                        "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                    ),
-                    variant: "default",
-                    description: <div className='flex flex-row items-center gap-4'>
-                        <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                        <div>Saved!</div>
-                    </div>,
-                });
+                showToast({ toast, type: "success", message: "Saved!" })
             } else {
                 const data = {
                     subjective: "",
@@ -71,29 +62,11 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                         chartId,
                     }));
                     await createDiagnoses({ requestData: requestData })
-                    toast({
-                        className: cn(
-                            "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                        ),
-                        variant: "default",
-                        description: <div className='flex flex-row items-center gap-4'>
-                            <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                            <div>Saved!</div>
-                        </div>,
-                    });
+                    showToast({ toast, type: "success", message: "Saved!" })
                 }
             }
         } catch (e) {
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Error while saving</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: "Error while saving" })
             console.log("Error", e);
         } finally {
             setRows([{ diagnosis_name: '', ICD_Code: '', notes: '' }]);

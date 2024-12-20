@@ -14,7 +14,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Check } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { ProviderDetailsFormValues, providerDetailsSchema } from '@/schema/providerDetailsSchema';
 import { sendProviderDetails, updateProviderDetails } from '@/services/registerServices';
@@ -26,6 +25,7 @@ import { RootState } from '@/store/store';
 import { Separator } from '../ui/separator';
 import { Heading } from '../ui/heading';
 import { UpdateProviderDetails } from '@/types/providerDetailsInterface';
+import { showToast } from '@/utils/utils';
 
 interface UserDetailsFormType {
     initialData: UpdateProviderDetails | null;
@@ -117,25 +117,14 @@ export const UserDetailsForm: React.FC<UserDetailsFormType> = ({
             } else {
                 response = await sendProviderDetails({ requestData });
                 if (response) {
-                    toast({
-                        className: cn(
-                            "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                        ),
-                        variant: "default",
-                        description: <div className='flex flex-row items-center gap-4'>
-                            <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                        </div>,
-                    });
+                    showToast({ toast, type: "success", message: "Sucess!" })
                     console.log('Form submitted:', data);
                     router.push('/dashboard')
                 }
             }
         } catch (error) {
             console.error('Form submission error:', error);
-            toast({
-                variant: 'destructive',
-                description: 'Failed to submit the form. Please try again.',
-            });
+            showToast({ toast, type: "error", message: "Failed to submit the form. Please try again." })
         } finally {
 
             setLoading(false);

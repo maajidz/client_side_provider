@@ -1,9 +1,8 @@
 import LoadingButton from '@/components/LoadingButton';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
 import { deleteStickyNotes, getStickyNotesData } from '@/services/chartDetailsServices';
 import { UserEncounterData } from '@/types/chartsInterface';
-import { Check, Edit2, PlusCircle, Trash2Icon, X } from 'lucide-react';
+import { Edit2, PlusCircle, Trash2Icon} from 'lucide-react';
 import { Button } from '@/components/ui/button'
 import {
     Accordion,
@@ -15,6 +14,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import StickyNotesDialog from './StickyNotesDialog';
 import { StickyNotesResponseInterface } from '@/types/stickyNotesInterface';
 import FormLabels from '@/components/custom_buttons/FormLabels';
+import { showToast } from '@/utils/utils';
 
 const StickyNotes = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -45,29 +45,11 @@ const StickyNotes = ({ patientDetails }: { patientDetails: UserEncounterData }) 
         setLoading(true)
         try {
             await deleteStickyNotes({ chartId: chartId })
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                    <div>Alert deleted successfully</div>
-                </div>,
-            });
+            showToast({ toast, type: "success", message: "Alert deleted successfully" })
             fetchStickyNotes();
         } catch (e) {
             console.log("Error:", e)
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Error</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: "Error" })
         } finally {
             setLoading(false)
         }

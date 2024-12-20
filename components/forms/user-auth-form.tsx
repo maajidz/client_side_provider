@@ -15,13 +15,13 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { EyeIcon, EyeOffIcon, X } from 'lucide-react';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { providerLogin } from '@/services/loginServices';
 import { useDispatch } from 'react-redux';
 import { setLoginData } from '@/store/slices/loginSlice';
 import { checkProviderExistsOrNot } from '@/services/registerServices';
-import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast'
+import { showToast } from '@/utils/utils';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -70,30 +70,11 @@ export default function UserAuthForm() {
         }
       }
       else {
-        toast({
-          className: cn(
-              "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-          ),
-          variant: "default",
-          description: <div className='flex flex-row items-center gap-4'>
-              <div className='flex bg-[#84012A] h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-              <div>Login failed: Please check your credentials.</div>
-          </div>
-      });
+      showToast({ toast, type: "error", message: "Login failed: Please check your credentials." })
       }
     } catch (error) {
       alert('Login failed: Please check your credentials.');
-      toast({
-        className: cn(
-            "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-        ),
-        variant: "default",
-        description: <div className='flex flex-row items-center gap-4'>
-            <div className='flex bg-[#84012A] h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-            <div>Login failed: Please check your credentials. </div>
-        </div>
-
-    });
+        showToast({ toast, type: "error", message: "Login failed: Please check your credentials." })
     console.log(error)
     } finally {
       setLoading(false);

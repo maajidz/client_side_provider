@@ -8,7 +8,7 @@ import {
 import { Button } from '@/components/ui/button'
 import LoadingButton from '@/components/LoadingButton';
 import { useToast } from '@/hooks/use-toast';
-import { Check, Edit2, PlusCircle, Trash2Icon, X } from 'lucide-react';
+import { Edit2, PlusCircle, Trash2Icon } from 'lucide-react';
 import RecallsDialog from './RecallsDialog';
 import { UserEncounterData } from '@/types/chartsInterface';
 import { RecallsEditData, RecallsResponseInterface } from '@/types/recallsInterface';
@@ -16,7 +16,7 @@ import { deleteRecalls, getRecallsData } from '@/services/chartDetailsServices';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import FormLabels from '@/components/custom_buttons/FormLabels';
-import { cn } from '@/lib/utils';
+import { showToast } from '@/utils/utils';
 
 const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -48,29 +48,11 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
         setLoading(true)
         try {
             await deleteRecalls({ id: recallId })
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-[#18A900] h-9 w-9 rounded-md items-center justify-center'><Check color='#FFFFFF' /></div>
-                    <div>Recalls  deleted successfully</div>
-                </div>,
-            });
+            showToast({ toast, type: "success", message: "Recalls  deleted successfully" })
             fetchRecalls();
         } catch (e) {
             console.log("Error:", e)
-            toast({
-                className: cn(
-                    "top-0 right-0 flex fixed md:max-w-fit md:top-4 md:right-4"
-                ),
-                variant: "default",
-                description: <div className='flex flex-row items-center gap-4'>
-                    <div className='flex bg-red-600 h-9 w-9 rounded-md items-center justify-center'><X color='#FFFFFF' /></div>
-                    <div>Error</div>
-                </div>
-            });
+            showToast({ toast, type: "error", message: "Error" })
         } finally {
             setLoading(false)
         }
