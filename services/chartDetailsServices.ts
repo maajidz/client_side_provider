@@ -170,22 +170,48 @@ export const createRecalls = async ({
         data: requestData,
     });
     console.log(response.data);
-    const data = await response.data;
+    const data: RecallsData = await response.data;
     return data;
 };
 
-export const getRecallsData = async ({ page, limit, userDetailsId, providerId }: { page: number, limit: number, userDetailsId?: string , providerId?:string}) => {
+// export const getRecallsData = async ({ page, limit, userDetailsId, providerId }: { page: number, limit: number, userDetailsId?: string , providerId?:string}) => {
+//     const response = await ApiFetch({
+//         method: "GET",
+//         url: `/provider/recalls?page=${page}&limit=${limit}${userDetailsId ?? `&userDetailsId=${userDetailsId}`}${providerId ?? `&providerId=${providerId}`}`,
+//         headers: {
+//             "Content-Type": "application/json",
+//         }
+//     });
+//     console.log(response.data);
+//     const data: RecallsResponseInterface = await response.data;
+//     return data;
+// };
+
+export const getRecallsData = async ({ page, limit, userDetailsId, providerId }: { page: number, limit: number, userDetailsId?: string , providerId?: string }) => {
+    // Build the query string dynamically based on the parameters provided
+    const queryParams = new URLSearchParams({ page: page.toString(), limit: limit.toString() });
+    if (userDetailsId) {
+        queryParams.append("userDetailsId", userDetailsId);
+    }
+    if (providerId) {
+        queryParams.append("providerId", providerId);
+    }
+
+    const url = `/provider/recalls?${queryParams.toString()}`;
+    
     const response = await ApiFetch({
         method: "GET",
-        url: `/provider/recalls?page=${page}&limit=${limit}${userDetailsId ?? `&userDetailsId=${userDetailsId}`}${providerId ?? `&providerId=${providerId}`}`,
+        url,
         headers: {
             "Content-Type": "application/json",
-        }
+        },
     });
+
     console.log(response.data);
-    const data = await response.data;
+    const data: RecallsResponseInterface = await response.data;
     return data;
 };
+
 
 export const updateRecallsData = async ({ id,
     requestData,
