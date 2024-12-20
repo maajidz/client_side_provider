@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { AlertInterface, AlertResponseInterface, UpdateAlertInterface } from "@/types/alertInterface";
+import { AlertInterface, AlertResponseInterface, AlertTypeInterface, UpdateAlertInterface } from "@/types/alertInterface";
 import { RecallsInterface, UpdateRecallsInterface } from "@/types/recallsInterface";
 import { StickyNotesInterface, StickyNotesResponse, StickyNotesResponseInterface, UpdateStickyNotesInterface } from "@/types/stickyNotesInterface";
 
@@ -35,6 +35,19 @@ export const getAlertData = async ({ userDetailsId }: { userDetailsId: string })
     const data: AlertResponseInterface = await response.data;
     return data;
 };
+
+export const getAlertTypeData = async({page, limit}: {page: number, limit: number}) => {
+        const response = await ApiFetch({
+          method: "GET",
+          url: `/provider/alerts/type/all?page=${page}&limit=${limit}`,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(response.data);
+        const data: AlertTypeInterface = await response.data;
+        return data;
+}
 
 export const updateAlertData = async ({ id,
     requestData,

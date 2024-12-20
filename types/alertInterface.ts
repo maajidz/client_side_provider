@@ -32,3 +32,10 @@ export interface AlertType {
     createdAt: string
     updatedAt: string
 }
+
+export interface AlertTypeInterface {
+  data: AlertType[];
+  total: number;
+  page: string;
+  limit: string;
+}

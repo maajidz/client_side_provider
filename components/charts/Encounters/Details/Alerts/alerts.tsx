@@ -116,7 +116,7 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                                                     variant={'ghost'}
                                                     onClick={() => {
                                                         setEditData({
-                                                            alertName: alert.alertType.alertName,
+                                                            alertName: alert.alertType.id,
                                                             alertDescription: alert.alertDescription,
                                                             alertId: alert.id
                                                         })
