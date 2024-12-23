@@ -26,28 +26,117 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
-import { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { familyHistorySchema } from "@/schema/familyHistorySchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import LoadingButton from "@/components/LoadingButton";
+import { createFamilyHistory, updateFamilyHistoryData } from "@/services/chartDetailsServices";
+import { UserEncounterData } from "@/types/chartsInterface";
+import { ActiveProblem, EditFamilyHistoryInterface } from "@/types/familyHistoryInterface";
+import { showToast } from "@/utils/utils";
+import { useToast } from "@/hooks/use-toast";
 
-interface FamilyHistoryDialogProps {
-  activeProblemOptions: Array<{ id: string; label: string }>;
-  customProblem: string;
-  form: UseFormReturn<z.infer<typeof familyHistorySchema>>;
-  onAddCustomProblem: () => void;
-  onSetCustomProblem: (value: string) => void
-  onSubmit: (values: z.infer<typeof familyHistorySchema>) => void;
-}
 
 function FamilyHistoryDialog({
-  activeProblemOptions,
-  customProblem,
-  form,
-  onAddCustomProblem,
-  onSetCustomProblem,
-  onSubmit,
-}: FamilyHistoryDialogProps) {
+  patientDetails, onClose, isOpen, familyHistoryData }: {
+    patientDetails: UserEncounterData, onClose: () => void, isOpen: boolean, familyHistoryData: EditFamilyHistoryInterface | null
+  }) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [customProblem, setCustomProblem] = useState<string>("");
+  const [activeProblemOptions, setActiveProblemOptions] = useState([
+    { id: "anxiety", label: "Anxiety" },
+    { id: "depression", label: "Depression" },
+    { id: "diabetes", label: "Diabetes mellitus" },
+    { id: "cholesterol", label: "High cholesterol" },
+    { id: "hypertension", label: "HTN - Hypertension" },
+  ]);
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof familyHistorySchema>>({
+    resolver: zodResolver(familyHistorySchema),
+    defaultValues: {
+      relationship: familyHistoryData?.relationship || '',
+      deceased: familyHistoryData?.deceased || false,
+      age: familyHistoryData?.age,
+      activeProblems: [],
+      comments: familyHistoryData?.comments || "",
+    },
+  });
+
+  useEffect(() => {
+    if (familyHistoryData) {
+      form.reset({
+        relationship: familyHistoryData?.relationship || '',
+        deceased: familyHistoryData?.deceased || false,
+        activeProblems: familyHistoryData.activeProblems.map((problem) => (
+          problem.name
+        )),
+        age: familyHistoryData?.age,
+        comments: familyHistoryData?.comments || "",
+      });
+    }
+  }, [familyHistoryData, form]);
+
+  const addCustomProblem = () => {
+    if (customProblem.trim()) {
+      setActiveProblemOptions((prev) => [
+        ...prev,
+        {
+          id: customProblem.toLowerCase().replace(/\s+/g, "_"),
+          label: customProblem,
+        },
+      ]);
+      setCustomProblem("");
+    }
+  };
+
+  const onSubmit = async (values: z.infer<typeof familyHistorySchema>) => {
+    console.log("Form Values:", values);
+    if (patientDetails.userDetails.id) {
+      const transformedActiveProblems: ActiveProblem[] = values.activeProblems?.map((problemName) => ({
+        name: problemName,
+        addtionaltext: "",
+      })) || [];
+
+      setLoading(true);
+      try {
+        if (familyHistoryData) {
+          const requestData = {
+            relationship: values.relationship,
+            deceased: values.deceased ?? false,
+            age: Number(values.age),
+            comments: values.comments || '',
+            activeProblems: transformedActiveProblems,
+          }
+          await updateFamilyHistoryData({ requestData: requestData, id: familyHistoryData.id  })
+        } else {
+          const requestData = {
+            relationship: values.relationship,
+            deceased: values.deceased ?? false,
+            age: Number(values.age),
+            comments: values.comments || '',
+            activeProblems: transformedActiveProblems,
+            userDetailsId: patientDetails.userDetails.id
+          }
+          await createFamilyHistory({ requestData: requestData })
+        }
+        showToast({ toast, type: "success", message: "Family History created successfully!" });
+        onClose();
+      } catch (e) {
+        console.log("Error:", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  if (loading) {
+    return <LoadingButton />;
+  }
+
   return (
-    <Dialog>
+    <Dialog open={isOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost">
           <PlusCircle />
@@ -55,7 +144,7 @@ function FamilyHistoryDialog({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Family History</DialogTitle>
+          <DialogTitle>{familyHistoryData ? 'Edit Family History' : 'Add Family History'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -110,7 +199,7 @@ function FamilyHistoryDialog({
                   <FormItem className="flex gap-2 items-center">
                     <FormLabel>Age</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter age" type="number" {...field} />
+                      <Input placeholder="Enter age" type="number" {...field} onChange={(e)=> Number(e.target.value)}/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -134,14 +223,14 @@ function FamilyHistoryDialog({
                               onCheckedChange={(checked) => {
                                 return checked
                                   ? field.onChange([
-                                      ...(field.value || []),
-                                      item.id,
-                                    ])
+                                    ...(field.value || []),
+                                    item.id,
+                                  ])
                                   : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
-                                    );
+                                    field.value?.filter(
+                                      (value) => value !== item.id
+                                    )
+                                  );
                               }}
                             />
                           </FormControl>
@@ -157,9 +246,9 @@ function FamilyHistoryDialog({
                       <Input
                         placeholder="Add custom problem"
                         value={customProblem}
-                        onChange={(e) => onSetCustomProblem(e.target.value)}
+                        onChange={(e) => setCustomProblem(e.target.value)}
                       />
-                      <Button type="button" onClick={onAddCustomProblem}>
+                      <Button type="button" onClick={addCustomProblem}>
                         Add
                       </Button>
                     </div>
