@@ -1,4 +1,5 @@
 import ApiFetch from "@/config/api";
+
 import {
   AlertInterface,
   AlertResponseInterface,
@@ -288,13 +289,83 @@ export const createTask = async ({
   const response = await ApiFetch({
     method: "POST",
     url: "/provider/tasks",
-    data: requestBody,
     headers: {
       "Content-Type": "application/json",
     },
+    data: requestBody,
   });
 
   console.log(await response.data);
   const data = await response.data;
   return data;
 };
+
+//Family History
+
+export const createFamilyHistory = async ({
+    requestData,
+}: {
+    requestData: FamilyHistoryInterface;
+}) => {
+    const response = await ApiFetch({
+        method: "POST",
+        url: "/provider/family-history",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        data: requestData,
+    });
+    console.log(response.data);
+    const data: FamilyHistoryResponseInterface = await response.data;
+    return data;
+};
+
+export const getFamilyHistoryData = async ({ limit, page, userDetailsId }: { limit: number, page: number,  userDetailsId: string }) => {
+    const response = await ApiFetch({
+        method: "GET",
+        url: `/provider/family-history?userDetailsId=${userDetailsId}&limit=${limit}&page=${page}`,
+        headers: {
+            "Content-Type": "application/json",
+        }
+    });
+    console.log(response.data);
+    const data: FamilyHistoryResponseInterface[] = await response.data;
+    return data;
+};
+
+export const updateFamilyHistoryData = async ({ id,
+    requestData,
+}: {
+    id: string,
+    requestData: UpdateFamilyHistoryInterface;
+}) => {
+    const response = await ApiFetch({
+        method: "PATCH",
+        url: `/provider/family-history/${id}`,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        data: requestData,
+    });
+    console.log(response.data);
+    const data = await response.data;
+    return data;
+};
+
+export const deleteFamilyHistory = async ({
+    familyHistoryId
+}: {
+    familyHistoryId: string
+}) => {
+    const response = await ApiFetch({
+        method: "DELETE",
+        url: `/provider/family-history/${familyHistoryId}`,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    console.log(response.data);
+    const data = await response.data;
+    return data;
+};
+
