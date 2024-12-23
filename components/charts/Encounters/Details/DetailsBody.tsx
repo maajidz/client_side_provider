@@ -60,7 +60,7 @@ const DetailsBody = ({ patientDetails, encounterId }: { patientDetails: UserEnco
                     <div>
                         <Alerts patientDetails={patientDetails} />
                         <StickyNotes patientDetails={patientDetails} />
-                        <Allergies />
+                        <Allergies patientDetails={patientDetails}  />
                         <Medications />
                         <Diagnoses patientDetails={patientDetails} encounterId={encounterId} />
                         <Supplements />

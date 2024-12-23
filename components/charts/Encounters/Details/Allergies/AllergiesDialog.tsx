@@ -26,8 +26,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusCircle, Trash2Icon } from "lucide-react";
 import { z } from "zod";
 import { allergenFormSchema } from "@/schema/allergenFormSchema";
+import { createAllergies } from "@/services/chartDetailsServices";
+import { useToast } from "@/hooks/use-toast";
+import { showToast } from "@/utils/utils";
+import { UserEncounterData } from "@/types/chartsInterface";
 
-function AllergiesDialog() {
+function AllergiesDialog({ patientDetails }: { patientDetails: UserEncounterData }) {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof allergenFormSchema>>({
     resolver: zodResolver(allergenFormSchema),
     defaultValues: {
@@ -35,9 +40,9 @@ function AllergiesDialog() {
         {
           type: "",
           allergen: "",
-          severity: "Severe",
+          severity: "",
           observedOn: "",
-          status: "Active",
+          status: "",
           reactions: "",
         },
       ],
@@ -49,8 +54,40 @@ function AllergiesDialog() {
     name: "allergens",
   });
 
-  const onSubmit = (data: z.infer<typeof allergenFormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof allergenFormSchema>) => {
     console.log("Submitted Data:", data);
+    if (patientDetails.userDetails.id) {
+      try {
+        const requestData = data.allergens.map((allergen) => ({
+          type: allergen.type,
+          serverity: allergen.severity,
+          observedOn: allergen.observedOn,
+          Allergen: allergen.allergen,
+          status: allergen.status,
+          reactions: allergen.reactions
+            ? allergen.reactions.split(",").map((reaction) => ({
+              name: reaction.trim(),
+              addtionalText: "",
+            }))
+            : [],
+          userDetailsId: patientDetails.userDetails.id,
+        }));
+
+        await createAllergies({ requestData });
+        showToast({
+          toast,
+          type: "success",
+          message: "Allergies saved successfully!",
+        });
+      } catch (error) {
+        console.error("Error saving allergies:", error);
+        showToast({
+          toast,
+          type: "error",
+          message: "Failed to save allergies. Please try again.",
+        });
+      }
+    }
   };
 
   return (
@@ -60,7 +97,7 @@ function AllergiesDialog() {
           <PlusCircle />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-4xl">
+      <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
         </DialogHeader>
@@ -170,7 +207,6 @@ function AllergiesDialog() {
                         )}
                       />
                     </td>
-
                     <td className="p-2">
                       <FormField
                         control={form.control}

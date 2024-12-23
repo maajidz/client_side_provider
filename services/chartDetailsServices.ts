@@ -6,6 +6,8 @@ import {
   AlertTypeInterface,
   UpdateAlertInterface,
 } from "@/types/alertInterface";
+import { AllergenInterface, UpdateAllergenInterface } from "@/types/allergyInterface";
+import { FamilyHistoryInterface, FamilyHistoryResponseInterface, UpdateFamilyHistoryInterface } from "@/types/familyHistoryInterface";
 import {
   RecallsData,
   RecallsInterface,
@@ -369,3 +371,71 @@ export const deleteFamilyHistory = async ({
     return data;
 };
 
+//Allergy
+
+export const createAllergies = async ({
+  requestData,
+}: {
+  requestData: AllergenInterface[];
+}) => {
+  const response = await ApiFetch({
+      method: "POST",
+      url: "/provider/allergies",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
+
+export const getAllergiesData = async ({ limit, page, userDetailsId }: { limit: number, page: number,  userDetailsId: string }) => {
+  const response = await ApiFetch({
+      method: "GET",
+      url: `/provider/allergies?userDetailsId=${userDetailsId}&limit=${limit}&page=${page}`,
+      headers: {
+          "Content-Type": "application/json",
+      }
+  });
+  console.log(response.data);
+  const data: FamilyHistoryResponseInterface[] = await response.data;
+  return data;
+};
+
+export const updateAllergiesData = async ({ id,
+  requestData,
+}: {
+  id: string,
+  requestData: UpdateAllergenInterface;
+}) => {
+  const response = await ApiFetch({
+      method: "PATCH",
+      url: `/provider/allergies/${id}`,
+      headers: {
+          "Content-Type": "application/json",
+      },
+      data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
+
+export const deleteAllergies = async ({
+  allergyId
+}: {
+  allergyId: string
+}) => {
+  const response = await ApiFetch({
+      method: "DELETE",
+      url: `/provider/allergies/${allergyId}`,
+      headers: {
+          "Content-Type": "application/json",
+      },
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
