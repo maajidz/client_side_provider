@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { TrashIcon} from 'lucide-react'
 import { UserEncounterData } from '@/types/chartsInterface'
 import { useToast } from '@/components/ui/use-toast'
-import { createDiagnoses, createSOAPChart } from '@/services/chartsServices'
+import { createDiagnoses, createSOAPChart, updateSOAPChart } from '@/services/chartsServices'
 import { showToast } from '@/utils/utils'
 
 const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
@@ -47,11 +47,17 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                     chartId,
                 }));
                 await createDiagnoses({ requestData: requestData })
+                const data = {
+                    subjective: "",
+                    assessment: `Diagnoses: ${JSON.stringify(rows)} `,
+                    encounterId: encounterId
+                }
+                await updateSOAPChart({ requestData: data, chartId })
                 showToast({ toast, type: "success", message: "Saved!" })
             } else {
                 const data = {
                     subjective: "",
-                    assessment: `Diagnoses: ${rows} `,
+                    assessment: `Diagnoses: ${JSON.stringify(rows)} `,
                     encounterId: encounterId
                 }
                 const response = await createSOAPChart({ requestData: data })

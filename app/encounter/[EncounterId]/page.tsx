@@ -70,7 +70,7 @@ const Encounter = ({ params }: { params: Promise<{ EncounterId: string }> }) => 
                 className="rounded-lg border"
             >
                 <ResizablePanel defaultSize={25}>
-                    <PreviewBody />
+                    <PreviewBody patientDetails={data} />
                 </ResizablePanel>
                 <ResizableHandle><ArrowBigLeft /></ResizableHandle>
                 {isSOAPSectionVisible ? (<ResizablePanel>

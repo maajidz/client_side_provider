@@ -13,8 +13,9 @@ import LabsPreview from './LabsPreview';
 import ImagesPreview from './ImagesPreview';
 import DocumentPreview from './DocumentPreview';
 import QuestionnairePreview from './QuestionnairePreview';
+import { UserEncounterData } from '@/types/chartsInterface';
 
-const PreviewBody = () => {
+const PreviewBody = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     return (
         <div className='border w-full md:px-0'>
             <Tabs defaultValue="chartNotes" className="w-full">
@@ -28,7 +29,7 @@ const PreviewBody = () => {
                     <TabsTrigger value="questionnaires"><FileQuestion /></TabsTrigger>
                 </TabsList>
                 <TabsContent value="chartNotes" className='md:px-0 p-0'>
-                    <ChartNotes />
+                    <ChartNotes patientDetails={patientDetails}/>
                 </TabsContent>
                 <TabsContent value="flowsheet">
                     <FlowSheet />
