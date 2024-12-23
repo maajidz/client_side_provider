@@ -15,9 +15,9 @@ interface AddMedicationDialogProps {
   onAddClick: (medication: MedicationList) => void;
 }
 
-function AddMedicationDialog({ isOpen, onAddClick }: AddMedicationDialogProps) {
+function AddMedicationDialog({isOpen, onAddClick }: AddMedicationDialogProps) {
   return (
-    <Dialog>
+    <Dialog open={isOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost">
           <PlusCircle />

@@ -2,16 +2,38 @@ import LoadingButton from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { deleteDiagnoses, updateDiagnoses } from '@/services/chartsServices';
-import { PastDiagnosesInterface } from '@/types/chartsInterface';
+import { deleteDiagnoses, fetchDiagnoses, updateDiagnoses } from '@/services/chartsServices';
+import { PastDiagnosesInterface, UserEncounterData } from '@/types/chartsInterface';
 import { showToast } from '@/utils/utils';
-import { TrashIcon } from 'lucide-react';
-import React, { useState } from 'react'
+import { Save, TrashIcon } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react'
 
-const PastDxBody = () => {
+const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [prevDiagnosis, setPrevDiagnosis] = useState<PastDiagnosesInterface[]>([]);
     const { toast } = useToast();
+
+    const fetchAndSetResponse = useCallback(async () => {
+        if (patientDetails.chart?.id) {
+            setLoading(true);
+            try {
+                const response = await fetchDiagnoses({ chartId: patientDetails.chart?.id });
+                if (response) {
+                    setPrevDiagnosis(response);
+                    console.log("Prev", response);
+                }
+            } catch (e) {
+                console.error("Error", e);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [patientDetails.chart?.id]);
+
+    useEffect(()=> {
+        fetchAndSetResponse();
+    }, [patientDetails?.chart.id, fetchAndSetResponse]);
+
     const handleDeleteDiagnoses = async (diagnosesId: string) => {
         setLoading(true);
         try {
@@ -77,7 +99,7 @@ const PastDxBody = () => {
             )}
             <div className='flex flex-col gap-2'>
                 {prevDiagnosis && prevDiagnosis.length > 0 ? prevDiagnosis.map((diagnoses, index) => (
-                    <div className="flex justify-between" key={diagnoses.id}>
+                    <div className="flex justify-between gap-2" key={diagnoses.id}>
                         <Input
                             type="text"
                             placeholder="Enter Diagnosis"
@@ -107,7 +129,7 @@ const PastDxBody = () => {
                         >
                             <TrashIcon />
                         </Button>
-                        <Button type="submit" onClick={() => handleUpdateDiagnoses(diagnoses.id, diagnoses)} className='bg-[#84012A]'>Save changes</Button>
+                        <Button type="submit" variant={'ghost'} onClick={() => handleUpdateDiagnoses(diagnoses.id, diagnoses)} className='text-[#84012A]'> <Save /></Button>
                     </div>
                 )) : (
                     <div>

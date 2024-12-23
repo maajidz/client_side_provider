@@ -17,15 +17,18 @@ import RxPatientDetailsSection from './RxPatientDetailsSection'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { UserEncounterData } from '@/types/chartsInterface'
-import { createPrescriptions } from '@/services/chartsServices'
+import { createPrescriptions, createSOAPChart, updateSOAPChart } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
 import { Switch } from '@/components/ui/switch'
+import { showToast } from '@/utils/utils'
+import { useToast } from '@/hooks/use-toast'
 
-const AddRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+const AddRx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [drugName, setDrugName] = useState<string>("");
     const [showPrescriptionForm, setShowPrescriptionForm] = useState<boolean>(false);
     const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
+    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof prescriptionSchema>>({
         resolver: zodResolver(prescriptionSchema),
@@ -83,10 +86,65 @@ const AddRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                 ],
                 chartId: patientDetails.chart?.id,
             }
+            const data = {
+                subjective: "",
+                plan: `${JSON.stringify(requestData)}`,
+                encounterId: encounterId
+            }
             try {
                 setLoading(true);
                 await createPrescriptions({ requestData: requestData })
+                await updateSOAPChart({ requestData: data, chartId: patientDetails.chart.id })
                 setShowPrescriptionForm(!showPrescriptionForm)
+                showToast({ toast, type: "success", message: "Saved!" })
+            } catch (e) {
+                console.log("Error", e)
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            const data = {
+                subjective: "",
+                plan: `${JSON.stringify(values)}`,
+                encounterId: encounterId
+            }
+            try {
+                setLoading(true);
+                const response = await createSOAPChart({ requestData: data })
+                if (response) {
+                    const chartId = response.id;
+                    const requestData = {
+                        drug_name: drugName,
+                        dispense_as_written: dispenseAsWritten,
+                        primary_diagnosis: values.primary_diagnosis,
+                        secondary_diagnosis: values.secondary_diagnosis,
+                        directions: values.directions,
+                        dispense_quantity: values.dispense_quantity,
+                        dispense_unit: String(values.dispense_quantity),
+                        prior_auth: values.prior_auth,
+                        prior_auth_decision: values.prior_auth_decision,
+                        internal_comments: values.internal_comments || "",
+                        days_of_supply: values.days_of_supply ?? 0,
+                        additional_refills: values.additional_refills,
+                        Note_to_Pharmacy: values.Note_to_Pharmacy,
+                        earliest_fill_date: values.earliest_fill_date || "",
+                        dosages: [
+                            {
+                                dosage_quantity: values.dosage_quantity,
+                                dosage_unit: values.dosage_unit,
+                                route: values.route,
+                                frequency: values.frequency,
+                                when: values.when,
+                                duration_quantity: values.duration_quantity,
+                                duration_unit: values.duration_unit,
+                            }
+                        ],
+                        chartId: chartId,
+                    }
+                    await createPrescriptions({ requestData: requestData })
+                    setShowPrescriptionForm(!showPrescriptionForm)
+                }
+                showToast({ toast, type: "success", message: "Saved!" })
             } catch (e) {
                 console.log("Error", e)
             } finally {
@@ -94,6 +152,7 @@ const AddRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
             }
         }
     }
+
 
     if (loading) {
         return (
@@ -478,7 +537,8 @@ const AddRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                                 <Button variant={'ghost'} onClick={() => setShowPrescriptionForm(!showPrescriptionForm)} className='text-[#84012A]'>Add a custom drug</Button>
                             </div>
                         </div>
-                    </div>}
+                    </div>
+                }
             </DialogContent>
         </Dialog>
     )
