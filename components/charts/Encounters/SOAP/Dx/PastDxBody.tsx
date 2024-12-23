@@ -32,7 +32,7 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
 
     useEffect(()=> {
         fetchAndSetResponse();
-    }, [patientDetails?.chart.id, fetchAndSetResponse]);
+    }, [patientDetails?.chart?.id, fetchAndSetResponse]);
 
     const handleDeleteDiagnoses = async (diagnosesId: string) => {
         setLoading(true);
