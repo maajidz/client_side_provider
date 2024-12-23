@@ -59,7 +59,7 @@ const DetailsBody = ({ patientDetails, encounterId }: { patientDetails: UserEnco
                 <div className="h-full ">
                     <div>
                         <Alerts patientDetails={patientDetails} />
-                        <StickyNotes patientDetails={patientDetails}/>
+                        <StickyNotes patientDetails={patientDetails} />
                         <Allergies />
                         <Medications />
                         <Diagnoses patientDetails={patientDetails} encounterId={encounterId} />
@@ -67,7 +67,7 @@ const DetailsBody = ({ patientDetails, encounterId }: { patientDetails: UserEnco
                         <Vaccines />
                         <Injections /> 
                         <PastMedicalHistory /> 
-                        <FamilyHistory />
+                        <FamilyHistory patientDetails={patientDetails} />
                         <SocialHistory />
                         <ProceduresSurgeriesAndHospitalization />
                         <Tasks />
