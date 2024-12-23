@@ -6,29 +6,29 @@ import { deleteDiagnoses, fetchDiagnoses, updateDiagnoses } from '@/services/cha
 import { PastDiagnosesInterface, UserEncounterData } from '@/types/chartsInterface';
 import { showToast } from '@/utils/utils';
 import { Save, TrashIcon } from 'lucide-react';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [prevDiagnosis, setPrevDiagnosis] = useState<PastDiagnosesInterface[]>([]);
     const { toast } = useToast();
 
-    const fetchAndSetResponse = async () => {
+    const fetchAndSetResponse = useCallback(async () => {
         if (patientDetails.chart?.id) {
             setLoading(true);
             try {
                 const response = await fetchDiagnoses({ chartId: patientDetails.chart?.id });
                 if (response) {
                     setPrevDiagnosis(response);
-                    console.log("Prev", prevDiagnosis)
+                    console.log("Prev", response);
                 }
             } catch (e) {
-                console.log("Error", e)
+                console.error("Error", e);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
         }
-    }
+    }, [patientDetails.chart?.id]);
 
     useEffect(()=> {
         fetchAndSetResponse();

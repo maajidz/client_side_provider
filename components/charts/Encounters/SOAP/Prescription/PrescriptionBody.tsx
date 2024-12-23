@@ -9,13 +9,13 @@ import { UserEncounterData } from '@/types/chartsInterface'
 //     PopoverTrigger,
 // } from "@/components/ui/popover"
 
-const PrescriptionBody = ({patientDetails}: {patientDetails: UserEncounterData }) => {
+const PrescriptionBody = ({patientDetails, encounterId}: {patientDetails: UserEncounterData, encounterId: string }) => {
     
     return (
         <div className='flex justify-between border-b pb-3'>
             <div>Prescriptions</div>
             <div className="flex h-5 items-center space-x-4 text-sm">
-                <AddRx patientDetails={patientDetails}/>
+                <AddRx patientDetails={patientDetails} encounterId={encounterId}/>
                 <Separator orientation="vertical" />
                 <PastRx patientDetails={patientDetails}/>
                 <Separator orientation="vertical" />

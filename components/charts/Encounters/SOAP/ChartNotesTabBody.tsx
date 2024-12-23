@@ -14,7 +14,7 @@ const ChartNotesTabBody = ({encounterId, patientDetails}: {encounterId: string, 
         <div className='flex flex-col gap-4 p-5'>
             <ChartNotesAccordion encounterId={encounterId} subjective={patientDetails.chart?.subjective ? patientDetails.chart.subjective : ''} patientDetails={patientDetails}/>
             <DxCodeBody patientDetails={patientDetails} encounterId={encounterId}/>
-            <PrescriptionBody patientDetails={patientDetails}/>
+            <PrescriptionBody patientDetails={patientDetails} encounterId={encounterId}/>
             <LabsBody patientDetails={patientDetails}/>
             <ImagesBody patientDetails={patientDetails}/>
             <FolllowUp  patientDetails={patientDetails} encounterId={encounterId}/>

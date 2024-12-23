@@ -11,7 +11,7 @@ const Diagnoses = ({ patientDetails, encounterId }: { patientDetails: UserEncoun
                 <div>Diagnoses</div>
                 <AddDx patientDetails={patientDetails} encounterId={encounterId} />
             </div>
-            <PastDxBody />
+            <PastDxBody patientDetails={patientDetails} />
         </div>
     )
 }
