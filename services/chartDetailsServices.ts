@@ -6,8 +6,15 @@ import {
   AlertTypeInterface,
   UpdateAlertInterface,
 } from "@/types/alertInterface";
-import { AllergenInterface, UpdateAllergenInterface } from "@/types/allergyInterface";
-import { FamilyHistoryInterface, FamilyHistoryResponseInterface, UpdateFamilyHistoryInterface } from "@/types/familyHistoryInterface";
+import {
+  AllergenInterface,
+  UpdateAllergenInterface,
+} from "@/types/allergyInterface";
+import {
+  FamilyHistoryInterface,
+  FamilyHistoryResponseInterface,
+  UpdateFamilyHistoryInterface,
+} from "@/types/familyHistoryInterface";
 import {
   RecallsData,
   RecallsInterface,
@@ -302,73 +309,104 @@ export const createTask = async ({
   return data;
 };
 
+export const getTasks = async ({
+  providerId,
+  page,
+  limit,
+}: {
+  providerId: string;
+  page: number;
+  limit: number;
+}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/tasks/all?providerId=${providerId}&page=${page}&limit=${limit}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  console.log(await response.data);
+  const data = await response.data;
+  return data;
+};
+
 //Family History
 
 export const createFamilyHistory = async ({
-    requestData,
+  requestData,
 }: {
-    requestData: FamilyHistoryInterface;
+  requestData: FamilyHistoryInterface;
 }) => {
-    const response = await ApiFetch({
-        method: "POST",
-        url: "/provider/family-history",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        data: requestData,
-    });
-    console.log(response.data);
-    const data: FamilyHistoryResponseInterface = await response.data;
-    return data;
+  const response = await ApiFetch({
+    method: "POST",
+    url: "/provider/family-history",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data: FamilyHistoryResponseInterface = await response.data;
+  return data;
 };
 
-export const getFamilyHistoryData = async ({ limit, page, userDetailsId }: { limit: number, page: number,  userDetailsId: string }) => {
-    const response = await ApiFetch({
-        method: "GET",
-        url: `/provider/family-history?userDetailsId=${userDetailsId}&limit=${limit}&page=${page}`,
-        headers: {
-            "Content-Type": "application/json",
-        }
-    });
-    console.log(response.data);
-    const data: FamilyHistoryResponseInterface[] = await response.data;
-    return data;
+export const getFamilyHistoryData = async ({
+  limit,
+  page,
+  userDetailsId,
+}: {
+  limit: number;
+  page: number;
+  userDetailsId: string;
+}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/family-history?userDetailsId=${userDetailsId}&limit=${limit}&page=${page}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response.data);
+  const data: FamilyHistoryResponseInterface[] = await response.data;
+  return data;
 };
 
-export const updateFamilyHistoryData = async ({ id,
-    requestData,
+export const updateFamilyHistoryData = async ({
+  id,
+  requestData,
 }: {
-    id: string,
-    requestData: UpdateFamilyHistoryInterface;
+  id: string;
+  requestData: UpdateFamilyHistoryInterface;
 }) => {
-    const response = await ApiFetch({
-        method: "PATCH",
-        url: `/provider/family-history/${id}`,
-        headers: {
-            "Content-Type": "application/json",
-        },
-        data: requestData,
-    });
-    console.log(response.data);
-    const data = await response.data;
-    return data;
+  const response = await ApiFetch({
+    method: "PATCH",
+    url: `/provider/family-history/${id}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
 };
 
 export const deleteFamilyHistory = async ({
-    familyHistoryId
+  familyHistoryId,
 }: {
-    familyHistoryId: string
+  familyHistoryId: string;
 }) => {
-    const response = await ApiFetch({
-        method: "DELETE",
-        url: `/provider/family-history/${familyHistoryId}`,
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-    console.log(response.data);
-    const data = await response.data;
-    return data;
+  const response = await ApiFetch({
+    method: "DELETE",
+    url: `/provider/family-history/${familyHistoryId}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
 };
 
 //Allergy
@@ -379,61 +417,66 @@ export const createAllergies = async ({
   requestData: AllergenInterface[];
 }) => {
   const response = await ApiFetch({
-      method: "POST",
-      url: "/provider/allergies",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      data: requestData,
+    method: "POST",
+    url: "/provider/allergies",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
   });
   console.log(response.data);
   const data = await response.data;
   return data;
 };
 
-export const getAllergiesData = async ({ limit, page, userDetailsId }: { limit: number, page: number,  userDetailsId: string }) => {
+export const getAllergiesData = async ({
+  limit,
+  page,
+  userDetailsId,
+}: {
+  limit: number;
+  page: number;
+  userDetailsId: string;
+}) => {
   const response = await ApiFetch({
-      method: "GET",
-      url: `/provider/allergies?userDetailsId=${userDetailsId}&limit=${limit}&page=${page}`,
-      headers: {
-          "Content-Type": "application/json",
-      }
+    method: "GET",
+    url: `/provider/allergies?userDetailsId=${userDetailsId}&limit=${limit}&page=${page}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
   console.log(response.data);
   const data: FamilyHistoryResponseInterface[] = await response.data;
   return data;
 };
 
-export const updateAllergiesData = async ({ id,
+export const updateAllergiesData = async ({
+  id,
   requestData,
 }: {
-  id: string,
+  id: string;
   requestData: UpdateAllergenInterface;
 }) => {
   const response = await ApiFetch({
-      method: "PATCH",
-      url: `/provider/allergies/${id}`,
-      headers: {
-          "Content-Type": "application/json",
-      },
-      data: requestData,
+    method: "PATCH",
+    url: `/provider/allergies/${id}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
   });
   console.log(response.data);
   const data = await response.data;
   return data;
 };
 
-export const deleteAllergies = async ({
-  allergyId
-}: {
-  allergyId: string
-}) => {
+export const deleteAllergies = async ({ allergyId }: { allergyId: string }) => {
   const response = await ApiFetch({
-      method: "DELETE",
-      url: `/provider/allergies/${allergyId}`,
-      headers: {
-          "Content-Type": "application/json",
-      },
+    method: "DELETE",
+    url: `/provider/allergies/${allergyId}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
   console.log(response.data);
   const data = await response.data;

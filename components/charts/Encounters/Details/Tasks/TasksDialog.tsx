@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
   SelectTrigger,
@@ -24,26 +25,70 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { tasksSchema } from "@/schema/tasksSchema";
 import { PlusCircle } from "lucide-react";
-import { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { useState } from "react";
+import { TasksInterface } from "@/types/tasksInterface";
+import { createTask } from "@/services/chartDetailsServices";
 
-interface TasksProps {
-  form: UseFormReturn<z.infer<typeof tasksSchema>>;
-  reminderOptions: string[];
-  showDueDate: boolean;
-  onSetShowDueData: (value: boolean) => void;
-  onSubmit: (values: z.infer<typeof tasksSchema>) => void;
-}
+function TasksDialog() {
+  const [showDueDate, setShowDueDate] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-function TasksDialog({
-  form,
-  reminderOptions,
-  showDueDate,
-  onSetShowDueData,
-  onSubmit,
-}: TasksProps) {
+  const providerDetails = useSelector((state: RootState) => state.login);
+  const reminderOptions = [
+    "On Due Date",
+    "1 Day Before",
+    "2 Days Before",
+    "3 Days Before",
+  ];
+
+  const form = useForm<z.infer<typeof tasksSchema>>({
+    resolver: zodResolver(tasksSchema),
+    defaultValues: {
+      category: "",
+      task: "",
+      owner: providerDetails.firstName ? providerDetails.firstName : "",
+      priority: "",
+      dueDate: new Date().toISOString().split("T")[0],
+      sendReminder: [],
+      comments: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
+    console.log("Form Values:", values);
+    const requestData: TasksInterface = {
+      category: "Complete patient evaluation",
+      description: "Conduct a full evaluation for patient #12345",
+      status: "PENDING",
+      notes: "Ensure to review medical history",
+      dueDate: "2024-12-01T00:00:00Z",
+      assignedProviderId: "3abdd291-9a25-4390-8558-0059734de538",
+      assignerProviderId: providerDetails.providerId,
+      assignedByAdmin: true,
+      userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+    };
+
+    setLoading(true);
+    try {
+      await createTask({ requestBody: requestData });
+    } catch (e) {
+      console.log("Error:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <LoadingButton />;
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -138,7 +183,7 @@ function TasksDialog({
                 <Checkbox
                   id="assignDueDate"
                   onCheckedChange={(checked) =>
-                    onSetShowDueData(checked as boolean)
+                    setShowDueDate(checked as boolean)
                   }
                 />
                 <label htmlFor="assignDueDate" className="text-sm font-medium">
@@ -232,4 +277,3 @@ function TasksDialog({
 }
 
 export default TasksDialog;
-
