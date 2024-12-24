@@ -1,11 +1,28 @@
-'use client';
+"use client";
 
-import { DataTable } from '@/components/ui/data-table';
-import { columns } from './columns'
-import { useEffect, useState } from 'react';
-import LoadingButton from '@/components/LoadingButton';
-import { UserData } from '@/types/userInterface';
-import { fetchUserDataResponse } from '@/services/userServices';
+import { DataTable } from "@/components/ui/data-table";
+import { columns, LabResultsInterface } from "./columns";
+import { useEffect, useState } from "react";
+import LoadingButton from "@/components/LoadingButton";
+import { UserData } from "@/types/userInterface";
+import { fetchUserDataResponse } from "@/services/userServices";
+
+const mockData: LabResultsInterface[] = [
+  {
+    id: "1",
+    test: "Lipid Profile",
+    lab: "General",
+    date: new Date("23 June, 2013").toDateString(),
+    interpretation: "Abnormal",
+  },
+  {
+    id: "2",
+    test: "C.T. Scan",
+    lab: "General",
+    date: new Date("23 June, 2020").toDateString(),
+    interpretation: "Normal",
+  },
+];
 
 export const LabResultsClient = () => {
   const [userResponse, setUserResponse] = useState<UserData[] | undefined>([])
@@ -38,15 +55,14 @@ export const LabResultsClient = () => {
     <>
       {userResponse && (
         <DataTable
-          searchKey="name"
+          searchKey="labResults"
           columns={columns()}
-          data={userResponse}
+          data={mockData}
           pageNo={pageNo}
           totalPages={totalPages}
           onPageChange={(newPage: number) => setPageNo(newPage)}
         />
       )}
-
     </>
   );
 };
