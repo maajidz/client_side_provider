@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
   SelectValue,
@@ -25,15 +26,45 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { PlusCircle } from "lucide-react";
 import { z } from "zod";
-import { UseFormReturn } from "react-hook-form";
 import { vaccinesFormSchema } from "@/schema/vaccinesSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
-interface VaccinesDialogProps {
-  form: UseFormReturn<z.infer<typeof vaccinesFormSchema>>;
-  onSubmit: (values: z.infer<typeof vaccinesFormSchema>) => void;
-}
+function VaccinesDialog() {
+  const [loading, setLoading] = useState<boolean>(false);
 
-function VaccinesDialog({ form, onSubmit }: VaccinesDialogProps) {
+  const form = useForm<z.infer<typeof vaccinesFormSchema>>({
+    resolver: zodResolver(vaccinesFormSchema),
+    defaultValues: {
+      vaccine: "",
+      series: "",
+      fromDate: new Date().toISOString().split("T")[0],
+      source: "",
+      notes: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof vaccinesFormSchema>) => {
+    console.log("Form Values:", values);
+    // const requestData = {
+    //     alertName: "",
+    //     alertDescription: "",
+    // }
+    setLoading(true);
+    try {
+      // await createTransfer({ requestData: requestData })
+    } catch (e) {
+      console.log("Error:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <LoadingButton />;
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -137,4 +168,3 @@ function VaccinesDialog({ form, onSubmit }: VaccinesDialogProps) {
 }
 
 export default VaccinesDialog;
-
