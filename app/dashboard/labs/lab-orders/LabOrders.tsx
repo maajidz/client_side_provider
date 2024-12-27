@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/ui/data-table";
 import { Heading } from "@/components/ui/heading";
-import { LabOrdersInterface } from "@/types/chartsInterface";
-import React, { useMemo, useState } from "react";
+import { LabOrdersInterface, UserEncounterData } from "@/types/chartsInterface";
+import React, { useEffect, useMemo, useState } from "react";
 import { columns } from "./columns";
 import FilterOrders from "./FilterOrders";
 import { Input } from "@/components/ui/input";
@@ -12,8 +12,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { getUserEncounterDetails } from "@/services/chartsServices";
 import { PlusIcon } from "lucide-react";
-import LabOrdersDrawer from "./LabResultsDrawer";
+import SearchAndAddOrders from "./orderDialogsAndDrawers/SearchAndAddOrders";
+import LoadingButton from "@/components/LoadingButton";
+import ViewOrdersDialog from "./orderDialogsAndDrawers/ViewOrdersDialog";
+import PastOrdersDialog from "./orderDialogsAndDrawers/PastOrdersDialog";
+import AddLabsDialog from "./orderDialogsAndDrawers/AddLabsDialog";
 
 const mockData: LabOrdersInterface[] = [
   {
@@ -45,6 +50,41 @@ const mockData: LabOrdersInterface[] = [
 function LabOrders() {
   const [labOrdersData, setLabOrdersData] =
     useState<LabOrdersInterface[]>(mockData);
+  const encounterId = "34044ece-aad6-41f9-ac2b-f322a246043f";
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<UserEncounterData>();
+  useState<boolean>(true);
+
+  // useEffect(() => {
+  //   const unwrapParams = async () => {
+  //     if (!encounterId) {
+  //       const resolvedParams = await params;
+  //       setEncounterId(resolvedParams.EncounterId);
+  //     }
+  //   };
+  //   unwrapParams();
+  // }, [encounterId, params]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+
+      try {
+        const encounterData = await getUserEncounterDetails({
+          encounterId,
+        });
+        if (encounterData !== undefined && encounterData) {
+          setData(encounterData[0]);
+        }
+      } catch (e) {
+        console.log("Error", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const filterByOrderedBy = useMemo(
     () => (orderedBy: string) => {
@@ -77,6 +117,18 @@ function LabOrders() {
     },
     [setLabOrdersData]
   );
+
+  if (loading) {
+    return (
+      <div className="flex w-screen h-screen justify-center items-center">
+        <LoadingButton />
+      </div>
+    );
+  }
+
+  if (!data) {
+    return <div> No encounter data available.</div>;
+  }
 
   return (
     <>
@@ -127,10 +179,15 @@ function LabOrders() {
         />
       </div>
 
-      {/* Lab Orders Functions - Drawers   and Dialogs */}
+      {/* Lab Orders Functions - Drawers and Dialogs */}
       <div className="flex items-center justify-between bg-gray-100 p-6 rounded-lg shadow-md mt-4">
         <span className="text-xl font-semibold text-gray-800">Labs</span>
-        <LabOrdersDrawer />
+        <div className="flex justify-end">
+          <SearchAndAddOrders patientDetails={data} />
+          <AddLabsDialog patientDetails={data} />
+          <PastOrdersDialog patientDetails={data} />
+          <ViewOrdersDialog patientDetails={data} />
+        </div>
       </div>
     </>
   );
