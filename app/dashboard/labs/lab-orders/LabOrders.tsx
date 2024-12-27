@@ -128,8 +128,8 @@ function LabOrders() {
       </div>
 
       {/* Lab Orders Functions - Drawers   and Dialogs */}
-      <div className="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-md mt-4">
-        <span className="text-xl font-semibold text-gray-700">Labs</span>
+      <div className="flex items-center justify-between bg-gray-100 p-6 rounded-lg shadow-md mt-4">
+        <span className="text-xl font-semibold text-gray-800">Labs</span>
         <LabOrdersDrawer />
       </div>
     </>
