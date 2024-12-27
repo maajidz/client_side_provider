@@ -135,6 +135,12 @@ export const navItems: NavItem[] = [
     icon: 'clipboard',
     label: 'Charts'
   },
+  {
+    title: 'Labs',
+    href: '/dashboard/labs',
+    icon: 'pill',
+    label: 'Labs'
+  }
 ];
 
 export const roles = [
