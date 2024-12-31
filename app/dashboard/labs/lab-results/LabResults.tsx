@@ -9,12 +9,14 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { fetchUserDataResponse } from "@/services/userServices";
+import { UserEncounterData } from "@/types/chartsInterface";
 import { UserData } from "@/types/userInterface";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import ViewOrdersList from "./ViewOrdersList";
 
-function LabResults() {
+function LabResults({ patientDetails }: { patientDetails: UserEncounterData }) {
   const [userData, setUserData] = useState<UserData[] | undefined>();
   const [loading, setLoading] = useState(false);
   const [patient, setPatient] = useState<string>("");
@@ -143,6 +145,7 @@ function LabResults() {
           </DialogContent>
         </Dialog>
       </div>
+      <ViewOrdersList patientDetails={patientDetails} />
     </>
   );
 }

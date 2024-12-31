@@ -1,60 +1,54 @@
-import { DataTable } from "@/components/ui/data-table";
+// import { DataTable } from "@/components/ui/data-table";
 import { Heading } from "@/components/ui/heading";
-import { LabOrdersInterface, UserEncounterData } from "@/types/chartsInterface";
-import React, { useEffect, useMemo, useState } from "react";
-import { columns } from "./columns";
-import FilterOrders from "./FilterOrders";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { getUserEncounterDetails } from "@/services/chartsServices";
-import { PlusIcon } from "lucide-react";
+import { UserEncounterData } from "@/types/chartsInterface";
+// import { columns } from "./columns";
+// import FilterOrders from "./FilterOrders";
+// import { Input } from "@/components/ui/input";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogTrigger,
+// } from "@/components/ui/dialog";
+// import { getUserEncounterDetails } from "@/services/chartsServices";
+// import { PlusIcon } from "lucide-react";
 import SearchAndAddOrders from "./orderDialogsAndDrawers/SearchAndAddOrders";
-import LoadingButton from "@/components/LoadingButton";
+// import LoadingButton from "@/components/LoadingButton";
 import ViewOrdersDialog from "./orderDialogsAndDrawers/ViewOrdersDialog";
 import PastOrdersDialog from "./orderDialogsAndDrawers/PastOrdersDialog";
 import AddLabsDialog from "./orderDialogsAndDrawers/AddLabsDialog";
 
-const mockData: LabOrdersInterface[] = [
-  {
-    userDetailsId: "odwin2jnz 2jd2dmkd ojfsklmc",
-    tests: ["Comprehensive Metabolic Panel"],
-    labs: ["abcd efgh hijk"],
-    orderedBy: "Dr Amber Jenkins",
-    date: "23 July, 2024",
-    isSigned: false,
-  },
-  {
-    userDetailsId: "odwin5kfb 2jd2dmkd djk3bfjh",
-    tests: ["Colonoscopy"],
-    labs: ["abcd efgh hijk"],
-    orderedBy: "Dr Amber Jenkins",
-    date: "13 March, 2024",
-    isSigned: true,
-  },
-  {
-    userDetailsId: "odwn2jn2b 2jd2dmkd djk3bflc",
-    tests: ["Complete Thyroid Profile"],
-    labs: ["abcd efgh hijk"],
-    orderedBy: "Dr Rashida Akram",
-    date: "12 September, 2022",
-    isSigned: true,
-  },
-];
+// const mockData: LabOrdersInterface[] = [
+//   {
+//     userDetailsId: "odwin2jnz 2jd2dmkd ojfsklmc",
+//     tests: ["Comprehensive Metabolic Panel"],
+//     labs: ["abcd efgh hijk"],
+//     orderedBy: "Dr Amber Jenkins",
+//     date: "23 July, 2024",
+//     isSigned: false,
+//   },
+//   {
+//     userDetailsId: "odwin5kfb 2jd2dmkd djk3bfjh",
+//     tests: ["Colonoscopy"],
+//     labs: ["abcd efgh hijk"],
+//     orderedBy: "Dr Amber Jenkins",
+//     date: "13 March, 2024",
+//     isSigned: true,
+//   },
+//   {
+//     userDetailsId: "odwn2jn2b 2jd2dmkd djk3bflc",
+//     tests: ["Complete Thyroid Profile"],
+//     labs: ["abcd efgh hijk"],
+//     orderedBy: "Dr Rashida Akram",
+//     date: "12 September, 2022",
+//     isSigned: true,
+//   },
+// ];
 
-function LabOrders() {
-  const [labOrdersData, setLabOrdersData] =
-    useState<LabOrdersInterface[]>(mockData);
-  const encounterId = "34044ece-aad6-41f9-ac2b-f322a246043f";
-
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<UserEncounterData>();
-  useState<boolean>(true);
+function LabOrders({ patientDetails }: { patientDetails: UserEncounterData }) {
+  // const [labOrdersData, setLabOrdersData] =
+  // useState<LabOrdersInterface[]>(mockData);
 
   // useEffect(() => {
   //   const unwrapParams = async () => {
@@ -66,69 +60,37 @@ function LabOrders() {
   //   unwrapParams();
   // }, [encounterId, params]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+  // const filterByOrderedBy = useMemo(
+  //   () => (orderedBy: string) => {
+  //     let filteredData: LabOrdersInterface[] = [];
 
-      try {
-        const encounterData = await getUserEncounterDetails({
-          encounterId,
-        });
-        if (encounterData !== undefined && encounterData) {
-          setData(encounterData[0]);
-        }
-      } catch (e) {
-        console.log("Error", e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  //     if (orderedBy !== "all") {
+  //       filteredData = mockData.filter(
+  //         (order) => order.orderedBy === orderedBy
+  //       );
+  //     } else {
+  //       filteredData = mockData;
+  //     }
 
-  const filterByOrderedBy = useMemo(
-    () => (orderedBy: string) => {
-      let filteredData: LabOrdersInterface[] = [];
+  //     setLabOrdersData(filteredData);
+  //   },
+  //   [setLabOrdersData]
+  // );
 
-      if (orderedBy !== "all") {
-        filteredData = mockData.filter(
-          (order) => order.orderedBy === orderedBy
-        );
-      } else {
-        filteredData = mockData;
-      }
+  // const filterByStatus = useMemo(
+  //   () => (status?: boolean) => {
+  //     let filteredData: LabOrdersInterface[] = [];
 
-      setLabOrdersData(filteredData);
-    },
-    [setLabOrdersData]
-  );
+  //     if (status !== undefined) {
+  //       filteredData = mockData.filter((order) => order.isSigned === status);
+  //     } else {
+  //       filteredData = mockData;
+  //     }
 
-  const filterByStatus = useMemo(
-    () => (status?: boolean) => {
-      let filteredData: LabOrdersInterface[] = [];
-
-      if (status !== undefined) {
-        filteredData = mockData.filter((order) => order.isSigned === status);
-      } else {
-        filteredData = mockData;
-      }
-
-      setLabOrdersData(filteredData);
-    },
-    [setLabOrdersData]
-  );
-
-  if (loading) {
-    return (
-      <div className="flex w-screen h-screen justify-center items-center">
-        <LoadingButton />
-      </div>
-    );
-  }
-
-  if (!data) {
-    return <div> No encounter data available.</div>;
-  }
+  //     setLabOrdersData(filteredData);
+  //   },
+  //   [setLabOrdersData]
+  // );
 
   return (
     <>
@@ -137,7 +99,7 @@ function LabOrders() {
           title={`Lab Orders`}
           description="A list of lab orders that were assigned to the patients"
         />
-        <Dialog>
+        {/* <Dialog>
           <DialogTrigger className="flex items-center px-4 py-2 text-white bg-[#84012A] rounded-md hover:bg-[#6C011F]">
             <PlusIcon className="w-4 h-4 mr-2" />
             Lab Orders
@@ -176,17 +138,17 @@ function LabOrders() {
           pageNo={1}
           totalPages={1}
           onPageChange={() => {}}
-        />
+        /> */}
       </div>
 
       {/* Lab Orders Functions - Drawers and Dialogs */}
       <div className="flex items-center justify-between bg-gray-100 p-6 rounded-lg shadow-md mt-4">
         <span className="text-xl font-semibold text-gray-800">Labs</span>
         <div className="flex justify-end">
-          <SearchAndAddOrders patientDetails={data} />
-          <AddLabsDialog patientDetails={data} />
-          <PastOrdersDialog patientDetails={data} />
-          <ViewOrdersDialog patientDetails={data} />
+          <SearchAndAddOrders patientDetails={patientDetails} />
+          <AddLabsDialog patientDetails={patientDetails} />
+          <PastOrdersDialog patientDetails={patientDetails} />
+          <ViewOrdersDialog patientDetails={patientDetails} />
         </div>
       </div>
     </>
