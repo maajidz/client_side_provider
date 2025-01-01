@@ -445,8 +445,8 @@ export const getAllergiesData = async ({
       "Content-Type": "application/json",
     },
   });
-  console.log(response.data);
-  const data: FamilyHistoryResponseInterface[] = await response.data;
+
+  const data: AllergenInterface[] = await response.data;
   return data;
 };
 
