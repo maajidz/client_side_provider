@@ -30,6 +30,9 @@ import { showToast } from "@/utils/utils";
 import { PlusCircle, Trash2Icon } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { AllergenInterface } from "@/types/allergyInterface";
 
 interface AllergiesDialogProps {
   patientDetails: UserEncounterData;
@@ -37,6 +40,7 @@ interface AllergiesDialogProps {
 
 function AllergiesDialog({ patientDetails }: AllergiesDialogProps) {
   const { toast } = useToast();
+  const providerDetails = useSelector((state: RootState) => state.login);
   const form = useForm<z.infer<typeof allergenFormSchema>>({
     resolver: zodResolver(allergenFormSchema),
     defaultValues: {
@@ -62,20 +66,23 @@ function AllergiesDialog({ patientDetails }: AllergiesDialogProps) {
     console.log("Submitted Data:", data);
     if (patientDetails.userDetails.id) {
       try {
-        const requestData = data.allergens.map((allergen) => ({
-          type: allergen.type,
-          serverity: allergen.serverity,
-          observedOn: allergen.observedOn,
-          Allergen: allergen.Allergen,
-          status: allergen.status,
-          reactions: allergen.reactions
-            ? allergen.reactions.split(",").map((reaction) => ({
+        const requestData = {
+          //data.allergens.map((allergen) => ({
+          type: data.allergens[0].type,
+          serverity: data.allergens[0].serverity,
+          observedOn: data.allergens[0].observedOn,
+          Allergen: data.allergens[0].Allergen,
+          status: data.allergens[0].status,
+          reactions: data.allergens[0].reactions
+            ? data.allergens[0].reactions.split(",").map((reaction) => ({
                 name: reaction.trim(),
-                addtionalText: "",
+                additionalText: "",
               }))
             : [],
           userDetailsId: patientDetails.userDetails.id,
-        }));
+          providerId: providerDetails.providerId,
+        };
+        // })) : [];
 
         await createAllergies({ requestData });
         showToast({
@@ -278,8 +285,8 @@ function AllergiesDialog({ patientDetails }: AllergiesDialogProps) {
                 onClick={() =>
                   append({
                     type: "",
-                    allergen: "",
-                    severity: "Severe",
+                    Allergen: "",
+                    serverity: "Severe",
                     observedOn: "",
                     status: "Active",
                     reactions: "",
