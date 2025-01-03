@@ -125,7 +125,7 @@ const Allergies = ({
                       />
                       <FormLabels label="Severity" value={allergy.serverity} />
                       <FormLabels label="Status" value={allergy.status} />
-                      <FormLabels label="Reaction" value={allergy.reactions.map((reaction)=> <div>{reaction.name} </div>)} />
+                      <FormLabels label="Reaction" value={allergy.reactions.map((reaction)=> <div key={reaction.name}>{reaction.name} </div>)} />
                     </div>
                   </div>
                 </>
