@@ -1,4 +1,5 @@
 export interface AllergenInterface {
+    id: string
     type: string
     serverity: string
     observedOn: string
@@ -14,10 +15,10 @@ export interface UpdateAllergenInterface {
     observedOn: string
     Allergen: string
     status: string
-    reactions: Reaction[]
+    reactions?: Reaction[]
 }
 
 export interface Reaction {
-    name: string
-    addtionalText: string
+  name: string;
+  additionalText: string;
 }

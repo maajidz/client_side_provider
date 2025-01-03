@@ -21,17 +21,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusCircle, Trash2Icon } from "lucide-react";
-import { z } from "zod";
-import { allergenFormSchema } from "@/schema/allergenFormSchema";
 import { createAllergies } from "@/services/chartDetailsServices";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
-import { showToast } from "@/utils/utils";
+import { allergenFormSchema } from "@/schema/allergenFormSchema";
 import { UserEncounterData } from "@/types/chartsInterface";
+import { showToast } from "@/utils/utils";
+import { PlusCircle, Trash2Icon } from "lucide-react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
 
-function AllergiesDialog({ patientDetails }: { patientDetails: UserEncounterData }) {
+interface AllergiesDialogProps {
+  patientDetails: UserEncounterData;
+}
+
+function AllergiesDialog({ patientDetails }: AllergiesDialogProps) {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof allergenFormSchema>>({
     resolver: zodResolver(allergenFormSchema),
@@ -39,8 +43,8 @@ function AllergiesDialog({ patientDetails }: { patientDetails: UserEncounterData
       allergens: [
         {
           type: "",
-          allergen: "",
-          severity: "",
+          Allergen: "",
+          serverity: "",
           observedOn: "",
           status: "",
           reactions: "",
@@ -60,15 +64,15 @@ function AllergiesDialog({ patientDetails }: { patientDetails: UserEncounterData
       try {
         const requestData = data.allergens.map((allergen) => ({
           type: allergen.type,
-          serverity: allergen.severity,
+          serverity: allergen.serverity,
           observedOn: allergen.observedOn,
-          Allergen: allergen.allergen,
+          Allergen: allergen.Allergen,
           status: allergen.status,
           reactions: allergen.reactions
             ? allergen.reactions.split(",").map((reaction) => ({
-              name: reaction.trim(),
-              addtionalText: "",
-            }))
+                name: reaction.trim(),
+                addtionalText: "",
+              }))
             : [],
           userDetailsId: patientDetails.userDetails.id,
         }));
@@ -99,7 +103,7 @@ function AllergiesDialog({ patientDetails }: { patientDetails: UserEncounterData
       </DialogTrigger>
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Add Allergies</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -148,7 +152,7 @@ function AllergiesDialog({ patientDetails }: { patientDetails: UserEncounterData
                     <td className="p-2">
                       <FormField
                         control={form.control}
-                        name={`allergens.${index}.allergen`}
+                        name={`allergens.${index}.Allergen`}
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
@@ -167,7 +171,7 @@ function AllergiesDialog({ patientDetails }: { patientDetails: UserEncounterData
                     <td className="p-2">
                       <FormField
                         control={form.control}
-                        name={`allergens.${index}.severity`}
+                        name={`allergens.${index}.serverity`}
                         render={({ field }) => (
                           <FormItem>
                             <Select
@@ -298,4 +302,3 @@ function AllergiesDialog({ patientDetails }: { patientDetails: UserEncounterData
 }
 
 export default AllergiesDialog;
-
