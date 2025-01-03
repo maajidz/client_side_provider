@@ -35,8 +35,13 @@ import { RootState } from "@/store/store";
 import { useState } from "react";
 import { TasksInterface } from "@/types/tasksInterface";
 import { createTask } from "@/services/chartDetailsServices";
+import { UserEncounterData } from "@/types/chartsInterface";
 
-function TasksDialog() {
+function TasksDialog({
+  patientDetails,
+}: {
+  patientDetails: UserEncounterData;
+}) {
   const [showDueDate, setShowDueDate] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -64,15 +69,15 @@ function TasksDialog() {
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     console.log("Form Values:", values);
     const requestData: TasksInterface = {
-      category: "Complete patient evaluation",
-      description: "Conduct a full evaluation for patient #12345",
+      category: values.category,
+      description: values.comments ?? "",
       status: "PENDING",
-      notes: "Ensure to review medical history",
-      dueDate: "2024-12-01T00:00:00Z",
+      notes: values.task,
+      dueDate: `${values.dueDate}`,
       assignedProviderId: "3abdd291-9a25-4390-8558-0059734de538",
       assignerProviderId: providerDetails.providerId,
       assignedByAdmin: true,
-      userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+      userDetailsId: patientDetails.userDetails.id,
     };
 
     setLoading(true);

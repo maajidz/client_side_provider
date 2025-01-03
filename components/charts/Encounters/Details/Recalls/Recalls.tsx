@@ -91,9 +91,9 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                     </div>
                     <AccordionContent>
                         {data?.data && (
-                            <div>
+                            <div className='flex flex-col gap-3'>
                                 {data.data.flatMap((recall, index) => (
-                                    <div key={index} className='flex flex-col gap-2 border p-2'>
+                                    <div key={index} className='flex flex-col gap-2 border rounded-lg p-2'>
                                         <div className='flex justify-between items-center'>
                                             <div className='text-base font-semibold'>{recall.type} </div>
                                             <div className='flex'>

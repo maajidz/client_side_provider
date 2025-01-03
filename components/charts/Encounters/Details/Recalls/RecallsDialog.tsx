@@ -34,7 +34,7 @@ const RecallsDialog = ({ patientDetails, recallsData, onClose, isOpen }: {
             type: recallsData?.type || "",
             notes: recallsData?.notes || "",
             dueDate: { period: recallsData?.due_date_period || "", value: recallsData?.due_date_value || 1, unit: recallsData?.due_date_unit || "" },
-            provider: `${providerDetails.firstName} ${providerDetails.lastName}`,
+            provider: `${providerDetails.providerId}`,
             sendAutoReminders: false,
         },
     });
@@ -49,6 +49,7 @@ const RecallsDialog = ({ patientDetails, recallsData, onClose, isOpen }: {
                     unit: recallsData.due_date_unit || "",
                 },
                 sendAutoReminders: recallsData.auto_reminders || false,
+                provider: recallsData.providerId || ""
             });
         }
     }, [recallsData, form]);
