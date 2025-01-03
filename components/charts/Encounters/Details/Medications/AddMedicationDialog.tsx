@@ -11,13 +11,12 @@ import AddMedicationBody from "./AddMedicationBody";
 import { MedicationList } from "./Medications";
 
 interface AddMedicationDialogProps {
-  isOpen: boolean;
   onAddClick: (medication: MedicationList) => void;
 }
 
-function AddMedicationDialog({isOpen, onAddClick }: AddMedicationDialogProps) {
+function AddMedicationDialog({ onAddClick }: AddMedicationDialogProps) {
   return (
-    <Dialog open={isOpen}>
+    <Dialog >
       <DialogTrigger asChild>
         <Button variant="ghost">
           <PlusCircle />
