@@ -32,7 +32,6 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { AllergenInterface } from "@/types/allergyInterface";
 
 interface AllergiesDialogProps {
   patientDetails: UserEncounterData;
