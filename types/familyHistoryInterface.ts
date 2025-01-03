@@ -7,6 +7,7 @@ export interface FamilyHistoryInterface {
     comments: string
     activeProblems: ActiveProblem[]
     userDetailsId: string
+    providerId: string
 }
 
 export interface ActiveProblem {

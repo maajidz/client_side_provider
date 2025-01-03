@@ -22,7 +22,6 @@ export interface MedicationList {
 }
 
 const Medications = () => {
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [selectedMedication, setSelectedMedication] =
     useState<MedicationList | null>(null);
@@ -30,7 +29,6 @@ const Medications = () => {
 
   const handleAddClick = (medication: MedicationList) => {
     setSelectedMedication(medication);
-    setIsAddDialogOpen(false);
     setIsDetailsDialogOpen(true);
   };
 
@@ -71,7 +69,6 @@ const Medications = () => {
           <div className="flex justify-between items-center">
             <AccordionTrigger>Medications</AccordionTrigger>
             <AddMedicationDialog
-              isOpen={isAddDialogOpen}
               onAddClick={handleAddClick}
             />
             <MedicationDetailsDialog

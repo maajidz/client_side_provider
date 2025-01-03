@@ -12,7 +12,7 @@ import {
   deleteAllergies,
   getAllergiesData,
 } from "@/services/chartDetailsServices";
-import { AllergenInterface } from "@/types/allergyInterface";
+import { AllergenResponseInterfae } from "@/types/allergyInterface";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { showToast } from "@/utils/utils";
 import AllergiesDialog from "./AllergiesDialog";
@@ -26,7 +26,7 @@ const Allergies = ({
   patientDetails: UserEncounterData;
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [allergies, setAllergies] = useState<AllergenInterface[]>([]);
+  const [allergies, setAllergies] = useState<AllergenResponseInterfae[]>([]);
   const [error, setError] = useState("");
 
   const { toast } = useToast();
@@ -95,11 +95,12 @@ const Allergies = ({
           </div>
           <AccordionContent className="sm:max-w-4xl">
             {allergies.length !== 0 ? (
-              allergies.map((allergy) => (
+             <div className="flex flex-col gap-3">
+               {allergies.map((allergy) => (
                 <>
                   <div
                     key={allergy.userDetailsId}
-                    className="flex flex-col gap-2 p-2 border"
+                    className="flex flex-col gap-2 p-2 border rounded-lg"
                   >
                     <div className="flex items-center justify-between">
                       <div className="text-base font-semibold">
@@ -124,10 +125,12 @@ const Allergies = ({
                       />
                       <FormLabels label="Severity" value={allergy.serverity} />
                       <FormLabels label="Status" value={allergy.status} />
+                      <FormLabels label="Reaction" value={allergy.reactions.map((reaction)=> <div key={reaction.name}>{reaction.name} </div>)} />
                     </div>
                   </div>
                 </>
-              ))
+              ))}
+             </div>
             ) : error ? (
               <p className="text-center">{error}</p>
             ) : (
