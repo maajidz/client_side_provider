@@ -12,7 +12,7 @@ import {
   deleteAllergies,
   getAllergiesData,
 } from "@/services/chartDetailsServices";
-import { AllergenInterface } from "@/types/allergyInterface";
+import { AllergenResponseInterfae } from "@/types/allergyInterface";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { showToast } from "@/utils/utils";
 import AllergiesDialog from "./AllergiesDialog";
@@ -26,7 +26,7 @@ const Allergies = ({
   patientDetails: UserEncounterData;
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [allergies, setAllergies] = useState<AllergenInterface[]>([]);
+  const [allergies, setAllergies] = useState<AllergenResponseInterfae[]>([]);
   const [error, setError] = useState("");
 
   const { toast } = useToast();

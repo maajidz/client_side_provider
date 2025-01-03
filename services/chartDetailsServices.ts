@@ -8,6 +8,7 @@ import {
 } from "@/types/alertInterface";
 import {
   AllergenInterface,
+  AllergenResponseInterfae,
   UpdateAllergenInterface,
 } from "@/types/allergyInterface";
 import {
@@ -414,7 +415,7 @@ export const deleteFamilyHistory = async ({
 export const createAllergies = async ({
   requestData,
 }: {
-  requestData: AllergenInterface[];
+  requestData: AllergenInterface;
 }) => {
   const response = await ApiFetch({
     method: "POST",
@@ -446,7 +447,7 @@ export const getAllergiesData = async ({
     },
   });
 
-  const data: AllergenInterface[] = await response.data;
+  const data: AllergenResponseInterfae[] = await response.data;
   return data;
 };
 

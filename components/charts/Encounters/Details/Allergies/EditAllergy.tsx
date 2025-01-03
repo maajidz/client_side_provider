@@ -26,7 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { updateAllergiesData } from "@/services/chartDetailsServices";
 import { updateAllergyFormSchema } from "@/schema/allergenFormSchema";
 import {
-  AllergenInterface,
+  AllergenResponseInterfae,
   UpdateAllergenInterface,
 } from "@/types/allergyInterface";
 import { showToast } from "@/utils/utils";
@@ -36,7 +36,7 @@ import { useState } from "react";
 import { z } from "zod";
 
 interface EditAllergyProps {
-  selectedAllergy: AllergenInterface;
+  selectedAllergy: AllergenResponseInterfae;
   fetchAllergies: () => void;
 }
 
