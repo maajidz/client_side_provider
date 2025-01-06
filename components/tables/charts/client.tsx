@@ -59,7 +59,7 @@ export const CalendarClient = () => {
 
   useEffect(() => {
     const fetchAndSetResponse = async (pageNo: number) => {
-      const userData = await fetchUserDataResponse({ pageNo: pageNo });
+      const userData = await fetchUserDataResponse({ pageNo: pageNo, pageSize:10 });
       if (userData) {
         setUserResponse(userData.data);
         setTotalPages(Math.ceil(userData.total / userData.pageSize));
