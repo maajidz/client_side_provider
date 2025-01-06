@@ -17,6 +17,10 @@ import {
   UpdateFamilyHistoryInterface,
 } from "@/types/familyHistoryInterface";
 import {
+  PharmacyInterface,
+  PharmacyRequestInterface,
+} from "@/types/pharmacyInterface";
+import {
   RecallsData,
   RecallsInterface,
   RecallsResponseInterface,
@@ -481,5 +485,29 @@ export const deleteAllergies = async ({ allergyId }: { allergyId: string }) => {
   });
   console.log(response.data);
   const data = await response.data;
+  return data;
+};
+
+/**
+ * * Pharmacy API
+ */
+export const getPharmacyData = async (params?: PharmacyRequestInterface) => {
+  const queryParams = new URLSearchParams({
+    address: params?.address || "",
+    contact: params?.contact || "",
+    name: params?.name || "",
+    type: params?.type || "",
+    zipCode: params?.zipCode || "",
+  }).toString();
+
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/pharmacy/all?${queryParams}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: PharmacyInterface[] = await response.data;
   return data;
 };
