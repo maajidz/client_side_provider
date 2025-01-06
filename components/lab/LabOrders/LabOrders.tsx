@@ -13,11 +13,11 @@ import { UserEncounterData } from "@/types/chartsInterface";
 // } from "@/components/ui/dialog";
 // import { getUserEncounterDetails } from "@/services/chartsServices";
 // import { PlusIcon } from "lucide-react";
-import SearchAndAddOrders from "./orderDialogsAndDrawers/SearchAndAddOrders";
+import SearchAndAddOrders from "../../../app/dashboard/labs/lab-orders/orderDialogsAndDrawers/SearchAndAddOrders";
 // import LoadingButton from "@/components/LoadingButton";
-import ViewOrdersDialog from "./orderDialogsAndDrawers/ViewOrdersDialog";
-import PastOrdersDialog from "./orderDialogsAndDrawers/PastOrdersDialog";
-import AddLabsDialog from "./orderDialogsAndDrawers/AddLabsDialog";
+import ViewOrdersDialog from "../../../app/dashboard/labs/lab-orders/orderDialogsAndDrawers/ViewOrdersDialog";
+import PastOrdersDialog from "../../../app/dashboard/labs/lab-orders/orderDialogsAndDrawers/PastOrdersDialog";
+import AddLabsDialog from "../../../app/dashboard/labs/lab-orders/orderDialogsAndDrawers/AddLabsDialog";
 
 // const mockData: LabOrdersInterface[] = [
 //   {
@@ -156,4 +156,3 @@ function LabOrders({ patientDetails }: { patientDetails: UserEncounterData }) {
 }
 
 export default LabOrders;
-

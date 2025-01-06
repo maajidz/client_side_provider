@@ -2,19 +2,21 @@
 import PageContainer from "@/components/layout/page-container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useEffect, useState } from "react";
-import LabOrders from "./lab-orders/LabOrders";
-import LabResults from "./lab-results/LabResults";
+import LabOrders from "./LabOrders/LabOrders";
+import LabResults from "./LabResults/LabResults";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { getUserEncounterDetails } from "@/services/chartsServices";
 import LoadingButton from "@/components/LoadingButton";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Lab() {
-  const [activeTab, setActiveTab] = useState("labResults");
+  const [activeTab, setActiveTab] = useState<string>("labResults");
   const encounterId = "34044ece-aad6-41f9-ac2b-f322a246043f";
-
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<UserEncounterData>();
-  useState<boolean>(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,30 +55,38 @@ export default function Lab() {
       <div className="space-y-4">
         <Tabs
           defaultValue="labResults"
+          className=""
           onValueChange={(value) => setActiveTab(value)}
         >
-          <div className="flex items-center justify-between border-b border-gray-300 pb-2">
-            <TabsList className="flex bg-transparent space-x-4">
-              <TabsTrigger
-                value="labResults"
-                className="text-sm font-medium text-gray-700 border-b-2 border-transparent data-[state=active]:text-blue-600 data-[state=active]:border-blue-600 hover:text-blue-600 hover:border-blue-600"
-              >
-                Lab Results
-              </TabsTrigger>
-              <TabsTrigger
-                value="labOrders"
-                className="text-sm font-medium text-gray-700 border-b-2 border-transparent data-[state=active]:text-blue-600 data-[state=active]:border-blue-600 hover:text-blue-600 hover:border-blue-600"
-              >
-                Lab Orders
-              </TabsTrigger>
+          <div className="flex flex-row justify-between gap-10">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="labResults">Lab Results</TabsTrigger>
+              <TabsTrigger value="labOrders">Lab Orders</TabsTrigger>
             </TabsList>
+            <Button
+              className="bg-[#84012A]"
+              onClick={() => {
+                if (activeTab === "labResults") {
+                  router.push("/dashboard/labs/create_lab_results");
+                } else {
+                  router.push("/dashboard/labs");
+                }
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <PlusIcon />
+                {activeTab === "labResults" ? "Lab Results" : "Lab Orders"}
+              </div>
+            </Button>
           </div>
-          <TabsContent value={activeTab}>
-            {activeTab === "labResults" ? <LabResults patientDetails={data} /> : <LabOrders patientDetails={data} />}
+          <TabsContent value="labResults">
+            <LabResults patientDetails={data} />
+          </TabsContent>
+          <TabsContent value="labOrders">
+            <LabOrders patientDetails={data} />
           </TabsContent>
         </Tabs>
       </div>
     </PageContainer>
   );
 }
-

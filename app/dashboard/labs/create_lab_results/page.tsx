@@ -1,8 +1,8 @@
-//dashboard/calendar
+//dashboard/lab/create-lab-results
 "use client";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import CreateLabResults from "@/components/lab/LabResults/CreateLabResults/CreateLabResults";
 import PageContainer from "@/components/layout/page-container";
-import Lab from "../../../components/lab/Lab";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
@@ -13,7 +13,7 @@ export default function Labs() {
     <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
-        <Lab />
+        <CreateLabResults />
       </div>
     </PageContainer>
   );
