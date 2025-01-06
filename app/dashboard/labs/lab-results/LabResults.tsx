@@ -30,7 +30,7 @@ function LabResults({ patientDetails }: { patientDetails: UserEncounterData }) {
     setLoading(true);
     const fetchAndSetResponse = async (pageNo: number) => {
       try {
-        const userData = await fetchUserDataResponse({ pageNo: pageNo });
+        const userData = await fetchUserDataResponse({ pageNo: pageNo , pageSize: 10});
         if (userData) {
           setUserData(userData.data);
         }
