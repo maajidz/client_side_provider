@@ -1,11 +1,11 @@
 import ApiFetch from "@/config/api";
 import { PatientMedicationInterface, PaymentInterface, UserAppointmentInterface, UserFormInterface, UserInfo, UserResponseInterface, UserSubscription } from "@/types/userInterface";
 
-export const fetchUserDataResponse = async ({ pageNo }: { pageNo: number }) => {
+export const fetchUserDataResponse = async ({ pageNo, pageSize }: { pageNo: number, pageSize: number }) => {
   try {
     const response = await ApiFetch({
       method: "get",
-      url: `/admin/users/list?page=${pageNo}&pageSize=15`,
+      url: `/admin/users/list?page=${pageNo}&pageSize=${pageSize}`,
     });
     console.log(response.data);
     const data: UserResponseInterface = await response.data;

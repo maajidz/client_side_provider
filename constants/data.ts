@@ -140,7 +140,19 @@ export const navItems: NavItem[] = [
     href: '/dashboard/labs',
     icon: 'pill',
     label: 'Labs'
-  }
+  },
+  {
+    title: 'Prescription',
+    href: '/dashboard/prescription',
+    icon: 'page',
+    label: 'Prescription'
+  },
+  {
+    title: 'Images',
+    href: '/dashboard/images',
+    icon: 'media',
+    label: 'Images'
+  },
 ];
 
 export const roles = [
