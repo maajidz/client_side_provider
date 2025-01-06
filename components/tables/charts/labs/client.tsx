@@ -32,7 +32,7 @@ export const LabResultsClient = () => {
 
   useEffect(() => {
     const fetchAndSetResponse = async (pageNo: number) => {
-      const userData = await fetchUserDataResponse({ pageNo: pageNo });
+      const userData = await fetchUserDataResponse({ pageNo: pageNo, pageSize: 15 });
       if (userData) {
         setUserResponse(userData.data);
         setTotalPages(Math.ceil(userData.total / userData.pageSize));
