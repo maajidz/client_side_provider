@@ -1,6 +1,7 @@
 //dashboard/lab/create-lab-results
 "use client";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import CreateLabOrders from "@/components/lab/LabOrders/CreateLabOrders/CreateLabOrders";
 import PageContainer from "@/components/layout/page-container";
 
 const breadcrumbItems = [
@@ -13,7 +14,7 @@ export default function Labs() {
     <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
-        {/* <CreateLabResults /> */}
+        <CreateLabOrders />
       </div>
     </PageContainer>
   );
