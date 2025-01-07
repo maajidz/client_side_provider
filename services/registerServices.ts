@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { ProviderDetails, UpdateProviderDetails } from "@/types/providerDetailsInterface";
+import { FetchProviderListInterface, ProviderDetails, UpdateProviderDetails } from "@/types/providerDetailsInterface";
 import { ProviderExistsDetails, RegisterInterface, RegisterResponseInterface } from "@/types/registerInterface";
 
 export const registerProvider = async ({
@@ -78,4 +78,15 @@ export const checkProviderExistsOrNot = async ({Authid}:{Authid: string}) => {
     const data: ProviderExistsDetails = await response.data;
     console.log(data);
     return data;
+};
+
+export const fetchProviderListDetails = async ({page, limit}:{page: number, limit: number}) => {
+  const response = await ApiFetch({
+    method: "get",
+    url: `/provider-details/list/all?page=${page}&limit=${limit}`,
+  });
+  console.log(response.data);
+  const data: FetchProviderListInterface = await response.data;
+  console.log(data);
+  return data;
 };

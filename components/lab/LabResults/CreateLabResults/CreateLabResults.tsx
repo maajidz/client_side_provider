@@ -39,6 +39,11 @@ import { useRouter } from "next/navigation";
 import { getLabsData } from "@/services/chartsServices";
 import { LabsDataResponse, Test } from "@/types/chartsInterface";
 import LoadingButton from "@/components/LoadingButton";
+import { createLabResultRequest } from "@/services/labResultServices";
+import { showToast } from "@/utils/utils";
+import { useToast } from "@/components/ui/use-toast";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
 
 const CreateLabResults = () => {
   const form = useForm<z.infer<typeof createLabResultsSchema>>({
@@ -54,8 +59,8 @@ const CreateLabResults = () => {
           name: "",
           result: "",
           unit: "",
-          referenceMin: "",
-          referenceMax: "",
+          referenceMin: undefined,
+          referenceMax: undefined,
           interpretation: "",
           comment: "",
           groupComment: "",
@@ -85,20 +90,26 @@ const CreateLabResults = () => {
     total: 0,
   });
   const [labTestResponse, setLabTestResponse] = useState<Test[]>([]);
+  const [providerListData, setProviderListData] =
+    useState<FetchProviderListInterface>({
+      data: [],
+      total: 0,
+    });
   const [selectedLab, setSelectedLab] = useState<string>("");
   const router = useRouter();
+  const { toast } = useToast();
 
-  const fetchLabsData = useCallback(async (page = 1) => {
+  const fetchLabsData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getLabsData({ page, limit: 10 });
+      const data = await getLabsData({ page: 1, limit: 10 });
       if (data) {
-        setLabResponse((prev) => ({
-          data: [...prev.data, ...data.data],
+        setLabResponse(() => ({
+          data: data.data,
           total: data.total,
         }));
         if (labResponse.total < data.total) {
-          await fetchLabsData(page + 1);
+          await fetchLabsData();
         }
       }
     } catch (e) {
@@ -107,6 +118,23 @@ const CreateLabResults = () => {
       setLoading(false);
     }
   }, [labResponse.total]);
+
+  const fetchProvidersList = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await fetchProviderListDetails({ page: 1, limit: 10 });
+      if (data) {
+        setProviderListData(() => ({
+          data: data.data,
+          total: data.total,
+        }));
+      }
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const fetchLabTestsData = useCallback(
     async (labId: string) => {
@@ -121,7 +149,8 @@ const CreateLabResults = () => {
 
   useEffect(() => {
     fetchLabsData();
-  }, [fetchLabsData]);
+    fetchProvidersList();
+  }, [fetchLabsData, fetchProvidersList]);
 
   useEffect(() => {
     if (selectedLab) {
@@ -133,8 +162,44 @@ const CreateLabResults = () => {
     patient.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const onSubmit = (values: z.infer<typeof createLabResultsSchema>) => {
+  const onSubmit = async (values: z.infer<typeof createLabResultsSchema>) => {
     console.log(values);
+    const requestData = {
+      userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+      reviewerId: values.reviewer,
+      dateTime: values.dateTime,
+      labId: values.labId,
+      testIds: values.testIds,
+      testResults: values.testResults.map((result) => ({
+        name: result.name,
+        result: result.result,
+        unit: result.unit || "",
+        min: result.referenceMin ?? 0,
+        max: result.referenceMax ?? 0,
+        interpretation: result.interpretation || "",
+        comment: result.comment || "",
+        groupComment: result.groupComment || "",
+      })),
+      tags: values.tags || "",
+    };
+    try {
+      const response = await createLabResultRequest({ requestData });
+      if (response) {
+        showToast({
+          toast,
+          type: "success",
+          message: "Lab Result saved sucessfully!",
+        });
+        router.replace('/dashboard/labs')
+      }
+    } catch (e) {
+      console.log("Error", e);
+      showToast({
+        toast,
+        type: "error",
+        message: "Error while saving Lab Results",
+      });
+    }
   };
 
   if (loading) {
@@ -149,6 +214,7 @@ const CreateLabResults = () => {
           <div className="flex gap-3">
             <Button
               variant={"outline"}
+              className="border border-[#84012A] text-[#84012A]"
               onClick={() => {
                 form.reset();
                 router.replace("/dashboard/labs");
@@ -227,10 +293,17 @@ const CreateLabResults = () => {
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="follow_up">Follow Up</SelectItem>
-                            <SelectItem value="vist_type_2">
-                              Vist Type 2
-                            </SelectItem>
+                            {providerListData.data.map((providerList) => {
+                              const providerId = providerList.providerDetails?.id ?? providerList.id
+                              return (
+                                (
+                                  <SelectItem
+                                    key={providerList.id}
+                                    value={providerId}
+                                  >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
+                                )
+                              )
+                            })}
                           </SelectContent>
                         </Select>
                       </div>
@@ -266,11 +339,11 @@ const CreateLabResults = () => {
                   <FormLabel>Lab Name</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={(value) => {
-                        field.onChange();
+                      value={field.value}
+                      onValueChange={(value: string) => {
+                        field.onChange(value);
                         setSelectedLab(value);
                       }}
-                      defaultValue={""}
                     >
                       <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select a lab" />
@@ -279,8 +352,8 @@ const CreateLabResults = () => {
                         {labResponse &&
                           labResponse.data &&
                           labResponse.data.length > 0 &&
-                          labResponse.data.map((lab, index) => (
-                            <SelectItem key={`${lab.id} -  ${index}`} value={lab.id}>
+                          labResponse.data.map((lab) => (
+                            <SelectItem key={lab.id} value={lab.id}>
                               {lab.name}
                             </SelectItem>
                           ))}
@@ -297,7 +370,6 @@ const CreateLabResults = () => {
               setSelectedTests={setSelectedTests}
               tests={labTestResponse}
             />
-
             {selectedTests.length > 0 && (
               <div className="test-groups">
                 {selectedTests.map((test, index) => (
@@ -360,7 +432,17 @@ const CreateLabResults = () => {
                             <FormItem>
                               <FormLabel>Min</FormLabel>
                               <FormControl>
-                                <Input placeholder="Min" {...field} />
+                                <Input
+                                  type="number"
+                                  placeholder="Min"
+                                  {...field}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    field.onChange(
+                                      value ? parseFloat(value) : undefined
+                                    );
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -374,7 +456,17 @@ const CreateLabResults = () => {
                             <FormItem>
                               <FormLabel>Max</FormLabel>
                               <FormControl>
-                                <Input placeholder="Max" {...field} />
+                                <Input
+                                  type="number"
+                                  placeholder="Max"
+                                  {...field}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    field.onChange(
+                                      value ? parseFloat(value) : undefined
+                                    );
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -470,7 +562,7 @@ export function DropdownMenuCheckboxesField({
                 key={test.id}
                 checked={selectedTests.includes(test.id)}
                 onCheckedChange={(checked) =>
-                  handleTestChange(test.name, checked)
+                  handleTestChange(test.id, checked)
                 }
               >
                 {test.name}

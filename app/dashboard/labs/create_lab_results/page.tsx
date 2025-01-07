@@ -7,6 +7,7 @@ import PageContainer from "@/components/layout/page-container";
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
   { title: "Labs", link: "/dashboard/labs" },
+  { title: "Create Lab Results", link: "/dashboard/labs/create_lab_results" },
 ];
 export default function Labs() {
   return (

@@ -1,154 +1,137 @@
-// import { DataTable } from "@/components/ui/data-table";
-import { Heading } from "@/components/ui/heading";
-import { UserEncounterData } from "@/types/chartsInterface";
-// import { columns } from "./columns";
-// import FilterOrders from "./FilterOrders";
-// import { Input } from "@/components/ui/input";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "@/components/ui/dialog";
-// import { getUserEncounterDetails } from "@/services/chartsServices";
-// import { PlusIcon } from "lucide-react";
-import SearchAndAddOrders from "../../../app/dashboard/labs/lab-orders/orderDialogsAndDrawers/SearchAndAddOrders";
-// import LoadingButton from "@/components/LoadingButton";
-import ViewOrdersDialog from "../../../app/dashboard/labs/lab-orders/orderDialogsAndDrawers/ViewOrdersDialog";
-import PastOrdersDialog from "../../../app/dashboard/labs/lab-orders/orderDialogsAndDrawers/PastOrdersDialog";
-import AddLabsDialog from "../../../app/dashboard/labs/lab-orders/orderDialogsAndDrawers/AddLabsDialog";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { filterLabOrdersSchema } from "@/schema/createLabOrderSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-// const mockData: LabOrdersInterface[] = [
-//   {
-//     userDetailsId: "odwin2jnz 2jd2dmkd ojfsklmc",
-//     tests: ["Comprehensive Metabolic Panel"],
-//     labs: ["abcd efgh hijk"],
-//     orderedBy: "Dr Amber Jenkins",
-//     date: "23 July, 2024",
-//     isSigned: false,
-//   },
-//   {
-//     userDetailsId: "odwin5kfb 2jd2dmkd djk3bfjh",
-//     tests: ["Colonoscopy"],
-//     labs: ["abcd efgh hijk"],
-//     orderedBy: "Dr Amber Jenkins",
-//     date: "13 March, 2024",
-//     isSigned: true,
-//   },
-//   {
-//     userDetailsId: "odwn2jn2b 2jd2dmkd djk3bflc",
-//     tests: ["Complete Thyroid Profile"],
-//     labs: ["abcd efgh hijk"],
-//     orderedBy: "Dr Rashida Akram",
-//     date: "12 September, 2022",
-//     isSigned: true,
-//   },
-// ];
 
-function LabOrders({ patientDetails }: { patientDetails: UserEncounterData }) {
-  // const [labOrdersData, setLabOrdersData] =
-  // useState<LabOrdersInterface[]>(mockData);
+function LabOrders() {
+  const form = useForm<z.infer<typeof filterLabOrdersSchema>>({
+    resolver: zodResolver(filterLabOrdersSchema),
+    defaultValues: {
+      orderedby: "",
+      status: "",
+      name: ""
+    },
+  })
 
-  // useEffect(() => {
-  //   const unwrapParams = async () => {
-  //     if (!encounterId) {
-  //       const resolvedParams = await params;
-  //       setEncounterId(resolvedParams.EncounterId);
-  //     }
-  //   };
-  //   unwrapParams();
-  // }, [encounterId, params]);
-
-  // const filterByOrderedBy = useMemo(
-  //   () => (orderedBy: string) => {
-  //     let filteredData: LabOrdersInterface[] = [];
-
-  //     if (orderedBy !== "all") {
-  //       filteredData = mockData.filter(
-  //         (order) => order.orderedBy === orderedBy
-  //       );
-  //     } else {
-  //       filteredData = mockData;
-  //     }
-
-  //     setLabOrdersData(filteredData);
-  //   },
-  //   [setLabOrdersData]
-  // );
-
-  // const filterByStatus = useMemo(
-  //   () => (status?: boolean) => {
-  //     let filteredData: LabOrdersInterface[] = [];
-
-  //     if (status !== undefined) {
-  //       filteredData = mockData.filter((order) => order.isSigned === status);
-  //     } else {
-  //       filteredData = mockData;
-  //     }
-
-  //     setLabOrdersData(filteredData);
-  //   },
-  //   [setLabOrdersData]
-  // );
-
+  function onSubmit(values: z.infer<typeof filterLabOrdersSchema>) {
+    console.log(values)
+  }
+  
   return (
     <>
-      <div className="flex items-start justify-between space-y-4">
-        <Heading
-          title={`Lab Orders`}
-          description="A list of lab orders that were assigned to the patients"
-        />
-        {/* <Dialog>
-          <DialogTrigger className="flex items-center px-4 py-2 text-white bg-[#84012A] rounded-md hover:bg-[#6C011F]">
-            <PlusIcon className="w-4 h-4 mr-2" />
-            Lab Orders
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Lab Orders</DialogTitle>
-            </DialogHeader>
-            <div className="flex flex-col gap-6">
-              <div className="flex gap-2 items-center">
-                <label htmlFor="patient-search" className="font-semibold">
-                  Patient:
-                </label>
-                <Input
-                  id="patient-search"
-                  type="text"
-                  placeholder="Search by name or ID..."
-                />
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-      <div className="space-y-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <FilterOrders
-            orders={mockData}
-            onSetFilteredByOrderedBy={filterByOrderedBy}
-            onSetFilteredByStatus={filterByStatus}
-          />
-        </div>
-        <DataTable
-          searchKey="labOrders"
-          columns={columns()}
-          data={labOrdersData}
-          pageNo={1}
-          totalPages={1}
-          onPageChange={() => {}}
-        /> */}
-      </div>
+      <div className="">
+        {/* Search Form */}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+          >
+            <FormField
+              control={form.control}
+              name="orderedby"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ordered By</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Reviewer" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="reviewer1">Reviewer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-      {/* Lab Orders Functions - Drawers and Dialogs */}
-      <div className="flex items-center justify-between bg-gray-100 p-6 rounded-lg shadow-md mt-4">
-        <span className="text-xl font-semibold text-gray-800">Labs</span>
-        <div className="flex justify-end">
-          <SearchAndAddOrders patientDetails={patientDetails} />
-          <AddLabsDialog patientDetails={patientDetails} />
-          <PastOrdersDialog patientDetails={patientDetails} />
-          <ViewOrdersDialog patientDetails={patientDetails} />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="signed">Signed</SelectItem>
+                        <SelectItem value="unsigned">Unsigned</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Search Patient" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex items-end">
+              <Button type="submit">Search</Button>
+            </div>
+          </form>
+        </Form>
+
+        {/* Results Table */}
+        <div className="mt-6">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Patients</TableHead>
+                <TableHead>Tests</TableHead>
+                <TableHead>Lab</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Interpretation</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {/* {filteredData.map((pharmacy, index) => (
+                <TableRow key={index}>
+                  <TableCell>{pharmacy.name}</TableCell>
+                  <TableCell>{pharmacy.type}</TableCell>
+                  <TableCell>{pharmacy.address}</TableCell>
+                  <TableCell>{pharmacy.contact}</TableCell>
+                  <TableCell>{pharmacy.zip}</TableCell>
+                </TableRow>
+              ))}
+              {filteredData.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    No results found.
+                  </TableCell>
+                </TableRow>
+              )} */}
+            </TableBody>
+          </Table>
         </div>
       </div>
     </>

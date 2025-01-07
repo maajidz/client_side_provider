@@ -13,10 +13,11 @@ import { useRouter } from "next/navigation";
 
 export default function Lab() {
   const [activeTab, setActiveTab] = useState<string>("labResults");
-  const encounterId = "34044ece-aad6-41f9-ac2b-f322a246043f";
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<UserEncounterData>();
   const router = useRouter();
+
+  const encounterId = "34044ece-aad6-41f9-ac2b-f322a246043f";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,7 +56,6 @@ export default function Lab() {
       <div className="space-y-4">
         <Tabs
           defaultValue="labResults"
-          className=""
           onValueChange={(value) => setActiveTab(value)}
         >
           <div className="flex flex-row justify-between gap-10">
@@ -65,13 +65,13 @@ export default function Lab() {
             </TabsList>
             <Button
               className="bg-[#84012A]"
-              onClick={() => {
-                if (activeTab === "labResults") {
-                  router.push("/dashboard/labs/create_lab_results");
-                } else {
-                  router.push("/dashboard/labs");
-                }
-              }}
+              onClick={() => 
+                router.push(
+                  activeTab === "labResults"
+                    ? "/dashboard/labs/create_lab_results"
+                    : "/dashboard/labs"
+                )
+               }
             >
               <div className="flex items-center gap-3">
                 <PlusIcon />
@@ -80,10 +80,10 @@ export default function Lab() {
             </Button>
           </div>
           <TabsContent value="labResults">
-            <LabResults patientDetails={data} />
+            <LabResults />
           </TabsContent>
           <TabsContent value="labOrders">
-            <LabOrders patientDetails={data} />
+            <LabOrders />
           </TabsContent>
         </Tabs>
       </div>
