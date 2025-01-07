@@ -87,7 +87,7 @@ function PharmacyDialog({ form }: PharmacyDialogInterface) {
         (!values.state ||
           pharmacy.state.toLowerCase().includes(values.state.toLowerCase())) &&
         (!values.zip || pharmacy.zipCode.includes(values.zip)) &&
-        (!values.phone || pharmacy.country.includes(values.phone))
+        (!values.phone || pharmacy.phoneNumber.includes(values.phone))
       );
     });
 
