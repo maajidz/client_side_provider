@@ -24,9 +24,15 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { addPharmacyFormSchema } from "@/schema/addPharmacySchema";
-import { getPharmacyData } from "@/services/chartDetailsServices";
+import {
+  addPharmacyData,
+  getPharmacyData,
+} from "@/services/chartDetailsServices";
+import { UserEncounterData } from "@/types/chartsInterface";
 import { PharmacyInterface } from "@/types/pharmacyInterface";
+import { showToast } from "@/utils/utils";
 import { columns } from "./column";
 import { PlusCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -35,23 +41,28 @@ import { z } from "zod";
 
 interface PharmacyDialogInterface {
   form: UseFormReturn<z.infer<typeof addPharmacyFormSchema>>;
+  patientDetails: UserEncounterData;
 }
 
-function PharmacyDialog({ form }: PharmacyDialogInterface) {
+function PharmacyDialog({ form, patientDetails }: PharmacyDialogInterface) {
   // Data States
   const [originalData, setOriginalData] = useState<PharmacyInterface[]>([]);
   const [filteredData, setFilteredData] = useState<PharmacyInterface[]>([]);
 
   // Loading State
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState({ get: false, post: false });
 
   // Pagination States
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  // Toast State
+  const { toast } = useToast();
+
+  // GET Pharmacy Data
   const fetchPharmacyData = useCallback(async () => {
-    setIsLoading(true);
+    setIsLoading((prev) => ({ ...prev, get: true }));
 
     try {
       const response = await getPharmacyData();
@@ -60,10 +71,11 @@ function PharmacyDialog({ form }: PharmacyDialogInterface) {
     } catch (err) {
       console.error("Error fetching pharmacy data:", err);
     } finally {
-      setIsLoading(false);
+      setIsLoading((prev) => ({ ...prev, get: false }));
     }
   }, []);
 
+  // Filter Using Query Params
   const onSubmit = (values: z.infer<typeof addPharmacyFormSchema>) => {
     const noSearchParams =
       !values.name &&
@@ -112,6 +124,40 @@ function PharmacyDialog({ form }: PharmacyDialogInterface) {
   const uniqueStates = Array.from(
     new Set(filteredData.map((pharmacy) => pharmacy.state))
   );
+
+  // POST Pharmacy Data
+  const handleAdd = async (row: PharmacyInterface) => {
+    try {
+      setIsLoading((prev) => ({ ...prev, post: true }));
+
+      if (patientDetails?.userDetails?.id) {
+        const pharmacyData = {
+          ...row,
+          userDetailsID: patientDetails.userDetails.id,
+        };
+
+        await addPharmacyData(pharmacyData);
+
+        showToast({
+          toast,
+          type: "success",
+          message: "Pharmacy added successfully",
+        });
+      } else {
+        throw new Error("User ID is missing");
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not add selected pharmacy",
+        });
+      }
+    } finally {
+      setIsLoading((prev) => ({ ...prev, post: false }));
+    }
+  };
 
   return (
     <Dialog>
@@ -222,7 +268,7 @@ function PharmacyDialog({ form }: PharmacyDialogInterface) {
           </Form>
 
           {/* Results Table */}
-          {isLoading ? (
+          {isLoading.get || isLoading.post ? (
             <LoadingButton />
           ) : filteredData.length === 0 ? (
             <p>No pharmacies found.</p>
@@ -230,7 +276,7 @@ function PharmacyDialog({ form }: PharmacyDialogInterface) {
             <div className="mt-6">
               <DataTable
                 searchKey="pharmacy"
-                columns={columns()}
+                columns={columns(handleAdd)}
                 data={paginatedData}
                 pageNo={currentPage}
                 totalPages={totalPages}

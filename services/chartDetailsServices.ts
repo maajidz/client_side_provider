@@ -17,6 +17,7 @@ import {
   UpdateFamilyHistoryInterface,
 } from "@/types/familyHistoryInterface";
 import {
+  AddPharmacyInterface,
   PharmacyInterface,
   PharmacyRequestInterface,
 } from "@/types/pharmacyInterface";
@@ -509,5 +510,21 @@ export const getPharmacyData = async (params?: PharmacyRequestInterface) => {
   });
 
   const data: PharmacyInterface[] = await response.data;
+  return data;
+};
+
+export const addPharmacyData = async (requestData: AddPharmacyInterface) => {
+  const response = await ApiFetch({
+    method: "POST",
+    url: "/provider/pharmacy",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  console.log(response.data);
+
+  const data = await response.data;
   return data;
 };

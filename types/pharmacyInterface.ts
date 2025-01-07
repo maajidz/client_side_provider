@@ -12,6 +12,7 @@ export interface PharmacyInterface {
   updatedAt: string;
 }
 
+// Params interface
 export interface PharmacyRequestInterface {
   name?: string;
   /** *
@@ -23,3 +24,13 @@ export interface PharmacyRequestInterface {
   zipCode?: string;
 }
 
+export interface AddPharmacyInterface {
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  zipCode: string;
+  phoneNumber: string;
+  userDetailsID: string;
+}
