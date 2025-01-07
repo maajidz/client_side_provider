@@ -69,7 +69,7 @@ export default function Lab() {
                 router.push(
                   activeTab === "labResults"
                     ? "/dashboard/labs/create_lab_results"
-                    : "/dashboard/labs"
+                    : "/dashboard/labs/create_lab_orders"
                 )
                }
             >

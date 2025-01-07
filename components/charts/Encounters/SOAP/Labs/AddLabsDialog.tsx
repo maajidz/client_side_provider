@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
-import { LabsDataResponse, Test, UserEncounterData } from '@/types/chartsInterface'
+import { LabsDataResponse, Test } from '@/types/chartsInterface'
 import { createLabOrder, createLabs, getLabsData } from '@/services/chartsServices'
 import { Input } from '@/components/ui/input'
 import LoadingButton from '@/components/LoadingButton'
@@ -20,7 +20,7 @@ import { RootState } from '@/store/store'
 import { useToast } from '@/hooks/use-toast'
 import { showToast } from '@/utils/utils'
 
-const AddLabsDialog = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+const AddLabsDialog = ({  userDetailsId }: { userDetailsId: string  }) => {
     const [response, setResponse] = useState<LabsDataResponse>({ data: [], total: 0 })
     const [loadingLabs, setLoadingLabs] = useState<boolean>(false)
     const [loadingOrder, setLoadingOrder] = useState<boolean>(false)
@@ -93,7 +93,7 @@ const AddLabsDialog = ({ patientDetails }: { patientDetails: UserEncounterData }
 
         setLoadingOrder(true);
         const requestData = {
-            userDetailsId: patientDetails.userDetails.id,
+            userDetailsId: userDetailsId,
             orderedBy: providerDetails.providerId,
             date: new Date().toISOString().split('T')[0],
             labs: [

@@ -7,11 +7,11 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
-import { LabOrdersDataInterface, UserEncounterData } from '@/types/chartsInterface'
+import { LabOrdersDataInterface } from '@/types/chartsInterface'
 import { getLabOrdersData } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
 
-const ViewOrdersDialog = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+const ViewOrdersDialog = ({  userDetailsId }: { userDetailsId: string }) => {
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [response, setResponse] = useState<LabOrdersDataInterface>();
@@ -19,7 +19,7 @@ const ViewOrdersDialog = ({ patientDetails }: { patientDetails: UserEncounterDat
     const fetchAndSetResponse = async () => {
         setLoading(true)
         try {
-            const data = await getLabOrdersData({ userDetailsId: patientDetails?.userDetails.id });
+            const data = await getLabOrdersData({ userDetailsId: userDetailsId });
             if (data) {
                 setResponse(data);
             }

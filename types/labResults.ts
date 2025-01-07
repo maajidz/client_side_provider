@@ -18,3 +18,20 @@ export interface TestResult {
   comment: string;
   groupComment: string;
 }
+
+export interface LabResultsInterface {
+  total: number
+  page: string
+  limit: string
+  results: Result[]
+}
+
+export interface Result {
+  id: string
+  reviewerId: string
+  dateTime: string
+  tags: string
+  file: any
+  createdAt: string
+  updatedAt: string
+}

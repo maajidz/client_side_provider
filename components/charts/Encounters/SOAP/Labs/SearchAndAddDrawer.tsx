@@ -12,7 +12,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { LabsDataResponse, Test, UserEncounterData } from '@/types/chartsInterface'
+import { LabsDataResponse, Test } from '@/types/chartsInterface'
 import { createLabOrder, getLabsData } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
 import FormLabels from '@/components/custom_buttons/FormLabels'
@@ -21,7 +21,7 @@ import { RootState } from '@/store/store'
 import { useToast } from '@/hooks/use-toast'
 import { showToast } from '@/utils/utils'
 
-const SearchAndAddDrawer = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+const SearchAndAddDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
     const [response, setResponse] = useState<LabsDataResponse>({ data: [], total: 0 });
     const [labTestResponse, setLabTestResponse] = useState<Test[]>([]);
     const [loadingLabs, setLoadingLabs] = useState<boolean>(false);
@@ -69,7 +69,7 @@ const SearchAndAddDrawer = ({ patientDetails }: { patientDetails: UserEncounterD
 
         setLoadingOrder(true);
         const requestData = {
-            userDetailsId: patientDetails.userDetails.id,
+            userDetailsId: userDetailsId,
             orderedBy: providerDetails.providerId,
             date: new Date().toISOString().split('T')[0],
             labs: [
