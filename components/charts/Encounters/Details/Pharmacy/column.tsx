@@ -10,8 +10,8 @@ export const columns = (): ColumnDef<PharmacyInterface>[] => [
     enableSorting: true,
   },
   {
-    accessorKey: "type",
-    header: "Type",
+    accessorKey: "city",
+    header: "City",
   },
   {
     accessorKey: "address",
@@ -24,6 +24,14 @@ export const columns = (): ColumnDef<PharmacyInterface>[] => [
   {
     accessorKey: "country",
     header: "Country",
+  },
+  {
+    accessorKey: "phoneNumber",
+    header: "Phone No.",
+  },
+  {
+    accessorKey: 'zipCode',
+    header: 'Zip Code'
   },
   {
     accessorKey: "add",
