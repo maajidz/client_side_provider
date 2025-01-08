@@ -87,7 +87,7 @@ const MedicationDetailsDialog = ({
         showToast({
           toast,
           type: "success",
-          message: "Pharmacy added successfully",
+          message: "Medication prescription added successfully",
         });
       } else {
         throw new Error("Some fields are missing");
@@ -97,7 +97,7 @@ const MedicationDetailsDialog = ({
         showToast({
           toast,
           type: "error",
-          message: "Could not add selected pharmacy",
+          message: "Could not create medication prescription",
         });
       }
     } finally {
