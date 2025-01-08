@@ -21,11 +21,12 @@ import { getLabResultList } from "@/services/labResultServices";
 import { RootState } from "@/store/store";
 import { LabResultsInterface } from "@/types/labResults";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "./columns";
+import LoadingButton from "@/components/LoadingButton";
 
 function LabResults() {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -47,7 +48,7 @@ function LabResults() {
     console.log(values);
   }
 
-  const fetchLabResultsList = async (page: number) => {
+  const fetchLabResultsList = useCallback(async (page: number) => {
     try {
       if (providerDetails) {
         const response = await getLabResultList({
@@ -64,13 +65,15 @@ function LabResults() {
     } catch (e) {
       console.log("Error", e);
     }
-  };
+  }, [providerDetails]);
 
   useEffect(() => {
     fetchLabResultsList(page);
-  }, [page]);
+  }, [page, fetchLabResultsList]);
 
-  if(loading)
+  if(loading){
+    return <LoadingButton />
+  }
 
   return (
     <>

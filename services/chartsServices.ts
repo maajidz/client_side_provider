@@ -429,8 +429,8 @@ export const getImagesTestsData = async ({
 };
 
 export const getLabOrdersData = async ({
-  userDetailsId,
-  providerId,
+  userDetailsId ="",
+  providerId ="",
   page,
   limit,
 }: {
