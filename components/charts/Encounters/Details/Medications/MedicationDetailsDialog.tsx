@@ -1,4 +1,5 @@
-import React from "react";
+import LoadingButton from "@/components/LoadingButton";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -22,28 +23,89 @@ import {
   SelectTrigger,
   SelectItem,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/hooks/use-toast";
 import { addMedicationFormSchema } from "@/schema/addMedicationSchema";
-import { MedicationList } from "./Medications";
+import { createMedicationPrescription } from "@/services/chartDetailsServices";
+import { UserEncounterData } from "@/types/chartsInterface";
+import {
+  CreateMedicationPrescriptionInterface,
+  MedicationResultInterface,
+} from "@/types/medicationInterface";
+import { showToast } from "@/utils/utils";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 interface MedicationDetailsDialogProps {
   isOpen: boolean;
-  medication: MedicationList | null;
+  patientDetails: UserEncounterData;
+  selectedMedication: MedicationResultInterface | undefined;
   onClose: () => void;
-  form: UseFormReturn<z.infer<typeof addMedicationFormSchema>>; // Replace `any` with the form schema type if available
-  onSubmit?: (values: z.infer<typeof addMedicationFormSchema>) => Promise<void>; // Optional submit handler for better flexibility
 }
 
-const MedicationDetailsDialog: React.FC<MedicationDetailsDialogProps> = ({
+const MedicationDetailsDialog = ({
   isOpen,
-  medication,
+  patientDetails,
+  selectedMedication,
   onClose,
-  form,
-  onSubmit,
-}) => {
-  const handleSubmit = form.handleSubmit(onSubmit || (() => Promise.resolve()));
+}: MedicationDetailsDialogProps) => {
+  // Loading State
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // Toast State
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof addMedicationFormSchema>>({
+    resolver: zodResolver(addMedicationFormSchema),
+    defaultValues: {
+      directions: "",
+      fromDate: new Date().toISOString().split("T")[0],
+      toDate: new Date().toISOString().split("T")[0],
+      status: "Active",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof addMedicationFormSchema>) => {
+    console.log("Form Values:", values);
+    setLoading(true);
+    try {
+      if (
+        patientDetails?.userDetails.id &&
+        patientDetails.providerID &&
+        selectedMedication?.id
+      ) {
+        const medicationData: CreateMedicationPrescriptionInterface = {
+          ...values,
+          medicationNameId: selectedMedication?.id,
+          providerId: patientDetails?.providerID,
+          userDetailsId: patientDetails?.userDetails?.id,
+        };
+
+        await createMedicationPrescription(medicationData);
+
+        showToast({
+          toast,
+          type: "success",
+          message: "Pharmacy added successfully",
+        });
+      } else {
+        throw new Error("Some fields are missing");
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not add selected pharmacy",
+        });
+      }
+    } finally {
+      form.reset();
+      setLoading(false);
+      onClose();
+    }
+  };
 
   return (
     <Dialog open={isOpen}>
@@ -51,21 +113,23 @@ const MedicationDetailsDialog: React.FC<MedicationDetailsDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Add Medication</DialogTitle>
         </DialogHeader>
-        {medication ? (
+        {loading ? (
+          <LoadingButton />
+        ) : selectedMedication ? (
           <div className="mb-4">
             <p>
-              <strong>Medication:</strong> {medication.productName}
+              <strong>Medication:</strong> {selectedMedication?.productName}
             </p>
             <p>
-              <strong>Details:</strong> {medication.strength},{" "}
-              {medication.route}, {medication.doseForm}
+              <strong>Details:</strong> {selectedMedication?.strength},
+              {selectedMedication?.route}, {selectedMedication?.doseForm}
             </p>
           </div>
         ) : (
           <p>No medication selected</p>
         )}
         <Form {...form}>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-5">
               <FormField
                 control={form.control}
@@ -142,7 +206,10 @@ const MedicationDetailsDialog: React.FC<MedicationDetailsDialogProps> = ({
                 >
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-[#84012A] text-white">
+                <Button
+                  type="submit"
+                  className="bg-[#84012A] text-white hover:bg-[#6C011F]"
+                >
                   Save
                 </Button>
               </div>
@@ -155,4 +222,3 @@ const MedicationDetailsDialog: React.FC<MedicationDetailsDialogProps> = ({
 };
 
 export default MedicationDetailsDialog;
-

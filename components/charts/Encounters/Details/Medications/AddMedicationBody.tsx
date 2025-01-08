@@ -1,17 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
+import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
   SelectContent,
@@ -19,174 +9,182 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MedicationList } from "./Medications";
+import { getMedicationData } from "@/services/chartDetailsServices";
+import { UserEncounterData } from "@/types/chartsInterface";
+import { MedicationResultInterface } from "@/types/medicationInterface";
+import { columns } from "./column";
+import { useCallback, useEffect, useState } from "react";
+import MedicationDetailsDialog from "./MedicationDetailsDialog";
 
-const AddMedicationBody = ({
-  onAddClick,
-}: {
-  onAddClick: (medication: MedicationList) => void;
-}) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [strengthFilter, setStrengthFilter] = useState("all");
-  const [routeFilter, setRouteFilter] = useState("all");
-  const [doseFormFilter, setDoseFormFilter] = useState("all");
+interface AddMedicationBodyProps {
+  patientDetails: UserEncounterData;
+}
 
-  const filteredMedications = medications.filter((med) => {
-    return (
-      med.productName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (strengthFilter === "all" || med.strength === strengthFilter) &&
-      (routeFilter === "all" || med.route === routeFilter) &&
-      (doseFormFilter === "all" || med.doseForm === doseFormFilter)
-    );
+const AddMedicationBody = ({ patientDetails }: AddMedicationBodyProps) => {
+  // Medication Data States
+  const [medicationData, setMedicationData] = useState<
+    MedicationResultInterface[]
+  >([]);
+  const [filteredData, setFilteredData] = useState<MedicationResultInterface[]>(
+    []
+  );
+
+  // Add Medication Dialog States
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
+  const [selectedMedication, setSelectedMedication] = useState<
+    MedicationResultInterface | undefined
+  >(undefined);
+
+  // Pages States
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit] = useState(10);
+
+  // Filter States
+  const [filters, setFilters] = useState({
+    strength: "all",
+    route: "all",
+    doseForm: "all",
   });
+
+  // Loading States
+  const [isLoading, setIsLoading] = useState({ get: false, post: false });
+
+  // Get Medication Data
+  const fetchMedicationData = useCallback(async () => {
+    setIsLoading((prev) => ({ ...prev, get: true }));
+
+    try {
+      const response = await getMedicationData({
+        page: currentPage,
+        limit: limit,
+      });
+      setMedicationData(response.result);
+      setFilteredData(response.result);
+
+      setTotalPages(Math.ceil(response.total / limit));
+    } catch (err) {
+      console.error("Error fetching pharmacy data:", err);
+    } finally {
+      setIsLoading((prev) => ({ ...prev, get: false }));
+    }
+  }, [currentPage, limit]);
+
+  // Apply Filters
+  const applyFilters = useCallback(() => {
+    const filtered = medicationData.filter((medication) => {
+      return (
+        (filters.strength === "all" ||
+          medication?.strength === filters.strength) &&
+        (filters.route === "all" || medication?.route === filters.route) &&
+        (filters.doseForm === "all" ||
+          medication?.doseForm === filters.doseForm)
+      );
+    });
+    setFilteredData(filtered);
+  }, [medicationData, filters]);
+
+  // Effects
+  useEffect(() => {
+    fetchMedicationData();
+  }, [fetchMedicationData]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters, applyFilters]);
+
+  const getUniqueValues = <T,>(data: T[], accessor: (item: T) => string) => {
+    return Array.from(new Set(data.map(accessor))).filter(Boolean);
+  };
+
+  // Filter Handlers
+  const handleFilterChange = (filterKey: string, value: string) => {
+    setFilters((prev) => ({ ...prev, [filterKey]: value }));
+  };
+
+  // Handle Selected Medication
+  const handleSelectedMedication = (row: MedicationResultInterface) => {
+    setIsDetailsDialogOpen(true);
+    setSelectedMedication(row);
+  };
 
   return (
     <div className="p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Input
-          placeholder="Search medications..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full"
-        />
-        <Button>Search</Button>
-      </div>
-
       <div className="flex gap-4 mb-4">
         <Select
-          onValueChange={(value) => setStrengthFilter(value)}
-          defaultValue=""
+          onValueChange={(value) => handleFilterChange("strength", value)}
         >
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Strength" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value="60mg">60mg</SelectItem>
-            <SelectItem value="10mg">10mg</SelectItem>
-            <SelectItem value="20mg">20mg</SelectItem>
-            <SelectItem value="5mg">5mg</SelectItem>
-            <SelectItem value="0.1%">0.1%</SelectItem>
-            <SelectItem value="15mg/5mL">15mg/5mL</SelectItem>
-            <SelectItem value="bulk">Bulk</SelectItem>
+            {getUniqueValues(filteredData, (item) => item.strength).map(
+              (strength) => (
+                <SelectItem key={strength} value={strength}>
+                  {strength}
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
 
-        <Select
-          onValueChange={(value) => setRouteFilter(value)}
-          defaultValue=""
-        >
+        <Select onValueChange={(value) => handleFilterChange("route", value)}>
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Route" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value="oral">Oral</SelectItem>
-            <SelectItem value="topical">Topical</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
+            {getUniqueValues(filteredData, (item) => item.route).map(
+              (route) => (
+                <SelectItem key={route} value={route}>
+                  {route}
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
 
         <Select
-          onValueChange={(value) => setDoseFormFilter(value)}
-          defaultValue=""
+          onValueChange={(value) => handleFilterChange("doseForm", value)}
         >
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Dose Form" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value="tablet">Tablet</SelectItem>
-            <SelectItem value="cream">Cream</SelectItem>
-            <SelectItem value="solution">Solution</SelectItem>
-            <SelectItem value="powder">Powder</SelectItem>
+            {getUniqueValues(filteredData, (item) => item.doseForm).map(
+              (doseForm) => (
+                <SelectItem key={doseForm} value={doseForm}>
+                  {doseForm}
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
       </div>
 
-      <Table>
-        <TableCaption>Available Medications</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="font-semibold">Product Name</TableHead>
-            <TableHead className="font-semibold">Trade Name</TableHead>
-            <TableHead className="font-semibold text-right">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredMedications.map((med, index) => (
-            <TableRow key={index}>
-              <TableCell>{med.productName}</TableCell>
-              <TableCell>{med.tradeName}</TableCell>
-              <TableCell className="text-right">
-                <Button
-                  variant="link"
-                  className="text-blue-500"
-                  onClick={() => {
-                    onAddClick(med);
-                  }}
-                >
-                  Add
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {/* Data Table */}
+      {isLoading.get || isLoading.post ? (
+        <LoadingButton />
+      ) : (
+        <DataTable
+          searchKey="medications"
+          columns={columns(handleSelectedMedication)}
+          data={filteredData}
+          pageNo={currentPage}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setCurrentPage(newPage)}
+        />
+      )}
+      <MedicationDetailsDialog
+        isOpen={isDetailsDialogOpen}
+        patientDetails={patientDetails}
+        selectedMedication={selectedMedication}
+        onClose={() => setIsDetailsDialogOpen(false)}
+      />
     </div>
   );
 };
 
 export default AddMedicationBody;
-
-const medications = [
-  {
-    productName: "Prednisone 60 milligram(s) oral tablet",
-    tradeName: "predniSONE",
-    strength: "60mg",
-    route: "oral",
-    doseForm: "tablet",
-  },
-  {
-    productName: "predniSONE 10 mg tablet",
-    tradeName: "predniSONE",
-    strength: "10mg",
-    route: "oral",
-    doseForm: "tablet",
-  },
-  {
-    productName: "prednisoLONE sodium phosphate 15 mg/5 mL oral solution",
-    tradeName: "prednisoLONE SODIUM PHOSPHATE",
-    strength: "15mg/5mL",
-    route: "oral",
-    doseForm: "solution",
-  },
-  {
-    productName: "prednicarbate 0.1 % topical cream",
-    tradeName: "PREDNICARBATE",
-    strength: "0.1%",
-    route: "topical",
-    doseForm: "cream",
-  },
-  {
-    productName: "predniSONE 20 mg tablet",
-    tradeName: "predniSONE",
-    strength: "20mg",
-    route: "oral",
-    doseForm: "tablet",
-  },
-  {
-    productName: "predniSONE 5 mg tablet",
-    tradeName: "predniSONE",
-    strength: "5mg",
-    route: "oral",
-    doseForm: "tablet",
-  },
-  {
-    productName: "prednisoLONE sod phos (bulk) powder",
-    tradeName: "prednisoLONE SODIUM PHOSPHATE",
-    strength: "bulk",
-    route: "other",
-    doseForm: "powder",
-  },
-];

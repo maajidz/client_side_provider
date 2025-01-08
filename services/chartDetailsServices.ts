@@ -17,6 +17,12 @@ import {
   UpdateFamilyHistoryInterface,
 } from "@/types/familyHistoryInterface";
 import {
+  CreateMedicationPrescriptionInterface,
+  MedicationListResponseInterface,
+  MedicationPrescriptionResponseInterface,
+  MedicationQueryParamsInterface,
+} from "@/types/medicationInterface";
+import {
   AddPharmacyInterface,
   PharmacyInterface,
   PharmacyRequestInterface,
@@ -526,5 +532,65 @@ export const addPharmacyData = async (requestData: AddPharmacyInterface) => {
   console.log(response.data);
 
   const data = await response.data;
+  return data;
+};
+
+/**
+ * * Medications API
+ */
+export const getMedicationData = async (
+  params?: MedicationQueryParamsInterface
+) => {
+  const queryParams = new URLSearchParams({
+    strength: params?.strength || "",
+    route: params?.route || "",
+    doseForm: params?.doseForm || "",
+    // Convert to string if it's a number
+    // because URLSearchParams requires each value to be a string
+    page: params?.page ? String(params.page) : "",
+    limit: params?.limit ? String(params.limit) : "",
+  }).toString();
+
+  const response = await ApiFetch({
+    url: `/provider/medication/name/all?${queryParams}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: MedicationListResponseInterface = await response.data;
+  return data;
+};
+
+export const getMedicationPrescription = async () => {
+  /**
+   * TODO: Add query parameters for "page" & "limit"
+   */
+  const response = ApiFetch({
+    url: `/provider/medication/precription/all?page=${1}&limit=${10}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: MedicationPrescriptionResponseInterface = (await response).data;
+  return data;
+};
+
+export const createMedicationPrescription = async (
+  requestData: CreateMedicationPrescriptionInterface
+) => {
+  const response = ApiFetch({
+    url: "/provider/medication/precription",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = (await response).data;
   return data;
 };
