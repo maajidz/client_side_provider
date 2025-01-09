@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { getImagesTestsData } from "@/services/chartsServices";
 import { ImagesTestsResponseInterface } from "@/types/chartsInterface";
@@ -27,7 +27,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
-import { group } from "console";
 
 const CreateImageResults = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
