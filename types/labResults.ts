@@ -1,3 +1,5 @@
+import { Test } from "./chartsInterface";
+
 export interface CreateLabResults {
   userDetailsId: string;
   reviewerId: string;
@@ -32,6 +34,14 @@ export interface Result {
   dateTime: string
   tags: string
   file: any
+  createdAt: string
+  updatedAt: string
+  tests: Test[]
+  testResults: TestResultResponse[]
+}
+
+export interface TestResultResponse extends TestResult {
+  id: string
   createdAt: string
   updatedAt: string
 }

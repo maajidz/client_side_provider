@@ -1,32 +1,87 @@
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { DataTable } from "@/components/ui/data-table";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 import { filterLabOrdersSchema } from "@/schema/createLabOrderSchema";
+import { getLabOrdersData } from "@/services/chartsServices";
+import { RootState } from "@/store/store";
+import { LabOrdersDataInterface } from "@/types/chartsInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { z } from "zod";
-
+import { columns } from "./columns";
+import LoadingButton from "@/components/LoadingButton";
 
 function LabOrders() {
+  const providerDetails = useSelector((state: RootState) => state.login);
+  const [orderList, setOrderList] = useState<LabOrdersDataInterface>();
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const form = useForm<z.infer<typeof filterLabOrdersSchema>>({
     resolver: zodResolver(filterLabOrdersSchema),
     defaultValues: {
       orderedby: "",
       status: "",
-      name: ""
+      name: "",
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof filterLabOrdersSchema>) {
-    console.log(values)
+    console.log(values);
   }
-  
+
+  const fetchLabOrdersList = useCallback(
+    async (page: number) => {
+      try {
+        setLoading(true);
+        const limit = 4;
+        if (providerDetails) {
+          const response = await getLabOrdersData({
+            providerId: providerDetails.providerId,
+            limit: limit,
+            page: page,
+          });
+          if (response) {
+            setOrderList(response);
+            setTotalPages(Math.ceil(response.total / limit));
+          }
+        }
+        setLoading(false);
+      } catch (e) {
+        console.log("Error", e);
+      }
+    },
+    [providerDetails]
+  );
+
+  useEffect(() => {
+    fetchLabOrdersList(page);
+  }, [page, fetchLabOrdersList]);
+
+  if (loading) {
+    return <LoadingButton />;
+  }
+
   return (
     <>
       <div className="">
-        {/* Search Form */}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -100,38 +155,17 @@ function LabOrders() {
             </div>
           </form>
         </Form>
-
-        {/* Results Table */}
-        <div className="mt-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Patients</TableHead>
-                <TableHead>Tests</TableHead>
-                <TableHead>Lab</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Interpretation</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {/* {filteredData.map((pharmacy, index) => (
-                <TableRow key={index}>
-                  <TableCell>{pharmacy.name}</TableCell>
-                  <TableCell>{pharmacy.type}</TableCell>
-                  <TableCell>{pharmacy.address}</TableCell>
-                  <TableCell>{pharmacy.contact}</TableCell>
-                  <TableCell>{pharmacy.zip}</TableCell>
-                </TableRow>
-              ))}
-              {filteredData.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center">
-                    No results found.
-                  </TableCell>
-                </TableRow>
-              )} */}
-            </TableBody>
-          </Table>
+        <div className="py-5">
+          {orderList?.data && (
+            <DataTable
+              searchKey="id"
+              columns={columns()}
+              data={orderList?.data}
+              pageNo={page}
+              totalPages={totalPages}
+              onPageChange={(newPage: number) => setPage(newPage)}
+            />
+          )}
         </div>
       </div>
     </>
