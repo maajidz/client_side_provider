@@ -23,6 +23,13 @@ import { createImageResultsSchema } from "@/schema/createImageResultsSchema";
 import UploadImageResults from "./UploadImageResults";
 import { TestsField } from "./TestsField";
 import CreateImageResultHeader from "./CreateImageResultHeader";
+import { createImageResultRequest } from "@/services/imageResultServices";
+import { CreateImageResultInterface } from "@/types/imageResults";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { showToast } from "@/utils/utils";
+import { useToast } from "@/components/ui/use-toast";
+
 
 const CreateImageResults = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -38,6 +45,8 @@ const CreateImageResults = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [imageTestResponse, setImageTestResponse] =
     useState<ImagesTestsResponseInterface>();
+  const providerDetails = useSelector((state: RootState) => state.login);
+  const {toast} = useToast();
 
   const form = useForm<z.infer<typeof createImageResultsSchema>>({
     resolver: zodResolver(createImageResultsSchema),
@@ -81,7 +90,37 @@ const CreateImageResults = () => {
   );
 
   const onSubmit = async (values: z.infer<typeof createImageResultsSchema>) => {
-    console.log(values);
+    try {
+      const requestData: CreateImageResultInterface = {
+        userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+        reviewerId: providerDetails.providerId,
+        testResults: values.testResults.map((test, index) => (
+            {
+              imageTestId: selectedTests[index],
+              interpretation: test.interpretation || "",
+              documents: uploadedImages
+            }
+          ))}
+      const response = await createImageResultRequest({requestData: requestData})
+      if(response){
+        showToast({
+          toast,
+          type: "success",
+          message: "Added image result successfully",
+        });
+        form.reset();
+        setUploadedImages([]);
+      }
+    } catch(e){
+      console.log("Error",e)
+      showToast({
+        toast,
+        type: "error",
+        message: "Error while adding image results!",
+      });
+    } finally {
+
+    }
   };
 
   if (loading) {

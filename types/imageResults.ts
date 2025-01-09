@@ -8,8 +8,6 @@ export type UploadImageRequestResponse = string[];
 export interface CreateImageResultInterface {
   userDetailsId: string;
   reviewerId: string;
-  dateTime: string;
-  imageId: string;
   testResults: TestResult[];
 }
 
