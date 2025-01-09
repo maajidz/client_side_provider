@@ -21,11 +21,13 @@ import {
   MedicationListResponseInterface,
   MedicationPrescriptionResponseInterface,
   MedicationQueryParamsInterface,
+  UpdateMedicationPrescriptionType,
 } from "@/types/medicationInterface";
 import {
   AddPharmacyInterface,
   PharmacyInterface,
   PharmacyRequestInterface,
+  UserPharmacyInterface,
 } from "@/types/pharmacyInterface";
 import {
   RecallsData,
@@ -39,6 +41,11 @@ import {
   StickyNotesResponseInterface,
   UpdateStickyNotesInterface,
 } from "@/types/stickyNotesInterface";
+import {
+  CreateSupplementType,
+  SupplementResponseInterface,
+  UpdateSupplementType,
+} from "@/types/supplementsInterface";
 import { TasksInterface } from "@/types/tasksInterface";
 
 //Alerts
@@ -529,9 +536,42 @@ export const addPharmacyData = async (requestData: AddPharmacyInterface) => {
     data: requestData,
   });
 
-  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
+
+export const getUserPharmacyData = async ({
+  userDetailsId,
+}: {
+  userDetailsId: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/provider/pharmacy/user/${userDetailsId}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: UserPharmacyInterface = await response.data;
+  return data;
+};
+
+export const deleteUserPharmacyData = async ({
+  pharmacyId,
+}: {
+  pharmacyId: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/provider/pharmacy/${pharmacyId}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   const data = await response.data;
+  console.log(data);
   return data;
 };
 
@@ -564,9 +604,6 @@ export const getMedicationData = async (
 };
 
 export const getMedicationPrescription = async () => {
-  /**
-   * TODO: Add query parameters for "page" & "limit"
-   */
   const response = ApiFetch({
     url: `/provider/medication/precription/all?page=${1}&limit=${10}`,
     method: "GET",
@@ -592,5 +629,105 @@ export const createMedicationPrescription = async (
   });
 
   const data = (await response).data;
+  return data;
+};
+
+export const updateMedicationPrescription = async ({
+  medicationPrescriptionId,
+  requestData,
+}: {
+  medicationPrescriptionId: string;
+  requestData: UpdateMedicationPrescriptionType;
+}) => {
+  const response = ApiFetch({
+    url: `/provider/medication/precription/${medicationPrescriptionId}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = (await response).data;
+  return data;
+};
+
+export const deleteMedicationPrescription = async ({
+  medicationPrescriptionId,
+}: {
+  medicationPrescriptionId: string;
+}) => {
+  const response = ApiFetch({
+    url: `/provider/medication/precription/${medicationPrescriptionId}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = (await response).data();
+  return data;
+};
+
+/**
+ * * Supplements API
+ */
+export const createSupplement = async (requestData: CreateSupplementType) => {
+  const resposne = await ApiFetch({
+    url: "/provider/supplements",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = await resposne.data;
+  return data;
+};
+
+export const getSupplements = async (userDetailsId: string) => {
+  const resposne = await ApiFetch({
+    url: `/provider/supplements?userDetailsId=${userDetailsId}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: SupplementResponseInterface = await resposne.data;
+  return data;
+};
+
+export const updateSupplement = async ({
+  supplementId,
+  requestData,
+}: {
+  supplementId: string;
+  requestData: UpdateSupplementType;
+}) => {
+  const resposne = await ApiFetch({
+    url: `/provider/supplements/${supplementId}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = await resposne.data;
+  return data;
+};
+
+export const deleteSupplement = async (supplementId: string) => {
+  const resposne = await ApiFetch({
+    url: `/provider/supplements/${supplementId}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await resposne.data;
   return data;
 };

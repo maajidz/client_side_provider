@@ -84,21 +84,26 @@ export interface CreateMedicationPrescriptionInterface {
   medicationNameId: string;
 }
 
+export type UpdateMedicationPrescriptionType = Omit<
+  CreateMedicationPrescriptionInterface,
+  "userDetailsId" | "providerId"
+>;
+
 export interface MedicationPrescriptionInterface {
-	id: string;
-	directions: string;
-	fromDate: string;
-	toDate: string;
-	status: "Active" | "Inactive";
-	providerId: string;
-	createdAt: string;
-	updatedAt: string;
-	medicationName: MedicationResultInterface;
+  id: string;
+  directions: string;
+  fromDate: string;
+  toDate: string;
+  status: "Active" | "Inactive";
+  providerId: string;
+  createdAt: string;
+  updatedAt: string;
+  medicationName: MedicationResultInterface;
 }
 
 export interface MedicationPrescriptionResponseInterface {
-	result: MedicationPrescriptionInterface[];
-	total: number;
-	page: string;
-	limit: string;
+  result: MedicationPrescriptionInterface[];
+  total: number;
+  page: string;
+  limit: string;
 }
