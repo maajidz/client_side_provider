@@ -27,8 +27,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addProceduresSurgeriesAndHospitalizationFormSchema } from "@/schema/addProceduresSurgeriesAndHospitalizationSchma";
-import { createProcedure, updateProcedureData } from "@/services/chartDetailsServices";
-import { ProceduresInterface } from "@/types/procedureInterface";
+import {
+  createProcedure,
+  updateProcedureData,
+} from "@/services/chartDetailsServices";
+import {
+  UpdateProceduresInterface,
+} from "@/types/procedureInterface";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { useToast } from "@/components/ui/use-toast";
 import LoadingButton from "@/components/LoadingButton";
@@ -41,7 +46,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
   isOpen,
 }: {
   patientDetails: UserEncounterData;
-  procedureData?: ProceduresInterface | null;
+  procedureData?: UpdateProceduresInterface | null;
   onClose: () => void;
   isOpen: boolean;
 }) => {
@@ -77,34 +82,42 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
     values: z.infer<typeof addProceduresSurgeriesAndHospitalizationFormSchema>
   ) => {
     console.log("Form Values:", values);
-    const requestData: ProceduresInterface = {
-      type: values.type ?? "",
-      name: values.name,
-      fromDate: values.fromDate ?? "",
-      notes: values.notes ?? "",
-      userDetailsId: patientDetails.userDetails.id,
-    };
     setLoading(true);
     try {
-      if (procedureData) {
-        const response = await updateProcedureData({id: patientDetails.userDetails.id, requestData: requestData });
+       if (!procedureData) {
+        const requestData = {
+          type: values.type ?? "",
+          name: values.name,
+          fromDate: values.fromDate ?? "",
+          notes: values.notes ?? "",
+          userDetailsId: patientDetails.userDetails.id,
+        };
+        const response = await createProcedure({ requestData: requestData });
         if (response) {
           showToast({
             toast,
             type: "success",
-            message: "Edited procedure successfully",
+            message: "Added procedure successfully",
           });
+        }
         } else {
-          const response = await createProcedure({ requestData: requestData });
+          const requestData = {
+            type: values.type ?? "",
+            name: values.name,
+            fromDate: values.fromDate ?? "",
+            notes: values.notes ?? "",
+            userDetailsId: patientDetails.userDetails.id,
+          };
+          const response = await updateProcedureData({ requestData: requestData, id: procedureData.id });
           if (response) {
             showToast({
               toast,
               type: "success",
-              message: "Added procedure successfully",
+              message: "Edited procedure successfully",
             });
           }
         }
-      }
+      onClose();
     } catch (e) {
       console.log("Error:", e);
       showToast({
@@ -201,7 +214,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A]">
+              <Button type="submit" className="bg-[#84012A]" onClick={()=> console.log(form.getValues())}>
                 Save
               </Button>
             </div>

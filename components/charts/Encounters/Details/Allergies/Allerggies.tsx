@@ -94,10 +94,10 @@ const Allergies = ({
             <AllergiesDialog patientDetails={patientDetails} />
           </div>
           <AccordionContent className="sm:max-w-4xl">
-              {allergies.length !== 0 ? (
+              {allergies && allergies.length !== 0 ? (
                 allergies.map((allergy) => (
                     <div
-                      key={allergy.userDetailsId}
+                      key={allergy.id}
                       className="flex flex-col gap-2 p-2 border rounded-lg"
                     >
                       <div className="flex items-center justify-between">

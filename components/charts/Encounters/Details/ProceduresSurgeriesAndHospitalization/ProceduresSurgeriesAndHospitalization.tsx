@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Edit2, PlusCircle, Trash2Icon } from "lucide-react";
 import {
   ProcedureResponse,
-  ProceduresInterface,
+  UpdateProceduresInterface,
 } from "@/types/procedureInterface";
 import FormLabels from "@/components/custom_buttons/FormLabels";
 
@@ -30,7 +30,7 @@ const ProceduresSurgeriesAndHospitalization = ({
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const [data, setData] = useState<ProcedureResponse>();
-  const [editData, setEditData] = useState<ProceduresInterface | null>(null);
+  const [editData, setEditData] = useState<UpdateProceduresInterface | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const fetchProcedures = useCallback(async () => {
@@ -119,6 +119,7 @@ const ProceduresSurgeriesAndHospitalization = ({
                           variant={"ghost"}
                           onClick={() => {
                             setEditData({
+                              id: procedure.id,
                               type: procedure.type,
                               name: procedure.name,
                               fromDate: procedure.fromDate,
