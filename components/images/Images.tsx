@@ -5,16 +5,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoadingButton from "@/components/LoadingButton";
 import { getUserEncounterDetails } from "@/services/chartsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
-import AddImageOrder from "./image-orders/AddImageOrder";
-import AddImageResult from "./image-results/AddImageResult";
 import { useEffect, useState } from "react";
-import ImageOrdersClient from "./image-orders/orders/client";
+import ImageOrdersClient from "../../app/dashboard/images/image-orders/orders/client";
 import { Heading } from "@/components/ui/heading";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 
 function Images() {
   const [activeTab, setActiveTab] = useState("imageResults");
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<UserEncounterData>();
+  const router = useRouter();
 
   const encounterId = "34044ece-aad6-41f9-ac2b-f322a246043f";
 
@@ -53,16 +55,26 @@ function Images() {
           defaultValue="imageResults"
           onValueChange={(value) => setActiveTab(value)}
         >
-          <div className="flex items-center justify-between border-b border-gray-300 pb-2">
-            <TabsList>
-              <TabsTrigger value="imageResults">Image Results</TabsTrigger>
+          <div className="flex flex-row justify-between gap-10">
+            <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="imageResults">Image Results</TabsTrigger>
               <TabsTrigger value="imageOrders">Image Orders</TabsTrigger>
             </TabsList>
-            {activeTab === "imageResults" ? (
-              <AddImageResult patientDetails={data} />
-            ) : (
-              <AddImageOrder />
-            )}
+            <Button
+              className="bg-[#84012A]"
+              onClick={() => 
+                router.push(
+                  activeTab === "imageResults"
+                    ? "/dashboard/images/create_image_results"
+                    : "/dashboard/images/create_image_orders"
+                )
+               }
+            >
+              <div className="flex items-center gap-3">
+                <PlusIcon />
+                {activeTab === "imageResults" ? "Image Results" : "Image Orders"}
+              </div>
+            </Button>
           </div>
           <TabsContent value="imageResults">
             <Heading title="Image Results" description="" />
@@ -77,4 +89,8 @@ function Images() {
 }
 
 export default Images;
+
+{/* <AddImageResult patientDetails={data} />
+            ) : (
+              <AddImageOrder /> */}
 

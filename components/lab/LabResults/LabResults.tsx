@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
   FormField,
@@ -15,27 +16,25 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { filterLabResultsSchema } from "@/schema/createLabResultsSchema";
 import { getLabResultList } from "@/services/labResultServices";
 import { RootState } from "@/store/store";
 import { LabResultsInterface } from "@/types/labResults";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
+import { columns } from "./columns";
+import LoadingButton from "@/components/LoadingButton";
 
 function LabResults() {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<LabResultsInterface>();
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
   const form = useForm<z.infer<typeof filterLabResultsSchema>>({
     resolver: zodResolver(filterLabResultsSchema),
     defaultValues: {
@@ -49,26 +48,32 @@ function LabResults() {
     console.log(values);
   }
 
-  const fetchLabResultsList = async () => {
+  const fetchLabResultsList = useCallback(async (page: number) => {
     try {
       if (providerDetails) {
         const response = await getLabResultList({
           providerId: providerDetails.providerId,
-          limit: 10,
-          page: 1,
+          limit: 2,
+          page: page,
         });
         if (response) {
           setResultList(response);
+          setTotalPages(Math.ceil(response.total / Number(response.limit)));
         }
+        setLoading(false);
       }
     } catch (e) {
-      console.log("Error", e );
+      console.log("Error", e);
     }
-  };
+  }, [providerDetails]);
 
   useEffect(() => {
-    fetchLabResultsList();
-  })
+    fetchLabResultsList(page);
+  }, [page, fetchLabResultsList]);
+
+  if(loading){
+    return <LoadingButton />
+  }
 
   return (
     <>
@@ -125,36 +130,17 @@ function LabResults() {
         </Form>
 
         {/* Results Table */}
-        <div className="mt-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Patients</TableHead>
-                <TableHead>Tests</TableHead>
-                <TableHead>Lab</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Interpretation</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-             {resultList?.results.map((pharmacy, index) => (
-                <TableRow key={index}>
-                  <TableCell>{pharmacy.id}</TableCell>
-                  <TableCell>{pharmacy.reviewerId}</TableCell>
-                  <TableCell>{pharmacy.tags}</TableCell>
-                  <TableCell>{pharmacy.dateTime}</TableCell>
-                  <TableCell>{pharmacy.file}</TableCell>
-                </TableRow>
-              ))}
-              {resultList?.total === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center">
-                    No results found.
-                  </TableCell>
-                </TableRow>
-              )} 
-            </TableBody>
-          </Table>
+        <div className="py-5">
+          {resultList?.results && (
+            <DataTable
+              searchKey="id"
+              columns={columns()}
+              data={resultList?.results}
+              pageNo={page}
+              totalPages={totalPages}
+              onPageChange={(newPage: number) => setPage(newPage)}
+            />
+          )}
         </div>
       </div>
     </>
