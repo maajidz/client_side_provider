@@ -6,17 +6,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { UserEncounterData } from "@/types/chartsInterface";
 import { PlusCircle } from "lucide-react";
 import AddMedicationBody from "./AddMedicationBody";
-import { MedicationList } from "./Medications";
 
 interface AddMedicationDialogProps {
-  onAddClick: (medication: MedicationList) => void;
+  patientDetails: UserEncounterData;
 }
 
-function AddMedicationDialog({ onAddClick }: AddMedicationDialogProps) {
+function AddMedicationDialog({ patientDetails }: AddMedicationDialogProps) {
   return (
-    <Dialog >
+    <Dialog>
       <DialogTrigger asChild>
         <Button variant="ghost">
           <PlusCircle />
@@ -26,11 +26,10 @@ function AddMedicationDialog({ onAddClick }: AddMedicationDialogProps) {
         <DialogHeader>
           <DialogTitle>Add Medications</DialogTitle>
         </DialogHeader>
-        <AddMedicationBody onAddClick={onAddClick} />
+        <AddMedicationBody patientDetails={patientDetails} />
       </DialogContent>
     </Dialog>
   );
 }
 
 export default AddMedicationDialog;
-
