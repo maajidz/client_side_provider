@@ -69,7 +69,7 @@ const DetailsBody = ({ patientDetails, encounterId }: { patientDetails: UserEnco
                         <PastMedicalHistory /> 
                         <FamilyHistory patientDetails={patientDetails} />
                         <SocialHistory />
-                        <ProceduresSurgeriesAndHospitalization />
+                        <ProceduresSurgeriesAndHospitalization patientDetails={patientDetails}/>
                         <Tasks patientDetails={patientDetails} />
                         <Recalls patientDetails={patientDetails} />
                         <Pharmacy patientDetails={patientDetails} />

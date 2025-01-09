@@ -29,6 +29,7 @@ import {
   PharmacyRequestInterface,
   UserPharmacyInterface,
 } from "@/types/pharmacyInterface";
+import { ProcedureResponse, ProceduresInterface } from "@/types/procedureInterface";
 import {
   RecallsData,
   RecallsInterface,
@@ -681,7 +682,7 @@ export const createSupplement = async (requestData: CreateSupplementType) => {
     },
     data: requestData,
   });
-
+  console.log(response.data);
   const data = await resposne.data;
   return data;
 };
@@ -693,8 +694,7 @@ export const getSupplements = async (userDetailsId: string) => {
     headers: {
       "Content-Type": "application/json",
     },
-  });
-
+  console.log(response.data);
   const data: SupplementResponseInterface = await resposne.data;
   return data;
 };
@@ -714,7 +714,7 @@ export const updateSupplement = async ({
     },
     data: requestData,
   });
-
+  console.log(response.data);
   const data = await resposne.data;
   return data;
 };
@@ -727,7 +727,78 @@ export const deleteSupplement = async (supplementId: string) => {
       "Content-Type": "application/json",
     },
   });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
 
-  const data = await resposne.data;
+
+//Procedures
+
+export const createProcedure = async ({
+  requestData,
+}: {
+  requestData: ProceduresInterface;
+}) => {
+  const response = await ApiFetch({
+    method: "POST",
+    url: "/provider/procedures",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
+
+export const getProcedureData = async ({
+  userDetailsId,
+}: {
+  userDetailsId: string;
+}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/procedures/${userDetailsId}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response.data);
+  const data: ProcedureResponse = await response.data;
+  return data;
+};
+
+export const updateProcedureData = async ({
+  id,
+  requestData,
+}: {
+  id: string;
+  requestData: ProceduresInterface;
+}) => {
+  const response = await ApiFetch({
+    method: "PATCH",
+    url: `/provider/procedures/${id}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  return data;
+};
+
+export const deleteProcedure = async ({ id }: { id: string }) => {
+  const response = await ApiFetch({
+    method: "DELETE",
+    url: `/provider/procedures/${id}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response.data);
+  const data = await response.data;
   return data;
 };

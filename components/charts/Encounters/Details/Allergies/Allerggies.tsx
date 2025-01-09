@@ -94,48 +94,55 @@ const Allergies = ({
             <AllergiesDialog patientDetails={patientDetails} />
           </div>
           <AccordionContent className="sm:max-w-4xl">
-            {allergies.length !== 0 ? (
-             <div className="flex flex-col gap-3">
-               {allergies.map((allergy) => (
-                <>
-                  <div
-                    key={allergy.userDetailsId}
-                    className="flex flex-col gap-2 p-2 border rounded-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="text-base font-semibold">
-                        {allergy?.Allergen}
+              {allergies && allergies.length !== 0 ? (
+                allergies.map((allergy) => (
+                    <div
+                      key={allergy.id}
+                      className="flex flex-col gap-2 p-2 border rounded-lg"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="text-base font-semibold">
+                          {allergy?.Allergen}
+                        </div>
+                        <div className="flex">
+                          <EditAllergy
+                            selectedAllergy={allergy}
+                            fetchAllergies={fetchAllergies}
+                          />
+                          <Button
+                            variant="ghost"
+                            onClick={() => handleDeleteAllergy(allergy.id)}
+                          >
+                            <Trash2Icon color="#84012A" />
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex">
-                        <EditAllergy selectedAllergy={allergy} fetchAllergies={fetchAllergies} />
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleDeleteAllergy(allergy.id)}
-                        >
-                          <Trash2Icon color="#84012A" />
-                        </Button>
+                      <div className="flex flex-col gap-1 ">
+                        <FormLabels
+                          label="Observed On"
+                          value={new Date(
+                            allergy.observedOn
+                          ).toLocaleDateString()}
+                        />
+                        <FormLabels
+                          label="Severity"
+                          value={allergy.serverity}
+                        />
+                        <FormLabels label="Status" value={allergy.status} />
+                        <FormLabels
+                          label="Reaction"
+                          value={allergy.reactions.map((reaction) => (
+                            <div key={reaction.name}>{reaction.name} </div>
+                          ))}
+                        />
                       </div>
                     </div>
-                    <div className="flex flex-col gap-1 ">
-                      <FormLabels
-                        label="Observed On"
-                        value={new Date(
-                          allergy.observedOn
-                        ).toLocaleDateString()}
-                      />
-                      <FormLabels label="Severity" value={allergy.serverity} />
-                      <FormLabels label="Status" value={allergy.status} />
-                      <FormLabels label="Reaction" value={allergy.reactions.map((reaction)=> <div key={reaction.name}>{reaction.name} </div>)} />
-                    </div>
-                  </div>
-                </>
-              ))}
-             </div>
-            ) : error ? (
-              <p className="text-center">{error}</p>
-            ) : (
-              <p className="text-center">No allergies data found</p>
-            )}
+                ))
+              ) : error ? (
+                <p className="text-center">{error}</p>
+              ) : (
+                <p className="text-center">No allergies data found</p>
+              )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

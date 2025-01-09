@@ -1,10 +1,10 @@
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -23,34 +23,124 @@ import {
   SelectContent,
   SelectValue,
 } from "@/components/ui/select";
-import { addProceduresSurgeriesAndHospitalizationFormSchema } from "@/schema/addProceduresSurgeriesAndHospitalizationSchma";
-import { PlusCircle } from "lucide-react";
-import { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addProceduresSurgeriesAndHospitalizationFormSchema } from "@/schema/addProceduresSurgeriesAndHospitalizationSchma";
+import {
+  createProcedure,
+  updateProcedureData,
+} from "@/services/chartDetailsServices";
+import {
+  UpdateProceduresInterface,
+} from "@/types/procedureInterface";
+import { UserEncounterData } from "@/types/chartsInterface";
+import { useToast } from "@/components/ui/use-toast";
+import LoadingButton from "@/components/LoadingButton";
+import { showToast } from "@/utils/utils";
 
-interface ProceduresSurgeriesAndHospitalizationDialogProps {
-  form: UseFormReturn<
+const ProceduresSurgeriesAndHospitalizationDialog = ({
+  patientDetails,
+  procedureData,
+  onClose,
+  isOpen,
+}: {
+  patientDetails: UserEncounterData;
+  procedureData?: UpdateProceduresInterface | null;
+  onClose: () => void;
+  isOpen: boolean;
+}) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const { toast } = useToast();
+
+  const form = useForm<
     z.infer<typeof addProceduresSurgeriesAndHospitalizationFormSchema>
-  >;
-  onSubmit: (
-    values: z.infer<typeof addProceduresSurgeriesAndHospitalizationFormSchema>
-  ) => void;
-}
+  >({
+    resolver: zodResolver(addProceduresSurgeriesAndHospitalizationFormSchema),
+    defaultValues: {
+      type: procedureData?.type || "",
+      name: procedureData?.name || "",
+      fromDate:
+        procedureData?.fromDate || new Date().toISOString().split("T")[0],
+      notes: procedureData?.notes || "",
+    },
+  });
 
-function ProceduresSurgeriesAndHospitalizationDialog({
-  form,
-  onSubmit,
-}: ProceduresSurgeriesAndHospitalizationDialogProps) {
+  useEffect(() => {
+    if (procedureData) {
+      form.reset({
+        type: procedureData?.type || "",
+        name: procedureData?.name || "",
+        fromDate:
+          procedureData?.fromDate || new Date().toISOString().split("T")[0],
+        notes: procedureData?.notes || "",
+      });
+    }
+  }, [procedureData, form]);
+
+  const onSubmit = async (
+    values: z.infer<typeof addProceduresSurgeriesAndHospitalizationFormSchema>
+  ) => {
+    console.log("Form Values:", values);
+    setLoading(true);
+    try {
+       if (!procedureData) {
+        const requestData = {
+          type: values.type ?? "",
+          name: values.name,
+          fromDate: values.fromDate ?? "",
+          notes: values.notes ?? "",
+          userDetailsId: patientDetails.userDetails.id,
+        };
+        const response = await createProcedure({ requestData: requestData });
+        if (response) {
+          showToast({
+            toast,
+            type: "success",
+            message: "Added procedure successfully",
+          });
+        }
+        } else {
+          const requestData = {
+            type: values.type ?? "",
+            name: values.name,
+            fromDate: values.fromDate ?? "",
+            notes: values.notes ?? "",
+            userDetailsId: patientDetails.userDetails.id,
+          };
+          const response = await updateProcedureData({ requestData: requestData, id: procedureData.id });
+          if (response) {
+            showToast({
+              toast,
+              type: "success",
+              message: "Edited procedure successfully",
+            });
+          }
+        }
+      onClose();
+    } catch (e) {
+      console.log("Error:", e);
+      showToast({
+        toast,
+        type: "error",
+        message: "Failed to create a procedure",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <LoadingButton />;
+  }
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost">
-          <PlusCircle />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Procedure</DialogTitle>
+          <DialogTitle>
+            {procedureData ? "Update Procedure" : "Add Procedure"}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -124,7 +214,7 @@ function ProceduresSurgeriesAndHospitalizationDialog({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A]">
+              <Button type="submit" className="bg-[#84012A]" onClick={()=> console.log(form.getValues())}>
                 Save
               </Button>
             </div>
@@ -133,7 +223,6 @@ function ProceduresSurgeriesAndHospitalizationDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
 
 export default ProceduresSurgeriesAndHospitalizationDialog;
-
