@@ -34,3 +34,17 @@ export interface AddPharmacyInterface {
   phoneNumber: string;
   userDetailsID: string;
 }
+
+export interface UserPharmacyInterface {
+	id: string;
+	name: string;
+	address: string;
+	city: string;
+	state: string;
+	country: string;
+	zipCode: string;
+	phoneNumber: string;
+	userDetailsID: string;
+	createdAt: string;
+	updatedAt: string;
+}
