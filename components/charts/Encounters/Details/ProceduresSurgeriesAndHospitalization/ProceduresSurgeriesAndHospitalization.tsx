@@ -1,44 +1,70 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import ProceduresSurgeriesAndHospitalizationDialog from "./ProceduresSurgeriesAndHospitalizationDialog";
+import { UserEncounterData } from "@/types/chartsInterface";
+import {
+  deleteProcedure,
+  getProcedureData,
+} from "@/services/chartDetailsServices";
 import LoadingButton from "@/components/LoadingButton";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { addProceduresSurgeriesAndHospitalizationFormSchema } from "@/schema/addProceduresSurgeriesAndHospitalizationSchma";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import ProceduresSurgeriesAndHospitalizationDialog from "./ProceduresSurgeriesAndHospitalizationDialog";
+import { showToast } from "@/utils/utils";
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { Edit2, PlusCircle, Trash2Icon } from "lucide-react";
+import {
+  ProcedureResponse,
+  ProceduresInterface,
+} from "@/types/procedureInterface";
+import FormLabels from "@/components/custom_buttons/FormLabels";
 
-const ProceduresSurgeriesAndHospitalization = () => {
+const ProceduresSurgeriesAndHospitalization = ({
+  patientDetails,
+}: {
+  patientDetails: UserEncounterData;
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const { toast } = useToast();
+  const [data, setData] = useState<ProcedureResponse>();
+  const [editData, setEditData] = useState<ProceduresInterface | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
-  const form = useForm<
-    z.infer<typeof addProceduresSurgeriesAndHospitalizationFormSchema>
-  >({
-    resolver: zodResolver(addProceduresSurgeriesAndHospitalizationFormSchema),
-    defaultValues: {
-      type: "",
-      name: "",
-      fromDate: new Date().toISOString().split("T")[0],
-      notes: "",
-    },
-  });
-
-  const onSubmit = async (
-    values: z.infer<typeof addProceduresSurgeriesAndHospitalizationFormSchema>
-  ) => {
-    console.log("Form Values:", values);
-    // const requestData = {
-    //     alertName: "",
-    //     alertDescription: "",
-    // }
+  const fetchProcedures = useCallback(async () => {
     setLoading(true);
     try {
-      // await createTransfer({ requestData: requestData })
+      const response = await getProcedureData({
+        userDetailsId: patientDetails.userDetails.id,
+      });
+      if (response) {
+        setData(response);
+      }
     } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setLoading(false);
+    }
+  }, [patientDetails.userDetails.id]);
+
+  useEffect(() => {
+    fetchProcedures();
+  }, [fetchProcedures]);
+
+  const handleDeleteProcedure = async (alertId: string) => {
+    setLoading(true);
+    try {
+      await deleteProcedure({ id: alertId });
+      showToast({
+        toast,
+        type: "success",
+        message: `Procedure deleted successfully`,
+      });
+      fetchProcedures();
+    } catch (e) {
+      showToast({ toast, type: "error", message: `Error` });
       console.log("Error:", e);
     } finally {
       setLoading(false);
@@ -57,12 +83,73 @@ const ProceduresSurgeriesAndHospitalization = () => {
             <AccordionTrigger>
               Procedures, Surgeries, and Hospitalization
             </AccordionTrigger>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setEditData(null);
+                setIsDialogOpen(true);
+              }}
+            >
+              <PlusCircle />
+            </Button>
             <ProceduresSurgeriesAndHospitalizationDialog
-              form={form}
-              onSubmit={onSubmit}
+              patientDetails={patientDetails}
+              procedureData={editData}
+              onClose={() => {
+                setIsDialogOpen(false);
+                fetchProcedures();
+              }}
+              isOpen={isDialogOpen}
             />
           </div>
-          <AccordionContent className="sm:max-w-4xl"></AccordionContent>
+          <AccordionContent className="sm:max-w-4xl">
+            <div className="flex flex-col gap-3">
+              {data?.data &&
+                data.data.flatMap((procedure, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col gap-2 border rounded-lg p-2"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="text-base font-semibold">
+                        {procedure.type}
+                      </div>
+                      <div className="flex">
+                        <Button
+                          variant={"ghost"}
+                          onClick={() => {
+                            setEditData({
+                              type: procedure.type,
+                              name: procedure.name,
+                              fromDate: procedure.fromDate,
+                              notes: procedure.notes,
+                              userDetailsId: procedure.userDetailsId,
+                            });
+                            setIsDialogOpen(true);
+                          }}
+                        >
+                          <Edit2 color="#84012A" />
+                        </Button>
+                        <Button
+                          variant={"ghost"}
+                          onClick={() => handleDeleteProcedure(procedure.id)}
+                        >
+                          <Trash2Icon color="#84012A" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2 ">
+                      <FormLabels label="Name" value={procedure.name} />
+                      <FormLabels
+                        label="From date"
+                        value={procedure.fromDate.split("T")[0]}
+                      />
+                      <FormLabels label="Notes" value={procedure.notes} />
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </AccordionContent>
         </AccordionItem>
       </Accordion>
     </div>
