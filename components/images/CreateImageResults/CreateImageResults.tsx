@@ -12,12 +12,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { getImagesTestsData } from "@/services/chartsServices";
-import {
-  ImagesTestsResponseInterface,
-} from "@/types/chartsInterface";
+import { ImagesTestsResponseInterface } from "@/types/chartsInterface";
 import LoadingButton from "@/components/LoadingButton";
 import { createImageResultsSchema } from "@/schema/createImageResultsSchema";
 import UploadImageResults from "./UploadImageResults";
@@ -29,7 +27,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
-
+import { group } from "console";
 
 const CreateImageResults = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -46,7 +44,7 @@ const CreateImageResults = () => {
   const [imageTestResponse, setImageTestResponse] =
     useState<ImagesTestsResponseInterface>();
   const providerDetails = useSelector((state: RootState) => state.login);
-  const {toast} = useToast();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof createImageResultsSchema>>({
     resolver: zodResolver(createImageResultsSchema),
@@ -54,7 +52,6 @@ const CreateImageResults = () => {
       patient: "",
       testResults: [
         {
-          document: [],
           interpretation: "",
         },
       ],
@@ -90,19 +87,22 @@ const CreateImageResults = () => {
   );
 
   const onSubmit = async (values: z.infer<typeof createImageResultsSchema>) => {
+    console.log("values", values )
     try {
       const requestData: CreateImageResultInterface = {
         userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
         reviewerId: providerDetails.providerId,
-        testResults: values.testResults.map((test, index) => (
-            {
-              imageTestId: selectedTests[index],
-              interpretation: test.interpretation || "",
-              documents: uploadedImages
-            }
-          ))}
-      const response = await createImageResultRequest({requestData: requestData})
-      if(response){
+        testResults: values.testResults.map((test, index) => ({
+          imageTestId: selectedTests[index],
+          interpretation: test.interpretation ? `${test.interpretation}` : "",
+          documents: uploadedImages,
+        })),
+      };
+      console.log("Request", requestData)
+      const response = await createImageResultRequest({
+        requestData: requestData,
+      });
+      if (response) {
         showToast({
           toast,
           type: "success",
@@ -111,15 +111,14 @@ const CreateImageResults = () => {
         form.reset();
         setUploadedImages([]);
       }
-    } catch(e){
-      console.log("Error",e)
+    } catch (e) {
+      console.log("Error", e);
       showToast({
         toast,
         type: "error",
         message: "Error while adding image results!",
       });
     } finally {
-
     }
   };
 
@@ -190,32 +189,49 @@ const CreateImageResults = () => {
               />
             )}
             {selectedTests.map((test, index) => (
-              <div key={index} className="border border-gray-300 rounded-lg p-4 mb-4">
+              <div
+                key={index}
+                className="border border-gray-300 rounded-lg p-4 mb-4"
+              >
                 <h3 className="text-lg font-semibold">{`Test Results for ${test}`}</h3>
-                    <UploadImageResults
-                      onUploadComplete={(images) =>
-                        handleUploadComplete(images)
-                      }
-                    />
-                    {uploadedImages && (
-                      uploadedImages.map((image)=> <Button key={image} variant={"link"}>{image}</Button>)
+                <div key={test}>
+                  <UploadImageResults
+                    onUploadComplete={(images) => handleUploadComplete(images)}
+                  />
+                  {uploadedImages &&
+                    uploadedImages.map((image) => (
+                      <Button key={image} variant={"link"}>
+                        {image}
+                      </Button>
+                    ))}
+                  <FormField
+                    control={form.control}
+                    name={`testResults.${index}.interpretation`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Interpretation</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="Interpretation"
+                            value={
+                              typeof field.value === "string" ? field.value : ""
+                            }
+                            onChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
-                    <FormField
-                      control={form.control}
-                      name={`testResults.${index}.interpretation`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Interpretation</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Interpretation" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  />
+                </div>
               </div>
             ))}
-            <Button type="submit">Submit</Button>
+            <Button type="submit" onClick={() => 
+              {
+                console.log("Submit Clicked")
+                console.log(form.getValues())
+              }}>Submit</Button>
           </form>
         </Form>
       </div>
@@ -225,39 +241,4 @@ const CreateImageResults = () => {
 
 export default CreateImageResults;
 
-// const fetchImagesData = useCallback(async () => {
-//   setLoading(true);
-//   try {
-//     const data = await getImagesData({ page: 1, limit: 10 });
-//     if (data) {
-//       setImageResponse(() => ({
-//         data: data.data,
-//         total: data.total,
-//       }));
-//       setLoading(false);
-//     }
-//   } catch (e) {
-//     console.log("Error", e);
-//     setLoading(false);
-//   } finally {
-//     setLoading(false);
-//   }
-// }, []);
 
-// const fetchProvidersList = useCallback(async () => {
-//   setLoading(true);
-//   try {
-//     const data = await fetchProviderListDetails({ page: 1, limit: 10 });
-//     if (data) {
-//       setProviderListData(() => ({
-//         data: data.data,
-//         total: data.total,
-//       }));
-//     }
-//   } catch (e) {
-//     console.log("Error", e);
-//     setLoading(false);
-//   } finally {
-//     setLoading(false);
-//   }
-// }, []);
