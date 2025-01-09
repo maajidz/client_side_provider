@@ -28,17 +28,34 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { supplementsFormSchema } from "@/schema/supplementsSchema";
-import { createSupplement } from "@/services/chartDetailsServices";
+import { updateSupplement } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
+import { SupplementInterface } from "@/types/supplementsInterface";
 import { showToast } from "@/utils/utils";
-import { PlusCircle } from "lucide-react";
+import { Edit2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-interface SupplementsDialogProps {
+
+interface EditSupplementProps {
+  selectedSupplement: SupplementInterface;
   patientDetails: UserEncounterData;
+  fetchSupplements: () => void;
 }
 
-function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${year}-${month}-${day}`;
+};
+
+function EditSupplement({
+  selectedSupplement,
+  patientDetails,
+  fetchSupplements,
+}: EditSupplementProps) {
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -48,20 +65,24 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
   const form = useForm<z.infer<typeof supplementsFormSchema>>({
     resolver: zodResolver(supplementsFormSchema),
     defaultValues: {
-      supplement: "",
-      manufacturer: "",
-      fromDate: new Date().toISOString().split("T")[0],
-      toDate: new Date().toISOString().split("T")[0],
-      status: "Active",
-      dosage: "",
-      unit: "",
-      frequency: "",
-      intake_type: "",
-      comments: "",
+      supplement: selectedSupplement.supplement || "",
+      manufacturer: selectedSupplement.manufacturer || "",
+      fromDate:
+        formatDate(selectedSupplement?.fromDate) ||
+        new Date().toISOString().split("T")[0],
+      toDate:
+        formatDate(selectedSupplement?.toDate) ||
+        new Date().toISOString().split("T")[0],
+      status: selectedSupplement?.status || "Active",
+      dosage: selectedSupplement.dosage || "",
+      unit: selectedSupplement.unit,
+      frequency: selectedSupplement.frequency,
+      intake_type: selectedSupplement.intake_type,
+      comments: selectedSupplement.comments,
     },
   });
 
-  // POST Supplement
+  // PATCH Supplement
   const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
     setLoading(true);
     try {
@@ -70,23 +91,27 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
         userDetailsId: patientDetails.userDetails.id,
       };
 
-      await createSupplement(supplementData);
+      await updateSupplement({
+        requestData: supplementData,
+        supplementId: selectedSupplement.id,
+      });
 
       showToast({
         toast,
         type: "success",
-        message: "Supplement created successfully",
+        message: "Supplement updated successfully",
       });
     } catch (err) {
       if (err instanceof Error) {
         showToast({
           toast,
           type: "failed",
-          message: "Supplement creation failed",
+          message: "Could not update supplement",
         });
       }
     } finally {
       setLoading(false);
+      fetchSupplements();
       form.reset();
     }
   };
@@ -99,12 +124,12 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="ghost">
-          <PlusCircle />
+          <Edit2Icon color="#84012A" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Supplement</DialogTitle>
+          <DialogTitle>Edit Supplement</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -116,7 +141,10 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex gap-2 items-center">
                     <FormLabel>Supplement</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input
+                        defaultValue={selectedSupplement.supplement}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -129,7 +157,11 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex gap-2 items-center">
                     <FormLabel className="w-fit">Manufacturer</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        defaultValue={selectedSupplement.manufacturer}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -143,7 +175,13 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                     <FormItem className="flex gap-2 items-center">
                       <FormLabel>From Date:</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <Input
+                          type="date"
+                          defaultValue={formatDate(
+                            selectedSupplement?.fromDate
+                          )}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -156,7 +194,11 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                     <FormItem className="flex gap-2 items-center">
                       <FormLabel>To Date:</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <Input
+                          type="date"
+                          defaultValue={formatDate(selectedSupplement?.toDate)}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -172,7 +214,7 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        defaultValue={selectedSupplement.status}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Choose Status" />
@@ -194,7 +236,10 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex gap-2 justify-center items-center">
                     <FormLabel>Dosage</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input
+                        defaultValue={selectedSupplement.dosage}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -207,7 +252,10 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex gap-2 justify-center items-center">
                     <FormLabel className="w-fit">Unit</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input
+                        defaultValue={selectedSupplement.unit}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -220,7 +268,10 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex  gap-2 items-center">
                     <FormLabel className="w-fit">Frequency</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input
+                        defaultValue={selectedSupplement.frequency}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -233,7 +284,10 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex gap-2 justify-center items-center">
                     <FormLabel className="w-fit">Intake type</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input
+                        defaultValue={selectedSupplement.intake_type}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -246,7 +300,10 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex gap-2 justify-center items-center">
                     <FormLabel>Comments</FormLabel>
                     <FormControl>
-                      <Textarea {...field} />
+                      <Textarea
+                        defaultValue={selectedSupplement.comments}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -267,4 +324,5 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
   );
 }
 
-export default SupplementsDialog;
+export default EditSupplement;
+

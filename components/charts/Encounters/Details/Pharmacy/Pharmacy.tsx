@@ -10,6 +10,7 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import PharmacyDialog from "./PharmacyDialog";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import PharmacyList from "./PharmacyList";
 
 interface PharmacyProps {
   patientDetails: UserEncounterData;
@@ -35,7 +36,9 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
             <AccordionTrigger>Pharmacy</AccordionTrigger>
             <PharmacyDialog form={form} patientDetails={patientDetails} />
           </div>
-          <AccordionContent className="sm:max-w-4xl"></AccordionContent>
+          <AccordionContent className="sm:max-w-4xl">
+            <PharmacyList patientDetails={patientDetails} />
+          </AccordionContent>
         </AccordionItem>
       </Accordion>
     </div>
