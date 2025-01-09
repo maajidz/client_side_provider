@@ -674,7 +674,7 @@ export const deleteMedicationPrescription = async ({
  * * Supplements API
  */
 export const createSupplement = async (requestData: CreateSupplementType) => {
-  const resposne = await ApiFetch({
+  const response = await ApiFetch({
     url: "/provider/supplements",
     method: "POST",
     headers: {
@@ -683,19 +683,20 @@ export const createSupplement = async (requestData: CreateSupplementType) => {
     data: requestData,
   });
   console.log(response.data);
-  const data = await resposne.data;
+  const data = await response.data;
   return data;
 };
 
-export const getSupplements = async (userDetailsId: string) => {
-  const resposne = await ApiFetch({
+export const getSupplements = async ({userDetailsId}:{userDetailsId: string}) => {
+  const response = await ApiFetch({
     url: `/provider/supplements?userDetailsId=${userDetailsId}`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
+  });
   console.log(response.data);
-  const data: SupplementResponseInterface = await resposne.data;
+  const data: SupplementResponseInterface = await response.data;
   return data;
 };
 
@@ -706,7 +707,7 @@ export const updateSupplement = async ({
   supplementId: string;
   requestData: UpdateSupplementType;
 }) => {
-  const resposne = await ApiFetch({
+  const response = await ApiFetch({
     url: `/provider/supplements/${supplementId}`,
     method: "PATCH",
     headers: {
@@ -715,12 +716,12 @@ export const updateSupplement = async ({
     data: requestData,
   });
   console.log(response.data);
-  const data = await resposne.data;
+  const data = await response.data;
   return data;
 };
 
 export const deleteSupplement = async (supplementId: string) => {
-  const resposne = await ApiFetch({
+  const response = await ApiFetch({
     url: `/provider/supplements/${supplementId}`,
     method: "DELETE",
     headers: {

@@ -35,7 +35,7 @@ function SupplementList({ patientDetails }: SupplementListProps) {
     setLoading(true);
 
     try {
-      const response = await getSupplements(patientDetails.userDetails.id);
+      const response = await getSupplements({userDetailsId: patientDetails.userDetails.id});
 
       if (response) {
         setSupplementData(response.data);
