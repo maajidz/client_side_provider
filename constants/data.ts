@@ -118,6 +118,12 @@ export const navItems: NavItem[] = [
   //   label: 'Dashboard'
   // },
   {
+    title: "Patients",
+    href: "/dashboard/patients",
+    icon: "user",
+    label: "Patients",
+  },
+  {
     title: "Calendar",
     href: "/dashboard/calendar",
     icon: "calendar",

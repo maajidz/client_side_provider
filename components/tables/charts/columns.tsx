@@ -85,18 +85,6 @@ export const columns = (handleRowClick: (id: string) => void): ColumnDef<Encount
     cell: ({ row }) => {
       const id = row.original?.id;
       return id ? (
-        <div className="cursor-pointer" onClick={() => handleRowClick(id)}>
-          {id}
-        </div>
-      ) : null;
-    },
-  },
-  {
-    accessorKey: 'id',
-    header: 'Id',
-    cell: ({ row }) => {
-      const id = row.original?.id;
-      return id ? (
         // <div className="cursor-pointer" onClick={() => handleRowClick(id)}>
         //   {id}
         // </div>

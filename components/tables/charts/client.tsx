@@ -24,7 +24,7 @@ export const ChartsClient = () => {
 
   const fetchEncounterList = useCallback(
     async (page: number) => {
-      const limit = 5;
+      const limit = 14;
       setLoading(true);
       try {
         if (providerDetails) {
