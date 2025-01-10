@@ -129,7 +129,22 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex gap-2 items-center">
                     <FormLabel className="w-fit">Manufacturer</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Select onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose Manufacturer" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="love_wellness">
+                            Love Wellness
+                          </SelectItem>
+                          <SelectItem value="manufacturer2">
+                            Manufacturer 2
+                          </SelectItem>
+                          <SelectItem value="manufacturer3">
+                            Manufacturer 3
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -207,7 +222,20 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex gap-2 justify-center items-center">
                     <FormLabel className="w-fit">Unit</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Unit" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="gram">gram</SelectItem>
+                          <SelectItem value="mg">mg</SelectItem>
+                          <SelectItem value="ml">ml</SelectItem>
+                          <SelectItem value="tablet(s)">tablet(s)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -220,7 +248,22 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex  gap-2 items-center">
                     <FormLabel className="w-fit">Frequency</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Frequency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="once_day">Once a day</SelectItem>
+                          <SelectItem value="twice_day">Twice a day</SelectItem>
+                          <SelectItem value="three_day">
+                            Three times a day
+                          </SelectItem>
+                          <SelectItem value="week">Once a week</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -233,7 +276,26 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex gap-2 justify-center items-center">
                     <FormLabel className="w-fit">Intake type</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose Intake Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="away_from_meals">
+                            Away From Meals
+                          </SelectItem>
+                          <SelectItem value="with_breakfast">
+                            With Breakfast
+                          </SelectItem>
+                          <SelectItem value="with_dinner">
+                            With Dinner
+                          </SelectItem>
+                          <SelectItem value="at_bedtime">At Bedtime</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
