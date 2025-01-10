@@ -10,9 +10,9 @@ const ImagesBody = ({ patientDetails}: { patientDetails: UserEncounterData}) => 
     <div className='flex justify-between border-b pb-3'>
                 <div>Images</div>
                 <div className="flex h-5 items-center space-x-4 text-sm">
-                    <AddImagesDrawer patientDetails={patientDetails} />
+                    <AddImagesDrawer userDetailsId={patientDetails.userDetails.id} />
                     <Separator orientation="vertical" />
-                    <PastImageOrders patientDetails={patientDetails}/>
+                    <PastImageOrders userDetailsId={patientDetails.userDetails.id} />
                     {/* <Separator orientation="vertical" />
                     <MapDx /> */}
                 </div>

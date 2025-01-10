@@ -49,15 +49,6 @@ export const columns = (handleRowClick: (id: string) => void): ColumnDef<UserDat
   },
   {
     accessorKey: 'email',
-    header: 'Email',
-    cell: ({ row }) => (
-      <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>
-        {row.getValue('email')}
-      </div>
-    ),
-  }, 
-  {
-    accessorKey: 'email',
     header: 'Care Navigator/ provider',
     cell: ({ row }) => (
       <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>

@@ -9,9 +9,9 @@ import {
 import { Button } from '@/components/ui/button'
 import LoadingButton from '@/components/LoadingButton'
 import { getImagesOrdersData } from '@/services/chartsServices'
-import { ImagesOrdersDataInterface, UserEncounterData } from '@/types/chartsInterface'
+import { ImagesOrdersDataInterface } from '@/types/chartsInterface'
 
-const PastImageOrders = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [response, setResponse] = useState<ImagesOrdersDataInterface>();
@@ -19,7 +19,7 @@ const PastImageOrders = ({ patientDetails }: { patientDetails: UserEncounterData
     const fetchAndSetResponse = async () => {
         setLoading(true)
         try {
-            const data = await getImagesOrdersData({ userDetailsId: patientDetails?.userDetails.id });
+            const data = await getImagesOrdersData({ userDetailsId: userDetailsId });
             if (data) {
                 setResponse(data);
             }

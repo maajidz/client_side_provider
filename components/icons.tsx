@@ -35,7 +35,8 @@ import {
   UserX2Icon,
   X, 
   Pill,
-  CalendarCheck
+  CalendarCheck,
+  FlaskConical
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -73,6 +74,7 @@ export const Icons = {
   laptop: Laptop,
   pill: Pill,
   clipboard: Clipboard,
+  labs:FlaskConical,
   calendarcheck: CalendarCheck,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
