@@ -161,9 +161,9 @@ const CreateImageResults = () => {
           </form>
         </Form>
         <div className="flex h-5 items-center py-5 text-sm">
-          <AddImagesDrawer userDetailsId="" />
+          <AddImagesDrawer userDetailsId="97f41397-3fe3-4f0b-a242-d3370063db33" />
           <Separator orientation="vertical" />
-          <PastImageOrders userDetailsId="" />
+          <PastImageOrders userDetailsId="97f41397-3fe3-4f0b-a242-d3370063db33" />
           {/* <Separator orientation="vertical" />
                     <MapDx /> */}
         </div>
