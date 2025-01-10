@@ -1,7 +1,7 @@
 //dashboard/lab/create-image-results
 "use client";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import CreateImageResults from "@/components/images/CreateImageResults/CreateImageResults";
+import CreateImageResults from "@/components/images/ImageResults/CreateImageResults/CreateImageResults";
 import PageContainer from "@/components/layout/page-container";
 
 const breadcrumbItems = [

@@ -13,8 +13,7 @@ export const createImageResultsSchema = z.object({
   ),
 });
 
-export const filterLabResultsSchema = z.object({
-  reviewer: z.string().optional(),
+export const filterImageResultsSchema = z.object({
   status: z.string().optional(),
   name: z.string().optional(),
 });

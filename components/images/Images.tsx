@@ -7,10 +7,10 @@ import { getUserEncounterDetails } from "@/services/chartsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { useEffect, useState } from "react";
 import ImageOrdersClient from "../../app/dashboard/images/image-orders/orders/client";
-import { Heading } from "@/components/ui/heading";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+import ImageResults from "./ImageResults/ImageResults";
 
 function Images() {
   const [activeTab, setActiveTab] = useState("imageResults");
@@ -77,7 +77,7 @@ function Images() {
             </Button>
           </div>
           <TabsContent value="imageResults">
-            <Heading title="Image Results" description="" />
+            <ImageResults />
           </TabsContent>
           <TabsContent value="imageOrders">
             <ImageOrdersClient patientDetails={data} />
