@@ -176,13 +176,13 @@ export interface LabOrdersInterface {
 }
 
 export interface ImageOrdersInterface {
-  userDetailsId: string;
-  ordered_date: string;
-  providerId: string;
-  imageTypeId: string;
-  imageTestIds: string[];
-  note_to_patients: string;
-  intra_office_notes: string;
+  userDetailsId: string
+  ordered_date: string
+  providerId: string
+  imageTypeId: string
+  imageTestIds: string[]
+  note_to_patients: string
+  intra_office_notes: string
 }
 
 /**

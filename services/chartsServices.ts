@@ -28,6 +28,7 @@ import {
   UserEncounterInterface,
   // ImagesOrdersDataInterface,
 } from "@/types/chartsInterface";
+import { EncounterInterface } from "@/types/encounterInterface";
 
 export const createEncounterRequest = async ({
   requestData,
@@ -99,6 +100,27 @@ export const getUserEncounterDetails = async ({
   console.log(response.data);
   const data: UserEncounterInterface = await response.data;
   return data.response;
+};
+
+export const getEncounterList = async ({
+  providerID,
+  page,
+  limit
+}: {
+  providerID: string;
+  page: number;
+  limit: number
+}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/encounters/${providerID}?idtype=providerID&page=${page}&limit=${limit}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response.data);
+  const data: EncounterInterface = await response.data;
+  return data;
 };
 
 export const createSOAPChart = async ({

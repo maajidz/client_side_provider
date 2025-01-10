@@ -1,14 +1,11 @@
 //dashboard/layout.tsx
 import Header from "@/components/layout/header";
+import PatientSidebar from "@/components/patient/patientSidebar";
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
-import Image from "next/image";
-import imageUrl from "@/public/images/Logo_Red.svg";
-import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Provider - Join Pomegaranate",
-  description: "Join Pomegaranate Provider",
+  title: "Patients - Join Pomegaranate",
 };
 
 export default function DashboardLayout({
@@ -18,15 +15,10 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="flex">
-      {/* <Sidebar /> */}
+      <PatientSidebar userDetailsId={"97f41397-3fe3-4f0b-a242-d3370063db33"} />
       <main className="w-full flex-1 overflow-hidden">
         <Toaster />
-        <div className="flex p-4">
-          <Link href={"/dashboard"}>
-            <Image src={imageUrl} alt={"logo"} height={24} priority />
-          </Link>
           <Header />
-        </div>
         {children}
       </main>
     </div>

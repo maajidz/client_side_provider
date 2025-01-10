@@ -1,6 +1,7 @@
 //dashboard/lab/create-image-results
 "use client";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import CreateImageOrders from "@/components/images/ImageOrders/CreateImageOrders/CreateImageOrders";
 import PageContainer from "@/components/layout/page-container";
 
 const breadcrumbItems = [
@@ -13,6 +14,7 @@ export default function Labs() {
     <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
+        <CreateImageOrders />
       </div>
     </PageContainer>
   );

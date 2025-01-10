@@ -12,7 +12,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { ImagesResponseInterface, ImagesTestsResponseInterface, UserEncounterData } from '@/types/chartsInterface'
+import { ImagesResponseInterface, ImagesTestsResponseInterface } from '@/types/chartsInterface'
 import { createImageOrder, getImagesData, getImagesTestsData } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
 import FormLabels from '@/components/custom_buttons/FormLabels'
@@ -21,7 +21,7 @@ import { RootState } from '@/store/store'
 import { useToast } from '@/hooks/use-toast'
 import { showToast } from '@/utils/utils'
 
-const AddImagesDrawer = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
     const [response, setResponse] = useState<ImagesResponseInterface>()
     const [imageTestResponse, seImageTestResponse] = useState<ImagesTestsResponseInterface>()
     const [loadingImages, setLoadingImages] = useState<boolean>(false)
@@ -69,7 +69,7 @@ const AddImagesDrawer = ({ patientDetails }: { patientDetails: UserEncounterData
 
         setLoadingOrder(true);
         const requestData = {
-            userDetailsId: patientDetails.userDetails.id,
+            userDetailsId: userDetailsId,
             providerId: providerDetails.providerId,
             ordered_date: new Date().toISOString().split('T')[0],
             imageTypeId: selectedImage,
