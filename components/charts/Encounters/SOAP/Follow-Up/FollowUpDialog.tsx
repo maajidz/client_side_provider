@@ -28,6 +28,7 @@ interface Row {
 }
 
 const FollowUpDialog = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const { toast } = useToast();
     const [rows, setRows] = useState<Row[]>([
         { type: '', notes: '', sectionDateType: 'after', sectionDateNumber: 0, sectionDateUnit: 'weeks', reminders: [] },
@@ -88,18 +89,21 @@ const FollowUpDialog = ({ patientDetails, encounterId }: { patientDetails: UserE
                     }));
                     await createFollowUp({ requestData: requestData })
                     showToast({ toast, type: "success", message: "Saved!" })
+                    setIsDialogOpen(false);
                 }
             }
         } catch (e) {
             showToast({ toast, type: "error", message: "Error while saving" })
             console.log("Error", e);
+            setIsDialogOpen(false);
         } finally {
             setRows([ { type: '', notes: '', sectionDateType: 'after', sectionDateNumber: 0, sectionDateUnit: 'weeks', reminders: [] }]);
+            setIsDialogOpen(false);
         }
     };
 
     return (
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} >
             <DialogTrigger asChild>
                 <Button variant="ghost" className='text-blue-500 underline'>Add Follow up</Button>
             </DialogTrigger>

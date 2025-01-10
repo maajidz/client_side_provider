@@ -28,6 +28,7 @@ const AddRx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
     const [drugName, setDrugName] = useState<string>("");
     const [showPrescriptionForm, setShowPrescriptionForm] = useState<boolean>(false);
     const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
+      const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const { toast } = useToast();
 
     const form = useForm<z.infer<typeof prescriptionSchema>>({
@@ -97,10 +98,12 @@ const AddRx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                 await updateSOAPChart({ requestData: data, chartId: patientDetails.chart.id })
                 setShowPrescriptionForm(!showPrescriptionForm)
                 showToast({ toast, type: "success", message: "Saved!" })
+                setIsDialogOpen(false);
             } catch (e) {
                 console.log("Error", e)
             } finally {
                 setLoading(false);
+                setIsDialogOpen(false);
             }
         } else {
             const data = {
@@ -161,7 +164,7 @@ const AddRx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
     }
 
     return (
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
                 <Button variant="ghost" className='text-blue-500 underline'>Add Rx</Button>
             </DialogTrigger>

@@ -16,6 +16,7 @@ import { createDiagnoses, createSOAPChart, updateSOAPChart } from '@/services/ch
 import { showToast } from '@/utils/utils'
 
 const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const { toast } = useToast();
     const [rows, setRows] = useState([
         { diagnosis_name: '', ICD_Code: '', notes: '' },
@@ -69,6 +70,7 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                     }));
                     await createDiagnoses({ requestData: requestData })
                     showToast({ toast, type: "success", message: "Saved!" })
+                    setIsDialogOpen(false);
                 }
             }
         } catch (e) {
@@ -76,11 +78,12 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
             console.log("Error", e);
         } finally {
             setRows([{ diagnosis_name: '', ICD_Code: '', notes: '' }]);
+            setIsDialogOpen(false);
         }
     };
 
     return (
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
                 <Button variant="ghost" className='text-blue-500 underline'>Add Dx</Button>
             </DialogTrigger>
