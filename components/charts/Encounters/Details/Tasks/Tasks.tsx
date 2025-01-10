@@ -23,7 +23,7 @@ const Tasks = ({
             <TasksDialog patientDetails={patientDetails}/>
           </div>
           <AccordionContent className="sm:max-w-4xl">
-            <TasksList />
+            <TasksList patientDetails={patientDetails} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

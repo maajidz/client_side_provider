@@ -85,7 +85,7 @@ export const fetchProviderListDetails = async ({page, limit}:{page: number, limi
     method: "get",
     url: `/provider-details/list/all?page=${page}&limit=${limit}`,
   });
-  console.log(response.data);
+
   const data: FetchProviderListInterface = await response.data;
   console.log(data);
   return data;
