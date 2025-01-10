@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,21 +18,28 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addPastMedicalHistorySchema } from "@/schema/addPastMedicalHistorySchema";
+import {
+  PastMedicalHistoryInterface,
+  UpdatePastMedicalHistoryType,
+} from "@/services/pastMedicalHistoryInterface";
+import { updatePastMedicalHistory } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
-import { PlusCircle } from "lucide-react";
+import { showToast } from "@/utils/utils";
+import { Edit2Icon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CreatePastMedicalHistoryType } from "@/services/pastMedicalHistoryInterface";
-import { createPastMedicalHistory } from "@/services/chartDetailsServices";
-import { showToast } from "@/utils/utils";
 
 interface PastMedicalHistoryDialogProps {
   patientDetails: UserEncounterData;
+  selectedMedicaHistory: PastMedicalHistoryInterface;
+  fetchPastMedicalHistory: () => void;
 }
 
-function PastMedicalHistoryDialog({
+function EditPastMedicalHistory({
   patientDetails,
+  selectedMedicaHistory,
+  fetchPastMedicalHistory,
 }: PastMedicalHistoryDialogProps) {
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
@@ -44,8 +50,9 @@ function PastMedicalHistoryDialog({
   const form = useForm<z.infer<typeof addPastMedicalHistorySchema>>({
     resolver: zodResolver(addPastMedicalHistorySchema),
     defaultValues: {
-      notes: "",
-      glp_refill_note_practice: "",
+      notes: selectedMedicaHistory.notes ?? "",
+      glp_refill_note_practice:
+        selectedMedicaHistory.glp_refill_note_practice ?? "",
     },
   });
 
@@ -53,7 +60,7 @@ function PastMedicalHistoryDialog({
   const onSubmit = async (
     values: z.infer<typeof addPastMedicalHistorySchema>
   ) => {
-    const requestData: CreatePastMedicalHistoryType = {
+    const requestData: UpdatePastMedicalHistoryType = {
       notes: values.notes,
       glp_refill_note_practice: values.glp_refill_note_practice,
       userDetailsId: patientDetails.userDetails.id,
@@ -61,41 +68,41 @@ function PastMedicalHistoryDialog({
 
     setLoading(true);
     try {
-      await createPastMedicalHistory({ requestData });
+      await updatePastMedicalHistory({
+        requestData,
+        id: selectedMedicaHistory.id,
+      });
 
       showToast({
         toast,
         type: "success",
-        message: "Past medical history created successfully",
+        message: "Past medical history updated successfully",
       });
     } catch (err) {
       if (err instanceof Error) {
         showToast({
           toast,
           type: "error",
-          message: "Past medical history creation failed",
+          message: "Past medical history update failed",
         });
       }
     } finally {
       setLoading(false);
       form.reset();
+      fetchPastMedicalHistory();
     }
   };
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="ghost">
-          <PlusCircle />
+          <Edit2Icon color="#84012A" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add Past Medical History</DialogTitle>
+          <DialogTitle>Edit Past Medical History</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -126,7 +133,11 @@ function PastMedicalHistoryDialog({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A] hover:bg-[#6C011F]">
+              <Button
+                type="submit"
+                className="bg-[#84012A] hover:bg-[#6C011F]"
+                disabled={loading}
+              >
                 Save
               </Button>
             </div>
@@ -137,4 +148,4 @@ function PastMedicalHistoryDialog({
   );
 }
 
-export default PastMedicalHistoryDialog;
+export default EditPastMedicalHistory;
