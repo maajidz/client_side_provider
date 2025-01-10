@@ -11,7 +11,7 @@ import ChartNotes from './ChartNotes';
 // import TreatmentPlan from './TreatmentPlan';
 import LabsPreview from './LabsPreview';
 import ImagesPreview from './ImagesPreview';
-import DocumentPreview from './DocumentPreview';
+import DocumentPreview from './Documents/DocumentPreview';
 // import QuestionnairePreview from './QuestionnairePreview';
 import { UserEncounterData } from '@/types/chartsInterface';
 
