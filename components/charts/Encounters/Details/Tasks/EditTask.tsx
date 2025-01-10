@@ -28,24 +28,36 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { tasksSchema } from "@/schema/tasksSchema";
-import { PlusCircle } from "lucide-react";
+import { Edit2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useCallback, useEffect, useState } from "react";
-import { CreateTaskType } from "@/types/tasksInterface";
-import { createTask } from "@/services/chartDetailsServices";
+import { TasksInterface, UpdateTaskType } from "@/types/tasksInterface";
+import {  updateTask } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 
-function TasksDialog({
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${year}-${month}-${day}`;
+};
+
+function EditTask({
   patientDetails,
+  selectedTask,
 }: {
   patientDetails: UserEncounterData;
+  selectedTask: TasksInterface;
 }) {
+
   const [showDueDate, setShowDueDate] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -65,13 +77,15 @@ function TasksDialog({
   const form = useForm<z.infer<typeof tasksSchema>>({
     resolver: zodResolver(tasksSchema),
     defaultValues: {
-      category: "",
-      task: "",
-      owner: "",
-      priority: "Low",
-      dueDate: new Date().toISOString().split("T")[0],
+      category: selectedTask.category ?? "",
+      task: selectedTask.notes ?? "",
+      owner: selectedTask.id ?? "",
+      priority: selectedTask.priority ?? "Low",
+      dueDate:
+        formatDate(selectedTask.dueDate) ??
+        new Date().toISOString().split("T")[0],
       sendReminder: [],
-      comments: "",
+      comments: selectedTask.notes,
     },
   });
 
@@ -96,11 +110,11 @@ function TasksDialog({
   }, [fetchOwnersList]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
-    const requestData: CreateTaskType = {
-      category: values.category,
+    const requestData: UpdateTaskType = {
+      category: values.category ?? "",
       description: values.comments ?? "",
-      priority: values.priority,
       status: "PENDING",
+      priority: values.priority,
       notes: values.task,
       dueDate: `${values.dueDate}`,
       assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
@@ -111,19 +125,19 @@ function TasksDialog({
 
     setLoading(true);
     try {
-      await createTask({ requestBody: requestData });
+      await updateTask({ requestData, id: selectedTask.id });
 
       showToast({
         toast,
         type: "success",
-        message: "Task created successfully",
+        message: "Task updated successfully",
       });
     } catch (err) {
       if (err instanceof Error) {
         showToast({
           toast,
           type: "error",
-          message: "Task creation failed",
+          message: "Could not update task",
         });
       }
     } finally {
@@ -140,12 +154,12 @@ function TasksDialog({
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="ghost">
-          <PlusCircle />
+          <Edit2Icon color="#84012A" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Task</DialogTitle>
+          <DialogTitle>Edit Task</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -349,4 +363,5 @@ function TasksDialog({
   );
 }
 
-export default TasksDialog;
+export default EditTask;
+
