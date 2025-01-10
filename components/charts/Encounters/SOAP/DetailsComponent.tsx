@@ -42,7 +42,6 @@ const DetailsComponent = ({patientDetails}:{patientDetails: UserEncounterData}) 
                 </Popover>
             } />
             <FormLabels label='Facility' value='Pomegranate' />
-            <FormLabels label='Session Duration' value='Pomegranate' />
             <FormLabels label='Vist Type' value={
                 <Select>
                     <SelectTrigger className="w-[180px]">
@@ -59,7 +58,7 @@ const DetailsComponent = ({patientDetails}:{patientDetails: UserEncounterData}) 
                     </SelectContent>
                 </Select>
             } />
-            <FormLabels label='Reason' value='Pomegranate' />
+            <FormLabels label='Mode' value={patientDetails?.mode ? patientDetails?.mode : ""} />
         </div>
     )
 }
