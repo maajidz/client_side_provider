@@ -55,6 +55,11 @@ import {
   TasksResponseInterface,
   UpdateTaskType,
 } from "@/types/tasksInterface";
+import {
+  CreatePastMedicalHistoryType,
+  PastMedicalHistoryResponseInterface,
+  UpdatePastMedicalHistoryType,
+} from "./pastMedicalHistoryInterface";
 
 //Alerts
 
@@ -387,6 +392,77 @@ export const deleteTask = async ({ id }: { id: string }) => {
   });
 
   const data = (await response).data;
+  return data;
+};
+
+/**
+ * * Past Medical History API
+ */
+export const getPastMedicalHistory = async ({
+  userDetailsId,
+}: {
+  userDetailsId: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/provider/medical-history/${userDetailsId}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: PastMedicalHistoryResponseInterface = await response.data;
+  return data;
+};
+
+export const createPastMedicalHistory = async ({
+  requestData,
+}: {
+  requestData: CreatePastMedicalHistoryType;
+}) => {
+  const response = await ApiFetch({
+    url: `/provider/medical-history`,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = await response.data;
+  return data;
+};
+
+export const updatePastMedicalHistory = async ({
+  requestData,
+  id,
+}: {
+  requestData: UpdatePastMedicalHistoryType;
+  id: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/provider/medical-history/${id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = await response.data;
+  return data;
+};
+
+export const deletePastMedicalHistory = async ({ id }: { id: string }) => {
+  const response = await ApiFetch({
+    url: `/provider/medical-history/${id}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.data;
   return data;
 };
 
