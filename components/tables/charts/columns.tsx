@@ -1,50 +1,109 @@
 'use client';
 import { ColumnDef } from '@tanstack/react-table';
-import { UserData } from '@/types/userInterface';
+import { EncounterResponse } from '@/types/encounterInterface';
+import { Button } from '@/components/ui/button';
 
-export const columns = (handleRowClick: (id: string) => void): ColumnDef<UserData>[] => [
+export const columns = (handleRowClick: (id: string) => void): ColumnDef<EncounterResponse | undefined>[] => [
   {
-    accessorKey: 'lastName',
-    header: 'Title',
-    cell: ({ row }) => (
-      <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>
-        {row.getValue('lastName')}
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'firstName',
-    header: 'Patient',
-    cell: ({ row }) => (
-      <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>
-        {row.getValue('firstName')}
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'phoneNumber',
-    header: 'Record ID',
-    cell: ({ row }) => (
-      <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>
-        {row.getValue('phoneNumber')}
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'dob',
-    header: 'Date',
-    cell: ({ getValue, row }) => {
-      const dob = getValue() as string;
-      const date = new Date(dob);
-      return (
-        <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>
-          {date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: '2-digit',
-            year: 'numeric',
-          })}
+    accessorKey: 'userDetails',
+    header: 'User Details',
+    cell: ({ row }) => {
+      const userDetails = row.original?.userDetails;
+      return userDetails ? (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleRowClick(row.original!.id)}
+        >
+          {userDetails.id}
         </div>
-      );
-    }
+      ) : null;
+    },
+  },
+  {
+    accessorKey: 'visit_type',
+    header: 'Visit type',
+    cell: ({ row }) => {
+      const visitType = row.original?.visit_type;
+      return visitType ? (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleRowClick(row.original!.id)}
+        >
+          {visitType}
+        </div>
+      ) : null;
+    },
+  },
+  {
+    accessorKey: 'mode',
+    header: 'Mode',
+    cell: ({ row }) => {
+      const mode = row.original?.mode;
+      return mode ? (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleRowClick(row.original!.id)}
+        >
+          {mode}
+        </div>
+      ) : null;
+    },
+  },
+  {
+    accessorKey: 'isVerified',
+    header: 'Is Verified',
+    cell: ({ row }) => {
+      const isVerified = row.original?.isVerified;
+      return isVerified ? (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleRowClick(row.original!.id)}
+        >
+          {isVerified}
+        </div>
+      ) : null;
+    },
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'Data',
+    cell: ({ row }) => {
+      const createdAt = row.original?.createdAt;
+      return createdAt ? (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleRowClick(row.original!.id)}
+        >
+           {createdAt.split('T')[0]}
+        </div>
+      ) : null;
+    },
+  },
+  {
+    accessorKey: 'id',
+    header: 'Id',
+    cell: ({ row }) => {
+      const id = row.original?.id;
+      return id ? (
+        <div className="cursor-pointer" onClick={() => handleRowClick(id)}>
+          {id}
+        </div>
+      ) : null;
+    },
+  },
+  {
+    accessorKey: 'id',
+    header: 'Id',
+    cell: ({ row }) => {
+      const id = row.original?.id;
+      return id ? (
+        // <div className="cursor-pointer" onClick={() => handleRowClick(id)}>
+        //   {id}
+        // </div>
+        <Button onClick={() => handleRowClick(id)}>
+          Open Encounter 
+        </Button>
+      ) : null;
+    },
   },
 ];
