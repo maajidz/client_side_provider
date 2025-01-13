@@ -1,8 +1,10 @@
+import { ProviderDetails } from "./loginInterface";
+
 export interface TasksInterface {
-  id: string; // for 'key' while mapping
+  id: string;
   category: string;
   description: string;
-  priority: 'Low' | 'Medium' | 'High'
+  priority: "Low" | "Medium" | "High";
   status: string;
   notes: string;
   dueDate: string;
@@ -12,13 +14,43 @@ export interface TasksInterface {
   userDetailsId: string;
 }
 
-export type CreateTaskType = Omit<TasksInterface, 'id'>
+export interface CreateTaskType {
+  category: string;
+  description?: string;
+  status?: string;
+  reminders?: string[];
+  notes?: string;
+  priority?: "Low" | "Medium" | "High";
+  dueDate?: string;
+  assignedProviderId: string;
+  assignerProviderId?: string;
+  assignedByAdmin?: boolean;
+  userDetailsId?: string;
+}
 
-export type UpdateTaskType = CreateTaskType
+export interface UpdateTaskType extends CreateTaskType {}
 
 export interface TasksResponseInterface {
-  data: TasksInterface[];
+  data: TasksResponseDataInterface[];
   total: number;
   page: number;
   limit: number;
+}
+
+export interface TasksResponseDataInterface {
+  id: string
+  category: string
+  description: string
+  status: string
+  notes: string
+  priority?: "Low" | "Medium" | "High";
+  dueDate: string
+  reminder: any
+  assignedByAdmin: boolean
+  userDetailsId: string
+  isAccepted: boolean
+  createdAt: string
+  updatedAt: string
+  assignedProvider: ProviderDetails
+  assignerProvider: ProviderDetails
 }
