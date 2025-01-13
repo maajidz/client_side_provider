@@ -40,6 +40,7 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { reminderOptions } from "@/constants/data";
 
 function TasksDialog({
   patientDetails,
@@ -55,12 +56,6 @@ function TasksDialog({
   const { toast } = useToast();
 
   const providerDetails = useSelector((state: RootState) => state.login);
-  const reminderOptions = [
-    "On Due Date",
-    "1 Day Before",
-    "2 Days Before",
-    "3 Days Before",
-  ];
 
   const form = useForm<z.infer<typeof tasksSchema>>({
     resolver: zodResolver(tasksSchema),

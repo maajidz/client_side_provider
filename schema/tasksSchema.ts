@@ -10,4 +10,5 @@ export const tasksSchema = z.object({
     dueDate:  z.string().optional(),
     sendReminder: z.array(z.string()).optional(),
     comments: z.string().optional(),
+    userDetailsId : z.string().optional(),
   });
