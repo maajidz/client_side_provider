@@ -25,9 +25,13 @@ import { z } from "zod";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import { getTasks } from "@/services/chartDetailsServices";
-import { TasksResponseInterface } from "@/types/tasksInterface";
+import {
+  TasksResponseDataInterface,
+  TasksResponseInterface,
+} from "@/types/tasksInterface";
 import { filterTasksSchema } from "@/schema/tasksSchema";
 import { priority } from "@/constants/data";
+import TasksDialog from "./TasksDialog";
 
 const ViewTasks = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -35,6 +39,10 @@ const ViewTasks = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
+    null
+  );
 
   const form = useForm<z.infer<typeof filterTasksSchema>>({
     resolver: zodResolver(filterTasksSchema),
@@ -196,13 +204,24 @@ const ViewTasks = () => {
           {resultList?.data && (
             <DataTable
               searchKey="id"
-              columns={columns()}
+              columns={columns({
+                setEditData,
+                setIsDialogOpen,
+              })}
               data={resultList?.data}
               pageNo={page}
               totalPages={totalPages}
               onPageChange={(newPage: number) => setPage(newPage)}
             />
           )}
+
+          <TasksDialog
+            tasksData={editData}
+            onClose={() => {
+              setIsDialogOpen(false);
+            }}
+            isOpen={isDialogOpen}
+          />
         </div>
       </div>
     </>
