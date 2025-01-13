@@ -32,6 +32,8 @@ import {
 import { filterTasksSchema } from "@/schema/tasksSchema";
 import { priority } from "@/constants/data";
 import TasksDialog from "./TasksDialog";
+import { showToast } from "@/utils/utils";
+import { useToast } from "../ui/use-toast";
 
 const ViewTasks = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -43,6 +45,7 @@ const ViewTasks = () => {
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
     null
   );
+  const {toast} = useToast();
 
   const form = useForm<z.infer<typeof filterTasksSchema>>({
     resolver: zodResolver(filterTasksSchema),
@@ -207,6 +210,8 @@ const ViewTasks = () => {
               columns={columns({
                 setEditData,
                 setIsDialogOpen,
+                setLoading,
+                showToast: () => showToast({ toast, type: "success", message: "Deleted Successfully" }), // Pass as function reference
               })}
               data={resultList?.data}
               pageNo={page}

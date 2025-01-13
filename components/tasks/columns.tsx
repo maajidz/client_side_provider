@@ -10,13 +10,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { deleteTask } from "@/services/chartDetailsServices";
+
+const handleTasksDelete = async (  taskId: string,
+  setLoading: (loading: boolean) => void,
+  showToast: (args: { type: string; message: string }) => void
+) => {
+  setLoading(true);
+  try {
+    await deleteTask({id: taskId});
+    showToast({
+      type: "success",
+      message: "Task deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    showToast({ type: "error", message: "Failed to delete task" });
+  } finally {
+    setLoading(false);
+  }
+};
 
 export const columns = ({
   setEditData,
   setIsDialogOpen,
+  setLoading,
+  showToast
 }: {
   setEditData: (data: TasksResponseDataInterface | null) => void;
   setIsDialogOpen: (isOpen: boolean) => void;
+  setLoading: (loading: boolean) => void;
+  showToast: (args: { type: string; message: string }) => void;
 }): ColumnDef<TasksResponseDataInterface>[] => [
   {
     accessorKey: "notes",
@@ -110,7 +134,11 @@ export const columns = ({
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem>Mark as completed</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <DropdownMenuItem onClick={() =>
+                handleTasksDelete(row.original.id, setLoading, showToast)
+              }>
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
