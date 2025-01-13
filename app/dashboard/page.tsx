@@ -1,5 +1,6 @@
 //dashboard
 "use client";
+
 import { Icons } from "@/components/icons";
 import PageContainer from "@/components/layout/page-container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -31,7 +32,7 @@ export default function Page() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="space-y-4">
-            <div className="grid grid-cols-3 gap-3 items-center p-10 justify-items-center">
+            <div className="grid grid-cols-4 gap-3 items-center p-10 justify-items-center">
               {navItems.map((item, index) => {
                 const Icon =
                   item.icon && Icons[item.icon as keyof typeof Icons];
