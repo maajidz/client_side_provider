@@ -8,14 +8,11 @@ import Medications from './Medications/Medications'
 import Diagnoses from './Diagnoses/Diagnoses'
 import Supplements from './Supplements/Supplements'
 import Vaccines from './Vaccines/Vaccines'
-import Injections from './Injections/Injections'
 import PastMedicalHistory from './PastMedicalHistory/PastMedicalHistory'
 import FamilyHistory from './FamilyHistory/FamilyHistory'
-import SocialHistory from './SocialHistory/SocialHistory'
 import Tasks from './Tasks/Tasks'
 import Pharmacy from './Pharmacy/Pharmacy'
 import Recalls from './Recalls/Recalls'
-import Payers from './Payers/Payers'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 import ProceduresSurgeriesAndHospitalization from './ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalization'
 
@@ -65,15 +62,15 @@ const DetailsBody = ({ patientDetails, encounterId }: { patientDetails: UserEnco
                         <Diagnoses patientDetails={patientDetails} encounterId={encounterId} />
                         <Supplements patientDetails={patientDetails} />
                         <Vaccines />
-                        <Injections /> 
-                        <PastMedicalHistory /> 
+                        {/* <Injections />  */}
+                        <PastMedicalHistory patientDetails={patientDetails} /> 
                         <FamilyHistory patientDetails={patientDetails} />
-                        <SocialHistory />
+                        {/* <SocialHistory /> */}
                         <ProceduresSurgeriesAndHospitalization patientDetails={patientDetails}/>
                         <Tasks patientDetails={patientDetails} />
                         <Recalls patientDetails={patientDetails} />
                         <Pharmacy patientDetails={patientDetails} />
-                        <Payers /> 
+                        {/* <Payers />  */}
                     </div>
                 </div>
             </ScrollArea>

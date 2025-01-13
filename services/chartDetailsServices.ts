@@ -29,7 +29,10 @@ import {
   PharmacyRequestInterface,
   UserPharmacyInterface,
 } from "@/types/pharmacyInterface";
-import { ProcedureResponse, ProceduresInterface } from "@/types/procedureInterface";
+import {
+  ProcedureResponse,
+  ProceduresInterface,
+} from "@/types/procedureInterface";
 import {
   RecallsData,
   RecallsInterface,
@@ -47,7 +50,16 @@ import {
   SupplementResponseInterface,
   UpdateSupplementType,
 } from "@/types/supplementsInterface";
-import { TasksInterface } from "@/types/tasksInterface";
+import {
+  CreateTaskType,
+  TasksResponseInterface,
+  UpdateTaskType,
+} from "@/types/tasksInterface";
+import {
+  CreatePastMedicalHistoryType,
+  PastMedicalHistoryResponseInterface,
+  UpdatePastMedicalHistoryType,
+} from "./pastMedicalHistoryInterface";
 
 //Alerts
 
@@ -313,7 +325,7 @@ export const deleteRecalls = async ({ id }: { id: string }) => {
 export const createTask = async ({
   requestBody,
 }: {
-  requestBody: TasksInterface;
+  requestBody: CreateTaskType;
 }) => {
   const response = await ApiFetch({
     method: "POST",
@@ -346,7 +358,110 @@ export const getTasks = async ({
     },
   });
 
-  console.log(await response.data);
+  const data: TasksResponseInterface = await response.data;
+  return data;
+};
+
+export const updateTask = async ({
+  requestData,
+  id,
+}: {
+  requestData: UpdateTaskType;
+  id: string;
+}) => {
+  const response = ApiFetch({
+    url: `/provider/tasks/${id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = (await response).data;
+  return data;
+};
+
+export const deleteTask = async ({ id }: { id: string }) => {
+  const response = ApiFetch({
+    url: `/provider/tasks/${id}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = (await response).data;
+  return data;
+};
+
+/**
+ * * Past Medical History API
+ */
+export const getPastMedicalHistory = async ({
+  userDetailsId,
+}: {
+  userDetailsId: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/provider/medical-history/${userDetailsId}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: PastMedicalHistoryResponseInterface = await response.data;
+  return data;
+};
+
+export const createPastMedicalHistory = async ({
+  requestData,
+}: {
+  requestData: CreatePastMedicalHistoryType;
+}) => {
+  const response = await ApiFetch({
+    url: `/provider/medical-history`,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = await response.data;
+  return data;
+};
+
+export const updatePastMedicalHistory = async ({
+  requestData,
+  id,
+}: {
+  requestData: UpdatePastMedicalHistoryType;
+  id: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/provider/medical-history/${id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = await response.data;
+  return data;
+};
+
+export const deletePastMedicalHistory = async ({ id }: { id: string }) => {
+  const response = await ApiFetch({
+    url: `/provider/medical-history/${id}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
   const data = await response.data;
   return data;
 };
@@ -687,7 +802,11 @@ export const createSupplement = async (requestData: CreateSupplementType) => {
   return data;
 };
 
-export const getSupplements = async ({userDetailsId}:{userDetailsId: string}) => {
+export const getSupplements = async ({
+  userDetailsId,
+}: {
+  userDetailsId: string;
+}) => {
   const response = await ApiFetch({
     url: `/provider/supplements?userDetailsId=${userDetailsId}`,
     method: "GET",
@@ -732,7 +851,6 @@ export const deleteSupplement = async (supplementId: string) => {
   const data = await response.data;
   return data;
 };
-
 
 //Procedures
 

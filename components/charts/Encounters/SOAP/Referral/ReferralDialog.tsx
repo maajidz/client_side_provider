@@ -24,6 +24,7 @@ import { TrashIcon } from 'lucide-react'
 import { DiagnosesClient } from '@/components/tables/charts/diagnoses/client'
 
 const ReferralDialog = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
+      const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const providerDetails = useSelector((state: RootState) => state.login)
     const [selectedDiagnoses, setSelectedDiagnoses] = useState<PastDiagnosesInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -64,10 +65,12 @@ const ReferralDialog = ({ patientDetails, encounterId }: { patientDetails: UserE
         setLoading(true)
         try{
             await createTransfer({requestData: requestData})
+            setIsDialogOpen(false);
         } catch(e){
             console.log("Error:",e)
         } finally{
             setLoading(false)
+            setIsDialogOpen(false);
         }
     };
 
@@ -79,7 +82,7 @@ const ReferralDialog = ({ patientDetails, encounterId }: { patientDetails: UserE
     }
 
     return (
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
                 <Button variant="ghost" className='text-blue-500 underline'>Add Referral</Button>
             </DialogTrigger>
