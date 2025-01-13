@@ -28,8 +28,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { tasksSchema } from "@/schema/tasksSchema";
-import { CreateTaskType, TasksResponseDataInterface } from "@/types/tasksInterface";
-import { createTask } from "@/services/chartDetailsServices";
+import {
+  CreateTaskType,
+  TasksResponseDataInterface,
+  UpdateTaskType,
+} from "@/types/tasksInterface";
+import { createTask, updateTask } from "@/services/chartDetailsServices";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
@@ -103,35 +107,66 @@ const TasksDialog = ({
 
   useEffect(() => {
     if (tasksData) {
-      form.reset(tasksData);
+      form.reset({
+        category: tasksData.category || "",
+        task: tasksData.notes || "",
+        owner: tasksData.assignedProvider.id || "",
+        priority: tasksData.priority || "Low",
+        dueDate: tasksData.dueDate || new Date().toISOString().split("T")[0],
+        sendReminder: tasksData.reminder || [],
+        comments: tasksData.description || "",
+        userDetailsId:
+          tasksData.userDetailsId || "97f41397-3fe3-4f0b-a242-d3370063db33",
+      });
     }
 
     fetchOwnersList();
   }, [fetchOwnersList, form, tasksData]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
-    const requestData: CreateTaskType = {
-      category: values.category,
-      description: values.comments ?? "",
-      priority: values.priority,
-      status: "PENDING",
-      notes: values.task,
-      dueDate: `${values.dueDate}`,
-      assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
-      assignerProviderId: providerDetails.providerId,
-      assignedByAdmin: true,
-      userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
-    };
-
     setLoading(true);
     try {
-      await createTask({ requestBody: requestData });
+      if (!tasksData) {
+        const requestData: CreateTaskType = {
+          category: values.category,
+          description: values.comments ?? "",
+          priority: values.priority,
+          status: "PENDING",
+          notes: values.task,
+          dueDate: `${values.dueDate}`,
+          assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
+          assignerProviderId: providerDetails.providerId,
+          assignedByAdmin: true,
+          userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+        };
+        await createTask({ requestBody: requestData });
 
-      showToast({
-        toast,
-        type: "success",
-        message: "Task created successfully",
-      });
+        showToast({
+          toast,
+          type: "success",
+          message: "Task created successfully",
+        });
+      } else {
+        const requestData: UpdateTaskType = {
+          category: values.category ?? "",
+          description: values.comments ?? "",
+          status: "PENDING",
+          priority: values.priority,
+          notes: values.task,
+          dueDate: `${values.dueDate}`,
+          assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
+          assignerProviderId: providerDetails.providerId,
+          assignedByAdmin: true,
+          userDetailsId: values.userDetailsId,
+        };
+        await updateTask({ requestData, id: tasksData.id });
+
+        showToast({
+          toast,
+          type: "success",
+          message: "Task updated successfully",
+        });
+      }
     } catch (err) {
       if (err instanceof Error) {
         showToast({
