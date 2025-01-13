@@ -36,13 +36,23 @@ import {
   X, 
   Pill,
   CalendarCheck,
-  FlaskConical
+  FlaskConical,
+  Microscope,
+  MessageSquare,
+  Syringe,
+  Activity,
+  UserPen,
+  Archive,
+  FileUser
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  activity: Activity,
+  archive: Archive,
   dashboard: LayoutDashboardIcon,
+  document: FileUser,
   logo: Command,
   login: LogIn,
   calendar: Calendar,
@@ -58,6 +68,7 @@ export const Icons = {
   post: FileText,
   page: File,
   media: Image,
+  microscope: Microscope, 
   settings: Settings,
   billing: CreditCard,
   ellipsis: MoreVertical,
@@ -67,6 +78,7 @@ export const Icons = {
   user: User,
   users: Users,
   arrowRight: ArrowRight,
+  tasks: UserPen,
   help: HelpCircle,
   pizza: Pizza,
   sun: SunMedium,
@@ -76,6 +88,8 @@ export const Icons = {
   clipboard: Clipboard,
   labs:FlaskConical,
   calendarcheck: CalendarCheck,
+  message: MessageSquare,
+  injection: Syringe,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

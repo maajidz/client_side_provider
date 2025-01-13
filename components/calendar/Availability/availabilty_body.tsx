@@ -244,7 +244,7 @@ const CalendarField = ({
                     }}
                     disabled={(date) =>
                       date < new Date(new Date().setHours(0, 0, 0, 0)) ||
-                      date > new Date("2025-01-01")
+                      date > new Date("2100-01-01")
                     }
                     initialFocus
                   />

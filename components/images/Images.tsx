@@ -2,51 +2,16 @@
 
 import PageContainer from "@/components/layout/page-container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import LoadingButton from "@/components/LoadingButton";
-import { getUserEncounterDetails } from "@/services/chartsServices";
-import { UserEncounterData } from "@/types/chartsInterface";
-import { useEffect, useState } from "react";
-import ImageOrdersClient from "../../app/dashboard/images/image-orders/orders/client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import ImageResults from "./ImageResults/ImageResults";
+import ImageOrders from "./ImageOrders/ImageOrders";
 
 function Images() {
   const [activeTab, setActiveTab] = useState("imageResults");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<UserEncounterData>();
   const router = useRouter();
-
-  const encounterId = "34044ece-aad6-41f9-ac2b-f322a246043f";
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-
-      try {
-        const encounterData = await getUserEncounterDetails({
-          encounterId,
-        });
-        if (encounterData !== undefined && encounterData) {
-          setData(encounterData[0]);
-        }
-      } catch (e) {
-        console.log("Error", e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex w-screen h-screen justify-center items-center">
-        <LoadingButton />
-      </div>
-    );
-  }
 
   return (
     <PageContainer scrollable={true}>
@@ -80,7 +45,7 @@ function Images() {
             <ImageResults />
           </TabsContent>
           <TabsContent value="imageOrders">
-            <ImageOrdersClient patientDetails={data} />
+           <ImageOrders />
           </TabsContent>
         </Tabs>
       </div>
@@ -89,8 +54,4 @@ function Images() {
 }
 
 export default Images;
-
-{/* <AddImageResult patientDetails={data} />
-            ) : (
-              <AddImageOrder /> */}
 

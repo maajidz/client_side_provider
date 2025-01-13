@@ -120,7 +120,7 @@ export const navItems: NavItem[] = [
   {
     title: "Patients",
     href: "/dashboard/patients",
-    icon: "user",
+    icon: "users",
     label: "Patients",
   },
   {
@@ -129,12 +129,36 @@ export const navItems: NavItem[] = [
     icon: "calendar",
     label: "Calendar",
   },
-  {
-    title: "Profile",
-    href: "/dashboard/profile",
-    icon: "user",
-    label: "Profile",
-  },
+  // {
+  //   title: "Messages",
+  //   href: "/dashboard/calendar",
+  //   icon: "message",
+  //   label: "Messages",
+  // },
+  // {
+  //   title: "Tasks",
+  //   href: "/dashboard/calendar",
+  //   icon: "tasks",
+  //   label: "Tasks",
+  // },
+  // {
+  //   title: "Analytics",
+  //   href: "/dashboard/calendar",
+  //   icon: "activity",
+  //   label: "Analytics",
+  // },
+  // {
+  //   title: "Billing",
+  //   href: "/dashboard/calendar",
+  //   icon: "billing",
+  //   label: "Billing",
+  // },
+  // {
+  //   title: "Inventory",
+  //   href: "/dashboard/calendar",
+  //   icon: "archive",
+  //   label: "Inventory",
+  // },
   {
     title: "Charts",
     href: "/dashboard/charts",
@@ -156,8 +180,32 @@ export const navItems: NavItem[] = [
   {
     title: "Images",
     href: "/dashboard/images",
-    icon: "media",
+    icon: "microscope",
     label: "Images",
+  },
+  // {
+  //   title: "Documents",
+  //   href: "/dashboard/images",
+  //   icon: "document",
+  //   label: "Documents",
+  // },
+  // {
+  //   title: "Injections",
+  //   href: "/dashboard/images",
+  //   icon: "injection",
+  //   label: "Injections",
+  // },
+  // {
+  //   title: "Referrals",
+  //   href: "/dashboard/images",
+  //   icon: "refer",
+  //   label: "Referrals",
+  // },
+  {
+    title: "Profile",
+    href: "/dashboard/profile",
+    icon: "user",
+    label: "Profile",
   },
 ];
 
