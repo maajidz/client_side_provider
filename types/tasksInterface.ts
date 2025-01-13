@@ -1,3 +1,5 @@
+import { ProviderDetails } from "./loginInterface";
+
 export interface TasksInterface {
   id: string;
   category: string;
@@ -15,7 +17,7 @@ export interface TasksInterface {
 export interface CreateTaskType {
   category: string;
   description?: string;
-  status?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+  status?: string;
   reminders?: string[];
   notes?: string;
   priority?: "Low" | "Medium" | "High";
@@ -29,8 +31,26 @@ export interface CreateTaskType {
 export interface UpdateTaskType extends CreateTaskType {}
 
 export interface TasksResponseInterface {
-  data: TasksInterface[];
+  data: TasksResponseDataInterface[];
   total: number;
   page: number;
   limit: number;
+}
+
+export interface TasksResponseDataInterface {
+  id: string
+  category: string
+  description: string
+  status: string
+  notes: string
+  priority?: "Low" | "Medium" | "High";
+  dueDate: string
+  reminder: any
+  assignedByAdmin: boolean
+  userDetailsId: string
+  isAccepted: boolean
+  createdAt: string
+  updatedAt: string
+  assignedProvider: ProviderDetails
+  assignerProvider: ProviderDetails
 }

@@ -34,7 +34,7 @@ import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useCallback, useEffect, useState } from "react";
-import { TasksInterface, UpdateTaskType } from "@/types/tasksInterface";
+import { TasksResponseDataInterface, UpdateTaskType } from "@/types/tasksInterface";
 import {  updateTask } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
@@ -55,7 +55,7 @@ function EditTask({
   selectedTask,
 }: {
   patientDetails: UserEncounterData;
-  selectedTask: TasksInterface;
+  selectedTask: TasksResponseDataInterface;
 }) {
 
   const [showDueDate, setShowDueDate] = useState(false);
@@ -80,7 +80,7 @@ function EditTask({
       category: selectedTask.category ?? "",
       task: selectedTask.notes ?? "",
       owner: selectedTask.id ?? "",
-      priority: selectedTask.priority ?? "Low",
+      priority: selectedTask?.priority ?? "Low",
       dueDate:
         formatDate(selectedTask.dueDate) ??
         new Date().toISOString().split("T")[0],

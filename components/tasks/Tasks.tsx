@@ -43,6 +43,7 @@ import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { priority, reminderOptions } from "@/constants/data";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { useToast } from "@/components/ui/use-toast";
+import ViewTasks from "./ViewTasks";
 
 const Tasks = () => {
   const [showPatientSpecific, setShowPatientSpecific] = useState(false);
@@ -453,6 +454,7 @@ const Tasks = () => {
             </DialogContent>
           </Dialog>
         </div>
+        <ViewTasks />
       </div>
     </PageContainer>
   );
