@@ -36,19 +36,25 @@ export interface UserResponseInterface {
 
 export interface UserData {
   id: string
-  email: string
-  firstName: string
-  lastName: string
-  phoneNumber: string
   dob: string
-  weight: number,
-  weightType: string,
-  height: number,
-  heightType: string,
-  gender: string,
-  provider: string,
-  createdAt: string,
+  height: number
+  heightType: string
+  weight: number
+  weightType: string
+  location: string
+  gender: string
+  createdAt: string
   updatedAt: string
+  user: User
+}
+
+export interface User {
+  id?: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  phoneNumber?: string
+  userDetailsId?: string
 }
 
 

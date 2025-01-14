@@ -195,12 +195,12 @@ export const navItems: NavItem[] = [
     icon: "injection",
     label: "Injections",
   },
-  // {
-  //   title: "Referrals",
-  //   href: "/dashboard/images",
-  //   icon: "refer",
-  //   label: "Referrals",
-  // },
+  {
+    title: "Referrals",
+    href: "/dashboard/referral",
+    icon: "refer",
+    label: "Referrals",
+  },
   {
     title: "Profile",
     href: "/dashboard/profile",
@@ -347,3 +347,11 @@ export const priority = [
   "Medium",
   "High"
 ]
+
+export const categoryOptions = [
+  { value: "ancillary_appointments", label: "Ancillary Appointments" },
+  { value: "appointment", label: "Appointment" },
+  { value: "billing", label: "Billing" },
+  { value: "cancel_subscription", label: "Cancel Subscription" },
+  { value: "follow_up", label: "Follow Up" },
+];
