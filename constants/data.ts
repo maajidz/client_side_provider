@@ -224,12 +224,12 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
   },
   {
     title: "Messages",
-    href: "/dashboard/patient",
+    href: "/dashboard/patients/messages",
     label: "Messages",
   },
   {
     title: "Tasks",
-    href: "/dashboard/patient",
+    href: "/dashboard/patients/tasks",
     label: "Tasks",
   },
   {
