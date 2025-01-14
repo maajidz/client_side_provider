@@ -183,18 +183,18 @@ export const navItems: NavItem[] = [
     icon: "microscope",
     label: "Images",
   },
-  // {
-  //   title: "Documents",
-  //   href: "/dashboard/images",
-  //   icon: "document",
-  //   label: "Documents",
-  // },
-  // {
-  //   title: "Injections",
-  //   href: "/dashboard/images",
-  //   icon: "injection",
-  //   label: "Injections",
-  // },
+  {
+    title: "Documents",
+    href: "/dashboard/documents",
+    icon: "document",
+    label: "Documents",
+  },
+  {
+    title: "Injections",
+    href: "/dashboard/injections",
+    icon: "injection",
+    label: "Injections",
+  },
   // {
   //   title: "Referrals",
   //   href: "/dashboard/images",
