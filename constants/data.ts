@@ -183,18 +183,18 @@ export const navItems: NavItem[] = [
     icon: "microscope",
     label: "Images",
   },
-  // {
-  //   title: "Documents",
-  //   href: "/dashboard/images",
-  //   icon: "document",
-  //   label: "Documents",
-  // },
-  // {
-  //   title: "Injections",
-  //   href: "/dashboard/images",
-  //   icon: "injection",
-  //   label: "Injections",
-  // },
+  {
+    title: "Documents",
+    href: "/dashboard/documents",
+    icon: "document",
+    label: "Documents",
+  },
+  {
+    title: "Injections",
+    href: "/dashboard/injections",
+    icon: "injection",
+    label: "Injections",
+  },
   {
     title: "Referrals",
     href: "/dashboard/referral",
@@ -224,12 +224,12 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
   },
   {
     title: "Messages",
-    href: "/dashboard/patient",
+    href: "/dashboard/patients/messages",
     label: "Messages",
   },
   {
     title: "Tasks",
-    href: "/dashboard/patient",
+    href: "/dashboard/patients/tasks",
     label: "Tasks",
   },
   {
