@@ -81,13 +81,16 @@ const CreateEncounterDialog = () => {
   }, []);
 
   useEffect(() => {
-    const filteredUsers = userResponse?.filter((user) => {
-      const searchTerms = patient.toLowerCase().split(" "); // Split input on spaces
-      return searchTerms.every(
-        (term) =>
-          user.firstName.toLowerCase().includes(term) ||
-          user.lastName.toLowerCase().includes(term) ||
-          user.id.toLowerCase().includes(term)
+    const filteredUsers = userResponse?.filter((userData) => {
+      const searchTerms = patient.toLowerCase().split(" ");
+      return (
+        userData?.user &&
+        searchTerms.every(
+          (term) =>
+            userData.user.firstName?.toLowerCase().includes(term) ||
+            userData.user.lastName?.toLowerCase().includes(term) ||
+            userData.id?.toLowerCase().includes(term)
+        )
       );
     });
 
@@ -163,27 +166,27 @@ const CreateEncounterDialog = () => {
                     <p className="font-semibold">Matching Patients:</p>
                     <ul className="border rounded p-2">
                       {userResponse
-                        ?.filter((user) => {
+                        ?.filter((userData) => {
                           const searchTerms = patient.toLowerCase().split(" ");
                           return searchTerms.every(
                             (term) =>
-                              user.firstName.toLowerCase().includes(term) ||
-                              user.lastName.toLowerCase().includes(term) ||
-                              user.id.toLowerCase().includes(term)
+                              userData?.user?.firstName?.toLowerCase().includes(term) ||
+                              userData?.user?.lastName?.toLowerCase().includes(term) ||
+                              userData?.id?.toLowerCase().includes(term)
                           );
                         })
-                        .map((user) => (
+                        .map((userData) => (
                           <li
-                            key={user.id}
+                            key={userData.id}
                             className="cursor-pointer hover:bg-gray-100 p-2 rounded"
                             onClick={() => {
-                              setSeletedPatient(user);
-                              setPatient(`${user.firstName} ${user.lastName}`);
+                              setSeletedPatient(userData);
+                              setPatient(`${userData.user.firstName} ${userData.user.lastName}`);
                               setIsOpen(!isOpen);
                               setShowEncounterForm(!showEncounterForm);
                             }}
                           >
-                            {user.firstName} {user.lastName} (ID: {user.id})
+                            {userData.user.firstName} {userData.user.lastName} (ID: {userData.id})
                           </li>
                         ))}
                     </ul>
@@ -196,14 +199,14 @@ const CreateEncounterDialog = () => {
                 <div className="mt-4 p-4 border rounded bg-gray-50">
                   <h4 className="font-semibold">Selected Patient Details:</h4>
                   <p>
-                    <strong>Name:</strong> {selectedPatient.firstName}{" "}
-                    {selectedPatient.lastName}
+                    <strong>Name:</strong> {selectedPatient.user.firstName}{" "}
+                    {selectedPatient.user.lastName}
                   </p>
                   <p>
                     <strong>ID:</strong> {selectedPatient.id}
                   </p>
                   <p>
-                    <strong>Email:</strong> {selectedPatient.email}
+                    <strong>Email:</strong> {selectedPatient.user.email}
                   </p>
                 </div>
               )}
