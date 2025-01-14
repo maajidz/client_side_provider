@@ -211,7 +211,8 @@ const ViewTasks = () => {
                 setEditData,
                 setIsDialogOpen,
                 setLoading,
-                showToast: () => showToast({ toast, type: "success", message: "Deleted Successfully" }), // Pass as function reference
+                showToast: () => showToast({ toast, type: "success", message: "Deleted Successfully" }),
+                fetchTasksList: () => fetchTasksList(page)
               })}
               data={resultList?.data}
               pageNo={page}

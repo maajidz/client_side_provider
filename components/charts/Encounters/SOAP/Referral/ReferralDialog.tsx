@@ -225,7 +225,7 @@ const ReferralDialog = ({ patientDetails, encounterId }: { patientDetails: UserE
                                                 <DialogContent className="sm:max-w-[425px]">
                                                     <DialogHeader>
                                                         <DialogTitle>Diagnoses</DialogTitle>
-                                                        <DiagnosesClient onSelectionChange={handleSelectedDiagnoses} patientDetails={patientDetails}/>
+                                                        <DiagnosesClient onSelectionChange={handleSelectedDiagnoses} chartID={patientDetails.chart.id}/>
                                                     </DialogHeader>
                                                 </DialogContent>
                                             </Dialog>

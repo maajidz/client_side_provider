@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,12 +16,14 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-// import LoadingButton from "@/components/LoadingButton";
+import LoadingButton from "@/components/LoadingButton";
 import SearchAndAddDrawer from "@/components/charts/Encounters/SOAP/Labs/SearchAndAddDrawer";
 import { Separator } from "@/components/ui/separator";
 import AddLabsDialog from "@/components/charts/Encounters/SOAP/Labs/AddLabsDialog";
 import PastOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/PastOrdersDialog";
 import ViewOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/ViewOrdersDialog";
+import { fetchUserDataResponse } from "@/services/userServices";
+import { UserData } from "@/types/userInterface";
 
 const CreateLabResults = () => {
   const form = useForm<z.infer<typeof createLabResultsSchema>>({
@@ -48,28 +50,48 @@ const CreateLabResults = () => {
     },
   });
 
-  const [patients] = useState([
-    "John Doe",
-    "Jane Smith",
-    "Emily Davis",
-    "David Johnson",
-  ]);
+  const [patients, setPatients] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
-  // const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
+  const fetchPatientList = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchUserDataResponse({
+        pageNo: 1,
+        pageSize: 10,
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
+      if (response) {
+        setPatients(response.data);
+      }
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
+    fetchPatientList();
+  }, [searchTerm, fetchPatientList]);
+
   const filteredPatients = patients.filter((patient) =>
-    patient.toLowerCase().includes(searchTerm.toLowerCase())
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
   );
 
   const onSubmit = async (values: z.infer<typeof createLabResultsSchema>) => {
     console.log(values);
   };
 
-  // if (loading) {
-  //   return <LoadingButton />;
-  // }
+  if (loading) {
+    return <LoadingButton />;
+  }
 
   return (
     <>
@@ -114,17 +136,19 @@ const CreateLabResults = () => {
                         {searchTerm && visibleSearchList && (
                           <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
                             {filteredPatients.length > 0 ? (
-                              filteredPatients.map((patient, index) => (
+                              filteredPatients.map((patient) => (
                                 <div
-                                  key={index}
+                                  key={patient.id}
                                   className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                   onClick={() => {
-                                    setSearchTerm(patient);
-                                    field.onChange(patient);
-                                    setVisibleSearchList(false);
+                                    field.onChange(patient.id); 
+                                    setSearchTerm(
+                                      `${patient.user.firstName} ${patient.user.lastName}`
+                                    );
+                                    setVisibleSearchList(false); 
                                   }}
                                 >
-                                  {patient}
+                                  {`${patient.user.firstName} ${patient.user.lastName}`}
                                 </div>
                               ))
                             ) : (
@@ -171,7 +195,6 @@ const CreateLabResults = () => {
           <Separator orientation="vertical" />
           <ViewOrdersDialog userDetailsId={""} />
         </div>
-        
       </div>
     </>
   );

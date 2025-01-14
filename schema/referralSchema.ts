@@ -3,7 +3,8 @@
 import { z } from "zod";
 
 export const referralFormSchema = z.object({
-  //referralFrom: z.string().min(1, { message: "Referral From is required" }),
+  userDetailsId: z.string(),
+  referralFrom: z.string().min(1, { message: "Referral From is required" }),
   referralTo: z.string().min(1, { message: "Referral From is required" }),
   referralReason: z.string().min(1, { message: "Referral Reason is required" }),
   referralDate: z.string().min(1, { message: "Referral Date is required" }),
