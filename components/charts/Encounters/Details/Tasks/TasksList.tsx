@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { deleteTask, getTasks } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
-import { TasksInterface } from "@/types/tasksInterface";
+import { TasksResponseDataInterface } from "@/types/tasksInterface";
 import { showToast } from "@/utils/utils";
 import { Trash2Icon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -15,7 +15,7 @@ interface TasksListProps {
 }
 
 function TasksList({ patientDetails }: TasksListProps) {
-  const [tasksData, setTasksData] = useState<TasksInterface[]>();
+  const [tasksData, setTasksData] = useState<TasksResponseDataInterface[]>();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 

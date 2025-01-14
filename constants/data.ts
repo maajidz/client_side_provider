@@ -135,12 +135,12 @@ export const navItems: NavItem[] = [
   //   icon: "message",
   //   label: "Messages",
   // },
-  // {
-  //   title: "Tasks",
-  //   href: "/dashboard/calendar",
-  //   icon: "tasks",
-  //   label: "Tasks",
-  // },
+  {
+    title: "Tasks",
+    href: "/dashboard/tasks",
+    icon: "tasks",
+    label: "Tasks",
+  },
   // {
   //   title: "Analytics",
   //   href: "/dashboard/calendar",
@@ -334,3 +334,16 @@ export const timeSlots = [
   "15:00",
   "15:30",
 ];
+
+export const reminderOptions = [
+  "On Due Date",
+  "1 Day Before",
+  "2 Days Before",
+  "3 Days Before",
+];
+
+export const priority = [
+  "Low",
+  "Medium",
+  "High"
+]

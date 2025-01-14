@@ -1,13 +1,13 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormField,
@@ -17,7 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
   SelectTrigger,
@@ -26,68 +25,42 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { tasksSchema } from "@/schema/tasksSchema";
-import { Edit2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { tasksSchema } from "@/schema/tasksSchema";
+import {
+  CreateTaskType,
+  TasksResponseDataInterface,
+  UpdateTaskType,
+} from "@/types/tasksInterface";
+import { createTask, updateTask } from "@/services/chartDetailsServices";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { useCallback, useEffect, useState } from "react";
-import { TasksResponseDataInterface, UpdateTaskType } from "@/types/tasksInterface";
-import {  updateTask } from "@/services/chartDetailsServices";
-import { UserEncounterData } from "@/types/chartsInterface";
-import { fetchProviderListDetails } from "@/services/registerServices";
-import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { priority, reminderOptions } from "@/constants/data";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { useToast } from "@/components/ui/use-toast";
+import { showToast } from "@/utils/utils";
+import LoadingButton from "@/components/LoadingButton";
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const year = date.getFullYear();
-
-  return `${year}-${month}-${day}`;
-};
-
-function EditTask({
-  patientDetails,
-  selectedTask,
+const TasksDialog = ({
+  tasksData,
+  onClose,
+  isOpen,
 }: {
-  patientDetails: UserEncounterData;
-  selectedTask: TasksResponseDataInterface;
-}) {
-
+  tasksData?: TasksResponseDataInterface | null;
+  onClose: () => void;
+  isOpen: boolean;
+}) => {
+  const [showPatientSpecific, setShowPatientSpecific] = useState(false);
   const [showDueDate, setShowDueDate] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
-
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
   const { toast } = useToast();
 
-  const providerDetails = useSelector((state: RootState) => state.login);
-  const reminderOptions = [
-    "On Due Date",
-    "1 Day Before",
-    "2 Days Before",
-    "3 Days Before",
-  ];
-
-  const form = useForm<z.infer<typeof tasksSchema>>({
-    resolver: zodResolver(tasksSchema),
-    defaultValues: {
-      category: selectedTask.category ?? "",
-      task: selectedTask.notes ?? "",
-      owner: selectedTask.id ?? "",
-      priority: selectedTask?.priority ?? "Low",
-      dueDate:
-        formatDate(selectedTask.dueDate) ??
-        new Date().toISOString().split("T")[0],
-      sendReminder: [],
-      comments: selectedTask.notes,
-    },
-  });
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchOwnersList = useCallback(async () => {
     setLoading(true);
@@ -105,39 +78,101 @@ function EditTask({
     }
   }, []);
 
+  const [patients] = useState([
+    "John Doe",
+    "Jane Smith",
+    "Emily Davis",
+    "David Johnson",
+  ]);
+
+  const filteredPatients = patients.filter((patient) =>
+    patient.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const providerDetails = useSelector((state: RootState) => state.login);
+
+  const form = useForm<z.infer<typeof tasksSchema>>({
+    resolver: zodResolver(tasksSchema),
+    defaultValues: {
+      category: "",
+      task: "",
+      owner: "",
+      priority: "Low",
+      dueDate: new Date().toISOString().split("T")[0],
+      sendReminder: [],
+      comments: "",
+      userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+    },
+  });
+
   useEffect(() => {
+    if (tasksData) {
+      form.reset({
+        category: tasksData.category || "",
+        task: tasksData.notes || "",
+        owner: tasksData.assignedProvider.id || "",
+        priority: tasksData.priority || "Low",
+        dueDate: tasksData.dueDate || new Date().toISOString().split("T")[0],
+        sendReminder: tasksData.reminder || [],
+        comments: tasksData.description || "",
+        userDetailsId:
+          tasksData.userDetailsId || "97f41397-3fe3-4f0b-a242-d3370063db33",
+      });
+    }
+
     fetchOwnersList();
-  }, [fetchOwnersList]);
+  }, [fetchOwnersList, form, tasksData]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
-    const requestData: UpdateTaskType = {
-      category: values.category ?? "",
-      description: values.comments ?? "",
-      status: "PENDING",
-      priority: values.priority,
-      notes: values.task,
-      dueDate: `${values.dueDate}`,
-      assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
-      assignerProviderId: providerDetails.providerId,
-      assignedByAdmin: true,
-      userDetailsId: patientDetails.userDetails.id,
-    };
-
     setLoading(true);
     try {
-      await updateTask({ requestData, id: selectedTask.id });
+      if (!tasksData) {
+        const requestData: CreateTaskType = {
+          category: values.category,
+          description: values.comments ?? "",
+          priority: values.priority,
+          status: "PENDING",
+          notes: values.task,
+          dueDate: `${values.dueDate}`,
+          assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
+          assignerProviderId: providerDetails.providerId,
+          assignedByAdmin: true,
+          userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+        };
+        await createTask({ requestBody: requestData });
 
-      showToast({
-        toast,
-        type: "success",
-        message: "Task updated successfully",
-      });
+        showToast({
+          toast,
+          type: "success",
+          message: "Task created successfully",
+        });
+      } else {
+        const requestData: UpdateTaskType = {
+          category: values.category ?? "",
+          description: values.comments ?? "",
+          status: "PENDING",
+          priority: values.priority,
+          notes: values.task,
+          dueDate: `${values.dueDate}`,
+          assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
+          assignerProviderId: providerDetails.providerId,
+          assignedByAdmin: true,
+          userDetailsId: values.userDetailsId,
+        };
+        await updateTask({ requestData, id: tasksData.id });
+
+        showToast({
+          toast,
+          type: "success",
+          message: "Task updated successfully",
+        });
+      }
     } catch (err) {
       if (err instanceof Error) {
         showToast({
           toast,
           type: "error",
-          message: "Could not update task",
+          message: "Task creation failed",
         });
       }
     } finally {
@@ -151,15 +186,10 @@ function EditTask({
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost">
-          <Edit2Icon color="#84012A" />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Task</DialogTitle>
+          <DialogTitle>{tasksData ? "Edit Task" : "Add Task"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -257,15 +287,82 @@ function EditTask({
                           <SelectValue placeholder="Choose Priority" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Low">Low</SelectItem>
-                          <SelectItem value="Medium">Medium</SelectItem>
-                          <SelectItem value="High">High</SelectItem>
+                          {priority.map((priority) => (
+                            <SelectItem value={priority} key={priority}>
+                              {priority}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormControl>
                   </FormItem>
                 )}
               />
+
+              <div className="flex items-center space-x-3">
+                <Checkbox
+                  id="isPatientSpecific"
+                  onCheckedChange={(checked) =>
+                    setShowPatientSpecific(checked as boolean)
+                  }
+                />
+                <label
+                  htmlFor="isPatientSpecific"
+                  className="text-sm font-medium"
+                >
+                  Is patient specific
+                </label>
+              </div>
+
+              {showPatientSpecific && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="userDetailsId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              placeholder="Search Patient "
+                              value={searchTerm}
+                              onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setVisibleSearchList(true);
+                              }}
+                            />
+                            {searchTerm && visibleSearchList && (
+                              <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                                {filteredPatients.length > 0 ? (
+                                  filteredPatients.map((patient, index) => (
+                                    <div
+                                      key={index}
+                                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                      onClick={() => {
+                                        setSearchTerm(patient);
+                                        field.onChange(patient);
+                                        setVisibleSearchList(false);
+                                      }}
+                                    >
+                                      {patient}
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="px-4 py-2 text-gray-500">
+                                    No results found
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
+
               <div className="flex items-center space-x-3">
                 <Checkbox
                   id="assignDueDate"
@@ -361,7 +458,6 @@ function EditTask({
       </DialogContent>
     </Dialog>
   );
-}
+};
 
-export default EditTask;
-
+export default TasksDialog;
