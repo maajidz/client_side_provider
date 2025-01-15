@@ -26,6 +26,7 @@ import {
   UpdateFollowUp,
   UpdateSOAPInterface,
   UserEncounterInterface,
+  TransferResponseData,
   // ImagesOrdersDataInterface,
 } from "@/types/chartsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";
@@ -105,11 +106,11 @@ export const getUserEncounterDetails = async ({
 export const getEncounterList = async ({
   providerID,
   page,
-  limit
+  limit,
 }: {
   providerID: string;
   page: number;
-  limit: number
+  limit: number;
 }) => {
   const response = await ApiFetch({
     method: "GET",
@@ -451,8 +452,8 @@ export const getImagesTestsData = async ({
 };
 
 export const getLabOrdersData = async ({
-  userDetailsId ="",
-  providerId ="",
+  userDetailsId = "",
+  providerId = "",
   page,
   limit,
 }: {
@@ -553,33 +554,31 @@ export const createTransfer = async ({
   return data;
 };
 
-export const getTransferData = async ({ id }: { id: string }) => {
-  const response = await ApiFetch({
-    method: "GET",
-    url: `/provider/transfer/${id}`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  console.log(response.data);
-  const data: LabsDataResponse = await response.data;
-  return data;
-};
-
-export const getTransferDataByEncounter = async ({
-  encounterId,
+export const getTransferData = async ({
+  id,
+  idType,
+  referralType,
 }: {
-  encounterId: string;
+  id: string;
+  idType:
+    | "id"
+    | "encounterId"
+    | "Referring to ProviderID"
+    | "Referring from ProviderID";
+  referralType?: "external" | "internal";
 }) => {
+  const queryParams = new URLSearchParams();
+  if (idType) queryParams.append("idType", idType);
+  if (referralType) queryParams.append("referralType", referralType);
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/transfer/by-encounter/${encounterId}`,
+    url: `/provider/transfer/${id}?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },
   });
   console.log(response.data);
-  const data: LabsDataResponse = await response.data;
+  const data: TransferResponseData[] = await response.data;
   return data;
 };
 
