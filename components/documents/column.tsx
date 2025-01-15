@@ -3,31 +3,22 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export const columns = (): ColumnDef<DocumentsInterface>[] => [
   {
-    accessorKey: "patient",
+    accessorKey: "patientName",
     header: "Patient",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("patient")}</div>
-    ),
   },
   {
     accessorKey: "documentName",
     header: "Document Name",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("documentName")}</div>
-    ),
   },
   {
-    accessorKey: "internalComments",
+    accessorKey: "internalComment",
     header: "Internal Comments",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("internalComments")}</div>
-    ),
   },
   {
-    accessorKey: "date",
+    accessorKey: "createdAt",
     header: "Date",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("date")}</div>
-    ),
+    cell: ({ row }) => {
+      return <span>{new Date(row.original.createdAt).toDateString()}</span>;
+    },
   },
 ];

@@ -1,9 +1,9 @@
 export interface DocumentsInterface {
   id: string;
-  patient: string;
+  patientName: string;
   documentName: string;
-  date: string;
-  internalComments: string;
-  reviewer: string;
-  status: "Signed" | "Un-Signed"
+  createdAt: string;
+  internalComment: string;
+  reviewerId: string;
+  status: "Pending" | "Completed";
 }

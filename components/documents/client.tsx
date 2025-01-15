@@ -1,75 +1,117 @@
 "use client";
 
+import LoadingButton from "@/components/LoadingButton";
+import { getDocumentsData } from "@/services/documentsServices";
+import { DocumentsInterface } from "@/types/documentsInterface";
 import { DataTable } from "../ui/data-table";
 import { columns } from "./column";
-import { DocumentsInterface } from "@/types/documentsInterface";
 import FilterDocuments from "./FilterDocuments";
+import { useCallback, useEffect, useState } from "react";
+import { UserData } from "@/types/userInterface";
+import { fetchUserDataResponse } from "@/services/userServices";
 
 function DocumentsClient() {
+  // Data State
+  const [documentsData, setDocumentsData] = useState<DocumentsInterface[]>([]);
+  const [userInfo, setUserInfo] = useState<UserData[]>([]);
+
+  // Filter State
+  const [filters, setFilters] = useState({
+    reviewer: "all",
+    status: "all",
+    patient: "",
+  });
+
+  // Page State
+  const itemsPerPage = 10;
+  const [pageNo, setPageNo] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // Loading State
+  const [loadingDocuments, setLoadingDocuments] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
+  // GET User Data
+  const getUserData = useCallback(async () => {
+    setLoadingUsers(true);
+
+    try {
+      const response = await fetchUserDataResponse({ pageNo });
+
+      if (response) {
+        setUserInfo(response.data);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoadingUsers(false);
+    }
+  }, [pageNo]);
+
+  // GET Documents Data
+  const fetchDocumentsData = useCallback(async () => {
+    setLoadingDocuments(true);
+
+    try {
+      const response = await getDocumentsData(filters.patient);
+
+      if (response) {
+        setDocumentsData(response);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingDocuments(false);
+    }
+  }, [filters.patient]);
+
+  // Effects
+  useEffect(() => {
+    getUserData();
+  }, [getUserData]);
+
+  useEffect(() => {
+    if (filters.patient) {
+      fetchDocumentsData();
+    }
+  }, [fetchDocumentsData, filters]);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(documentsData.length / itemsPerPage));
+  }, [documentsData.length]);
+
+  const handleFilterChange = (newFilters: {
+    reviewer: string;
+    status: string;
+    patient: string;
+  }) => {
+    setFilters(newFilters);
+    setPageNo(1);
+  };
+
   return (
     <>
       <div className="space-y-4">
-        <FilterDocuments />
+        <FilterDocuments
+          documentsData={documentsData}
+          userInfo={userInfo}
+          onFilterChange={handleFilterChange}
+        />
       </div>
-      <DataTable
-        searchKey="Documents"
-        columns={columns()}
-        data={mockData}
-        pageNo={1}
-        totalPages={1}
-        onPageChange={() => {}}
-      />
+      {loadingDocuments || loadingUsers ? (
+        <LoadingButton />
+      ) : (
+        <DataTable
+          searchKey="Documents"
+          columns={columns()}
+          data={documentsData}
+          pageNo={pageNo}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPageNo(newPage)}
+        />
+      )}
     </>
   );
 }
 
 export default DocumentsClient;
-
-const mockData: DocumentsInterface[] = [
-  {
-    id: "DOC12345",
-    patient: "John Doe",
-    documentName: "Medical Report - 2025",
-    date: "2025-01-10",
-    internalComments: "Reviewed by Dr. Smith for accuracy.",
-    reviewer: "Dr. Alice Smith",
-    status: "Signed",
-  },
-  {
-    id: "DOC67890",
-    patient: "Jane Smith",
-    documentName: "Surgical Consent Form",
-    date: "2025-01-12",
-    internalComments: "Awaiting signature from the patient.",
-    reviewer: "Nurse Mary",
-    status: "Un-Signed",
-  },
-  {
-    id: "DOC11223",
-    patient: "Robert Brown",
-    documentName: "Discharge Summary",
-    date: "2025-01-09",
-    internalComments: "Ready for final review by Dr. Lee.",
-    reviewer: "Dr. Brian Lee",
-    status: "Signed",
-  },
-  {
-    id: "DOC44556",
-    patient: "Emily Johnson",
-    documentName: "X-ray Results",
-    date: "2025-01-11",
-    internalComments: "Pending confirmation of results.",
-    reviewer: "Radiologist Dr. White",
-    status: "Un-Signed",
-  },
-  {
-    id: "DOC78901",
-    patient: "Michael Clark",
-    documentName: "Follow-up Appointment Letter",
-    date: "2025-01-13",
-    internalComments: "Patient to be contacted for appointment scheduling.",
-    reviewer: "Receptionist Laura",
-    status: "Un-Signed",
-  },
-];
-
