@@ -124,6 +124,9 @@ const TasksDialog = ({
   useEffect(() => {
     fetchOwnersList();
     fetchPatientList();
+  }, [fetchOwnersList, fetchPatientList])
+
+  useEffect(() => {
     if (tasksData) {
       form.reset({
         category: tasksData.category || "",
@@ -146,7 +149,7 @@ const TasksDialog = ({
         ownersList.find(owner => owner.id === tasksData.assignerProvider?.id)
       );      
     }
-  }, [fetchOwnersList, form, tasksData, fetchPatientList, ownersList]);
+  }, [ form, tasksData, ownersList]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     setLoading(true);

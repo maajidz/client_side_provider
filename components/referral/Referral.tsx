@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import ReferralOutDialog from "./ReferralOut/ReferralOutDialog";
 import ReferralInDialog from "./Referraln/ReferralInDialog";
+import ViewReferralOut from "./ReferralOut/ViewReferralOut";
+import ViewReferralIn from "./Referraln/ViewReferralIn";
 
 const Referral = () => {
   const [activeTab, setActiveTab] = useState<string>("referralOut");
@@ -64,8 +66,12 @@ const Referral = () => {
               isOpen={isReferralInDialogOpen}
             />
           </div>
-          <TabsContent value="referralOut">{/* <LabResults /> */}</TabsContent>
-          <TabsContent value="referralIn">{/* <LabOrders /> */}</TabsContent>
+          <TabsContent value="referralOut">
+            <ViewReferralOut />
+          </TabsContent>
+          <TabsContent value="referralIn">
+            <ViewReferralIn />
+          </TabsContent>
         </Tabs>
       </div>
     </PageContainer>

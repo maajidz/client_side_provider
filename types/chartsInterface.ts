@@ -176,13 +176,13 @@ export interface LabOrdersInterface {
 }
 
 export interface ImageOrdersInterface {
-  userDetailsId: string
-  ordered_date: string
-  providerId: string
-  imageTypeId: string
-  imageTestIds: string[]
-  note_to_patients: string
-  intra_office_notes: string
+  userDetailsId: string;
+  ordered_date: string;
+  providerId: string;
+  imageTypeId: string;
+  imageTestIds: string[];
+  note_to_patients: string;
+  intra_office_notes: string;
 }
 
 /**
@@ -395,4 +395,34 @@ export interface CreateTransferInterface {
   insuranceId: string;
   attachments: string[];
   userDetailsID: string;
+}
+
+export interface TransferResponseData {
+  id: string;
+  referringToProviderID: string;
+  referringFromProviderID: string;
+  referralType: string;
+  requestStatus: string;
+  responseStatus: string;
+  referralReason: string;
+  priority: string;
+  notes: string;
+  insurance: any;
+  attachments: any[];
+  createdAt: string;
+  updatedAt: string;
+  relatedEncounter: RelatedEncounter;
+  diagnoses: PastDiagnosesInterface[];
+}
+
+export interface RelatedEncounter {
+  id: string
+  visit_type: string
+  mode: string
+  date: string
+  isVerified: boolean
+  providerID: string
+  createdAt: string
+  updatedAt: string
+  chart: UserChart
 }

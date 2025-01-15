@@ -1,6 +1,6 @@
 "use client";
 
-import { TasksResponseDataInterface } from "@/types/tasksInterface";
+import { Status, TasksResponseDataInterface } from "@/types/tasksInterface";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { deleteTask } from "@/services/chartDetailsServices";
+import { deleteTask, updateTaskStatus } from "@/services/chartDetailsServices";
 
 const handleTasksDelete = async (  taskId: string,
   setLoading: (loading: boolean) => void,
@@ -19,6 +19,28 @@ const handleTasksDelete = async (  taskId: string,
   setLoading(true);
   try {
     await deleteTask({id: taskId});
+    showToast({
+      type: "success",
+      message: "Task deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    showToast({ type: "error", message: "Failed to delete task" });
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleTasksStatusUpdate = async (  taskId: string,
+  setLoading: (loading: boolean) => void,
+  showToast: (args: { type: string; message: string }) => void,
+) => {
+  setLoading(true);
+  try {
+    const requestData : Status = {
+      status: "COMPLETED"
+    }
+    await updateTaskStatus({id: taskId, requestData});
     showToast({
       type: "success",
       message: "Task deleted successfully",
@@ -72,7 +94,7 @@ export const columns = ({
       const assignedProviderId = row.getValue(
         "assignedProvider"
       ) as TasksResponseDataInterface["assignedProvider"];
-      return <div className="cursor-pointer">{assignedProviderId.id}</div>;
+      return <div className="cursor-pointer">{assignedProviderId?.id}</div>;
     },
   },
   {
@@ -135,7 +157,9 @@ export const columns = ({
             >
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem>Mark as completed</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+              handleTasksStatusUpdate(row.original.id, setLoading, showToast)
+            }}>Mark as completed</DropdownMenuItem>
             <DropdownMenuItem onClick={() =>{
                 handleTasksDelete(row.original.id, setLoading, showToast);
                 fetchTasksList(); 

@@ -54,3 +54,7 @@ export interface TasksResponseDataInterface {
   assignedProvider: ProviderDetails
   assignerProvider: ProviderDetails
 }
+
+export interface Status {
+  status: string
+}

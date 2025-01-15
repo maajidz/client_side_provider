@@ -52,6 +52,7 @@ import {
 } from "@/types/supplementsInterface";
 import {
   CreateTaskType,
+  Status,
   TasksResponseInterface,
   UpdateTaskType,
 } from "@/types/tasksInterface";
@@ -345,14 +346,49 @@ export const getTasks = async ({
   providerId,
   page,
   limit,
+  status,
+  category,
+  dueDate,
+  priority,
+  userDetailsId
 }: {
   providerId: string;
-  page: number;
-  limit: number;
+  page?: number;
+  limit?: number;
+  status?: string;
+  category? : string;
+  dueDate? : string;
+  priority?: string;
+  userDetailsId? : string;
 }) => {
+  const queryParams = new URLSearchParams({
+    providerId: providerId,
+  });
+  if (page) {
+    queryParams.append("page", page.toString());
+  }
+  if (limit) {
+    queryParams.append("limit", limit.toString());
+  }
+  if (status) {
+    queryParams.append("status", status);
+  }
+  if (category) {
+    queryParams.append("category", category);
+  }
+  if (dueDate) {
+    queryParams.append("dueDate", dueDate);
+  }
+  if (priority) {
+    queryParams.append("priority", priority);
+  }
+  if (userDetailsId) {
+    queryParams.append("userDetailsId", userDetailsId);
+  }
+
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/tasks/all?providerId=${providerId}&page=${page}&limit=${limit}`,
+    url: `/provider/tasks/all?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -371,6 +407,26 @@ export const updateTask = async ({
 }) => {
   const response = ApiFetch({
     url: `/provider/tasks/${id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = (await response).data;
+  return data;
+};
+
+export const updateTaskStatus = async ({
+  requestData,
+  id,
+}: {
+  requestData: Status;
+  id: string;
+}) => {
+  const response = ApiFetch({
+    url: `/provider/tasks/status/${id}`,
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

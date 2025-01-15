@@ -343,9 +343,9 @@ export const reminderOptions = [
 ];
 
 export const priority = [
-  "Low",
-  "Medium",
-  "High"
+  "low",
+  "medium",
+  "high"
 ]
 
 export const categoryOptions = [
@@ -355,3 +355,10 @@ export const categoryOptions = [
   { value: "cancel_subscription", label: "Cancel Subscription" },
   { value: "follow_up", label: "Follow Up" },
 ];
+
+export const status = [
+  { value:"PENDING" , label: "Pending" },
+  { value:"IN_PROGRESS" , label: "In Progress" },
+  { value:"Completed" , label: "Completed" },
+  { value:"Cancelled" , label: "Cancelled" }
+]
