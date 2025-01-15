@@ -52,6 +52,7 @@ import {
 } from "@/types/supplementsInterface";
 import {
   CreateTaskType,
+  Status,
   TasksResponseInterface,
   UpdateTaskType,
 } from "@/types/tasksInterface";
@@ -371,6 +372,26 @@ export const updateTask = async ({
 }) => {
   const response = ApiFetch({
     url: `/provider/tasks/${id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = (await response).data;
+  return data;
+};
+
+export const updateTaskStatus = async ({
+  requestData,
+  id,
+}: {
+  requestData: Status;
+  id: string;
+}) => {
+  const response = ApiFetch({
+    url: `/provider/tasks/status/${id}`,
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
