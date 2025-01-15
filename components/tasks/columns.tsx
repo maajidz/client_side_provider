@@ -14,7 +14,7 @@ import { deleteTask } from "@/services/chartDetailsServices";
 
 const handleTasksDelete = async (  taskId: string,
   setLoading: (loading: boolean) => void,
-  showToast: (args: { type: string; message: string }) => void
+  showToast: (args: { type: string; message: string }) => void,
 ) => {
   setLoading(true);
   try {
@@ -35,12 +35,14 @@ export const columns = ({
   setEditData,
   setIsDialogOpen,
   setLoading,
-  showToast
+  showToast,
+  fetchTasksList
 }: {
   setEditData: (data: TasksResponseDataInterface | null) => void;
   setIsDialogOpen: (isOpen: boolean) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
+  fetchTasksList: () => void;
 }): ColumnDef<TasksResponseDataInterface>[] => [
   {
     accessorKey: "notes",
@@ -134,8 +136,10 @@ export const columns = ({
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem>Mark as completed</DropdownMenuItem>
-            <DropdownMenuItem onClick={() =>
-                handleTasksDelete(row.original.id, setLoading, showToast)
+            <DropdownMenuItem onClick={() =>{
+                handleTasksDelete(row.original.id, setLoading, showToast);
+                fetchTasksList(); 
+            }
               }>
               Delete
             </DropdownMenuItem>

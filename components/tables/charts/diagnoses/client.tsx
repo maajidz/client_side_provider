@@ -4,12 +4,12 @@ import { DataTable } from '@/components/ui/data-table';
 import { columns } from './columns'
 import { useEffect, useState } from 'react';
 import LoadingButton from '@/components/LoadingButton';
-import { PastDiagnosesInterface, UserEncounterData } from '@/types/chartsInterface';
+import { PastDiagnosesInterface } from '@/types/chartsInterface';
 import { fetchDiagnoses } from '@/services/chartsServices';
 
-export const DiagnosesClient = ({ onSelectionChange, patientDetails }: {
+export const DiagnosesClient = ({ onSelectionChange, chartID }: {
   onSelectionChange: (selected: PastDiagnosesInterface[]) => void;
-  patientDetails: UserEncounterData
+  chartID: string
 }) => {
   const [prevDiagnosis, setPrevDiagnosis] = useState<PastDiagnosesInterface[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,10 +18,10 @@ export const DiagnosesClient = ({ onSelectionChange, patientDetails }: {
   useEffect(() => {
 
     const fetchAndSetResponse = async () => {
-      if (patientDetails.chart?.id) {
+      if (chartID) {
         setLoading(true);
         try {
-          const response = await fetchDiagnoses({ chartId: patientDetails.chart?.id });
+          const response = await fetchDiagnoses({ chartId: chartID});
           if (response) {
             setPrevDiagnosis(response);
             console.log("Prev", prevDiagnosis)
@@ -35,7 +35,7 @@ export const DiagnosesClient = ({ onSelectionChange, patientDetails }: {
     }
 
     fetchAndSetResponse();
-  }, [patientDetails.chart?.id, prevDiagnosis]);
+  }, [chartID, prevDiagnosis]);
 
   useEffect(() => {
     onSelectionChange(selectedRows);
