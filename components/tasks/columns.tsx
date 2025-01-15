@@ -94,7 +94,7 @@ export const columns = ({
       const assignedProviderId = row.getValue(
         "assignedProvider"
       ) as TasksResponseDataInterface["assignedProvider"];
-      return <div className="cursor-pointer">{assignedProviderId.id}</div>;
+      return <div className="cursor-pointer">{assignedProviderId?.id}</div>;
     },
   },
   {

@@ -18,7 +18,7 @@ const Tasks = () => {
       <div className="space-y-4">
         <div className="flex flex-row justify-between gap-10">
           <div>Tasks</div>
-          <Button
+           <Button
             className="bg-[#84012A]"
             onClick={() => {
               setEditData(null);
@@ -35,7 +35,7 @@ const Tasks = () => {
               setIsDialogOpen(false);
             }}
             isOpen={isDialogOpen}
-          />
+          /> 
         </div>
         <ViewTasks />
       </div>

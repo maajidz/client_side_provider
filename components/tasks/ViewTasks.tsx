@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
@@ -30,22 +29,28 @@ import {
   TasksResponseInterface,
 } from "@/types/tasksInterface";
 import { filterTasksSchema } from "@/schema/tasksSchema";
-import { priority } from "@/constants/data";
+import { categoryOptions, priority, status } from "@/constants/data";
 import TasksDialog from "./TasksDialog";
 import { showToast } from "@/utils/utils";
 import { useToast } from "../ui/use-toast";
+import { UserData } from "@/types/userInterface";
+import { fetchUserDataResponse } from "@/services/userServices";
 
 const ViewTasks = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState<number>(1);
+  const limit = 8;
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
     null
   );
-  const {toast} = useToast();
+  const [patients, setPatients] = useState<UserData[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof filterTasksSchema>>({
     resolver: zodResolver(filterTasksSchema),
@@ -57,18 +62,24 @@ const ViewTasks = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof filterTasksSchema>) {
-    console.log(values);
-  }
-
   const fetchTasksList = useCallback(
-    async (page: number) => {
+    async (
+      page: number,
+      status?: string,
+      category?: string,
+      priority?: string,
+      userDetailsId?: string
+    ) => {
       try {
         if (providerDetails) {
           const response = await getTasks({
             providerId: providerDetails.providerId,
-            limit: 8,
+            limit: limit,
             page: page,
+            status,
+            category,
+            priority,
+            userDetailsId,
           });
           if (response) {
             setResultList(response);
@@ -83,6 +94,46 @@ const ViewTasks = () => {
     [providerDetails]
   );
 
+  const fetchPatientList = useCallback(async () => {
+    if (!searchTerm) return;
+    setLoading(true);
+    try {
+      const response = await fetchUserDataResponse({
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
+      if (response) {
+        setPatients(response.data || []);
+      }
+    } catch (e) {
+      console.log("Error", e);
+      showToast({ toast, type: "error", message: "Failed to fetch patient" });
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, toast]);
+
+  const filteredPatients = patients.filter((patient) =>
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  function onSubmit(values: z.infer<typeof filterTasksSchema>) {
+    console.log(values);
+    fetchTasksList(
+      page,
+      values.status,
+      values.category,
+      values.priority,
+      values.userDetailsId
+    );
+  }
+
+  useEffect(() => {
+    fetchPatientList()
+  }, [fetchPatientList])
+
   useEffect(() => {
     fetchTasksList(page);
   }, [page, fetchTasksList]);
@@ -96,8 +147,8 @@ const ViewTasks = () => {
       <div className="">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+            onChange={form.handleSubmit(onSubmit)}
+            className="flex justify-between"
           >
             <FormField
               control={form.control}
@@ -114,15 +165,14 @@ const ViewTasks = () => {
                         <SelectValue placeholder="Choose Category" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="ancillary_appointments">
-                          Ancillary Appointments
-                        </SelectItem>
-                        <SelectItem value="appointment">Appointment</SelectItem>
-                        <SelectItem value="billing">Billing</SelectItem>
-                        <SelectItem value="cancel_subscription">
-                          Cancel Subscription
-                        </SelectItem>
-                        <SelectItem value="follow_up">Follow Up</SelectItem>
+                        {categoryOptions.map((category) => (
+                          <SelectItem
+                            key={category.value}
+                            value={category.value}
+                          >
+                            {category.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -145,10 +195,11 @@ const ViewTasks = () => {
                         <SelectValue placeholder="Select Status" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="PENDING">Pending</SelectItem>
-                        <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-                        <SelectItem value="Completed">Completed</SelectItem>
-                        <SelectItem value="Cancelled">Cancelled</SelectItem>
+                        {status.map((status) => (
+                          <SelectItem key={status.value} value={status.value}>
+                            {status.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -189,16 +240,46 @@ const ViewTasks = () => {
                 <FormItem>
                   <FormLabel>Patient</FormLabel>
                   <FormControl>
-                    <Input placeholder="Search Patient" {...field} />
+                    <div className="relative">
+                      <Input
+                        placeholder="Search Patient "
+                        value={searchTerm}
+                        onChange={(e) => {
+                          setSearchTerm(e.target.value);
+                          setVisibleSearchList(true);
+                        }}
+                      />
+                      {searchTerm && visibleSearchList && (
+                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                          {filteredPatients.length > 0 ? (
+                            filteredPatients.map((patient) => (
+                              <div
+                                key={patient.id}
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                onClick={() => {
+                                  field.onChange(patient.id);
+                                  setSearchTerm(
+                                    `${patient.user.firstName} ${patient.user.lastName}`
+                                  );
+                                  setVisibleSearchList(false);
+                                }}
+                              >
+                                {`${patient.user.firstName} ${patient.user.lastName} ${patient.id}`}
+                              </div>
+                            ))
+                          ) : (
+                            <div className="px-4 py-2 text-gray-500">
+                              No results found
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <div className="flex items-end">
-              <Button type="submit">Search</Button>
-            </div>
           </form>
         </Form>
 
@@ -211,8 +292,13 @@ const ViewTasks = () => {
                 setEditData,
                 setIsDialogOpen,
                 setLoading,
-                showToast: () => showToast({ toast, type: "success", message: "Deleted Successfully" }),
-                fetchTasksList: () => fetchTasksList(page)
+                showToast: () =>
+                  showToast({
+                    toast,
+                    type: "success",
+                    message: "Deleted Successfully",
+                  }),
+                fetchTasksList: () => fetchTasksList(page),
               })}
               data={resultList?.data}
               pageNo={page}
