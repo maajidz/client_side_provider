@@ -77,7 +77,7 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                             <PlusCircle />
                         </Button>
                         <AlertDialog
-                            patientDetails={patientDetails}
+                            userDetailsId={patientDetails.userDetails.id}
                             alertData={editData}
                             onClose={() => {
                                 setIsDialogOpen(false)
