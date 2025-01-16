@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
+import PatientQuickNotes from "@/components/patient/quick_notes/PatientQuickNotes";
 import { Heading } from "@/components/ui/heading";
 
 const breadcrumbItems = [
@@ -14,6 +15,7 @@ function page() {
         <Breadcrumbs items={breadcrumbItems} />
         <Heading title="Quick Notes" description="" />
       </div>
+      <PatientQuickNotes />
     </PageContainer>
   );
 }

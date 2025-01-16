@@ -52,7 +52,7 @@ export const fetchUserInfo = async ({ userId }: { userId: string }) => {
     console.log(data);
     return data;
   } catch (error) {
-    console.error("Error fetching response", error);
+    console.log("Error fetching response", error);
     return null;
   }
 };

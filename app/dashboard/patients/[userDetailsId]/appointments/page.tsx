@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
+import PatientAppointments from "@/components/patient/appointments/PatientAppointments";
 import { Heading } from "@/components/ui/heading";
 
 const breadcrumbItems = [
@@ -14,6 +15,7 @@ function page() {
         <Breadcrumbs items={breadcrumbItems} />
         <Heading title="Appointments" description="" />
       </div>
+      <PatientAppointments />
     </PageContainer>
   );
 }

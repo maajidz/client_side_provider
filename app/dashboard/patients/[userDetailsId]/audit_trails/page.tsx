@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
+import PatientAuditTrails from "@/components/patient/audit_trails/PatientAuditTrails";
 import { Heading } from "@/components/ui/heading";
 
 const breadcrumbItems = [
@@ -14,6 +15,7 @@ function page() {
         <Breadcrumbs items={breadcrumbItems} />
         <Heading title="Audit Trails" description="" />
       </div>
+      <PatientAuditTrails />
     </PageContainer>
   );
 }
