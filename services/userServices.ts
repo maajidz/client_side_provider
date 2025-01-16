@@ -3,6 +3,7 @@ import {
   PatientMedicationInterface,
   PaymentInterface,
   UserAppointmentInterface,
+  UserData,
   UserFormInterface,
   UserInfo,
   UserResponseInterface,
@@ -41,14 +42,14 @@ export const fetchUserDataResponse = async ({
   }
 };
 
-export const fetchUserInfo = async ({ userId }: { userId: string }) => {
+export const fetchUserInfo = async ({ userDetailsId }: { userDetailsId: string }) => {
   try {
     const response = await ApiFetch({
       method: "get",
-      url: `/admin/users/info/${userId}`,
+      url: `/provider/patients/${userDetailsId}`,
     });
     console.log(response.data);
-    const data: UserInfo = await response.data;
+    const data: UserData = await response.data;
     console.log(data);
     return data;
   } catch (error) {

@@ -1,17 +1,17 @@
 "use client";
-import { UserInfo } from "@/types/userInterface";
 import { fetchUserInfo } from "@/services/userServices";
 import React, { useCallback, useEffect, useState } from "react";
 import LoadingButton from "../../LoadingButton";
 import styles from "./patient.module.css";
+import { UserData } from "@/types/userInterface";
 
 const PatientDetails = ({ userId }: { userId: string }) => {
-  const [response, setResponse] = useState<UserInfo>();
+  const [response, setResponse] = useState<UserData>();
   const [loading, setLoading] = useState(false);
 
   const fetchAndSetResponse = useCallback(async () => {
     setLoading(true);
-    const userData = await fetchUserInfo({ userId: userId });
+    const userData = await fetchUserInfo({ userDetailsId: userId });
     if (userData) {
       setResponse(userData);
       setLoading(false);
@@ -48,19 +48,19 @@ const PatientDetails = ({ userId }: { userId: string }) => {
             <div>
               <div className="font-normal text-sm">First Name</div>
               <div className="font-medium text-base">
-                response?.data.firstName
+                {response?.user.firstName}
               </div>
             </div>
             <div>
               <div className="font-normal text-sm">Last Name</div>
               <div className="font-medium text-base">
-                response?.data.lastName
+              {response?.user.lastName}
               </div>
             </div>
             <div className="flex flex-col">
               <div className="font-normal text-sm">DOB | Age</div>
               <div className="font-medium text-base">
-                {formatDate(response?.data.userDetails.dob, {
+                {formatDate(response?.dob, {
                   year: "numeric",
                   month: "2-digit",
                   day: "2-digit",
@@ -71,7 +71,7 @@ const PatientDetails = ({ userId }: { userId: string }) => {
             <div>
               <div className="font-normal text-sm">Birth Sex</div>
               <div className="font-medium text-base">
-                response?.data.userDetails.gender
+                {response?.gender}
               </div>
             </div>
           </div>
@@ -84,19 +84,19 @@ const PatientDetails = ({ userId }: { userId: string }) => {
             <div>
               <div className="font-normal text-sm">Address</div>
               <div className="font-medium text-base">
-                {response?.data.userDetails.location}
+                {response?.location}
               </div>
             </div>
             <div>
               <div className="font-normal text-sm">Cell Phone</div>
               <div className="font-medium text-base">
-                {response?.data.phoneNumber}
+                {response?.user.phoneNumber}
               </div>
             </div>
             <div>
               <div className="font-normal text-sm">Email</div>
               <div className="font-medium text-base">
-                {response?.data.email}
+                {response?.user.email}
               </div>
             </div>
           </div>
