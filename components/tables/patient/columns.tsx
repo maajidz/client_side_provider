@@ -1,59 +1,85 @@
-'use client';
-import { ColumnDef } from '@tanstack/react-table';
-import { UserData } from '@/types/userInterface';
+"use client";
+import { ColumnDef } from "@tanstack/react-table";
+import { UserData } from "@/types/userInterface";
 
-export const columns = (handleRowClick: (id: string) => void): ColumnDef<UserData>[] => [
+export const columns = (
+  handleRowClick: (id: string) => void
+): ColumnDef<UserData>[] => [
   {
-    accessorKey: 'lastName',
-    header: 'Last Name',
+    accessorKey: "id",
+    header: "ID",
     cell: ({ row }) => (
-      <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>
-        {row.getValue('lastName')}
+      <div
+        className="cursor-pointer"
+        onClick={() => handleRowClick(row.original.id)}
+      >
+        {row.getValue("id")}
       </div>
     ),
   },
   {
-    accessorKey: 'firstName',
-    header: 'First Name',
-    cell: ({ row }) => (
-      <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>
-        {row.getValue('firstName')}
-      </div>
-    ),
+    accessorKey: "user",
+    header: "Name",
+    cell: ({ row }) => {
+      const user = row.getValue("user") as UserData["user"];
+      return (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleRowClick(row.original.id)}
+        >
+          {user?.firstName} {user?.lastName}
+        </div>
+      );
+    },
   },
   {
-    accessorKey: 'dob',
-    header: 'Date of Birth',
+    accessorKey: "dob",
+    header: "Date of Birth",
     cell: ({ getValue, row }) => {
       const dob = getValue() as string;
       const date = new Date(dob);
       return (
-        <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>
-          {date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: '2-digit',
-            year: 'numeric',
+        <div
+          className="cursor-pointer"
+          onClick={() => handleRowClick(row.original.id)}
+        >
+          {date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
           })}
         </div>
       );
-    }
+    },
   },
   {
-    accessorKey: 'phoneNumber',
-    header: 'Mobile Phone',
-    cell: ({ row }) => (
-      <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>
-        {row.getValue('phoneNumber')}
-      </div>
-    ),
+    accessorKey: "phoneNumber",
+    header: "Phone Number",
+    cell: ({ row }) => {
+      const user = row.getValue("user") as UserData["user"];
+      return (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleRowClick(row.original.id)}
+        >
+          {user?.phoneNumber}
+        </div>
+      );
+    },
   },
   {
-    accessorKey: 'email',
-    header: 'Care Navigator/ provider',
-    cell: ({ row }) => (
-      <div className="cursor-pointer" onClick={() => handleRowClick(row.original.id)}>
-        {row.getValue('email')}
-      </div>
-    ),
-  }, 
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => {
+      const user = row.getValue("user") as UserData["user"];
+      return (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleRowClick(row.original.id)}
+        >
+          {user?.email}
+        </div>
+      );
+    },
+  },
 ];

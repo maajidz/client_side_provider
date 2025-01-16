@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -28,24 +27,32 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { tasksSchema } from "@/schema/tasksSchema";
-import { PlusCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useCallback, useEffect, useState } from "react";
-import { CreateTaskType } from "@/types/tasksInterface";
-import { createTask } from "@/services/chartDetailsServices";
-import { UserEncounterData } from "@/types/chartsInterface";
+import {
+  CreateTaskType,
+  TasksResponseDataInterface,
+  UpdateTaskType,
+} from "@/types/tasksInterface";
+import { createTask, updateTask } from "@/services/chartDetailsServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
-import { reminderOptions } from "@/constants/data";
+import { categoryOptions, priority, reminderOptions } from "@/constants/data";
 
 function TasksDialog({
-  patientDetails,
+  userDetailsId,
+  tasksData,
+  onClose,
+  isOpen,
 }: {
-  patientDetails: UserEncounterData;
+  userDetailsId: string;
+  tasksData?: TasksResponseDataInterface | null;
+  onClose: () => void;
+  isOpen: boolean;
 }) {
   const [showDueDate, setShowDueDate] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -63,7 +70,7 @@ function TasksDialog({
       category: "",
       task: "",
       owner: "",
-      priority: "Low",
+      priority: "low",
       dueDate: new Date().toISOString().split("T")[0],
       sendReminder: [],
       comments: "",
@@ -90,8 +97,31 @@ function TasksDialog({
     fetchOwnersList();
   }, [fetchOwnersList]);
 
+  useEffect(() => {
+    if (tasksData) {
+      form.reset({
+        category: tasksData.category ?? "",
+        task: tasksData.notes ?? "",
+        owner: tasksData.id ?? "",
+        priority: tasksData?.priority ?? "low",
+        sendReminder: [],
+        comments: tasksData.notes,
+      });
+      if (tasksData.dueDate) {
+        const formattedDueDate = new Date(tasksData.dueDate)
+          .toISOString()
+          .split("T")[0];
+        form.setValue("dueDate", formattedDueDate);
+        setShowDueDate(!!tasksData.dueDate);
+      }
+      setSelectedOwner(
+        ownersList.find((owner) => owner.id === tasksData.assignerProvider?.id)
+      );
+    }
+  }, [form, tasksData, ownersList]);
+
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
-    const requestData: CreateTaskType = {
+    const requestData: CreateTaskType | UpdateTaskType = {
       category: values.category,
       description: values.comments ?? "",
       priority: values.priority,
@@ -101,29 +131,38 @@ function TasksDialog({
       assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
       assignerProviderId: providerDetails.providerId,
       assignedByAdmin: true,
-      userDetailsId: patientDetails.userDetails.id,
+      userDetailsId: userDetailsId,
     };
 
     setLoading(true);
     try {
-      await createTask({ requestBody: requestData });
+      if (!tasksData) {
+        await createTask({ requestBody: requestData });
 
-      showToast({
-        toast,
-        type: "success",
-        message: "Task created successfully",
-      });
-    } catch (err) {
-      if (err instanceof Error) {
         showToast({
           toast,
-          type: "error",
-          message: "Task creation failed",
+          type: "success",
+          message: "Task created successfully",
+        });
+      } else {
+        await updateTask({ requestData, id: tasksData.id });
+        showToast({
+          toast,
+          type: "success",
+          message: "Task updated successfully",
         });
       }
+    } catch (err) {
+      console.log("Error", err);
+      showToast({
+        toast,
+        type: "error",
+        message: "Task creation failed",
+      });
     } finally {
       setLoading(false);
       form.reset();
+      onClose();
     }
   };
 
@@ -132,15 +171,10 @@ function TasksDialog({
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost">
-          <PlusCircle />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Task</DialogTitle>
+          <DialogTitle>{tasksData ? "Edit Task" : "Add Task"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -160,17 +194,14 @@ function TasksDialog({
                           <SelectValue placeholder="Choose Category" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="ancillary_appointments">
-                            Ancillary Appointments
-                          </SelectItem>
-                          <SelectItem value="appointment">
-                            Appointment
-                          </SelectItem>
-                          <SelectItem value="billing">Billing</SelectItem>
-                          <SelectItem value="cancel_subscription">
-                            Cancel Subscription
-                          </SelectItem>
-                          <SelectItem value="follow_up">Follow Up</SelectItem>
+                          {categoryOptions.map((category) => (
+                            <SelectItem
+                              key={category.value}
+                              value={category.value}
+                            >
+                              {category.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -238,9 +269,11 @@ function TasksDialog({
                           <SelectValue placeholder="Choose Priority" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Low">Low</SelectItem>
-                          <SelectItem value="Medium">Medium</SelectItem>
-                          <SelectItem value="High">High</SelectItem>
+                          {priority.map((priorityItem) => (
+                            <SelectItem key={priorityItem} value={priorityItem}>
+                              {priorityItem}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormControl>

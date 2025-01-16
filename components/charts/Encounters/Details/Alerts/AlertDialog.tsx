@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -34,18 +34,17 @@ import {
 } from "@/services/chartDetailsServices";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { UserEncounterData } from "@/types/chartsInterface";
 import { useToast } from "@/hooks/use-toast";
 import { AlertTypeInterface } from "@/types/alertInterface";
 import { showToast } from "@/utils/utils";
 
 const AlertDialog = ({
-  patientDetails,
+  userDetailsId,
   alertData,
   onClose,
   isOpen,
 }: {
-  patientDetails: UserEncounterData;
+  userDetailsId: string;
   alertData?: {
     alertName: string;
     alertDescription: string;
@@ -67,7 +66,7 @@ const AlertDialog = ({
     },
   });
 
-  const fetchAlertTypeData = async () => {
+  const fetchAlertTypeData = useCallback(async () => {
     setLoading(true);
     try {
       const response = await getAlertTypeData({ page: 1, limit: 10 });
@@ -79,15 +78,20 @@ const AlertDialog = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    if (alertData) {
-      form.reset(alertData);
-    }
-
     fetchAlertTypeData();
-  }, [alertData, form]);
+    if (alertData) {
+      form.reset({
+        alertName: alertData.alertName,
+        alertDescription: alertData.alertDescription,
+      });
+      if (alertData.alertName) {
+        form.setValue("alertName", alertData.alertName);
+      }
+    }
+  }, [alertData, form, fetchAlertTypeData]);
 
   const onSubmit = async (values: z.infer<typeof alertSchema>) => {
     console.log("Form Values:", values);
@@ -105,17 +109,23 @@ const AlertDialog = ({
         const requestData = {
           alertTypeId: values.alertName,
           alertDescription: values.alertDescription,
-          userDetailsId: patientDetails.userDetails.id,
+          userDetailsId: userDetailsId,
           providerId: providerDetails.providerId,
         };
         await createAlert({ requestData: requestData });
       }
-      showToast({ toast, type: "success", message: `Alert added successfully`})
+      showToast({
+        toast,
+        type: "success",
+        message: `Alert added successfully`,
+      });
     } catch (e) {
       console.log("Error:", e);
-      showToast({ toast, type: "error", message: `Error`})
+      showToast({ toast, type: "error", message: `Error` });
     } finally {
       setLoading(false);
+      form.reset();
+      onClose();
     }
   };
 
@@ -140,8 +150,10 @@ const AlertDialog = ({
                     <FormLabel className="w-fit">Alert Name</FormLabel>
                     <FormControl>
                       <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        onValueChange={(value) => {
+                          field.onChange(value); 
+                        }}
+                        value={field.value}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Choose Alert from Master List" />

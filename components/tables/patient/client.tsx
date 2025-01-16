@@ -1,11 +1,11 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { useRouter } from 'next/navigation';
 import { columns } from './columns';
-import { useEffect, useState } from 'react';
 import LoadingButton from '@/components/LoadingButton';
 import { UserData, UserResponseInterface } from '@/types/userInterface';
 import { fetchUserDataResponse } from '@/services/userServices';
@@ -25,7 +25,7 @@ export const PatientClient = () => {
       if (userData) {
         setResponse(userData);
         setUserResponse(userData.data);
-        setTotalPages(Math.ceil(userData.total / userData.pageSize));
+        setTotalPages(Math.ceil(userData.total/userData.pageSize));
       }
       setLoading(false);
     };
@@ -34,7 +34,7 @@ export const PatientClient = () => {
   }, [pageNo]);
 
   const handleRowClick = (id: string) => {
-    router.push(`/dashboard/patient/patientDetails/${id}`);
+    router.push(`/dashboard/patients/${id}/patientDetails`);
   };
 
 
@@ -50,7 +50,7 @@ export const PatientClient = () => {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Patient (${response?.total})`}
+          title={`Patient (${response?.pageSize})`}
           description=""
         />
       </div>

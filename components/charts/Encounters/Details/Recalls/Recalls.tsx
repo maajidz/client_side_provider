@@ -80,7 +80,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                             <PlusCircle />
                         </Button>
                         <RecallsDialog
-                            patientDetails={patientDetails}
+                            userDetailsId={patientDetails.userDetails.id}
                             recallsData={editData}
                             onClose={() => {
                                 setIsDialogOpen(false)

@@ -1,0 +1,134 @@
+"use client";
+
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import {
+  deleteRecalls
+} from "@/services/chartDetailsServices";
+import { RecallsData } from "@/types/recallsInterface";
+
+const handleRecallsDelete = async (
+  recallsId: string,
+  setLoading: (loading: boolean) => void,
+  showToast: (args: { type: string; message: string }) => void,
+  fetchRecalls: () => void
+) => {
+  setLoading(true);
+  try {
+    await deleteRecalls({ id: recallsId });
+    showToast({
+      type: "success",
+      message: "Recalls deleted successfully",
+    });
+    fetchRecalls();
+  } catch (error) {
+    console.error("Error:", error);
+    showToast({ type: "error", message: "Failed to delete recall" });
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const columns = ({
+  setEditData,
+  setIsDialogOpen,
+  setLoading,
+  showToast,
+  fetchRecalls,
+}: {
+  setEditData: (data: RecallsData | null) => void;
+  setIsDialogOpen: (isOpen: boolean) => void;
+  setLoading: (loading: boolean) => void;
+  showToast: (args: { type: string; message: string }) => void;
+  fetchRecalls: () => void;
+}): ColumnDef<RecallsData>[] => [
+  {
+    accessorKey: "type",
+    header: "Type",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">{row.getValue("type")}</div>
+    ),
+  },
+  {
+    accessorKey: "notes",
+    header: "Notes",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">{row.getValue("notes")}</div>
+    ),
+  },
+  {
+    accessorKey: "due_date_period",
+    header: "Due Date",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">{row.getValue("due_date_period")}</div>
+    ),
+  },
+  {
+    accessorKey: "due_date_value",
+    header: "Due Date",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">
+        {" "}
+        {row.getValue("due_date_value")} {row.getValue("due_date_unit")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "due_date_unit",
+    header: "Due Date",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">{row.getValue("due_date_unit")}</div>
+    ),
+  },
+  {
+    accessorKey: "auto_reminders",
+    header: "auto_reminders",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">{row.getValue("auto_reminders")}</div>
+    ),
+  },
+  {
+    accessorKey: "id",
+    header: "",
+    cell: ({ row }) => (
+      <div>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <DotsVerticalIcon />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                setEditData(row.original);
+                setIsDialogOpen(true);
+              }}
+            >
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                handleRecallsDelete(
+                  row.original.id,
+                  setLoading,
+                  showToast,
+                  fetchRecalls
+                );
+                fetchRecalls();
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    ),
+  },
+];
