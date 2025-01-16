@@ -23,7 +23,7 @@ function Page() {
         <Breadcrumbs items={breadcrumbItems} />
         <Heading title="Tasks" description="" />
       </div>
-      <PatientTasks userDetailsId="" />
+      <PatientTasks userDetailsId={userDetailsId} />
     </PageContainer>
   );
 }

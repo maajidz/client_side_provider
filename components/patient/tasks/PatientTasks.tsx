@@ -1,9 +1,9 @@
 "use client";
 import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
-import ViewTasks from "@/components/tasks/ViewTasks";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
+import ViewPatientTasks from "./ViewPatientTasks";
 
 const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -29,7 +29,7 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
           isOpen={isDialogOpen}
         />
       </div>
-      <ViewTasks />
+      <ViewPatientTasks userDetailsId={userDetailsId} />
     </>
   );
 };
