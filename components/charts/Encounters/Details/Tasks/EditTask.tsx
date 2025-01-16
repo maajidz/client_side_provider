@@ -80,7 +80,7 @@ function EditTask({
       category: selectedTask.category ?? "",
       task: selectedTask.notes ?? "",
       owner: selectedTask.id ?? "",
-      priority: selectedTask?.priority ?? "Low",
+      priority: selectedTask?.priority ?? "low",
       dueDate:
         formatDate(selectedTask.dueDate) ??
         new Date().toISOString().split("T")[0],

@@ -20,7 +20,7 @@ export interface CreateTaskType {
   status?: string;
   reminders?: string[];
   notes?: string;
-  priority?: "Low" | "Medium" | "High";
+  priority?: "low" | "medium" | "high";
   dueDate?: string;
   assignedProviderId: string;
   assignerProviderId?: string;
@@ -43,7 +43,7 @@ export interface TasksResponseDataInterface {
   description: string
   status: string
   notes: string
-  priority?: "Low" | "Medium" | "High";
+  priority?: "low" | "medium" | "high";
   dueDate: string
   reminder: any
   assignedByAdmin: boolean
