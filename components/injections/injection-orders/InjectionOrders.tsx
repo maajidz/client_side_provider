@@ -1,3 +1,4 @@
+import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,14 +24,168 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { addInjectionSchema } from "@/schema/injectionsAndVaccinesSchema";
+import { createInjectionOrder } from "@/services/injectionsServices";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { fetchUserDataResponse } from "@/services/userServices";
+import { CreateInjectionType } from "@/types/injectionsInterface";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { UserData } from "@/types/userInterface";
+import { showToast } from "@/utils/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 function InjectionOrders() {
-  const form = useForm();
+  // Data State
+  const [patientData, setPatientData] = useState<UserData[]>([]);
+  const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
+
+  // Search State
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+
+  // Dialog State
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Loading State
+  const [loading, setLoading] = useState({ get: false, post: false });
+
+  // Form State
+  const form = useForm<z.infer<typeof addInjectionSchema>>({
+    resolver: zodResolver(addInjectionSchema),
+  });
+
+  // Toast State
+  const { toast } = useToast();
+
+  // Handle Dialog State
+  const handleIsDialogOpen = (status: boolean) => {
+    setIsDialogOpen(status);
+    form.reset();
+  };
+
+  // Fetch User Data
+  const fetchUserData = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, get: true }));
+
+    try {
+      const response = await fetchUserDataResponse({
+        pageNo: 1,
+        pageSize: 10,
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
+
+      if (response) {
+        setPatientData(response.data);
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch patients",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, get: false }));
+    }
+  }, [searchTerm, toast]);
+
+  // Fetch Providers Data
+  const fetchProvidersData = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, get: true }));
+
+    try {
+      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+
+      setProvidersList(response.data);
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch providers",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, get: false }));
+    }
+  }, [toast]);
+
+  // POST Injection
+  const onSubmit = async (formData: z.infer<typeof addInjectionSchema>) => {
+    setLoading((prev) => ({ ...prev, post: true }));
+
+    const finalData: CreateInjectionType = {
+      ...formData,
+      dosage_quantity: formData.dosage.dosage_quantity,
+      dosage_unit: formData.dosage.dosage_unit,
+      period_number: formData.period.period_number,
+      period_unit: formData.period.period_unit,
+    };
+
+    try {
+      await createInjectionOrder({ requestBody: finalData });
+
+      showToast({
+        toast,
+        type: "success",
+        message: "Injection order created successfully",
+      });
+      setIsDialogOpen(false);
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Injection order creation failed",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, post: false }));
+      form.reset();
+    }
+  };
+
+  // Effects
+  useEffect(() => {
+    fetchUserData();
+    fetchProvidersData();
+  }, [fetchUserData, fetchProvidersData]);
+
+  const filteredPatients = patientData.filter((patient) =>
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={handleIsDialogOpen}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
@@ -44,223 +199,335 @@ function InjectionOrders() {
         <DialogHeader>
           <DialogTitle>Add Injection Order</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form className="flex flex-col justify-center gap-5 p-4">
-            <FormField
-              control={form.control}
-              name="patient"
-              render={({ field }) => (
-                <FormItem className="flex justify-center items-center">
-                  <FormLabel className="w-full">Patient</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Search by name or record ID"
-                      className="border rounded-md p-2 w-full text-gray-800"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+        {loading.get ? (
+          <LoadingButton />
+        ) : (
+          <Form {...form}>
+            <form
+              className="flex flex-col gap-3 p-3"
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
+              <FormField
+                control={form.control}
+                name="userDetailsId"
+                render={({ field }) => (
+                  <FormItem className="flex justify-center items-center">
+                    <FormLabel className="w-full">Patient</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder="Search Patient "
+                          value={searchTerm}
+                          className="w-56"
+                          onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setVisibleSearchList(true);
+                          }}
+                        />
+                        {searchTerm && visibleSearchList && (
+                          <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                            {filteredPatients.length > 0 ? (
+                              filteredPatients.map((patient) => (
+                                <div
+                                  key={patient.id}
+                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                  onClick={() => {
+                                    field.onChange(patient.id);
+                                    setSearchTerm(
+                                      `${patient.user.firstName} ${patient.user.lastName}`
+                                    );
+                                    setVisibleSearchList(false);
+                                  }}
+                                >
+                                  {`${patient.user.firstName} ${patient.user.lastName}`}
+                                </div>
+                              ))
+                            ) : (
+                              <div className="px-4 py-2 text-gray-500">
+                                No results found
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="injection"
-              render={({ field }) => (
-                <FormItem className="flex justify-center items-center">
-                  <FormLabel className="w-full">Injection</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Enter injection to add"
-                      className="border rounded-md p-2 w-full text-gray-800"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="orderedBy"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormLabel className="w-full">Ordered By</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Ordered by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="drJennyChau">
-                          Dr. Jenny Chau
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="dosage"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormLabel className="w-full">Dosage</FormLabel>
-                  <FormControl>
-                    <div className="flex gap-2">
+              <FormField
+                control={form.control}
+                name="injection_name"
+                render={({ field }) => (
+                  <FormItem className="flex justify-center items-center">
+                    <FormLabel className="w-full">Injection</FormLabel>
+                    <FormControl>
                       <Input
-                        value={field?.value?.dosage}
-                        placeholder="Dosage"
+                        {...field}
+                        placeholder="Enter injection to add"
                         className="border rounded-md p-2 w-full text-gray-800"
                       />
-                      <Select onValueChange={field.onChange}>
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="providerId"
+                render={({ field }) => (
+                  <FormItem className="flex items-center">
+                    <FormLabel className="w-full">Ordered By</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select Unit" />
+                          <SelectValue placeholder="Select Ordered by" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="unit1">Unit 1</SelectItem>
-                          <SelectItem value="unit2">Unit 2</SelectItem>
-                          <SelectItem value="unit3">Unit 3</SelectItem>
+                          {providersList
+                            .filter(
+                              (
+                                provider
+                              ): provider is typeof provider & {
+                                providerDetails: { id: string };
+                              } => Boolean(provider?.providerDetails?.id)
+                            )
+                            .map((provider) => (
+                              <SelectItem
+                                key={provider.id}
+                                value={provider.providerDetails.id}
+                                className="cursor-pointer"
+                              >
+                                {provider.firstName} {provider.lastName}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
-                    </div>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="frequency"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormLabel className="w-full">Frequency</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Frequency" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="frequency1">Frequency 1</SelectItem>
-                        <SelectItem value="frequency2">Frequency 2</SelectItem>
-                        <SelectItem value="frequency3">Frequency 3</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+              <div className="flex items-center gap-4">
+                <FormField
+                  control={form.control}
+                  name="dosage.dosage_quantity"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center gap-4 mb-1.5">
+                      <FormLabel className="">Dosage</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={1}
+                          placeholder="Enter Quantity"
+                          className="flex items-center border rounded-md ml-28"
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dosage.dosage_unit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="mg">mg</SelectItem>
+                            <SelectItem value="unit2">Unit 2</SelectItem>
+                            <SelectItem value="unit3">Unit 3</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            <FormField
-              control={form.control}
-              name="period"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormLabel className="w-full">Period</FormLabel>
-                  <FormControl>
-                    <div className="flex gap-2">
-                      <Input value={field.value?.days} />
-                      <Select onValueChange={field.onChange}>
+              <FormField
+                control={form.control}
+                name="frequency"
+                render={({ field }) => (
+                  <FormItem className="flex items-center">
+                    <FormLabel className="w-full">Frequency</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select Period" />
+                          <SelectValue placeholder="Select Frequency" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="period1">Period 1</SelectItem>
-                          <SelectItem value="period2">Period 2</SelectItem>
-                          <SelectItem value="period3">Period 3</SelectItem>
+                          <SelectItem value="frequency1">
+                            Frequency 1
+                          </SelectItem>
+                          <SelectItem value="frequency2">
+                            Frequency 2
+                          </SelectItem>
+                          <SelectItem value="frequency3">
+                            Frequency 3
+                          </SelectItem>
                         </SelectContent>
                       </Select>
-                    </div>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="orderedBy"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormLabel className="w-full">Parental Route</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Parental Route" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="parentalRoute1">
-                          Parental Route 1
-                        </SelectItem>
-                        <SelectItem value="parentalRoute2">
-                          Parental Route 2
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+              <div className="flex items-center gap-4">
+                <FormField
+                  control={form.control}
+                  name="period.period_number"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center gap-4 mb-1.5">
+                      <FormLabel className="">Period</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={1}
+                          placeholder="Enter Quantity"
+                          className="flex items-center border rounded-md ml-28"
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="period.period_unit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Days">Day(s)</SelectItem>
+                            <SelectItem value="Weeks">Week(s)</SelectItem>
+                            <SelectItem value="months">Month(s)</SelectItem>
+                            <SelectItem value="years">Year(s)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            <FormField
-              control={form.control}
-              name="noteToNurse"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormLabel className="w-full">Note to Nurse</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      className="border rounded-md p-2 w-full text-gray-800"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="parental_route"
+                render={({ field }) => (
+                  <FormItem className="flex items-center">
+                    <FormLabel className="w-full">Parental Route</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Parental Route" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="parentalRoute1">
+                            Parental Route 1
+                          </SelectItem>
+                          <SelectItem value="parentalRoute2">
+                            Parental Route 2
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="comments"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormLabel className="w-full">Comments</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      className="border rounded-md p-2 w-full text-gray-800"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="note_to_nurse"
+                render={({ field }) => (
+                  <FormItem className="flex items-center">
+                    <FormLabel className="w-full">Note to Nurse</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        className="border rounded-md p-2 w-full text-gray-800"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-            <div className="flex flex-row-reverse gap-2">
-              <Button type="submit" className="bg-[#84012A] hover:bg-[#6C011F]">
-                Save
-              </Button>
-              <Button
-                variant="outline"
-                className="bg-slate-200 hover:bg-slate-100"
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </Form>
+              <FormField
+                control={form.control}
+                name="comments"
+                render={({ field }) => (
+                  <FormItem className="flex items-center">
+                    <FormLabel className="w-full">Comments</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        className="border rounded-md p-2 w-full text-gray-800"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex flex-row-reverse gap-2">
+                <Button
+                  type="submit"
+                  className="bg-[#84012A] hover:bg-[#6C011F]"
+                  disabled={loading.post}
+                >
+                  Save
+                </Button>
+                <Button
+                  variant="outline"
+                  className="bg-slate-200 hover:bg-slate-100"
+                  onClick={() => handleIsDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </Form>
+        )}
       </DialogContent>
     </Dialog>
   );
 }
 
 export default InjectionOrders;
-
