@@ -10,7 +10,6 @@ import { z } from 'zod'
 import LoadingButton from '@/components/LoadingButton'
 import { recallFormSchema } from '@/schema/recallFormSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { UserEncounterData } from '@/types/chartsInterface'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
 import { useToast } from '@/hooks/use-toast'
@@ -18,8 +17,8 @@ import { RecallsEditData } from '@/types/recallsInterface'
 import { createRecalls, updateRecallsData } from '@/services/chartDetailsServices'
 import { showToast } from '@/utils/utils'
 
-const RecallsDialog = ({ patientDetails, recallsData, onClose, isOpen }: {
-    patientDetails: UserEncounterData,
+const RecallsDialog = ({ userDetailsId, recallsData, onClose, isOpen }: {
+    userDetailsId: string,
     recallsData?: RecallsEditData | null;
     onClose: () => void;
     isOpen: boolean;
@@ -78,7 +77,7 @@ const RecallsDialog = ({ patientDetails, recallsData, onClose, isOpen }: {
                     due_date_value: values.dueDate.value,
                     due_date_unit: values.dueDate.unit,
                     auto_reminders: values.sendAutoReminders,
-                    userDetailsId: patientDetails.userDetails.id,
+                    userDetailsId: userDetailsId,
                 }
                 await createRecalls({ requestData: requestData })
             }
