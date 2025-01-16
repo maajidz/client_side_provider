@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Header from "@/components/layout/header";
 import PatientSidebar from "@/components/patient/patientSidebar";
 import { Toaster } from "@/components/ui/toaster";
+import PatientHeader from "@/components/patient/patientDetails/patientHeader";
 
 export default function PatientDashboardLayout({
   children
@@ -24,6 +25,7 @@ export default function PatientDashboardLayout({
       <main className="w-full flex-1 h-[80%]">
         <Toaster />
         <Header />
+        <PatientHeader userId={userDetailsId} />
         {children}
       </main>
     </div>
