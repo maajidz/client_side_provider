@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const PatientAllergies = () => {
-  return (
-    <div>PatientAllergies</div>
-  )
-}
+const PatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
+  return <div>PatientAllergies {userDetailsId}</div>;
+};
 
-export default PatientAllergies
+export default PatientAllergies;

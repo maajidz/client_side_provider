@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const PatientAlerts = () => {
-  return (
-    <div>PatientAlerts</div>
-  )
-}
+const PatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
+  return <div>PatientAlerts {userDetailsId}</div>;
+};
 
-export default PatientAlerts
+export default PatientAlerts;

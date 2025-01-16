@@ -1,8 +1,8 @@
 import React from 'react'
 
-const PatientReferrals = () => {
+const PatientReferrals = ({userDetailsId}: {userDetailsId: string}) => {
   return (
-    <div>PatientReferrals</div>
+    <div>PatientReferrals {userDetailsId}</div>
   )
 }
 

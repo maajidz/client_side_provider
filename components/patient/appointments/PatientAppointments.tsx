@@ -1,8 +1,10 @@
 import React from 'react'
 
-const PatientAppointments = () => {
+const PatientAppointments = ({userDetailsId}: {userDetailsId: string}) => {
   return (
-    <div>PatientAppointments</div>
+    <>
+    PATIENT APPOINTMENTS {userDetailsId}
+    </>
   )
 }
 

@@ -1,7 +1,7 @@
 "use client";
 import { UserInfo } from "@/types/userInterface";
 import { fetchUserInfo } from "@/services/userServices";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import LoadingButton from "../../LoadingButton";
 import styles from "./patient.module.css";
 
@@ -9,18 +9,18 @@ const PatientDetails = ({ userId }: { userId: string }) => {
   const [response, setResponse] = useState<UserInfo>();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-      const fetchAndSetResponse = async () => {
-          setLoading(true)
-          const userData = await fetchUserInfo({ userId: userId });
-          if (userData) {
-              setResponse(userData);
-              setLoading(false);
-          }
-      };
-
-      fetchAndSetResponse();
+  const fetchAndSetResponse = useCallback(async () => {
+    setLoading(true);
+    const userData = await fetchUserInfo({ userId: userId });
+    if (userData) {
+      setResponse(userData);
+      setLoading(false);
+    }
   }, [userId]);
+
+  useEffect(() => {
+    fetchAndSetResponse();
+  }, [fetchAndSetResponse]);
 
   const formatDate = (
     dateString: string | undefined,

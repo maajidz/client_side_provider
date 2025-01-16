@@ -1,8 +1,8 @@
 import React from 'react'
 
-const PatientLabRecords = () => {
+const PatientLabRecords = ({userDetailsId}: {userDetailsId: string}) => {
   return (
-    <div>PatientLabRecords</div>
+    <div>PatientLabRecords {userDetailsId}</div>
   )
 }
 
