@@ -2,14 +2,110 @@
 
 import PageContainer from "@/components/layout/page-container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { fetchUserDataResponse } from "@/services/userServices";
+import { UserData } from "@/types/userInterface";
+import { showToast } from "@/utils/utils";
 import InjectionsClient from "./injection-orders/client";
 import InjectionOrders from "./injection-orders/InjectionOrders";
 import VaccinesClient from "./vaccine-orders/client";
 import VaccineOrders from "./vaccine-orders/VaccineOrders";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import LoadingButton from "../LoadingButton";
 
 function Injections() {
   const [activeTab, setActiveTab] = useState("injectionOrders");
+
+  // Data State
+  const [patientData, setPatientData] = useState<UserData[]>([]);
+  const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
+
+  // Search State
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
+  // Toast State
+  const { toast } = useToast();
+
+  // Fetch User Data
+  const fetchUserData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchUserDataResponse({
+        pageNo: 1,
+        pageSize: 10,
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
+
+      if (response) {
+        setPatientData(response.data);
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch patients",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, toast]);
+
+  // Fetch Providers Data
+  const fetchProvidersData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+
+      setProvidersList(response.data);
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch providers",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
+
+  // Effects
+  useEffect(() => {
+    fetchUserData();
+    fetchProvidersData();
+  }, [fetchUserData, fetchProvidersData]);
+
+  const filteredPatients = patientData.filter((patient) =>
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   return (
     <PageContainer scrollable={true}>
@@ -31,12 +127,32 @@ function Injections() {
               <VaccineOrders />
             )}
           </div>
-          <TabsContent value="injectionOrders">
-            <InjectionsClient />
-          </TabsContent>
-          <TabsContent value="vaccineOrders">
-            <VaccinesClient />
-          </TabsContent>
+          {loading ? (
+            <LoadingButton />
+          ) : (
+            <>
+              <TabsContent value="injectionOrders">
+                <InjectionsClient
+                  providerList={providersList}
+                  filteredPatients={filteredPatients}
+                  searchTerm={searchTerm}
+                  visibleSearchList={visibleSearchList}
+                  onSetSearchTerm={setSearchTerm}
+                  onSetVisibleSearchList={setVisibleSearchList}
+                />
+              </TabsContent>
+              <TabsContent value="vaccineOrders">
+                <VaccinesClient
+                  providerList={providersList}
+                  filteredPatients={filteredPatients}
+                  searchTerm={searchTerm}
+                  visibleSearchList={visibleSearchList}
+                  onSetSearchTerm={setSearchTerm}
+                  onSetVisibleSearchList={setVisibleSearchList}
+                />
+              </TabsContent>
+            </>
+          )}
         </Tabs>
       </div>
     </PageContainer>
@@ -44,4 +160,3 @@ function Injections() {
 }
 
 export default Injections;
-

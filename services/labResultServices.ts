@@ -21,21 +21,33 @@ export const createLabResultRequest = async ({
 
 export const getLabResultList = async ({
   providerId,
+  userDetailsId = "",
+  status = "",
   limit,
-  page
+  page,
 }: {
   providerId: string;
+  userDetailsId?: string;
+  status?: string;
   limit: number;
   page: number;
-}) => {
+}): Promise<LabResultsInterface> => {
+  const queryParams = new URLSearchParams({
+    providerId,
+    userDetailsId,
+    status,
+    limit: limit.toString(),
+    page: page.toString(),
+  });
+
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/lab/results/all?providerId=${providerId}&limit=${limit}&page=${page}`,
+    url: `/provider/lab/results/all?${queryParams.toString()}`,
     headers: {
       "Content-Type": "application/json",
-    }
+    },
   });
-  console.log(response.data);
+
   const data: LabResultsInterface = await response.data;
   return data;
 };

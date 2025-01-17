@@ -1,66 +1,69 @@
-import { DataTable } from "@/components/ui/data-table";
-import { RootState } from "@/store/store";
-import { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
-import { getImageResults } from "@/services/imageResultServices";
-import { ImageResultResponseInterface } from "@/types/imageResults";
+import { DataTable } from "@/components/ui/data-table";
+import { getDocumentsData } from "@/services/documentsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
+import { DocumentsInterface } from "@/types/documentsInterface";
+import { columns } from "./columns";
+import { useCallback, useEffect, useState } from "react";
 
-function Documents({patientDetails}: {patientDetails: UserEncounterData}) {
-  const providerDetails = useSelector((state: RootState) => state.login);
-  const [resultList, setResultList] = useState<ImageResultResponseInterface>();
+function Documents({ patientDetails }: { patientDetails: UserEncounterData }) {
+  // Documents Data
+  const [documentsData, setDocumentsData] = useState<DocumentsInterface[]>([]);
+
+  // Loading State
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
 
-  const fetchImageResultsList = useCallback(async (page: number) => {
+  // Pagination State
+  const itemsPerPage = 10;
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // GET Documents Data
+  const fetchDocumentsData = useCallback(async () => {
+    setLoading(true);
+
     try {
-        setLoading(true)
-        const limit = 10;
-      if (providerDetails) {
-        const response = await getImageResults({
-          providerId: providerDetails.providerId,
+      if (patientDetails.userDetails.id) {
+        const response = await getDocumentsData({
           userDetailsId: patientDetails.userDetails.id,
-          limit: limit,
-          page: page,
         });
-        if (response) {
-          setResultList(response);
-          setTotalPages(Math.ceil(response.total / limit));
-        }
-        setLoading(false);
+
+        setDocumentsData(response.data);
+        setTotalPages(Math.ceil(response.meta.totalPages / itemsPerPage));
       }
-    } catch (e) {
-      console.log("Error", e);
+    } catch (err) {
+      console.log(err);
     } finally {
-        setLoading(false)
+      setLoading(false);
     }
-  }, [providerDetails, patientDetails.userDetails.id,]);
+  }, [ patientDetails.userDetails.id,]);
 
+  // Effects
   useEffect(() => {
-    fetchImageResultsList(page);
-  }, [page, fetchImageResultsList]);
+    fetchDocumentsData();
+  }, [fetchDocumentsData]);
 
-  if(loading){
-    return <LoadingButton />
-  }
+  const paginatedData = documentsData.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
+  if (loading) return <LoadingButton />;
 
   return (
     <>
-        <div className="w-full">
-          {resultList?.data && (
-            <DataTable
-              searchKey="id"
-              columns={columns()}
-              data={resultList?.data}
-              pageNo={page}
-              totalPages={totalPages}
-              onPageChange={(newPage: number) => setPage(newPage)}
-            />
-          )}
-        </div>
+      <div className="py-5">
+        {paginatedData && (
+          <DataTable
+            searchKey="Documents"
+            columns={columns()}
+            data={paginatedData}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
+        )}
+      </div>
     </>
   );
 }

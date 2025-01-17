@@ -21,6 +21,12 @@ export const addInjectionSchema = z.object({
   status: z.enum(["Pending", "Completed"]).default("Pending"),
 });
 
+export const injectionsSearchParams = z.object({
+  providerId: z.string().optional(),
+  userDetailsId: z.string().optional(),
+  status: z.string().optional(),
+});
+
 export const addVaccineSchema = addInjectionSchema
   .pick({
     userDetailsId: true,
@@ -30,3 +36,4 @@ export const addVaccineSchema = addInjectionSchema
     vaccine_name: z.string().min(1, "Vaccine name is required"),
   });
 
+export const vaccineSearchParams = injectionsSearchParams;
