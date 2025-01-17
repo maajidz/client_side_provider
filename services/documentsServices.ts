@@ -1,5 +1,8 @@
 import ApiFetch from "@/config/api";
-import { DocumentsInterface } from "@/types/documentsInterface";
+import {
+  DocumentsMetaDataInterface,
+  DocumentsResponseInterface,
+} from "@/types/documentsInterface";
 
 export const getDocumentsData = async ({
   userDetailsId,
@@ -22,6 +25,25 @@ export const getDocumentsData = async ({
     },
   });
 
-  const data: DocumentsInterface[] = await response.data;
+  const data: DocumentsResponseInterface = await response.data;
+  return data;
+};
+
+export const getDocumentMetaData = async ({
+  documentId,
+  type,
+}: {
+  documentId: string;
+  type: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/provider/documents/metadata/${documentId}?type=${type}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: DocumentsMetaDataInterface = await response.data;
   return data;
 };

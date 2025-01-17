@@ -1,32 +1,37 @@
-"use client"
-import { ImageResultDataResponse } from "@/types/imageResults";
+import { DocumentsInterface } from "@/types/documentsInterface";
 import { ColumnDef } from "@tanstack/react-table";
-import Link from "next/link";
 
-export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
+export const columns = (): ColumnDef<DocumentsInterface>[] => [
   {
-    accessorKey: "testResults",
+    accessorKey: "documentName",
     header: "Documents",
     cell: ({ row }) => {
-      const testResults = row.getValue(
-        "testResults"
-      ) as ImageResultDataResponse["testResults"];
+      const documentLinks = row.original.documents.filter(
+        (link) => link !== null && link !== undefined
+      );
+
       return (
         <div className="cursor-pointer">
-          {testResults.flatMap((results) =>
-            results.documents?.map((docs, index) => (
-              // <Button
-              //   key={index}
-              //   variant={"link"}
-              //   onClick={() => window.open(docs, "_blank")}
-              //   className="text-blue-500"
-              // >
-              //   {docs.split("/").pop()}
-              // </Button>
-              <Link key={index} href={docs} className="text-blue-500">
-                 {docs.split("/").pop()}
-              </Link>
-            ))
+          {documentLinks.length > 0 ? (
+            documentLinks.map((link, index) => {
+              return (
+                <a
+                  key={index}
+                  href={link}
+                  target="_blank"
+                  className="text-blue-500"
+                >
+                  {row.original.documentName}
+                </a>
+              );
+            })
+          ) : (
+            <span className="text-md text-gray-500">
+              No valid document links available for document:{" "}
+              <span className="text-md font-semibold">
+                {row.original.documentName}
+              </span>
+            </span>
           )}
         </div>
       );

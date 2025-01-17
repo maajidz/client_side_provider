@@ -144,7 +144,7 @@ function FilterDocuments({
                     </SelectItem>
                     {documentsData.map((document) => (
                       <SelectItem
-                        key={document.id}
+                        key={document.documentId}
                         value={document.status}
                         className="cursor-pointer"
                       >

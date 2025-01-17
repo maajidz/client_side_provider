@@ -44,7 +44,7 @@ const PreviewBody = ({ patientDetails }: { patientDetails: UserEncounterData }) 
                     <ImagesPreview />
                 </TabsContent>
                 <TabsContent value="documents">
-                    <DocumentPreview />
+                    <DocumentPreview patientDetails={patientDetails} />
                 </TabsContent>
                 {/* <TabsContent value="questionnaires">
                     <QuestionnairePreview />
