@@ -127,7 +127,8 @@ const ReferralOutDialog = ({
       try {
         if (providerDetails) {
           const response = await getEncounterList({
-            providerID: providerDetails.providerId,
+            id: providerDetails.providerId,
+            idType: "providerID",
             limit: 2,
             page: page,
           });

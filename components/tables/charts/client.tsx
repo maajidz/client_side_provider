@@ -29,8 +29,9 @@ export const ChartsClient = () => {
       try {
         if (providerDetails) {
           const response = await getEncounterList({
-            providerID: providerDetails.providerId,
-            limit: 2,
+            id: providerDetails.providerId,
+            idType: "providerID",
+            limit: 10,
             page: page,
           });
           if (response) {

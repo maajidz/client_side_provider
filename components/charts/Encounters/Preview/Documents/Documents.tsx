@@ -6,8 +6,9 @@ import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import { getImageResults } from "@/services/imageResultServices";
 import { ImageResultResponseInterface } from "@/types/imageResults";
+import { UserEncounterData } from "@/types/chartsInterface";
 
-function Documents() {
+function Documents({patientDetails}: {patientDetails: UserEncounterData}) {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<ImageResultResponseInterface>();
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ function Documents() {
       if (providerDetails) {
         const response = await getImageResults({
           providerId: providerDetails.providerId,
-          userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+          userDetailsId: patientDetails.userDetails.id,
           limit: limit,
           page: page,
         });
@@ -36,7 +37,7 @@ function Documents() {
     } finally {
         setLoading(false)
     }
-  }, [providerDetails]);
+  }, [providerDetails, patientDetails.userDetails.id,]);
 
   useEffect(() => {
     fetchImageResultsList(page);
@@ -48,7 +49,7 @@ function Documents() {
 
   return (
     <>
-        <div className="py-5">
+        <div className="w-full">
           {resultList?.data && (
             <DataTable
               searchKey="id"

@@ -1,7 +1,7 @@
 "use client"
+import { Button } from "@/components/ui/button";
 import { ImageResultDataResponse } from "@/types/imageResults";
 import { ColumnDef } from "@tanstack/react-table";
-import Link from "next/link";
 
 export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
   {
@@ -12,20 +12,17 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
         "testResults"
       ) as ImageResultDataResponse["testResults"];
       return (
-        <div className="cursor-pointer">
+        <div className="cursor-pointer w-96">
           {testResults.flatMap((results) =>
             results.documents?.map((docs, index) => (
-              // <Button
-              //   key={index}
-              //   variant={"link"}
-              //   onClick={() => window.open(docs, "_blank")}
-              //   className="text-blue-500"
-              // >
-              //   {docs.split("/").pop()}
-              // </Button>
-              <Link key={index} href={docs} className="text-blue-500">
-                 {docs.split("/").pop()}
-              </Link>
+              <Button
+                key={index}
+                variant={"link"}
+                onClick={() => window.open(docs, "_blank")}
+                className="text-blue-500 px-0 py-0 "
+              >
+                {docs.split("/").pop()}
+              </Button>
             ))
           )}
         </div>

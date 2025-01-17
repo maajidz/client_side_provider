@@ -1,9 +1,16 @@
-import React from 'react'
+import CreateEncounterDialog from "@/components/charts/CreateEncounterDialog";
+import React from "react";
+import ViewPatientEncounters from "./ViewPatientEncounters";
 
-const PatientEncounters = ({userDetailsId}: {userDetailsId: string}) => {
+const PatientEncounters = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
-    <div>PatientEncounters {userDetailsId}</div>
-  )
-}
+    <>
+      <div className="flex justify-end">
+        <CreateEncounterDialog />
+      </div>
+      <ViewPatientEncounters userDetailsId={userDetailsId} />
+    </>
+  );
+};
 
-export default PatientEncounters
+export default PatientEncounters;
