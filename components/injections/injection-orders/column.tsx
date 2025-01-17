@@ -3,38 +3,53 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export const columns = (): ColumnDef<InjectionsInterface>[] => [
   {
-    accessorKey: "patient",
+    accessorKey: "userDetails.user.firstName",
     header: "Patient",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("patient")}</div>
+      <div className="cursor-pointer">
+        {row.original.userDetails.user.firstName}{" "}
+        {row.original.userDetails.user.lastName}
+      </div>
     ),
   },
   {
-    accessorKey: "drugName",
+    accessorKey: "injection_name",
     header: "Drug Name",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("drugName")}</div>
+      <div className="cursor-pointer">{row.getValue("injection_name")}</div>
     ),
   },
   {
-    accessorKey: "orderedOn",
+    accessorKey: "createdAt",
     header: "Ordered On",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("orderedOn")}</div>
+      <div className="cursor-pointer">
+        {new Date(row.original.createdAt).toDateString()}
+      </div>
     ),
   },
   {
-    accessorKey: "orderedBy",
+    accessorKey: "providerName",
     header: "Ordered By",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("orderedBy")}</div>
+      <div className="cursor-pointer">{row.getValue("providerName")}</div>
     ),
   },
   {
-    accessorKey: "orderStatus",
+    accessorKey: "status",
     header: "Order Status",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("orderStatus")}</div>
-    ),
+    cell: ({ row }) => {
+      return (
+        <span
+          className={
+            row.original.status.trim().toLowerCase() === "pending"
+              ? "text-yellow-500 font-semibold cursor-pointer"
+              : "text-green-500 font-semibold cursor-pointer"
+          }
+        >
+          {row.original.status.toUpperCase()}
+        </span>
+      );
+    },
   },
 ];
