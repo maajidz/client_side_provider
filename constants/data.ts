@@ -289,7 +289,7 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
   },
   {
     title: "Lab Records",
-    href: `/dashboard/patients/${userDetailsId}/lab_Records`,
+    href: `/dashboard/patients/${userDetailsId}/lab_records`,
     label: "Lab Records",
   },
   {
