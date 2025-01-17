@@ -222,11 +222,11 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
     href: `/dashboard/patients/${userDetailsId}/appointments`,
     label: "Appointments",
   },
-  {
-    title: "Messages",
-    href: `/dashboard/patients/${userDetailsId}/messages`,
-    label: "Messages",
-  },
+  // {
+  //   title: "Messages",
+  //   href: `/dashboard/patients/${userDetailsId}/messages`,
+  //   label: "Messages",
+  // },
   {
     title: "Tasks",
     href: `/dashboard/patients/${userDetailsId}/tasks`,
@@ -307,16 +307,16 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
     href: `/dashboard/patients/${userDetailsId}/referrals`,
     label: "Referrals",
   },
-  {
-    title: "Audit Trails",
-    href: `/dashboard/patients/${userDetailsId}/audit_trails`,
-    label: "Audit Trails",
-  },
-  {
-    title: "Amendments",
-    href: `/dashboard/patients/${userDetailsId}/ammendments`,
-    label: "Amendments",
-  },
+  // {
+  //   title: "Audit Trails",
+  //   href: `/dashboard/patients/${userDetailsId}/audit_trails`,
+  //   label: "Audit Trails",
+  // },
+  // {
+  //   title: "Amendments",
+  //   href: `/dashboard/patients/${userDetailsId}/ammendments`,
+  //   label: "Amendments",
+  // },
 ];
 
 export const timeSlots = [
