@@ -34,6 +34,8 @@ export interface Result {
   dateTime: string
   tags: string
   file: any
+  // `status` field was missing
+  status: "Pending" | "Completed";
   createdAt: string
   updatedAt: string
   tests: Test[]
