@@ -9,73 +9,65 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { deleteAlert } from "@/services/chartDetailsServices";
-import { AlertData } from "@/types/alertInterface";
+import { QuickNotesInterface } from "@/types/quickNotesInterface";
+import { deleteQuickNote } from "@/services/quickNotesServices";
 
-const handleDeleteAlert = async (
-  alertId: string,
+const handleDeleteQuickNote = async (
+  id: string,
   setLoading: (loading: boolean) => void,
   showToast: (args: { type: string; message: string }) => void,
-  fetchAlerts: () => void
+  getQuickNotesData: () => void
 ) => {
   setLoading(true);
   try {
-    await deleteAlert({ id: alertId });
+    await deleteQuickNote({ id });
     showToast({
       type: "success",
-      message: "Alert deleted successfully",
+      message: "Quick note deleted successfully",
     });
-    fetchAlerts();
+    getQuickNotesData();
   } catch (error) {
     console.error("Error:", error);
-    showToast({ type: "error", message: "Failed to delete Alert" });
+    showToast({ type: "error", message: "Failed to delete quick note" });
   } finally {
     setLoading(false);
   }
 };
 
 export const columns = ({
-  setEditData,
-  setIsDialogOpen,
+  // setEditData,
+  // setIsDialogOpen,
   setLoading,
   showToast,
-  fetchAlerts,
+  fetchQuickNotes,
 }: {
-  setEditData: (
-    data: {
-      alertName: string;
-      alertDescription: string;
-      alertId: string;
-    } | null
-  ) => void;
-  setIsDialogOpen: (isOpen: boolean) => void;
+  // setIsDialogOpen: (isOpen: boolean) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
-  fetchAlerts: () => void;
-}): ColumnDef<AlertData>[] => [
+  fetchQuickNotes: () => void;
+}): ColumnDef<QuickNotesInterface>[] => [
   {
-    accessorKey: "alertDescription",
-    header: "Alert Description",
+    accessorKey: "note",
+    header: "Note",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("alertDescription")}</div>
+      <div className="cursor-pointer">{row.getValue("note")}</div>
     ),
   },
   {
-    accessorKey: "providerId",
-    header: "Alert created by",
+    accessorKey: "providerDetails.id",
+    header: "Added by",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("providerId")}</div>
+      <div className="cursor-pointer">{row.original.providerDetails.id}</div>
     ),
   },
   {
-    accessorKey: "alertType",
-    header: "Alert type",
-    cell: ({ row }) => {
-      const alertType = row.original.alertType
-      return (
-        <div className="cursor-pointer">{alertType.alertName}</div>
-      );
-  },
+    accessorKey: "createdAt",
+    header: "Date",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">
+        {new Date(row.original.createdAt).toDateString()}
+      </div>
+    ),
   },
   {
     accessorKey: "id",
@@ -88,7 +80,7 @@ export const columns = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               onClick={() => {
                 setEditData( {
                     alertName: row.original.alertType.alertName,
@@ -99,16 +91,16 @@ export const columns = ({
               }}
             >
               Edit
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem
               onClick={() => {
-                handleDeleteAlert(
+                handleDeleteQuickNote(
                   row.original.id,
                   setLoading,
                   showToast,
-                  fetchAlerts
+                  fetchQuickNotes
                 );
-                fetchAlerts();
+                fetchQuickNotes();
               }}
             >
               Delete
