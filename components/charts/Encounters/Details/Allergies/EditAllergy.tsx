@@ -30,50 +30,62 @@ import {
   UpdateAllergenInterface,
 } from "@/types/allergyInterface";
 import { showToast } from "@/utils/utils";
-import { Edit2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 
 interface EditAllergyProps {
-  selectedAllergy: AllergenResponseInterfae;
+  selectedAllergy?: AllergenResponseInterfae;
   fetchAllergies: () => void;
+  onClose: () => void;
+  isOpen: boolean;
 }
 
-function EditAllergy({ selectedAllergy, fetchAllergies }: EditAllergyProps) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+function EditAllergy({
+  selectedAllergy,
+  fetchAllergies,
+  onClose,
+  isOpen,
+}: EditAllergyProps) {
   const [loading, setLoading] = useState(false);
 
   const { toast } = useToast();
 
-  const handleModalOpen = (open: boolean) => {
-    setIsDialogOpen(open);
-  };
-
   const form = useForm<z.infer<typeof updateAllergyFormSchema>>({
-    /**
-     * Resolver
-     * ! The Zod validation is not working.
-     */
-    // resolver: zodResolver(updateAllergyFormSchema),
     defaultValues: {
-      type: selectedAllergy.type,
-      Allergen: selectedAllergy.Allergen,
-      observedOn: new Date(selectedAllergy.observedOn)
-        .toISOString()
-        .split("T")[0],
-      serverity: selectedAllergy.serverity,
-      status: selectedAllergy.status,
-      reactions: selectedAllergy.reactions || "",
+      type: selectedAllergy?.type || "",
+      Allergen: selectedAllergy?.Allergen || "",
+      observedOn: selectedAllergy?.observedOn.split("T")[0],
+      serverity: selectedAllergy?.serverity || "",
+      status: selectedAllergy?.status || "",
+      reactions: Array.isArray(selectedAllergy?.reactions)
+        ? selectedAllergy.reactions
+        : [],
     },
   });
+
+  useEffect(() => {
+    if(selectedAllergy){
+      form.reset({
+        type: selectedAllergy.type,
+        Allergen: selectedAllergy.Allergen,
+        observedOn: selectedAllergy.observedOn.split("T")[0],
+        serverity: selectedAllergy.serverity,
+        status: selectedAllergy.status,
+        reactions: Array.isArray(selectedAllergy.reactions)
+          ? selectedAllergy.reactions
+          : [],
+      });
+    }
+  }, [selectedAllergy, form]);
 
   const onSubmit = async (formData: UpdateAllergenInterface) => {
     setLoading(true);
 
     try {
+      if (!selectedAllergy) return;
       await updateAllergiesData({
-        id: selectedAllergy.id,
+        id: selectedAllergy?.id,
         requestData: formData,
       });
 
@@ -93,7 +105,7 @@ function EditAllergy({ selectedAllergy, fetchAllergies }: EditAllergyProps) {
       }
     } finally {
       setLoading(false);
-      setIsDialogOpen(false);
+      onClose();
       form.reset();
     }
   };
@@ -101,11 +113,9 @@ function EditAllergy({ selectedAllergy, fetchAllergies }: EditAllergyProps) {
   if (loading) return <LoadingButton />;
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={handleModalOpen}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
-          <Edit2 color="#84012A" />
-        </Button>
+      
       </DialogTrigger>
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
@@ -283,9 +293,6 @@ function EditAllergy({ selectedAllergy, fetchAllergies }: EditAllergyProps) {
               <Button type="submit" className="bg-[#84012A]">
                 Edit
               </Button>
-              <Button variant="outline" onClick={() => handleModalOpen(false)}>
-                Cancel
-              </Button>
             </div>
           </form>
         </Form>
@@ -295,4 +302,3 @@ function EditAllergy({ selectedAllergy, fetchAllergies }: EditAllergyProps) {
 }
 
 export default EditAllergy;
-

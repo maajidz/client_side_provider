@@ -2,13 +2,12 @@ import { DataTable } from "@/components/ui/data-table";
 import { RootState } from "@/store/store";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import { getImageResults } from "@/services/imageResultServices";
 import { ImageResultResponseInterface } from "@/types/imageResults";
-import { UserEncounterData } from "@/types/chartsInterface";
+import { columns } from "@/components/charts/Encounters/Preview/Documents/columns";
 
-function Documents({patientDetails}: {patientDetails: UserEncounterData}) {
+function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<ImageResultResponseInterface>();
   const [loading, setLoading] = useState(false);
@@ -18,11 +17,11 @@ function Documents({patientDetails}: {patientDetails: UserEncounterData}) {
   const fetchImageResultsList = useCallback(async (page: number) => {
     try {
         setLoading(true)
-        const limit = 10;
+        const limit = 5;
       if (providerDetails) {
         const response = await getImageResults({
           providerId: providerDetails.providerId,
-          userDetailsId: patientDetails.userDetails.id,
+          userDetailsId: userDetailsId,
           limit: limit,
           page: page,
         });
@@ -37,7 +36,7 @@ function Documents({patientDetails}: {patientDetails: UserEncounterData}) {
     } finally {
         setLoading(false)
     }
-  }, [providerDetails, patientDetails.userDetails.id,]);
+  }, [providerDetails, userDetailsId]);
 
   useEffect(() => {
     fetchImageResultsList(page);
@@ -65,4 +64,4 @@ function Documents({patientDetails}: {patientDetails: UserEncounterData}) {
   );
 }
 
-export default Documents;
+export default ViewPatientDocuments;

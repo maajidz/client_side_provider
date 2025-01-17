@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -25,21 +24,30 @@ import { createAllergies } from "@/services/chartDetailsServices";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { allergenFormSchema } from "@/schema/allergenFormSchema";
-import { UserEncounterData } from "@/types/chartsInterface";
 import { showToast } from "@/utils/utils";
-import { PlusCircle, Trash2Icon } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { useState } from "react";
+import LoadingButton from "@/components/LoadingButton";
+import { AllergeyRequestInterface } from "@/types/allergyInterface";
 
 interface AllergiesDialogProps {
-  patientDetails: UserEncounterData;
+  userDetailsId: string;
+  onClose: () => void;
+  isOpen: boolean;
 }
 
-function AllergiesDialog({ patientDetails }: AllergiesDialogProps) {
+function AllergiesDialog({
+  userDetailsId,
+  onClose,
+  isOpen,
+}: AllergiesDialogProps) {
   const { toast } = useToast();
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof allergenFormSchema>>({
     resolver: zodResolver(allergenFormSchema),
     defaultValues: {
@@ -63,25 +71,44 @@ function AllergiesDialog({ patientDetails }: AllergiesDialogProps) {
 
   const onSubmit = async (data: z.infer<typeof allergenFormSchema>) => {
     console.log("Submitted Data:", data);
-    if (patientDetails.userDetails.id) {
+    if (userDetailsId) {
       try {
-        const requestData = {
-          //data.allergens.map((allergen) => ({
-          type: data.allergens[0].type,
-          serverity: data.allergens[0].serverity,
-          observedOn: data.allergens[0].observedOn,
-          Allergen: data.allergens[0].Allergen,
-          status: data.allergens[0].status,
-          reactions: data.allergens[0].reactions
-            ? data.allergens[0].reactions.split(",").map((reaction) => ({
-                name: reaction.trim(),
-                additionalText: "",
-              }))
-            : [],
-          userDetailsId: patientDetails.userDetails.id,
-          providerId: providerDetails.providerId,
+        setLoading(true);
+        // const requestData = {
+        //   //data.allergens.map((allergen) => ({
+        //   type: data.allergens[0].type,
+        //   serverity: data.allergens[0].serverity,
+        //   observedOn: data.allergens[0].observedOn,
+        //   Allergen: data.allergens[0].Allergen,
+        //   status: data.allergens[0].status,
+        //   reactions: data.allergens[0].reactions
+        //     ? data.allergens[0].reactions.split(",").map((reaction) => ({
+        //         name: reaction.trim(),
+        //         additionalText: "",
+        //       }))
+        //     : [],
+        //   userDetailsId: userDetailsId,
+        //   providerId: providerDetails.providerId,
+        // };
+        // // }))} : [];
+
+        const requestData: AllergeyRequestInterface = {
+          allergies: data.allergens.map((allergen) => ({
+            type: allergen.type,
+            serverity: allergen.serverity,
+            observedOn: allergen.observedOn,
+            Allergen: allergen.Allergen,
+            status: allergen.status,
+            reactions: allergen.reactions
+              ? allergen.reactions.split(",").map((reaction) => ({
+                  name: reaction.trim(),
+                  additionalText: "",
+                }))
+              : [],
+            userDetailsId: userDetailsId,
+            providerId: providerDetails.providerId,
+          })),
         };
-        // })) : [];
 
         await createAllergies({ requestData });
         showToast({
@@ -96,17 +123,19 @@ function AllergiesDialog({ patientDetails }: AllergiesDialogProps) {
           type: "error",
           message: "Failed to save allergies. Please try again.",
         });
+      } finally {
+        setLoading(false);
+        onClose();
       }
     }
   };
 
+  if (loading) {
+    return <LoadingButton />;
+  }
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost">
-          <PlusCircle />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>Add Allergies</DialogTitle>

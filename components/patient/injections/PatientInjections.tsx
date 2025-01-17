@@ -1,9 +1,13 @@
-import React from 'react'
+import Injections from "@/components/injections/Injections";
+import React from "react";
 
-const PatientInjections = ({userDetailsId}:{userDetailsId: string}) => {
+const PatientInjections = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
-    <div>PatientInjections {userDetailsId}</div>
-  )
-}
+    <>
+      {userDetailsId}
+      <Injections />
+    </>
+  );
+};
 
-export default PatientInjections
+export default PatientInjections;
