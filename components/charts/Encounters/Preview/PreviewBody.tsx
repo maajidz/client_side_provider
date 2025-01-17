@@ -29,7 +29,7 @@ const PreviewBody = ({ patientDetails }: { patientDetails: UserEncounterData }) 
                     {/* <TabsTrigger value="questionnaires"><FileQuestion /></TabsTrigger> */}
                 </TabsList>
                 <TabsContent value="chartNotes" className='md:px-0 p-0'>
-                    <ChartNotes patientDetails={patientDetails}/>
+                    <ChartNotes patientChart={patientDetails.chart}/>
                 </TabsContent>
                 {/* <TabsContent value="flowsheet">
                     <FlowSheet />
@@ -44,7 +44,7 @@ const PreviewBody = ({ patientDetails }: { patientDetails: UserEncounterData }) 
                     <ImagesPreview />
                 </TabsContent>
                 <TabsContent value="documents">
-                    <DocumentPreview patientDetails={patientDetails} />
+                    <DocumentPreview patientDetails={patientDetails}/>
                 </TabsContent>
                 {/* <TabsContent value="questionnaires">
                     <QuestionnairePreview />

@@ -104,17 +104,27 @@ export const getUserEncounterDetails = async ({
 };
 
 export const getEncounterList = async ({
-  providerID,
+  id,
+  idType,
   page,
   limit,
+  userDetailsId,
 }: {
-  providerID: string;
-  page: number;
-  limit: number;
+  id: string;
+  idType: "id" | "providerID";
+  page?: number;
+  limit?: number;
+  userDetailsId?: string;
 }) => {
+  const queryParams = new URLSearchParams();
+  if (idType) queryParams.append("idType", idType);
+  if (page) queryParams.append("page", page.toString());
+  if (limit) queryParams.append("limit", limit.toString());
+  if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
+
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/encounters/${providerID}?idtype=providerID&page=${page}&limit=${limit}`,
+    url: `/provider/encounters/${id}?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },

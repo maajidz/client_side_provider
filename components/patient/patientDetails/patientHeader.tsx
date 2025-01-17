@@ -47,7 +47,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             <div>{response?.gender}/Age</div>
             <PatientLabelDetails label="ID:" value={userId} />
           </div>
-          <PatientLabelDetails label="DOB:" value={`${response?.dob}`} />
+          <PatientLabelDetails label="DOB:" value={`${response?.dob.split('T')[0]}`} />
         </div>
         <div className={styles.infoBox}>
           <PatientLabelDetails

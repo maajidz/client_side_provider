@@ -36,7 +36,7 @@ function Documents({ patientDetails }: { patientDetails: UserEncounterData }) {
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [ patientDetails.userDetails.id,]);
 
   // Effects
   useEffect(() => {

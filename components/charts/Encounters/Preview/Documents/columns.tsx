@@ -1,6 +1,7 @@
-import { DocumentsInterface } from "@/types/documentsInterface";
+"use client"
 import { ColumnDef } from "@tanstack/react-table";
-
+import { DocumentsInterface } from "@/types/documentsInterface";
+        
 export const columns = (): ColumnDef<DocumentsInterface>[] => [
   {
     accessorKey: "documentName",

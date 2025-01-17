@@ -17,7 +17,7 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import { showToast } from "@/utils/utils";
 import AllergiesDialog from "./AllergiesDialog";
 import EditAllergy from "./EditAllergy";
-import { Trash2Icon } from "lucide-react";
+import { Edit2, PlusCircle, Trash2Icon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 const Allergies = ({
@@ -25,6 +25,8 @@ const Allergies = ({
 }: {
   patientDetails: UserEncounterData;
 }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [allergies, setAllergies] = useState<AllergenResponseInterfae[]>([]);
   const [error, setError] = useState("");
@@ -91,58 +93,69 @@ const Allergies = ({
         <AccordionItem value="allergies">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Allergies</AccordionTrigger>
-            <AllergiesDialog patientDetails={patientDetails} />
+            <Button variant="ghost">
+              <PlusCircle />
+            </Button>
+            <AllergiesDialog
+              userDetailsId={patientDetails.userDetails.id}
+              onClose={() => {
+                setIsDialogOpen(false);
+              }}
+              isOpen={isDialogOpen}
+            />
           </div>
           <AccordionContent className="sm:max-w-4xl">
-              {allergies && allergies.length !== 0 ? (
-                allergies.map((allergy) => (
-                    <div
-                      key={allergy.id}
-                      className="flex flex-col gap-2 p-2 border rounded-lg"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="text-base font-semibold">
-                          {allergy?.Allergen}
-                        </div>
-                        <div className="flex">
-                          <EditAllergy
-                            selectedAllergy={allergy}
-                            fetchAllergies={fetchAllergies}
-                          />
-                          <Button
-                            variant="ghost"
-                            onClick={() => handleDeleteAllergy(allergy.id)}
-                          >
-                            <Trash2Icon color="#84012A" />
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1 ">
-                        <FormLabels
-                          label="Observed On"
-                          value={new Date(
-                            allergy.observedOn
-                          ).toLocaleDateString()}
-                        />
-                        <FormLabels
-                          label="Severity"
-                          value={allergy.serverity}
-                        />
-                        <FormLabels label="Status" value={allergy.status} />
-                        <FormLabels
-                          label="Reaction"
-                          value={allergy.reactions.map((reaction) => (
-                            <div key={reaction.name}>{reaction.name} </div>
-                          ))}
-                        />
-                      </div>
+            {allergies && allergies.length !== 0 ? (
+              allergies.map((allergy) => (
+                <div
+                  key={allergy.id}
+                  className="flex flex-col gap-2 p-2 border rounded-lg"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-base font-semibold">
+                      {allergy?.Allergen}
                     </div>
-                ))
-              ) : error ? (
-                <p className="text-center">{error}</p>
-              ) : (
-                <p className="text-center">No allergies data found</p>
-              )}
+                    <div className="flex">
+                      <Button variant="ghost">
+                        <Edit2 color="#84012A" />
+                      </Button>
+                      <EditAllergy
+                        onClose={() => {
+                          setIsEditDialogOpen(false);
+                        }}
+                        isOpen={isEditDialogOpen}
+                        selectedAllergy={allergy}
+                        fetchAllergies={fetchAllergies}
+                      />
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleDeleteAllergy(allergy.id)}
+                      >
+                        <Trash2Icon color="#84012A" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1 ">
+                    <FormLabels
+                      label="Observed On"
+                      value={new Date(allergy.observedOn).toLocaleDateString()}
+                    />
+                    <FormLabels label="Severity" value={allergy.serverity} />
+                    <FormLabels label="Status" value={allergy.status} />
+                    <FormLabels
+                      label="Reaction"
+                      value={allergy.reactions.map((reaction) => (
+                        <div key={reaction.name}>{reaction.name} </div>
+                      ))}
+                    />
+                  </div>
+                </div>
+              ))
+            ) : error ? (
+              <p className="text-center">{error}</p>
+            ) : (
+              <p className="text-center">No allergies data found</p>
+            )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

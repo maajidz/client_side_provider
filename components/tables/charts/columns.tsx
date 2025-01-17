@@ -85,10 +85,7 @@ export const columns = (handleRowClick: (id: string) => void): ColumnDef<Encount
     cell: ({ row }) => {
       const id = row.original?.id;
       return id ? (
-        // <div className="cursor-pointer" onClick={() => handleRowClick(id)}>
-        //   {id}
-        // </div>
-        <Button onClick={() => handleRowClick(id)}>
+        <Button variant={'link'} className='text-blue-600 underline' onClick={() => handleRowClick(id)}>
           Open Encounter 
         </Button>
       ) : null;
