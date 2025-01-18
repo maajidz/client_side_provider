@@ -35,13 +35,16 @@ const handleDeleteQuickNote = async (
 };
 
 export const columns = ({
-  // setEditData,
-  // setIsDialogOpen,
+  setEditData,
+  setIsDialogOpen,
   setLoading,
   showToast,
   fetchQuickNotes,
 }: {
-  // setIsDialogOpen: (isOpen: boolean) => void;
+  setIsDialogOpen: (isOpen: boolean) => void;
+  setEditData: React.Dispatch<
+    React.SetStateAction<{ notes: string; noteId: string } | null>
+  >;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchQuickNotes: () => void;
@@ -80,18 +83,17 @@ export const columns = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem
+            <DropdownMenuItem
               onClick={() => {
-                setEditData( {
-                    alertName: row.original.alertType.alertName,
-                    alertDescription: row.original.alertDescription,
-                    alertId: row.original.id
-                  });
+                setEditData({
+                  notes: row.original.note,
+                  noteId: row.original.id,
+                });
                 setIsDialogOpen(true);
               }}
             >
               Edit
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 handleDeleteQuickNote(

@@ -1,63 +1,43 @@
-import React, { useCallback, useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
 import { DataTable } from "@/components/ui/data-table";
-import { getQuickNotesData } from "@/services/quickNotesServices";
+import { useToast } from "@/hooks/use-toast";
 import { QuickNotesInterface } from "@/types/quickNotesInterface";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/hooks/use-toast";
 import { columns } from "./columns";
+import QuickNotesDialog from "./QuickNotesDialog";
+import { useState } from "react";
+
+interface ViewPatientNotesProps {
+  userDetailsId: string;
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  totalPages: number;
+  data: QuickNotesInterface[];
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchQuickNotes: () => Promise<void>;
+}
 
 const ViewPatientQuickNotes = ({
   userDetailsId,
-}: {
-  userDetailsId: string;
-}) => {
-  const [page, setPage] = useState<number>(1);
-  const limit = 8;
-  const [totalPages, setTotalPages] = useState<number>(1);
+  data,
+  page,
+  totalPages,
+  loading,
+  setPage,
+  setLoading,
+  fetchQuickNotes,
+}: ViewPatientNotesProps) => {
+  // Toast State
   const { toast } = useToast();
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<QuickNotesInterface[]>([]);
-
   // Corrected initialization of editData
-  // const [editData, setEditData] = useState<{
-  //   data: {
-  //     notes: string;
-  //     noteId: string;
-  //   } | null;
-  // }>({ data: { noteId: "", notes: "" } });
+  const [editData, setEditData] = useState<{
+    notes: string;
+    noteId: string;
+  } | null>(null);
 
-  const [isDialogOpen] = useState<boolean>(false);
-  console.log(isDialogOpen);
-
-  // Fetch Quick Notes
-  const fetchQuickNotes = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await getQuickNotesData();
-      if (response) {
-        setData(response.data);
-        // Use Math.ceil to handle partial pages
-        setTotalPages(Math.ceil(response.total / limit));
-      }
-    } catch (e) {
-      console.error("Error fetching quick notes:", e);
-      // Optionally, show a toast or alert to inform the user about the error.
-      showToast({
-        toast,
-        type: "error",
-        message: "Error fetching quick notes. Please try again later.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [userDetailsId, limit, toast]);
-
-  // Fetch data when component mounts or userDetailsId changes
-  useEffect(() => {
-    fetchQuickNotes();
-  }, [fetchQuickNotes]);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   // If loading, show a loading button
   if (loading) {
@@ -65,40 +45,37 @@ const ViewPatientQuickNotes = ({
   }
 
   return (
-    <>
-      <div className="py-5">
-        {data && (
-          <DataTable
-            searchKey="id"
-            columns={columns({
-              // setIsDialogOpen,
-              setLoading,
-              showToast: () =>
-                showToast({
-                  toast,
-                  type: "success",
-                  message: "Deleted Successfully",
-                }),
-              fetchQuickNotes: fetchQuickNotes,
-            })}
-            data={data}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
-          />
-        )}
-
-        {/* Uncomment the QuickNotesDialog below if you plan to use it */}
-        {/* 
-        <QuickNotesDialog
-          userDetailsId={userDetailsId}
-          quickNotesData={editData}
-          onClose={() => setIsDialogOpen(false)}
-          isOpen={isDialogOpen}
+    <div className="py-5">
+      {data && (
+        <DataTable
+          searchKey="id"
+          columns={columns({
+            setIsDialogOpen,
+            setEditData,
+            setLoading,
+            showToast: () =>
+              showToast({
+                toast,
+                type: "success",
+                message: "Deleted Successfully",
+              }),
+            fetchQuickNotes: fetchQuickNotes,
+          })}
+          data={data}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
         />
-        */}
-      </div>
-    </>
+      )}
+
+      <QuickNotesDialog
+        userDetailsId={userDetailsId}
+        quickNotesData={editData}
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onFetchQuickNotes={fetchQuickNotes}
+      />
+    </div>
   );
 };
 
