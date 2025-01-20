@@ -1,11 +1,28 @@
-import Injections from "@/components/injections/Injections";
+import InjectionOrders from "@/components/injections/injection-orders/InjectionOrders";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
+import ViewInjectionOrders from "./InjectionOrders/ViewInjectionOrders";
 
 const PatientInjections = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <>
-      {userDetailsId}
-      <Injections />
+      <Tabs defaultValue="injections" className="w-full">
+        <TabsList>
+          <TabsTrigger value="injections">Injections</TabsTrigger>
+          <TabsTrigger value="injection_orders">Injection Orders</TabsTrigger>
+        </TabsList>
+        <TabsContent value="injections">
+          Make changes to your account here.
+        </TabsContent>
+        <TabsContent value="injection_orders" className="w-full">
+          <>
+            <div className="flex justify-end">
+              <InjectionOrders />
+            </div>
+            <ViewInjectionOrders userDetailsId={userDetailsId} />
+          </>
+        </TabsContent>
+      </Tabs>
     </>
   );
 };

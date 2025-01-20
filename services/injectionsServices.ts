@@ -49,6 +49,23 @@ export const getInjectionsData = async (params: InjectionsSearchParamsType) => {
   return data;
 };
 
+export const deleteInjectionOrder = async ({
+  injectionId,
+}: {
+  injectionId: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/injections/injection/${injectionId}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.data;
+  return data;
+};
+
 /**
  * * Vaccines API methods
  */

@@ -9,6 +9,8 @@ import FilterInjections from "./FilterInjections";
 import { useCallback, useEffect, useState } from "react";
 import { injectionsSearchParams } from "@/schema/injectionsAndVaccinesSchema";
 import { z } from "zod";
+import { useToast } from "@/components/ui/use-toast";
+import { showToast } from "@/utils/utils";
 
 export interface InjectionsClientProps {
   providerList: FetchProviderList[];
@@ -46,6 +48,8 @@ function InjectionsClient({
 
   // Loading State
   const [loading, setLoading] = useState(false);
+
+  const { toast } = useToast();
 
   // GET Injections Data
   const fetchInjectionsData = useCallback(async () => {
@@ -113,7 +117,16 @@ function InjectionsClient({
       </div>
       <DataTable
         searchKey="Injections"
-        columns={columns()}
+        columns={columns({
+          setLoading,
+          showToast: () =>
+            showToast({
+              toast,
+              type: "success",
+              message: "Deleted Successfully",
+            }),
+          fetchInjectionList: () => fetchInjectionsData(),
+        })}
         data={injectionsData}
         pageNo={pageNo}
         totalPages={totalPages}

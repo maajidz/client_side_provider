@@ -36,7 +36,7 @@ import { useToast } from "@/components/ui/use-toast";
 const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const limit = 8;
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -65,6 +65,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
       priority?: string
     ) => {
       try {
+        setLoading(true);
         if (providerDetails) {
           const response = await getTasks({
             providerId: providerDetails.providerId,
@@ -83,6 +84,8 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
         }
       } catch (e) {
         console.log("Error", e);
+      } finally {
+        setLoading(false);
       }
     },
     [providerDetails]
