@@ -1,11 +1,30 @@
+import LoadingButton from "@/components/LoadingButton";
+import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { referralOutSearchParams } from "@/schema/referralSchema";
 import { getTransferData } from "@/services/chartsServices";
 import { RootState } from "@/store/store";
 import { TransferResponseData } from "@/types/chartsInterface";
-import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { columns } from "./columns";
-import LoadingButton from "@/components/LoadingButton";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { z } from "zod";
 
 const ViewReferralOut = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -13,6 +32,10 @@ const ViewReferralOut = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  const form = useForm<z.infer<typeof referralOutSearchParams>>({
+    resolver: zodResolver(referralOutSearchParams),
+  });
 
   const fetchReferralsList = useCallback(async () => {
     try {
@@ -43,6 +66,137 @@ const ViewReferralOut = () => {
   return (
     <>
       <div className="py-5">
+        <Form {...form}>
+          <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            {/* Referral From Filter */}
+            <FormField
+              control={form.control}
+              name="referralFrom"
+              render={({ field }) => (
+                <FormItem className="flex items-center">
+                  <FormControl>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Filter by Referral From" />
+                      </SelectTrigger>
+                      <SelectContent></SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            {/* Referral To Filter */}
+            <FormField
+              control={form.control}
+              name="referralTo"
+              render={({ field }) => (
+                <FormItem className="flex items-center">
+                  <FormControl>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Filter by Referral To" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="external" className="cursor-pointer">
+                          External
+                        </SelectItem>
+                        <SelectItem value="internal" className="cursor-pointer">
+                          Internal
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            {/* Selected Referral To Provider Filter */}
+            <FormField
+              control={form.control}
+              name="referralProviderId"
+              render={({ field }) => {
+                const referralTo = form.watch("referralTo") ?? "";
+
+                return (
+                  <FormItem className="flex items-center">
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={
+                          !["internal", "external"].includes(referralTo)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="janeDoe">Jane</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                );
+              }}
+            />
+
+            {/* Request Status Filter */}
+            <FormField
+              control={form.control}
+              name="requestStatus"
+              render={({ field }) => (
+                <FormItem className="flex items-center">
+                  <FormControl>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Filter by Request Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all" className="cursor-pointer">
+                          All
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            {/* Response Status Filter */}
+            <FormField
+              control={form.control}
+              name="responseStatus"
+              render={({ field }) => (
+                <FormItem className="flex items-center">
+                  <FormControl>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Filter by Response Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all" className="cursor-pointer">
+                          All
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex items-end pb-2">
+              <Button type="submit">Search</Button>
+            </div>
+          </form>
+        </Form>
+
+        {/* DataTable */}
         {resultList && (
           <DataTable
             searchKey="id"
