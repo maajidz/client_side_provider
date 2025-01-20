@@ -5,8 +5,28 @@ import { VaccinesInterface } from "@/types/injectionsInterface";
 import { columns } from "./column";
 import FilterVaccines from "./FilterVaccines";
 import { useCallback, useEffect, useState } from "react";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { UserData } from "@/types/userInterface";
+import { vaccineSearchParams } from "@/schema/injectionsAndVaccinesSchema";
+import { z } from "zod";
 
-function VaccinesClient() {
+export interface VaccinesClientProps {
+  providerList: FetchProviderList[];
+  filteredPatients: UserData[];
+  searchTerm: string;
+  visibleSearchList: boolean;
+  onSetSearchTerm: (value: string) => void;
+  onSetVisibleSearchList: (value: boolean) => void;
+}
+
+function VaccinesClient({
+  filteredPatients,
+  providerList,
+  searchTerm,
+  visibleSearchList,
+  onSetSearchTerm,
+  onSetVisibleSearchList,
+}: VaccinesClientProps) {
   // Data State
   const [vaccinesData, setVaccinesData] = useState<VaccinesInterface[]>([]);
 
@@ -14,6 +34,13 @@ function VaccinesClient() {
   const itemsPerPage = 10;
   const [pageNo, setPageNo] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  // Filters State
+  const [filters, setFilters] = useState({
+    providerId: "",
+    userDetailsId: "",
+    status: "",
+  });
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -24,6 +51,9 @@ function VaccinesClient() {
 
     try {
       const response = await getVaccinesData({
+        userDetailsId: filters.userDetailsId,
+        providerId: filters.providerId,
+        status: filters.status,
         page: pageNo,
         limit: itemsPerPage,
       });
@@ -37,7 +67,24 @@ function VaccinesClient() {
     } finally {
       setLoading(false);
     }
-  }, [pageNo]);
+  }, [pageNo, filters.userDetailsId, filters.providerId, filters.status]);
+
+  const handleSearch = (filterValues: z.infer<typeof vaccineSearchParams>) => {
+    if (filterValues.userDetailsId === "all") {
+      filterValues.status = "";
+    }
+
+    if (filterValues.providerId === "all") {
+      filterValues.providerId = "";
+    }
+
+    setFilters({
+      providerId: filterValues.providerId || "",
+      userDetailsId: filterValues.userDetailsId || "",
+      status: filterValues.status || "",
+    });
+    setPageNo(1);
+  };
 
   // Effects
   useEffect(() => {
@@ -49,7 +96,16 @@ function VaccinesClient() {
   return (
     <div className="space-y-2">
       <div className="space-y-2">
-        <FilterVaccines />
+        <FilterVaccines
+          providerList={providerList}
+          filteredPatients={filteredPatients}
+          searchTerm={searchTerm}
+          vaccinesData={vaccinesData}
+          visibleSearchList={visibleSearchList}
+          onHandleSearch={handleSearch}
+          onSetSearchTerm={onSetSearchTerm}
+          onSetVisibleSearchList={onSetVisibleSearchList}
+        />
       </div>
       <DataTable
         searchKey="Injections"

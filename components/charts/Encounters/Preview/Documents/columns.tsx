@@ -1,29 +1,38 @@
 "use client"
-import { Button } from "@/components/ui/button";
-import { ImageResultDataResponse } from "@/types/imageResults";
 import { ColumnDef } from "@tanstack/react-table";
-
-export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
+import { DocumentsInterface } from "@/types/documentsInterface";
+        
+export const columns = (): ColumnDef<DocumentsInterface>[] => [
   {
-    accessorKey: "testResults",
+    accessorKey: "documentName",
     header: "Documents",
     cell: ({ row }) => {
-      const testResults = row.getValue(
-        "testResults"
-      ) as ImageResultDataResponse["testResults"];
+      const documentLinks = row.original.documents.filter(
+        (link) => link !== null && link !== undefined
+      );
+
       return (
-        <div className="cursor-pointer w-96">
-          {testResults.flatMap((results) =>
-            results.documents?.map((docs, index) => (
-              <Button
-                key={index}
-                variant={"link"}
-                onClick={() => window.open(docs, "_blank")}
-                className="text-blue-500 px-0 py-0 "
-              >
-                {docs.split("/").pop()}
-              </Button>
-            ))
+        <div className="cursor-pointer">
+          {documentLinks.length > 0 ? (
+            documentLinks.map((link, index) => {
+              return (
+                <a
+                  key={index}
+                  href={link}
+                  target="_blank"
+                  className="text-blue-500"
+                >
+                  {row.original.documentName}
+                </a>
+              );
+            })
+          ) : (
+            <span className="text-md text-gray-500">
+              No valid document links available for document:{" "}
+              <span className="text-md font-semibold">
+                {row.original.documentName}
+              </span>
+            </span>
           )}
         </div>
       );

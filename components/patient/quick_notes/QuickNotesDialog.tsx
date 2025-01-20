@@ -16,26 +16,36 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import LoadingButton from "@/components/LoadingButton";
-import { Textarea } from "@/components/ui/textarea"
+import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 import { quickNotesSchema } from "@/schema/quickNotesSchema";
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
+import {
+  createQuickNote,
+  updateQuickNotes,
+} from "@/services/quickNotesServices";
 
 const QuickNotesDialog = ({
   userDetailsId,
   quickNotesData,
-  onClose,
   isOpen,
+  onClose,
+  onFetchQuickNotes,
 }: {
   userDetailsId: string;
   quickNotesData?: {
     notes: string;
     noteId: string;
   } | null;
-  onClose: () => void;
   isOpen: boolean;
+  onClose: () => void;
+  onFetchQuickNotes: () => Promise<void>;
 }) => {
+  const providerDetails = useSelector((state: RootState) => state.login);
+
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
@@ -55,37 +65,41 @@ const QuickNotesDialog = ({
   }, [quickNotesData, form]);
 
   const onSubmit = async (values: z.infer<typeof quickNotesSchema>) => {
-    console.log("Form Values:", values);
     setLoading(true);
     try {
-    //   if (alertData) {
-    //     const requestData = {
-    //       notes: values.notes,
-    //     };
-    //     await updateAlertData({
-    //       requestData: requestData,
-    //       id: alertData.alertId,
-    //     });
-    //   } else {
-    //     const requestData = {
-    //       notes: values.notes,
-    //       userDetailsId: userDetailsId,
-    //       providerId: providerDetails.providerId,
-    //     };
-    //     await createAlert({ requestData: requestData });
-    //   }
+      if (quickNotesData) {
+        const requestData = {
+          notes: values.notes,
+        };
+        await updateQuickNotes({
+          requestData: { note: requestData.notes },
+          id: quickNotesData.noteId,
+        });
+      } else {
+        const requestData = {
+          note: values.notes,
+          userDetailsId: userDetailsId,
+          providerId: providerDetails.providerId,
+        };
+        await createQuickNote({ requestData });
+      }
       showToast({
         toast,
         type: "success",
-        message: `Note added successfully`,
+        message: `Quick note added successfully`,
       });
     } catch (e) {
       console.log("Error:", e);
-      showToast({ toast, type: "error", message: `Error` });
+      showToast({
+        toast,
+        type: "error",
+        message: `Could not add quick note`,
+      });
     } finally {
       setLoading(false);
       form.reset();
       onClose();
+      await onFetchQuickNotes();
     }
   };
 
@@ -97,7 +111,9 @@ const QuickNotesDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{quickNotesData ? "Update Quick Notes" : "Add Quick Notes"}</DialogTitle>
+          <DialogTitle>
+            {quickNotesData ? "Update Quick Notes" : "Add Quick Notes"}
+          </DialogTitle>
         </DialogHeader>
         {userDetailsId}
         <Form {...form}>

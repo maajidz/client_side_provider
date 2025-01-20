@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 const PatientDocuments = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <>
-      <Tabs defaultValue="all" className="">
+      <Tabs defaultValue="all" className="flex gap-3">
         <TabsList className="flex flex-col gap-2 h-full">
           <TabsTrigger value="lastvisit">Since Last visit</TabsTrigger>
           <TabsTrigger value="unsigned">Unsigned</TabsTrigger>

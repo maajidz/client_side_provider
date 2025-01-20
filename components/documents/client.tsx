@@ -55,7 +55,7 @@ function DocumentsClient() {
           reviewerId: filters.reviewer,
           status: filters.status,
         });
-        setDocumentsData(response);
+        setDocumentsData(response.data);
       } else {
         showToast({ toast, type: "error", message: "Please select a patient" });
       }

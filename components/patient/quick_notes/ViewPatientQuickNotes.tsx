@@ -1,88 +1,81 @@
-import React, { useCallback, useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
-import { getAlertData } from "@/services/chartDetailsServices";
+import { DataTable } from "@/components/ui/data-table";
+import { useToast } from "@/hooks/use-toast";
+import { QuickNotesInterface } from "@/types/quickNotesInterface";
+import { showToast } from "@/utils/utils";
+import { columns } from "./columns";
+import QuickNotesDialog from "./QuickNotesDialog";
+import { useState } from "react";
+
+interface ViewPatientNotesProps {
+  userDetailsId: string;
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  totalPages: number;
+  data: QuickNotesInterface[];
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchQuickNotes: () => Promise<void>;
+}
 
 const ViewPatientQuickNotes = ({
   userDetailsId,
-}: {
-  userDetailsId: string;
-}) => {
-  // const [page, setPage] = useState<number>(1);
-  // const limit = 8;
-  // const [totalPages, setTotalPages] = useState<number>(1);
-  // const { toast } = useToast();
+  data,
+  page,
+  totalPages,
+  loading,
+  setPage,
+  setLoading,
+  fetchQuickNotes,
+}: ViewPatientNotesProps) => {
+  // Toast State
+  const { toast } = useToast();
 
-  const [loading, setLoading] = useState<boolean>(false);
-  // const [data, setData] = useState<{
-  //   notes: string;
-  //   noteId: string;
-  // }>();
-  // const [editData, setEditData] = useState<{
-  //   notes: string;
-  //   noteId: string;
-  // } | null>(null);
-  // const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  // Corrected initialization of editData
+  const [editData, setEditData] = useState<{
+    notes: string;
+    noteId: string;
+  } | null>(null);
 
-  const fetchAlerts = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await getAlertData({
-        userDetailsId: userDetailsId,
-      });
-      if (response) {
-      //   setData(response);
-      //   setTotalPages(response.total / limit);
-      }
-    } catch (e) {
-      console.log("Error", e);
-    } finally {
-      setLoading(false);
-    }
-  }, [userDetailsId]);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    fetchAlerts();
-  }, [fetchAlerts]);
-
+  // If loading, show a loading button
   if (loading) {
     return <LoadingButton />;
   }
 
   return (
-    <>
-      {/* <div className="py-5">
-        {data?.data && (
-          <DataTable
-            searchKey="id"
-            columns={columns({
-              setEditData,
-              setIsDialogOpen,
-              setLoading,
-              showToast: () =>
-                showToast({
-                  toast,
-                  type: "success",
-                  message: "Deleted Successfully",
-                }),
-              fetchAlerts: () => fetchAlerts(),
-            })}
-            data={data?.data}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
-          />
-        )} */}
+    <div className="py-5">
+      {data && (
+        <DataTable
+          searchKey="id"
+          columns={columns({
+            setIsDialogOpen,
+            setEditData,
+            setLoading,
+            showToast: () =>
+              showToast({
+                toast,
+                type: "success",
+                message: "Deleted Successfully",
+              }),
+            fetchQuickNotes: fetchQuickNotes,
+          })}
+          data={data}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
+      )}
 
-        {/* <QuickNotesDialog
-            userDetailsId={userDetailsId}
-          quickNotesData={editData}
-          onClose={() => {
-            setIsDialogOpen(false);
-          }}
-          isOpen={isDialogOpen}
-        /> */}
-      {/* </div> */}
-    </>
+      <QuickNotesDialog
+        userDetailsId={userDetailsId}
+        quickNotesData={editData}
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onFetchQuickNotes={fetchQuickNotes}
+      />
+    </div>
   );
 };
 

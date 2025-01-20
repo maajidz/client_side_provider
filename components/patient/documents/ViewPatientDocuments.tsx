@@ -1,65 +1,64 @@
 import { DataTable } from "@/components/ui/data-table";
-import { RootState } from "@/store/store";
 import { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import LoadingButton from "@/components/LoadingButton";
-import { getImageResults } from "@/services/imageResultServices";
-import { ImageResultResponseInterface } from "@/types/imageResults";
 import { columns } from "@/components/charts/Encounters/Preview/Documents/columns";
+import { DocumentsInterface } from "@/types/documentsInterface";
+import { getDocumentsData } from "@/services/documentsServices";
 
 function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
-  const providerDetails = useSelector((state: RootState) => state.login);
-  const [resultList, setResultList] = useState<ImageResultResponseInterface>();
+  const [documentsData, setDocumentsData] = useState<DocumentsInterface[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const itemsPerPage = 10;
 
-  const fetchImageResultsList = useCallback(async (page: number) => {
+  const fetchDocumentsData = useCallback(async () => {
     try {
-        setLoading(true)
-        const limit = 5;
-      if (providerDetails) {
-        const response = await getImageResults({
-          providerId: providerDetails.providerId,
+      setLoading(true);
+      if (userDetailsId) {
+        const response = await getDocumentsData({
           userDetailsId: userDetailsId,
-          limit: limit,
-          page: page,
         });
         if (response) {
-          setResultList(response);
-          setTotalPages(Math.ceil(response.total / limit));
+          setDocumentsData(response.data);
+          setTotalPages(Math.ceil(response.meta.totalPages / itemsPerPage));
         }
         setLoading(false);
       }
     } catch (e) {
       console.log("Error", e);
     } finally {
-        setLoading(false)
+      setLoading(false);
     }
-  }, [providerDetails, userDetailsId]);
+  }, [userDetailsId]);
 
   useEffect(() => {
-    fetchImageResultsList(page);
-  }, [page, fetchImageResultsList]);
+    fetchDocumentsData();
+  }, [fetchDocumentsData]);
 
-  if(loading){
-    return <LoadingButton />
+  const paginatedData = documentsData.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
+  if (loading) {
+    return <LoadingButton />;
   }
 
   return (
     <>
-        <div className="w-full">
-          {resultList?.data && (
-            <DataTable
-              searchKey="id"
-              columns={columns()}
-              data={resultList?.data}
-              pageNo={page}
-              totalPages={totalPages}
-              onPageChange={(newPage: number) => setPage(newPage)}
-            />
-          )}
-        </div>
+      <div className="py-5">
+        {paginatedData && (
+          <DataTable
+            searchKey="Documents"
+            columns={columns()}
+            data={paginatedData}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
+        )}
+      </div>
     </>
   );
 }
