@@ -5,7 +5,6 @@ import {
   UserAppointmentInterface,
   UserData,
   UserFormInterface,
-  UserInfo,
   UserResponseInterface,
   UserSubscription,
 } from "@/types/userInterface";
@@ -32,9 +31,8 @@ export const fetchUserDataResponse = async ({
       method: "get",
       url: `/provider/patients/all?${queryParams}`,
     });
-    console.log(response.data);
+
     const data: UserResponseInterface = await response.data;
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching response", error);
@@ -42,13 +40,17 @@ export const fetchUserDataResponse = async ({
   }
 };
 
-export const fetchUserInfo = async ({ userDetailsId }: { userDetailsId: string }) => {
+export const fetchUserInfo = async ({
+  userDetailsId,
+}: {
+  userDetailsId: string;
+}) => {
   try {
     const response = await ApiFetch({
       method: "get",
       url: `/provider/patients/${userDetailsId}`,
     });
-    console.log(response.data);
+
     const data: UserData = await response.data;
     console.log(data);
     return data;

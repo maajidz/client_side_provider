@@ -4,7 +4,7 @@ import PageContainer from "@/components/layout/page-container";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
-  { title: "Documents", link: "/dashboard/injections" },
+  { title: "Injections", link: "/dashboard/injections" },
 ];
 function InjectionsPage() {
   return (
@@ -18,4 +18,3 @@ function InjectionsPage() {
 }
 
 export default InjectionsPage;
-

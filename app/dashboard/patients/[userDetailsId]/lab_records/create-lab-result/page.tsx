@@ -1,7 +1,8 @@
 "use client";
+
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
-import PatientLabRecords from "@/components/patient/lab_records/PatientLabRecords";
+import CreateResultRecord from "@/components/patient/lab_records/results/CreateResultRecord";
 import { Heading } from "@/components/ui/heading";
 import { useParams } from "next/navigation";
 
@@ -11,6 +12,7 @@ function Page() {
   if (!userDetailsId || Array.isArray(userDetailsId)) {
     return <div>Error: User details ID not found</div>;
   }
+
   const breadcrumbItems = [
     { title: "Dashboard", link: "/dashboard" },
     { title: "Patients", link: "/dashboard/patients" },
@@ -18,17 +20,21 @@ function Page() {
       title: "Lab Records",
       link: `/dashboard/patients/${userDetailsId}/lab_records`,
     },
+    {
+      title: "Lab Result",
+      link: `/dashboard/patients/${userDetailsId}/lab_records/create-lab-result`,
+    },
   ];
-
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
-        <Heading title="Lab Records" description="" />
+        <Heading title="Lab Result" description="" />
       </div>
-      <PatientLabRecords userDetailsId={userDetailsId} />
+      <CreateResultRecord />
     </PageContainer>
   );
 }
 
 export default Page;
+
