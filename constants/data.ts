@@ -247,11 +247,11 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
     href: `/dashboard/patients/${userDetailsId}/quick_notes`,
     label: "Quick Notes",
   },
-  {
-    title: "Dashboard",
-    href: `/dashboard/patients/${userDetailsId}/dashboard`,
-    label: "Dashboard",
-  },
+  // {
+  //   title: "Dashboard",
+  //   href: `/dashboard/patients/${userDetailsId}/dashboard`,
+  //   label: "Dashboard",
+  // },
   {
     title: "Diagnoses",
     href: `/dashboard/patients/${userDetailsId}/diagnoses`,
@@ -306,6 +306,11 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
     title: "Referrals",
     href: `/dashboard/patients/${userDetailsId}/referrals`,
     label: "Referrals",
+  },
+  {
+    title: "",
+    href: `/dashboard`,
+    label: "",
   },
   // {
   //   title: "Audit Trails",

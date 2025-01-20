@@ -22,22 +22,24 @@ function Images() {
         >
           <div className="flex flex-row justify-between gap-10">
             <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="imageResults">Image Results</TabsTrigger>
+              <TabsTrigger value="imageResults">Image Results</TabsTrigger>
               <TabsTrigger value="imageOrders">Image Orders</TabsTrigger>
             </TabsList>
             <Button
               className="bg-[#84012A]"
-              onClick={() => 
+              onClick={() =>
                 router.push(
                   activeTab === "imageResults"
                     ? "/dashboard/images/create_image_results"
                     : "/dashboard/images/create_image_orders"
                 )
-               }
+              }
             >
               <div className="flex items-center gap-3">
                 <PlusIcon />
-                {activeTab === "imageResults" ? "Image Results" : "Image Orders"}
+                {activeTab === "imageResults"
+                  ? "Image Results"
+                  : "Image Orders"}
               </div>
             </Button>
           </div>
@@ -45,7 +47,7 @@ function Images() {
             <ImageResults />
           </TabsContent>
           <TabsContent value="imageOrders">
-           <ImageOrders />
+            <ImageOrders />
           </TabsContent>
         </Tabs>
       </div>
@@ -54,4 +56,3 @@ function Images() {
 }
 
 export default Images;
-

@@ -1,25 +1,25 @@
 "use client";
-import { LabOrdersData } from "@/types/chartsInterface";
+import { ImageOrdersData } from "@/types/chartsInterface";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns = (): ColumnDef<LabOrdersData>[] => [
+export const columns = (): ColumnDef<ImageOrdersData>[] => [
   {
     accessorKey: "id",
-    header: "Lab ID",
+    header: "Image ID",
     cell: ({ row }) => (
       <div className="cursor-pointer">{row.getValue("id")}</div>
     ),
   },
   {
-    accessorKey: "orderedBy",
-    header: "Ordered by",
+    accessorKey: "status",
+    header: "Result Status",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("orderedBy")}</div>
+      <div className="cursor-pointer">{row.getValue("status")}</div>
     ),
   },
  {
-    accessorKey: "date",
-    header: "Date",
+    accessorKey: "ordered_date",
+    header: "Ordered On",
     cell: ({ getValue }) => {
       const dob = getValue() as string;
       const date = new Date(dob);
@@ -35,35 +35,33 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
     },
   },
   {
-    accessorKey: "isSigned",
-    header: "Is signed",
+    accessorKey: "providerId",
+    header: "Ordered By",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("isSigned")}</div>
+      <div className="cursor-pointer">{row.getValue("providerId")}</div>
     ),
   },
   {
-    accessorKey: "labs",
-    header: "Labs",
+    accessorKey: "imageType",
+    header: "Image Type",
     cell: ({ row }) => {
-      const labs = row.getValue("labs") as LabOrdersData["labs"];
+      const imageType = row.getValue("imageType") as ImageOrdersData["imageType"];
       return (
         <div className="cursor-pointer">
-          {labs.map((lab) => (
-            <span key={lab.id}>{lab.name} </span>
-          ))}
+            <span key={imageType?.id}>{imageType?.name} </span>
         </div>
       );
     },
   },
   {
-    accessorKey: "tests",
-    header: "Tests",
+    accessorKey: "imageTests",
+    header: "Image Tests",
     cell: ({ row }) => {
-      const tests = row.getValue("tests") as LabOrdersData["tests"];
+      const imageTests = row.getValue("imageTests") as ImageOrdersData["imageTests"];
       return (
         <div className="cursor-pointer">
-          {tests.map((test) => (
-            <span key={test.id}>{test.name}, </span>
+          {imageTests?.map((imageTests) => (
+            <span key={imageTests?.id}>{imageTests?.name}, </span>
           ))}
         </div>
       );

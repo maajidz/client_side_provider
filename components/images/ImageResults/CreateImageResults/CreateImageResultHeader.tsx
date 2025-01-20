@@ -5,7 +5,13 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
-const CreateImageResultHeader = ({form}: {form: UseFormReturn<z.infer<typeof createImageResultsSchema>>;}) => {
+const CreateImageResultHeader = ({
+  form,
+  userDetailsId,
+}: {
+  form: UseFormReturn<z.infer<typeof createImageResultsSchema>>;
+  userDetailsId?: string;
+}) => {
   const router = useRouter();
   return (
     <>
@@ -17,7 +23,11 @@ const CreateImageResultHeader = ({form}: {form: UseFormReturn<z.infer<typeof cre
             className="border border-[#84012A] text-[#84012A]"
             onClick={() => {
               form.reset();
-              router.replace("/dashboard/images");
+              if (userDetailsId) {
+                router.replace(`/dashboard/patients/${userDetailsId}/images`);
+              } else {
+                router.replace(`/dashboard/images`);
+              }
             }}
           >
             Cancel
