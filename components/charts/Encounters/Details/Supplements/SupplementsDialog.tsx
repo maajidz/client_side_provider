@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -28,17 +27,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { supplementsFormSchema } from "@/schema/supplementsSchema";
-import { createSupplement } from "@/services/chartDetailsServices";
-import { UserEncounterData } from "@/types/chartsInterface";
+import {
+  createSupplement,
+  updateSupplement,
+} from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
-import { PlusCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-interface SupplementsDialogProps {
-  patientDetails: UserEncounterData;
-}
+import { useEffect, useState } from "react";
+import { SupplementInterface } from "@/types/supplementsInterface";
 
-function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
+function SupplementsDialog({
+  userDetailsId,
+  onClose,
+  isOpen,
+  selectedSupplement,
+}: {
+  userDetailsId: string;
+  onClose: () => void;
+  isOpen: boolean;
+  selectedSupplement?: SupplementInterface | null;
+}) {
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -48,18 +56,46 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
   const form = useForm<z.infer<typeof supplementsFormSchema>>({
     resolver: zodResolver(supplementsFormSchema),
     defaultValues: {
-      supplement: "",
-      manufacturer: "",
-      fromDate: new Date().toISOString().split("T")[0],
-      toDate: new Date().toISOString().split("T")[0],
-      status: "Active",
-      dosage: "",
-      unit: "",
-      frequency: "",
-      intake_type: "",
-      comments: "",
+      supplement: selectedSupplement?.supplement || "",
+      manufacturer: selectedSupplement?.manufacturer || "",
+      fromDate:
+        selectedSupplement?.fromDate.split("T")[0] ||
+        new Date().toISOString().split("T")[0],
+      toDate:
+        selectedSupplement?.toDate.split("T")[0] ||
+        new Date().toISOString().split("T")[0],
+      status: selectedSupplement?.status || "Active",
+      dosage: selectedSupplement?.dosage || "",
+      unit: selectedSupplement?.unit || "",
+      frequency: selectedSupplement?.frequency || "",
+      intake_type: selectedSupplement?.intake_type || "",
+      comments: selectedSupplement?.comments || "",
     },
   });
+
+  useEffect(() => {
+    if (selectedSupplement) {
+      form.reset({
+        supplement: selectedSupplement?.supplement || "",
+        manufacturer: selectedSupplement?.manufacturer || "",
+        fromDate:
+          selectedSupplement?.fromDate.split("T")[0] ||
+          new Date().toISOString().split("T")[0],
+        toDate:
+          selectedSupplement?.toDate.split("T")[0] ||
+          new Date().toISOString().split("T")[0],
+        status: selectedSupplement?.status || "Active",
+        dosage: selectedSupplement?.dosage || "",
+        unit: selectedSupplement?.unit || "",
+        frequency: selectedSupplement?.frequency || "",
+        intake_type: selectedSupplement?.intake_type || "",
+        comments: selectedSupplement?.comments || "",
+      });
+      if (selectedSupplement.manufacturer) {
+        form.setValue("manufacturer", selectedSupplement?.manufacturer);
+      }
+    }
+  }, [selectedSupplement, form]);
 
   // POST Supplement
   const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
@@ -67,27 +103,40 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
     try {
       const supplementData = {
         ...values,
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: userDetailsId,
       };
 
-      await createSupplement(supplementData);
+      if (!selectedSupplement) {
+        await createSupplement(supplementData);
 
-      showToast({
-        toast,
-        type: "success",
-        message: "Supplement created successfully",
-      });
-    } catch (err) {
-      if (err instanceof Error) {
         showToast({
           toast,
-          type: "failed",
-          message: "Supplement creation failed",
+          type: "success",
+          message: "Supplement created successfully",
+        });
+      } else {
+        await updateSupplement({
+          requestData: supplementData,
+          supplementId: selectedSupplement?.id,
+        });
+
+        showToast({
+          toast,
+          type: "success",
+          message: "Supplement updated successfully",
         });
       }
+    } catch (err) {
+      console.log("Error", err);
+      showToast({
+        toast,
+        type: "error",
+        message: "Supplement creation failed",
+      });
     } finally {
       setLoading(false);
       form.reset();
+      onClose();
     }
   };
 
@@ -96,15 +145,12 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost">
-          <PlusCircle />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Supplement</DialogTitle>
+          <DialogTitle>
+            {selectedSupplement ? "Edit Supplement" : "Add Supplement"}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -129,7 +175,10 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                   <FormItem className="flex gap-2 items-center">
                     <FormLabel className="w-fit">Manufacturer</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Choose Manufacturer" />
                         </SelectTrigger>
@@ -319,7 +368,7 @@ function SupplementsDialog({ patientDetails }: SupplementsDialogProps) {
                 className="bg-[#84012A] hover:bg-[#6C011F]"
                 disabled={loading}
               >
-                Save
+                {selectedSupplement ? "Update " : "Save"}
               </Button>
             </div>
           </form>
