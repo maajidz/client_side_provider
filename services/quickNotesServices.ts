@@ -1,5 +1,5 @@
 import ApiFetch from "@/config/api";
-import { CreateQuickNoteInterface } from "@/types/quickNotesInterface";
+import { CreateQuickNoteInterface, UpdateQuickNotesType } from "@/types/quickNotesInterface";
 
 export const createQuickNote = async ({
   requestData,
@@ -37,10 +37,10 @@ export const updateQuickNotes = async ({
   requestData,
 }: {
   id: string;
-  requestData: CreateQuickNoteInterface;
+  requestData: UpdateQuickNotesType;
 }) => {
   const response = await ApiFetch({
-    url: `/provider/quick-notes&${id}`,
+    url: `/provider/quick-notes/${id}`,
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -64,4 +64,3 @@ export const deleteQuickNote = async ({ id }: { id: string }) => {
   const data = await response.data;
   return data;
 };
-

@@ -23,21 +23,26 @@ import { showToast } from "@/utils/utils";
 import { quickNotesSchema } from "@/schema/quickNotesSchema";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
-import { createQuickNote } from "@/services/quickNotesServices";
+import {
+  createQuickNote,
+  updateQuickNotes,
+} from "@/services/quickNotesServices";
 
 const QuickNotesDialog = ({
   userDetailsId,
   quickNotesData,
-  onClose,
   isOpen,
+  onClose,
+  onFetchQuickNotes,
 }: {
   userDetailsId: string;
   quickNotesData?: {
     notes: string;
     noteId: string;
   } | null;
-  onClose: () => void;
   isOpen: boolean;
+  onClose: () => void;
+  onFetchQuickNotes: () => Promise<void>;
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
 
@@ -63,13 +68,13 @@ const QuickNotesDialog = ({
     setLoading(true);
     try {
       if (quickNotesData) {
-        // const requestData = {
-        //   notes: values.notes,
-        // };
-        // await updateAlertData({
-        //   requestData: requestData,
-        //   id: alertData.alertId,
-        // });
+        const requestData = {
+          notes: values.notes,
+        };
+        await updateQuickNotes({
+          requestData: { note: requestData.notes },
+          id: quickNotesData.noteId,
+        });
       } else {
         const requestData = {
           note: values.notes,
@@ -94,6 +99,7 @@ const QuickNotesDialog = ({
       setLoading(false);
       form.reset();
       onClose();
+      await onFetchQuickNotes();
     }
   };
 
