@@ -307,6 +307,11 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
     href: `/dashboard/patients/${userDetailsId}/referrals`,
     label: "Referrals",
   },
+  {
+    title: "",
+    href: `/dashboard`,
+    label: "",
+  },
   // {
   //   title: "Audit Trails",
   //   href: `/dashboard/patients/${userDetailsId}/audit_trails`,

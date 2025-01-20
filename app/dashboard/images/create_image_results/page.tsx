@@ -1,4 +1,4 @@
-//dashboard/lab/create-image-results
+//dashboard/image/create-image-results
 "use client";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import CreateImageResults from "@/components/images/ImageResults/CreateImageResults/CreateImageResults";
@@ -9,7 +9,7 @@ const breadcrumbItems = [
   { title: "Images", link: "/dashboard/images" },
   { title: "Create Image Results", link: "/dashboard/images/create_image_results" },
 ];
-export default function Labs() {
+export default function ImageResults() {
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-4">

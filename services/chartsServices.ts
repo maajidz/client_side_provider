@@ -27,6 +27,7 @@ import {
   UpdateSOAPInterface,
   UserEncounterInterface,
   TransferResponseData,
+  ImageOrdersResponseInterface,
   // ImagesOrdersDataInterface,
 } from "@/types/chartsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";
@@ -497,17 +498,21 @@ export const getImagesOrdersData = async ({
   page?: number;
   limit?: number;
 }) => {
+  const queryParams = new URLSearchParams();
+  if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
+  if (providerId) queryParams.append("providerId", providerId);
+  if (page) queryParams.append("page", page.toString());
+  if (limit) queryParams.append("limit", limit.toString());
+
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/images/order?userDetailsId=${userDetailsId}&providerId=${
-      providerId ? providerId : ""
-    }&limit=${limit ? limit : 10}&page=${page ? page : 1}`,
+    url: `/provider/images/order?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },
   });
   console.log(response.data);
-  const data = await response.data;
+  const data: ImageOrdersResponseInterface = await response.data;
   return data;
 };
 

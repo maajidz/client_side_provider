@@ -8,7 +8,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectTrigger,
@@ -25,10 +24,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
-import { columns } from "./columns";
+import { columns } from "@/components/images/ImageOrders/columns";
 import LoadingButton from "@/components/LoadingButton";
 
-function ImageOrders() {
+const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [orderList, setOrderList] = useState<ImageOrdersResponseInterface>();
   const [loading, setLoading] = useState(false);
@@ -39,7 +38,6 @@ function ImageOrders() {
     defaultValues: {
       orderedby: "",
       status: "",
-      name: "",
     },
   });
 
@@ -47,7 +45,7 @@ function ImageOrders() {
     console.log(values);
   }
 
-  const fetchImageOrdersList = useCallback(
+  const fetchLabOrdersList = useCallback(
     async (page: number) => {
       try {
         setLoading(true);
@@ -57,6 +55,7 @@ function ImageOrders() {
             providerId: providerDetails.providerId,
             limit: limit,
             page: page,
+            userDetailsId: userDetailsId
           });
           if (response) {
             setOrderList(response);
@@ -71,12 +70,12 @@ function ImageOrders() {
         setLoading(false)
       }
     },
-    [providerDetails]
+    [providerDetails, userDetailsId]
   );
 
   useEffect(() => {
-    fetchImageOrdersList(page);
-  }, [page, fetchImageOrdersList]);
+    fetchLabOrdersList(page);
+  }, [page, fetchLabOrdersList]);
 
   if (loading) {
     return <LoadingButton />;
@@ -139,20 +138,6 @@ function ImageOrders() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Search Patient" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <div className="flex items-end">
               <Button type="submit">Search</Button>
             </div>
@@ -173,6 +158,6 @@ function ImageOrders() {
       </div>
     </>
   );
-}
+};
 
-export default ImageOrders;
+export default PatientImageOrders;

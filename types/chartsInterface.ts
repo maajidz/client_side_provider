@@ -416,13 +416,40 @@ export interface TransferResponseData {
 }
 
 export interface RelatedEncounter {
-  id: string
-  visit_type: string
-  mode: string
-  date: string
-  isVerified: boolean
-  providerID: string
-  createdAt: string
-  updatedAt: string
-  chart: UserChart
+  id: string;
+  visit_type: string;
+  mode: string;
+  date: string;
+  isVerified: boolean;
+  providerID: string;
+  createdAt: string;
+  updatedAt: string;
+  chart: UserChart;
+}
+
+export interface ImageOrdersResponseInterface {
+  data: ImageOrdersData[];
+  total: number;
+  page: string;
+  limit: string;
+}
+
+export interface ImageOrdersData {
+  id: string;
+  ordered_date: string;
+  providerId: string;
+  note_to_patients: string;
+  intra_office_notes: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  imageType: ImageType;
+  imageTests: ImagesTestData[];
+}
+
+export interface ImageType {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
 }
