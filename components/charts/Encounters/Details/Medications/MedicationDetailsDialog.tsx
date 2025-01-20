@@ -27,7 +27,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { addMedicationFormSchema } from "@/schema/addMedicationSchema";
 import { createMedicationPrescription } from "@/services/chartDetailsServices";
-import { UserEncounterData } from "@/types/chartsInterface";
 import {
   CreateMedicationPrescriptionInterface,
   MedicationResultInterface,
@@ -36,20 +35,23 @@ import { showToast } from "@/utils/utils";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 interface MedicationDetailsDialogProps {
   isOpen: boolean;
-  patientDetails: UserEncounterData;
+  userDetailsId: string;
   selectedMedication: MedicationResultInterface | undefined;
   onClose: () => void;
 }
 
 const MedicationDetailsDialog = ({
   isOpen,
-  patientDetails,
+  userDetailsId,
   selectedMedication,
   onClose,
 }: MedicationDetailsDialogProps) => {
+  const providerDetails = useSelector((state: RootState) => state.login)
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -71,15 +73,14 @@ const MedicationDetailsDialog = ({
     setLoading(true);
     try {
       if (
-        patientDetails?.userDetails.id &&
-        patientDetails.providerID &&
+        userDetailsId &&
         selectedMedication?.id
       ) {
         const medicationData: CreateMedicationPrescriptionInterface = {
           ...values,
           medicationNameId: selectedMedication?.id,
-          providerId: patientDetails?.providerID,
-          userDetailsId: patientDetails?.userDetails?.id,
+          providerId: providerDetails?.providerId,
+          userDetailsId: userDetailsId,
         };
 
         await createMedicationPrescription(medicationData);

@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 import PatientSupplements from "./PatientSupplements/PatientSupplements";
-import PatientMedicationContent from "./PatientMedicationContent";
+import PatientMedication from "./PatientMedications/PatientMedication";
 
 const PatientMedications = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
@@ -12,7 +12,7 @@ const PatientMedications = ({ userDetailsId }: { userDetailsId: string }) => {
           <TabsTrigger value="supplements" className="w-full">Supplements</TabsTrigger>
         </TabsList>
         <TabsContent value="medications">
-          <PatientMedicationContent  userDetailsId={userDetailsId} />
+          <PatientMedication  userDetailsId={userDetailsId} />
         </TabsContent>
         <TabsContent value="supplements">
           <PatientSupplements userDetailsId={userDetailsId} />

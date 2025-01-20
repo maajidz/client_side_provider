@@ -10,17 +10,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getMedicationData } from "@/services/chartDetailsServices";
-import { UserEncounterData } from "@/types/chartsInterface";
 import { MedicationResultInterface } from "@/types/medicationInterface";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import MedicationDetailsDialog from "./MedicationDetailsDialog";
 
 interface AddMedicationBodyProps {
-  patientDetails: UserEncounterData;
+  userDetailsId: string;
 }
 
-const AddMedicationBody = ({ patientDetails }: AddMedicationBodyProps) => {
+const AddMedicationBody = ({ userDetailsId }: AddMedicationBodyProps) => {
   // Medication Data States
   const [medicationData, setMedicationData] = useState<
     MedicationResultInterface[]
@@ -179,7 +178,7 @@ const AddMedicationBody = ({ patientDetails }: AddMedicationBodyProps) => {
       )}
       <MedicationDetailsDialog
         isOpen={isDetailsDialogOpen}
-        patientDetails={patientDetails}
+        userDetailsId={userDetailsId}
         selectedMedication={selectedMedication}
         onClose={() => setIsDetailsDialogOpen(false)}
       />
