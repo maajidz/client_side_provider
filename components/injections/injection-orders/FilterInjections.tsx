@@ -1,3 +1,4 @@
+import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,42 +15,118 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
 import { injectionsSearchParams } from "@/schema/injectionsAndVaccinesSchema";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { fetchUserDataResponse } from "@/services/userServices";
 import { InjectionsInterface } from "@/types/injectionsInterface";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
+import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export interface FilterInjectionsProps {
-  providerList: FetchProviderList[];
-  filteredPatients: UserData[];
-  searchTerm: string;
   injectionsData: InjectionsInterface[];
-  visibleSearchList: boolean;
   onHandleSearch: (values: z.infer<typeof injectionsSearchParams>) => void;
-  onSetSearchTerm: (value: string) => void;
-  onSetVisibleSearchList: (value: boolean) => void;
 }
 
 function FilterInjections({
-  filteredPatients,
-  providerList,
-  searchTerm,
   injectionsData,
-  visibleSearchList,
   onHandleSearch,
-  onSetSearchTerm,
-  onSetVisibleSearchList,
 }: FilterInjectionsProps) {
   const form = useForm<z.infer<typeof injectionsSearchParams>>({
     resolver: zodResolver(injectionsSearchParams),
   });
+  const [patientData, setPatientData] = useState<UserData[]>([]);
+  const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
+  // Search State
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+
+  // Toast State
+  const { toast } = useToast();
+
+  // Fetch User Data
+  const fetchUserData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchUserDataResponse({
+        pageNo: 1,
+        pageSize: 10,
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
+
+      if (response) {
+        setPatientData(response.data);
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch patients",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, toast]);
+
+  // Fetch Providers Data
+  const fetchProvidersData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+      setProvidersList(response.data);
+    } catch (err) {
+      showToast({
+        toast,
+        type: "error",
+        message: "Could not fetch providers",
+      });
+      console.log("Error", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
+
+  // Effects
+  useEffect(() => {
+    fetchUserData();
+    fetchProvidersData();
+  }, [fetchUserData, fetchProvidersData]);
+
+  const filteredPatients = patientData.filter((patient) =>
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   function onSubmit(values: z.infer<typeof injectionsSearchParams>) {
     onHandleSearch(values);
   }
+
+  if(loading) {
+    return <LoadingButton />;
+  }
+
   return (
     <Form {...form}>
       <form
@@ -71,7 +148,7 @@ function FilterInjections({
                     <SelectItem value="all" className="cursor-pointer">
                       All
                     </SelectItem>
-                    {providerList
+                    {providersList
                       .filter(
                         (
                           provider
@@ -147,8 +224,8 @@ function FilterInjections({
                     value={searchTerm}
                     onChange={(e) => {
                       const value = e.target.value;
-                      onSetSearchTerm(value);
-                      onSetVisibleSearchList(true);
+                      setSearchTerm(value);
+                      setVisibleSearchList(true);
 
                       if (!value) {
                         field.onChange("");
@@ -164,10 +241,10 @@ function FilterInjections({
                             className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                             onClick={() => {
                               field.onChange(patient.id);
-                              onSetSearchTerm(
+                              setSearchTerm(
                                 `${patient.user.firstName} ${patient.user.lastName}`
                               );
-                              onSetVisibleSearchList(false);
+                              setVisibleSearchList(false);
                             }}
                           >
                             {`${patient.user.firstName} ${patient.user.lastName}`}
@@ -195,4 +272,3 @@ function FilterInjections({
 }
 
 export default FilterInjections;
-

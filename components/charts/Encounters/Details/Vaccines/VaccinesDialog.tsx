@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -24,14 +23,23 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { PlusCircle } from "lucide-react";
 import { z } from "zod";
 import { vaccinesFormSchema } from "@/schema/vaccinesSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-function VaccinesDialog() {
+function VaccinesDialog({
+  userDetailsId,
+  vaccinesData,
+  onClose,
+  isOpen,
+}: {
+  userDetailsId: string;
+  vaccinesData?: null;
+  onClose: () => void;
+  isOpen: boolean;
+}) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof vaccinesFormSchema>>({
@@ -45,7 +53,14 @@ function VaccinesDialog() {
     },
   });
 
+  useEffect(() => {
+    if (vaccinesData) {
+      form.reset(vaccinesData);
+    }
+  }, [form, vaccinesData]);
+
   const onSubmit = async (values: z.infer<typeof vaccinesFormSchema>) => {
+    console.log("User details ID:", userDetailsId);
     console.log("Form Values:", values);
     // const requestData = {
     //     alertName: "",
@@ -66,15 +81,10 @@ function VaccinesDialog() {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost">
-          <PlusCircle />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Add vaccine</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
