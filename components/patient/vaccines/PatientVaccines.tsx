@@ -5,9 +5,11 @@ import { PlusIcon } from "lucide-react";
 import VaccinesDialog from "@/components/charts/Encounters/Details/Vaccines/VaccinesDialog";
 import VaccineOrders from "@/components/injections/vaccine-orders/VaccineOrders";
 import ViewVaccineOrders from "./vaccineOrders/ViewVaccineOrders";
+import HistoricalVaccinesClient from "./vaccine-table/client";
 
 const PatientVaccines = ({ userDetailsId }: { userDetailsId: string }) => {
-  const [isVaccinesDialogOpen, setIsVaccinesDialogOpen] = useState<boolean>(false);
+  const [isVaccinesDialogOpen, setIsVaccinesDialogOpen] =
+    useState<boolean>(false);
   // const [isVaccinesOrdersDialogOpen, setIsVaccineOrdersDialogOpen] = useState<boolean>(false);
   return (
     <>
@@ -38,14 +40,14 @@ const PatientVaccines = ({ userDetailsId }: { userDetailsId: string }) => {
                 }}
               />
             </div>
-            
+            <HistoricalVaccinesClient userDetailsId={userDetailsId} />
           </>
         </TabsContent>
         <TabsContent value="vaccine_orders" className="w-full">
           <>
             <div className="flex justify-end">
               <VaccineOrders />
-            </div> 
+            </div>
             <ViewVaccineOrders userDetailsId={userDetailsId} />
           </>
         </TabsContent>
