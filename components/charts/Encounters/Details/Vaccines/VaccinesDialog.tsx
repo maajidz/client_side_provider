@@ -24,9 +24,15 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { vaccinesFormSchema } from "@/schema/vaccinesSchema";
-import { createHistoricalVaccine } from "@/services/chartDetailsServices";
+import {
+  createHistoricalVaccine,
+  updateHistoricalVaccine,
+} from "@/services/chartDetailsServices";
 import { RootState } from "@/store/store";
-import { CreateHistoricalVaccineType } from "@/types/chartsInterface";
+import {
+  CreateHistoricalVaccineType,
+  HistoricalVaccineInterface,
+} from "@/types/chartsInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -34,16 +40,27 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${year}-${month}-${day}`;
+};
+
 function VaccinesDialog({
   isOpen,
   userDetailsId,
   vaccinesData,
   onClose,
+  onFetchHistoricalData,
 }: {
-  isOpen: boolean,
+  isOpen: boolean;
   userDetailsId: string;
-  vaccinesData?: null;
+  vaccinesData?: HistoricalVaccineInterface;
   onClose: () => void;
+  onFetchHistoricalData: () => void;
 }) {
   // Provider Details
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -58,20 +75,15 @@ function VaccinesDialog({
   const form = useForm<z.infer<typeof vaccinesFormSchema>>({
     resolver: zodResolver(vaccinesFormSchema),
     defaultValues: {
-      vaccine_name: "",
-      in_series: "",
-      date: new Date().toISOString().split("T")[0],
-      source: "",
-      notes: "",
+      vaccine_name: vaccinesData?.vaccine_name ?? "",
+      in_series: vaccinesData?.in_series ?? "",
+      date: vaccinesData?.date
+        ? formatDate(vaccinesData.date)
+        : new Date().toISOString().split("T")[0],
+      source: vaccinesData?.source ?? "",
+      notes: vaccinesData?.notes ?? "",
     },
   });
-
-
-  useEffect(() => {
-    if (vaccinesData) {
-      form.reset(vaccinesData);
-    }
-  }, [form, vaccinesData]);
 
   const onSubmit = async (values: z.infer<typeof vaccinesFormSchema>) => {
     const finalVaccineData: CreateHistoricalVaccineType = {
@@ -83,13 +95,22 @@ function VaccinesDialog({
     setLoading(true);
     try {
       if (providerDetails) {
-        await createHistoricalVaccine({ requestData: finalVaccineData });
+        if (vaccinesData) {
+          await updateHistoricalVaccine({
+            id: vaccinesData.id,
+            requestData: finalVaccineData,
+          });
+        } else {
+          await createHistoricalVaccine({ requestData: finalVaccineData });
+        }
       }
 
       showToast({
         toast,
         type: "success",
-        message: "Vaccine created successfully",
+        message: vaccinesData
+          ? "Vaccine updated successfully"
+          : "Vaccine created successfully",
       });
     } catch (e) {
       if (e instanceof Error) {
@@ -108,16 +129,32 @@ function VaccinesDialog({
     } finally {
       form.reset();
       setLoading(false);
+      onFetchHistoricalData();
       onClose();
     }
   };
 
+  useEffect(() => {
+    if (vaccinesData) {
+      form.reset(vaccinesData);
+    } else {
+      form.reset({
+        vaccine_name: "",
+        in_series: "",
+        date: new Date().toISOString().split("T")[0],
+        source: "",
+        notes: "",
+      });
+    }
+  }, [form, vaccinesData]);
 
   return (
     <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add vaccine</DialogTitle>
+          <DialogTitle>
+            {vaccinesData ? "Edit Vaccine" : "Add vaccine"}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

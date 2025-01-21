@@ -470,7 +470,7 @@ export interface HistoricalVaccineInterface {
 }
 
 export interface HistoricalVaccineResponseInterface {
-  data: HistoricalVaccineInterface[],
+  data: HistoricalVaccineInterface[];
   total: number;
 }
 
@@ -478,3 +478,5 @@ export type CreateHistoricalVaccineType = Omit<
   HistoricalVaccineInterface,
   "id" | "status"
 >;
+
+export type UpdateHistoricalVaccineType = CreateHistoricalVaccineType;

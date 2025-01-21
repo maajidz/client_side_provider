@@ -64,6 +64,7 @@ import {
 import {
   CreateHistoricalVaccineType,
   HistoricalVaccineResponseInterface,
+  UpdateHistoricalVaccineType,
 } from "@/types/chartsInterface";
 
 //Alerts
@@ -1029,6 +1030,26 @@ export const getHistoricalVaccine = async (params: {
   });
 
   const data: HistoricalVaccineResponseInterface = await response.data;
+  return data;
+};
+
+export const updateHistoricalVaccine = async ({
+  id,
+  requestData,
+}: {
+  id: string;
+  requestData: UpdateHistoricalVaccineType;
+}) => {
+  const response = await ApiFetch({
+    url: `/injections/historical-vaccine/${id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = await response.data;
   return data;
 };
 
