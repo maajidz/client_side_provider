@@ -7,7 +7,6 @@ import {
   UpdateAlertInterface,
 } from "@/types/alertInterface";
 import {
-  AllergenInterface,
   AllergenResponseInterfae,
   AllergeyRequestInterface,
   UpdateAllergenInterface,
@@ -62,6 +61,10 @@ import {
   PastMedicalHistoryResponseInterface,
   UpdatePastMedicalHistoryType,
 } from "./pastMedicalHistoryInterface";
+import {
+  CreateHistoricalVaccineType,
+  HistoricalVaccineResponseInterface,
+} from "@/types/chartsInterface";
 
 //Alerts
 
@@ -351,16 +354,16 @@ export const getTasks = async ({
   category,
   dueDate,
   priority,
-  userDetailsId
+  userDetailsId,
 }: {
   providerId: string;
   page?: number;
   limit?: number;
   status?: string;
-  category? : string;
-  dueDate? : string;
+  category?: string;
+  dueDate?: string;
   priority?: string;
-  userDetailsId? : string;
+  userDetailsId?: string;
 }) => {
   const queryParams = new URLSearchParams({
     providerId: providerId,
@@ -976,5 +979,39 @@ export const deleteProcedure = async ({ id }: { id: string }) => {
   });
   console.log(response.data);
   const data = await response.data;
+  return data;
+};
+
+/**
+ * * Historical Vaccines API
+ */
+export const createHistoricalVaccine = async ({
+  requestData,
+}: {
+  requestData: CreateHistoricalVaccineType;
+}) => {
+  const response = await ApiFetch({
+    url: "/injections/historical-vaccine",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+
+  const data = await response.data;
+  return data;
+};
+
+export const getHistoricalVaccine = async (userDetailsId?: string) => {
+  const response = await ApiFetch({
+    url: `/injections/historical-vaccine?userDetailsId=${userDetailsId}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: HistoricalVaccineResponseInterface = await response.data;
   return data;
 };
