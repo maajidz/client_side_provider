@@ -20,15 +20,25 @@ const HistoricalVaccinesClient = ({
   // Loading State
   const [loading, setLoading] = useState(false);
 
+  // Pagination Data
+  const limit = 5;
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   // GET Historical Vaccine Data
   const fetchHistoricalVaccine = useCallback(async () => {
     setLoading(true);
 
     try {
-      const response = await getHistoricalVaccine(userDetailsId);
+      const response = await getHistoricalVaccine({
+        userDetailsId,
+        limit,
+        page,
+      });
 
       if (response) {
         setHistoricalVaccineData(response.data);
+        setTotalPages(Math.ceil(response.total / limit));
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -37,7 +47,7 @@ const HistoricalVaccinesClient = ({
     } finally {
       setLoading(false);
     }
-  }, [userDetailsId]);
+  }, [userDetailsId, limit, page]);
 
   // Effects
   useEffect(() => {
@@ -55,13 +65,12 @@ const HistoricalVaccinesClient = ({
         searchKey="id"
         columns={columns()}
         data={historicalVaccineData}
-        pageNo={1}
-        totalPages={1}
-        onPageChange={(newPage: number) => newPage}
+        pageNo={page}
+        totalPages={totalPages}
+        onPageChange={(newPage: number) => setPage(newPage)}
       />
     </div>
   );
 };
 
 export default HistoricalVaccinesClient;
-

@@ -1003,7 +1003,23 @@ export const createHistoricalVaccine = async ({
   return data;
 };
 
-export const getHistoricalVaccine = async (userDetailsId?: string) => {
+export const getHistoricalVaccine = async (params: {
+  userDetailsId?: string;
+  providerId?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+}) => {
+  const queryParams = new URLSearchParams();
+
+  const { userDetailsId, providerId, status, page = 1, limit = 10 } = params;
+
+  if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
+  if (providerId) queryParams.append("providerId", providerId);
+  if (status) queryParams.append("status", status);
+  queryParams.append("page", page.toString());
+  queryParams.append("limit", limit.toString());
+
   const response = await ApiFetch({
     url: `/injections/historical-vaccine?userDetailsId=${userDetailsId}`,
     method: "GET",
@@ -1013,5 +1029,18 @@ export const getHistoricalVaccine = async (userDetailsId?: string) => {
   });
 
   const data: HistoricalVaccineResponseInterface = await response.data;
+  return data;
+};
+
+export const deleteHistoricalVaccine = async ({ id }: { id: string }) => {
+  const response = await ApiFetch({
+    url: `/injections/historical-vaccine/${id}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.data;
   return data;
 };
