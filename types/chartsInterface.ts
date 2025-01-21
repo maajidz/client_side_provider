@@ -453,3 +453,28 @@ export interface ImageType {
   createdAt: string;
   updatedAt: string;
 }
+
+/**
+ * * Historical Vaccines Interfaces (& Types)
+ */
+export interface HistoricalVaccineInterface {
+  id: string;
+  vaccine_name: string;
+  date: string;
+  status: string;
+  in_series?: string;
+  source?: string;
+  notes?: string;
+  providerId: string;
+  userDetailsId: string;
+}
+
+export interface HistoricalVaccineResponseInterface {
+  data: HistoricalVaccineInterface[],
+  total: number;
+}
+
+export type CreateHistoricalVaccineType = Omit<
+  HistoricalVaccineInterface,
+  "id" | "status"
+>;

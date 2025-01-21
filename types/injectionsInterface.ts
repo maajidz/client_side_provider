@@ -83,3 +83,25 @@ export interface CreateVaccineInterface {
 }
 
 export type VaccinesSearchParamsType = InjectionsSearchParamsType;
+
+export interface CreateInjectionInterface {
+  injection_name: string
+  dosage_unit: string
+  dosage_quantity: number
+  frequency: string
+  period_number: number
+  period_unit: string
+  parental_route: string
+  site: string
+  lot_number: number
+  expiration_date: string
+  administered_date: string
+  administered_time: string
+  note_to_nurse: string
+  comments: string
+  status: string
+  providerId: string
+  userDetailsId: string
+  chartId?: string
+}
+

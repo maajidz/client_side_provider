@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
   SelectValue,
@@ -23,35 +22,50 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { z } from "zod";
+import { useToast } from "@/hooks/use-toast";
 import { vaccinesFormSchema } from "@/schema/vaccinesSchema";
+import { createHistoricalVaccine } from "@/services/chartDetailsServices";
+import { RootState } from "@/store/store";
+import { CreateHistoricalVaccineType } from "@/types/chartsInterface";
+import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { z } from "zod";
 
 function VaccinesDialog({
+  isOpen,
   userDetailsId,
   vaccinesData,
   onClose,
-  isOpen,
 }: {
+  isOpen: boolean,
   userDetailsId: string;
   vaccinesData?: null;
   onClose: () => void;
-  isOpen: boolean;
 }) {
+  // Provider Details
+  const providerDetails = useSelector((state: RootState) => state.login);
+
+  // Loading State
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Toast State
+  const { toast } = useToast();
+
+  // Form State
   const form = useForm<z.infer<typeof vaccinesFormSchema>>({
     resolver: zodResolver(vaccinesFormSchema),
     defaultValues: {
-      vaccine: "",
-      series: "",
-      fromDate: new Date().toISOString().split("T")[0],
+      vaccine_name: "",
+      in_series: "",
+      date: new Date().toISOString().split("T")[0],
       source: "",
       notes: "",
     },
   });
+
 
   useEffect(() => {
     if (vaccinesData) {
@@ -60,28 +74,47 @@ function VaccinesDialog({
   }, [form, vaccinesData]);
 
   const onSubmit = async (values: z.infer<typeof vaccinesFormSchema>) => {
-    console.log("User details ID:", userDetailsId);
-    console.log("Form Values:", values);
-    // const requestData = {
-    //     alertName: "",
-    //     alertDescription: "",
-    // }
+    const finalVaccineData: CreateHistoricalVaccineType = {
+      ...values,
+      userDetailsId,
+      providerId: providerDetails.providerId,
+    };
+
     setLoading(true);
     try {
-      // await createTransfer({ requestData: requestData })
+      if (providerDetails) {
+        await createHistoricalVaccine({ requestData: finalVaccineData });
+      }
+
+      showToast({
+        toast,
+        type: "success",
+        message: "Vaccine created successfully",
+      });
     } catch (e) {
-      console.log("Error:", e);
+      if (e instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Vaccine creation failed",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "Vaccine creation failed. An unknown error occurred",
+        });
+      }
     } finally {
+      form.reset();
       setLoading(false);
+      onClose();
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add vaccine</DialogTitle>
@@ -91,7 +124,7 @@ function VaccinesDialog({
             <div className="flex flex-col gap-5">
               <FormField
                 control={form.control}
-                name="vaccine"
+                name="vaccine_name"
                 render={({ field }) => (
                   <FormItem className="flex gap-2 items-center">
                     <FormLabel>Vaccine</FormLabel>
@@ -104,7 +137,7 @@ function VaccinesDialog({
               />
               <FormField
                 control={form.control}
-                name="series"
+                name="in_series"
                 render={({ field }) => (
                   <FormItem className="flex gap-2 items-center">
                     <FormLabel className="w-fit"># in Series</FormLabel>
@@ -117,7 +150,7 @@ function VaccinesDialog({
               />
               <FormField
                 control={form.control}
-                name="fromDate"
+                name="date"
                 render={({ field }) => (
                   <FormItem className="flex gap-2 items-center">
                     <FormLabel>From Date:</FormLabel>
@@ -166,9 +199,23 @@ function VaccinesDialog({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A]">
-                Save
-              </Button>
+              <div className="flex flex-row-reverse gap-4">
+                <Button
+                  type="submit"
+                  className="bg-[#84012A] hover:bg-[#6C011F]"
+                  disabled={loading}
+                >
+                  Save
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="bg-slate-200 hover:bg-slate-100"
+                  onClick={() => onClose()}
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </form>
         </Form>
