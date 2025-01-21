@@ -1,5 +1,6 @@
 import ApiFetch from "@/config/api";
 import {
+  CreateInjectionInterface,
   CreateInjectionType,
   CreateVaccineInterface,
   InjectionsResponseInterface,
@@ -14,7 +15,7 @@ export const createInjectionOrder = async ({
   requestBody: CreateInjectionType;
 }) => {
   const response = await ApiFetch({
-    url: "/injections/injection",
+    url: "/injections/injection-order",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -38,7 +39,7 @@ export const getInjectionsData = async (params: InjectionsSearchParamsType) => {
   queryParams.append("limit", limit.toString());
 
   const response = await ApiFetch({
-    url: `/injections/injections?${queryParams}`,
+    url: `/injections/injections-order?${queryParams}`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -55,7 +56,7 @@ export const deleteInjectionOrder = async ({
   injectionId: string;
 }) => {
   const response = await ApiFetch({
-    url: `/injections/injection/${injectionId}`,
+    url: `/injections/injection-order/${injectionId}`,
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -107,5 +108,23 @@ export const getVaccinesData = async (params: VaccinesSearchParamsType) => {
   });
 
   const data: VaccinesResponseInterface = await response.data;
+  return data;
+};
+
+export const createInjection = async ({
+  requestBody,
+}: {
+  requestBody: CreateInjectionInterface;
+}) => {
+  const response = await ApiFetch({
+    url: "/injections/injection",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestBody,
+  });
+
+  const data = await response.data;
   return data;
 };
