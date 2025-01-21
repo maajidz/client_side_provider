@@ -2,8 +2,6 @@ import LoadingButton from "@/components/LoadingButton";
 import { DataTable } from "@/components/ui/data-table";
 import { getInjectionsData } from "@/services/injectionsServices";
 import { InjectionsInterface } from "@/types/injectionsInterface";
-import { FetchProviderList } from "@/types/providerDetailsInterface";
-import { UserData } from "@/types/userInterface";
 import { columns } from "./column";
 import FilterInjections from "./FilterInjections";
 import { useCallback, useEffect, useState } from "react";
@@ -12,23 +10,8 @@ import { z } from "zod";
 import { useToast } from "@/components/ui/use-toast";
 import { showToast } from "@/utils/utils";
 
-export interface InjectionsClientProps {
-  providerList: FetchProviderList[];
-  filteredPatients: UserData[];
-  searchTerm: string;
-  visibleSearchList: boolean;
-  onSetSearchTerm: (value: string) => void;
-  onSetVisibleSearchList: (value: boolean) => void;
-}
 
-function InjectionsClient({
-  filteredPatients,
-  providerList,
-  searchTerm,
-  visibleSearchList,
-  onSetSearchTerm,
-  onSetVisibleSearchList,
-}: InjectionsClientProps) {
+function InjectionsClient() {
   // Data State
   const [injectionsData, setInjectionsData] = useState<InjectionsInterface[]>(
     []
@@ -105,14 +88,8 @@ function InjectionsClient({
     <div className="space-y-2">
       <div className="space-y-2">
         <FilterInjections
-          providerList={providerList}
-          filteredPatients={filteredPatients}
-          searchTerm={searchTerm}
           injectionsData={injectionsData}
-          visibleSearchList={visibleSearchList}
           onHandleSearch={handleSearch}
-          onSetSearchTerm={onSetSearchTerm}
-          onSetVisibleSearchList={onSetVisibleSearchList}
         />
       </div>
       <DataTable

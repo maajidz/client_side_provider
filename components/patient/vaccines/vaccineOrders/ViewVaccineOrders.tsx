@@ -2,13 +2,13 @@ import LoadingButton from "@/components/LoadingButton";
 import { DataTable } from "@/components/ui/data-table";
 import { getVaccinesData } from "@/services/injectionsServices";
 import { VaccinesInterface } from "@/types/injectionsInterface";
-import { columns } from "./column";
-import FilterVaccines from "./FilterVaccines";
+import { columns } from "@/components/injections/vaccine-orders/column";
 import { useCallback, useEffect, useState } from "react";
 import { vaccineSearchParams } from "@/schema/injectionsAndVaccinesSchema";
 import { z } from "zod";
+import FilterVaccineOrders from "./FilterVaccineOrders";
 
-function VaccinesClient() {
+function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   // Data State
   const [vaccinesData, setVaccinesData] = useState<VaccinesInterface[]>([]);
 
@@ -20,7 +20,6 @@ function VaccinesClient() {
   // Filters State
   const [filters, setFilters] = useState({
     providerId: "",
-    userDetailsId: "",
     status: "",
   });
 
@@ -33,7 +32,7 @@ function VaccinesClient() {
 
     try {
       const response = await getVaccinesData({
-        userDetailsId: filters.userDetailsId,
+        userDetailsId: userDetailsId,
         providerId: filters.providerId,
         status: filters.status,
         page: pageNo,
@@ -49,12 +48,9 @@ function VaccinesClient() {
     } finally {
       setLoading(false);
     }
-  }, [pageNo, filters.userDetailsId, filters.providerId, filters.status]);
+  }, [pageNo, userDetailsId, filters.providerId, filters.status]);
 
   const handleSearch = (filterValues: z.infer<typeof vaccineSearchParams>) => {
-    if (filterValues.userDetailsId === "all") {
-      filterValues.status = "";
-    }
 
     if (filterValues.providerId === "all") {
       filterValues.providerId = "";
@@ -62,7 +58,6 @@ function VaccinesClient() {
 
     setFilters({
       providerId: filterValues.providerId || "",
-      userDetailsId: filterValues.userDetailsId || "",
       status: filterValues.status || "",
     });
     setPageNo(1);
@@ -78,7 +73,7 @@ function VaccinesClient() {
   return (
     <div className="space-y-2">
       <div className="space-y-2">
-        <FilterVaccines
+        <FilterVaccineOrders
           vaccinesData={vaccinesData}
           onHandleSearch={handleSearch}
         />
@@ -95,4 +90,4 @@ function VaccinesClient() {
   );
 }
 
-export default VaccinesClient;
+export default ViewVaccineOrders;
