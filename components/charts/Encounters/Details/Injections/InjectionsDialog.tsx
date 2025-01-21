@@ -28,11 +28,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CreateInjectionInterface } from "@/types/injectionsInterface";
+import {
+  CreateInjectionInterface,
+  InjectionsData,
+  UpdateInjectionInterface,
+} from "@/types/injectionsInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import LoadingButton from "@/components/LoadingButton";
-import { createInjection } from "@/services/injectionsServices";
+import { createInjection, updateInjection } from "@/services/injectionsServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -43,56 +47,87 @@ const InjectionsDialog = ({
   isOpen,
 }: {
   userDetailsId: string;
-  injectionsData?: null;
+  injectionsData?: InjectionsData | null;
   onClose: () => void;
   isOpen: boolean;
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [loading, setLoading] = React.useState<boolean>(false);
   const { toast } = useToast();
+
   const form = useForm<z.infer<typeof createInjectionSchema>>({
     resolver: zodResolver(createInjectionSchema),
     defaultValues: {
-      injection_name: "",
-      dosage_unit: "",
-      dosage_quantity: 0,
-      frequency: "",
-      period_number: 0,
-      period_unit: "",
-      parental_route: "",
-      site: "",
-      lot_number: 0,
-      expiration_date: "",
-      administered_date: "",
-      administered_time: "",
-      note_to_nurse: "",
-      comments: "",
+      injection_name: injectionsData?.injection_name || "",
+      dosage_unit: injectionsData?.dosage_unit || "",
+      dosage_quantity: injectionsData?.dosage_quantity || 0,
+      frequency: injectionsData?.frequency || "",
+      period_number: injectionsData?.period_number || 0,
+      period_unit: injectionsData?.period_unit || "",
+      parental_route: injectionsData?.parental_route || "",
+      site: injectionsData?.site || "",
+      lot_number: injectionsData?.lot_number || 0,
+      expiration_date: injectionsData?.expiration_date || "",
+      administered_date: injectionsData?.administered_date || "",
+      administered_time: injectionsData?.administered_time || "",
+      note_to_nurse: injectionsData?.note_to_nurse || "",
+      comments: injectionsData?.comments || "",
     },
   });
 
   useEffect(() => {
     if (injectionsData) {
-      console.log(injectionsData);
+      form.reset({
+        injection_name: injectionsData.injection_name || "",
+        dosage_unit: injectionsData.dosage_unit || "",
+        dosage_quantity: injectionsData.dosage_quantity || 0,
+        frequency: injectionsData.frequency || "",
+        period_number: injectionsData.period_number || 0,
+        period_unit: injectionsData.period_unit || "",
+        parental_route: injectionsData.parental_route || "",
+        site: injectionsData.site || "",
+        lot_number: injectionsData.lot_number || 0,
+        expiration_date: injectionsData.expiration_date || "",
+        administered_date: injectionsData.administered_date || "",
+        administered_time: injectionsData.administered_time || "",
+        note_to_nurse: injectionsData.note_to_nurse || "",
+        comments: injectionsData.comments || "",
+      });
     }
-  }, [injectionsData]);
+  }, [form, injectionsData]);
 
   const onSubmit = async (values: z.infer<typeof createInjectionSchema>) => {
     console.log(values);
-    const requestBody: CreateInjectionInterface = {
-      ...values,
-      status: "pending",
-      userDetailsId,
-      providerId: providerDetails.providerId,
-    };
     try {
       setLoading(true);
-      const response = await createInjection({ requestBody: requestBody });
-      if (response) {
-        showToast({
-          toast,
-          type: "success",
-          message: "Injection added successfully",
-        });
+      if (injectionsData) {
+        const requestBody: UpdateInjectionInterface = {
+          ...values,
+          status: "pending",
+        };
+        const response = await updateInjection({ requestBody: requestBody , id: injectionsData.id});
+        if (response) {
+          showToast({
+            toast,
+            type: "success",
+            message: "Injection updated successfully",
+          });
+        }
+      } else {
+        const requestBody: CreateInjectionInterface = {
+          ...values,
+          status: "pending",
+          userDetailsId,
+          providerId: providerDetails.providerId,
+        };
+        const response = await createInjection({ requestBody: requestBody });
+        if (response) {
+          showToast({
+            toast,
+            type: "success",
+            message: "Injection added successfully",
+          });
+        }
       }
     } catch (error) {
       console.log(error);
@@ -116,7 +151,9 @@ const InjectionsDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Injections</DialogTitle>
+          <DialogTitle>
+            {injectionsData ? "Edit Injections" : "Add Injections"}
+          </DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-96 rounded-md">
           <Form {...form}>
@@ -144,9 +181,7 @@ const InjectionsDialog = ({
                       <FormControl>
                         <Input
                           type="number"
-                          min={1}
-                          placeholder="Enter Quantity"
-                          className="flex items-center border rounded-md ml-28"
+                          {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
                           }
@@ -186,7 +221,7 @@ const InjectionsDialog = ({
                 name="frequency"
                 render={({ field }) => (
                   <FormItem className="flex items-center gap-3">
-                    <FormLabel className="w-full">Frequency</FormLabel>
+                    <FormLabel>Frequency</FormLabel>
                     <FormControl>
                       <Select
                         value={field.value}
@@ -222,9 +257,7 @@ const InjectionsDialog = ({
                       <FormControl>
                         <Input
                           type="number"
-                          min={1}
-                          placeholder="Enter Quantity"
-                          className="flex items-center border rounded-md ml-28"
+                          {...field}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
                           }
@@ -265,7 +298,7 @@ const InjectionsDialog = ({
                 name="parental_route"
                 render={({ field }) => (
                   <FormItem className="flex items-center gap-3">
-                    <FormLabel className="w-full">Parenteral Route</FormLabel>
+                    <FormLabel>Parenteral Route</FormLabel>
                     <FormControl>
                       <Select
                         value={field.value}
@@ -293,7 +326,7 @@ const InjectionsDialog = ({
                 name="site"
                 render={({ field }) => (
                   <FormItem className="flex items-center">
-                    <FormLabel className="w-full">Site</FormLabel>
+                    <FormLabel>Site</FormLabel>
                     <FormControl>
                       <Select
                         value={field.value}
@@ -322,9 +355,7 @@ const InjectionsDialog = ({
                       <Input
                         type="number"
                         {...field}
-                        onChange={(e) =>
-                          field.onChange(e.target.valueAsNumber)
-                        }
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />
                     </FormControl>
                     <FormMessage />

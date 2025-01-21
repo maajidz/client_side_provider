@@ -105,3 +105,33 @@ export interface CreateInjectionInterface {
   chartId?: string
 }
 
+export interface UpdateInjectionInterface {
+  injection_name: string
+  dosage_unit: string
+  dosage_quantity: number
+  frequency: string
+  period_number: number
+  period_unit: string
+  parental_route: string
+  site: string
+  lot_number: number
+  expiration_date: string
+  administered_date: string
+  administered_time: string
+  note_to_nurse: string
+  comments: string
+  status: string
+}
+
+export interface InjectionsResponse {
+  data: InjectionsData[]
+  total: number
+  page: string
+  limit: string
+}
+
+export interface InjectionsData extends CreateInjectionInterface {
+  id: string
+  createdAt: string
+  updatedAt: string
+}

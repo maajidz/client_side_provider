@@ -3,8 +3,10 @@ import {
   CreateInjectionInterface,
   CreateInjectionType,
   CreateVaccineInterface,
+  InjectionsResponse,
   InjectionsResponseInterface,
   InjectionsSearchParamsType,
+  UpdateInjectionInterface,
   VaccinesResponseInterface,
   VaccinesSearchParamsType,
 } from "@/types/injectionsInterface";
@@ -128,3 +130,78 @@ export const createInjection = async ({
   const data = await response.data;
   return data;
 };
+
+export const getInjection = async ({
+  page,
+  limit,
+  providerId,
+  userDetailsId,
+  status,
+  name,
+}: {
+  page: number;
+  limit: number;
+  providerId?: string;
+  userDetailsId?: string;
+  status?: string;
+  name?: string;
+}) => {
+  const queryParams = new URLSearchParams();
+  if (page) queryParams.append("page", page.toString());
+  if (limit) queryParams.append("limit", limit.toString());
+  if (providerId) queryParams.append("providerId", providerId);
+  if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
+  if (status) queryParams.append("status", status);
+  if (name) queryParams.append("name", name);
+
+  const response = await ApiFetch({
+    url: `/injections/injection?${queryParams}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: InjectionsResponse = await response.data;
+  return data;
+};
+
+
+export const deleteInjection = async ({
+  injectionId,
+}: {
+  injectionId: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/injections/injection/${injectionId}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.data;
+  return data;
+};
+
+export const updateInjection = async ({
+  requestBody,
+  id
+}: {
+  id: string
+  requestBody: UpdateInjectionInterface;
+}) => {
+  const response = await ApiFetch({
+    url: `/injections/injection/${id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestBody,
+  });
+
+  const data = await response.data;
+  return data;
+};
+
+
