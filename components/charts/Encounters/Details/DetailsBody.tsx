@@ -15,6 +15,7 @@ import Pharmacy from './Pharmacy/Pharmacy'
 import Recalls from './Recalls/Recalls'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 import ProceduresSurgeriesAndHospitalization from './ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalization'
+import Injections from './Injections/Injections'
 
 const DetailsBody = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
     const calculateAge = (dob: string): number => {
@@ -62,7 +63,7 @@ const DetailsBody = ({ patientDetails, encounterId }: { patientDetails: UserEnco
                         <Diagnoses patientDetails={patientDetails} encounterId={encounterId} />
                         <Supplements patientDetails={patientDetails} />
                         <Vaccines patientDetails={patientDetails} />
-                        {/* <Injections patientDetails={patientDetails} />  */}
+                        <Injections patientDetails={patientDetails} /> 
                         <PastMedicalHistory patientDetails={patientDetails} /> 
                         <FamilyHistory patientDetails={patientDetails} />
                         {/* <SocialHistory /> */}
