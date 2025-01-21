@@ -66,7 +66,7 @@ export const columns = ({
     accessorKey: "heightFeets",
     cell: ({ row }) => (
       <div className="cursor-pointer">
-        {row.getValue("weightLbs")}ft. {row.original.heightInches} ins.
+        {row.getValue("heightFeets")}ft. {row.original.heightInches} ins.
       </div>
     ),
   },
