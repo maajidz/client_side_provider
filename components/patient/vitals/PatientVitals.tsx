@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import ViewPatientVitals from "./ViewPatientVitals";
 
-const PatientVitals = ({userDetailsId}: {userDetailsId: string}) => {
+const PatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
-    <div>PatientVitals {userDetailsId}</div>
-  )
-}
+    <>
+      <ViewPatientVitals userDetailsId={userDetailsId} />
+    </>
+  );
+};
 
-export default PatientVitals
+export default PatientVitals;
