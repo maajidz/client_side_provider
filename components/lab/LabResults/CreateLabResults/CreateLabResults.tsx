@@ -190,7 +190,7 @@ const CreateLabResults = () => {
           type: "success",
           message: "Lab Result saved sucessfully!",
         });
-        router.replace('/dashboard/labs')
+        router.replace('/dashboard/provider/labs')
       }
     } catch (e) {
       console.log("Error", e);
@@ -217,7 +217,7 @@ const CreateLabResults = () => {
               className="border border-[#84012A] text-[#84012A]"
               onClick={() => {
                 form.reset();
-                router.replace("/dashboard/labs");
+                router.replace("/dashboard/provider/labs");
               }}
             >
               Cancel

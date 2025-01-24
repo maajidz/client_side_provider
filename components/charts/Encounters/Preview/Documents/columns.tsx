@@ -7,11 +7,8 @@ export const columns = (): ColumnDef<DocumentsInterface>[] => [
     accessorKey: "documentName",
     header: "Documents",
     cell: ({ row }) => {
-      const documentLinks = Array.isArray(row.original.documents.documents)
-        ? row.original.documents.documents.filter(
-            (link) => link !== null && link !== null
-          )
-        : [];
+      const documents = Array.isArray(row.original.documents) ? row.original.documents : [];
+      const documentLinks = documents.filter((link) => link !== null && link !== undefined);
 
       return (
         <div className="cursor-pointer">

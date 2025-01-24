@@ -11,7 +11,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
   const [loading, setLoading] = useState(false);
   // const router = useRouter();
   // const handleBackClick = () => {
-  //     router.push('/dashboard/patient');
+  //     router.push('/dashboard/provider/patient');
   // }
 
   useEffect(() => {

@@ -24,9 +24,9 @@ const CreateImageResultHeader = ({
             onClick={() => {
               form.reset();
               if (userDetailsId) {
-                router.replace(`/dashboard/patients/${userDetailsId}/images`);
+                router.replace(`/dashboard/provider/patient/${userDetailsId}/images`);
               } else {
-                router.replace(`/dashboard/images`);
+                router.replace(`/dashboard/provider/images`);
               }
             }}
           >

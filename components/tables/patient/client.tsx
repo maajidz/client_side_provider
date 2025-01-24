@@ -34,7 +34,7 @@ export const PatientClient = () => {
   }, [pageNo]);
 
   const handleRowClick = (id: string) => {
-    router.push(`/dashboard/patients/${id}/patientDetails`);
+    router.push(`/dashboard/provider/patient/${id}/patientDetails`);
   };
 
 

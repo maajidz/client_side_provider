@@ -66,7 +66,7 @@ export default function UserAuthForm() {
           router.push('/dashboard')
           dispatch(setLoginData({providerId: checkUserDetails.providerDetails.id, firstName: checkUserDetails.firstName, lastName: checkUserDetails.lastName, email: checkUserDetails.email}))
         } else{
-          router.push('/dashboard/profile')
+          router.push('/dashboard/provider/profile')
         }
       }
       else {

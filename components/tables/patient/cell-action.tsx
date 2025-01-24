@@ -24,35 +24,35 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
 
   const handleViewMoreClick = () => {
-    router.push(`/dashboard/patient/patientDetails/${data.userDetailsId}`);
+    router.push(`/dashboard/provider/patient/patientDetails/${data.userDetailsId}`);
   };
 
   const handleAppointmentClick = () => {
-    router.push(`/dashboard/patient/appointments/${data.userDetailsId}`);
+    router.push(`/dashboard/provider/patient/appointments/${data.userDetailsId}`);
   };
 
   const handleSubscriptionClick = () => {
-    router.push(`/dashboard/patient/subscriptions/${data.userDetailsId}`);
+    router.push(`/dashboard/provider/patient/subscriptions/${data.userDetailsId}`);
   };
 
   const handlePaymentsClick = () => {
-    router.push(`/dashboard/patient/payments/${data.userDetailsId}`);
+    router.push(`/dashboard/provider/patient/payments/${data.userDetailsId}`);
   };
 
   const handleMedicationClick = () => {
-    router.push(`/dashboard/patient/medications/${data.userDetailsId}`)
+    router.push(`/dashboard/provider/patient/medications/${data.userDetailsId}`)
   }
 
   const handleOnboardingFormsClick = () => {
-    router.push(`/dashboard/patient/onboardingForms/${data.userDetailsId}`)
+    router.push(`/dashboard/provider/patient/onboardingForms/${data.userDetailsId}`)
   }
 
   const handleFormsClick = () => {
-    router.push(`/dashboard/patient/forms/${data.userDetailsId}`)
+    router.push(`/dashboard/provider/patient/forms/${data.userDetailsId}`)
   }
 
   const handleEncounterClick = () => {
-    router.push(`/dashboard/patient/encounter/${data.userDetailsId}`)
+    router.push(`/dashboard/provider/patient/encounter/${data.userDetailsId}`)
   }
 
   const onConfirm = async () => {
