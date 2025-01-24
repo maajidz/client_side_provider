@@ -141,12 +141,12 @@ export const navItems: NavItem[] = [
     icon: "tasks",
     label: "Tasks",
   },
-  // {
-  //   title: "Analytics",
-  //   href: "/dashboard/provider/calendar",
-  //   icon: "activity",
-  //   label: "Analytics",
-  // },
+  {
+    title: "Analytics",
+    href: "/dashboard/provider/analytics",
+    icon: "activity",
+    label: "Analytics",
+  },
   // {
   //   title: "Billing",
   //   href: "/dashboard/provider/calendar",
