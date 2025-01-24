@@ -1,11 +1,10 @@
-"use client";
-import { ColumnDef } from "@tanstack/react-table";
 import { DocumentsInterface } from "@/types/documentsInterface";
+import { ColumnDef } from "@tanstack/react-table";
 
 export const columns = (): ColumnDef<DocumentsInterface>[] => [
   {
     accessorKey: "documentName",
-    header: "Documents",
+    header: "Document Name",
     cell: ({ row }) => {
       const documentLinks = Array.isArray(row.original.documents.documents)
         ? row.original.documents.documents.filter(
@@ -36,6 +35,28 @@ export const columns = (): ColumnDef<DocumentsInterface>[] => [
             </span>
           )}
         </div>
+      );
+    },
+  },
+  {
+    accessorKey: "documents",
+    header: "Type",
+    cell: ({ row }) => {
+      return (
+        <span className="cursor-pointer">
+          {row.original.documents.document_type}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Date",
+    cell: ({ row }) => {
+      return (
+        <span className="cursor-pointer">
+          {new Date(row.original.createdAt).toDateString()}
+        </span>
       );
     },
   },
