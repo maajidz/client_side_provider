@@ -2,7 +2,26 @@ import ApiFetch from "@/config/api";
 import {
   DocumentsMetaDataInterface,
   DocumentsResponseInterface,
+  UploadDocumentType,
 } from "@/types/documentsInterface";
+
+export const uploadDocument = async ({
+  requestData,
+}: {
+  requestData: UploadDocumentType;
+}) => {
+  const response = await ApiFetch({
+    url: "/provider/documents/upload",
+    method: "POST",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    data: requestData,
+  });
+
+  const data = await response.data;
+  return data;
+};
 
 export const getDocumentsData = async ({
   userDetailsId,

@@ -10,7 +10,11 @@ export const columns = (): ColumnDef<HistoricalVaccineInterface>[] => [
         <h6 className="text-md font-semibold">{row.original.vaccine_name}</h6>
         <div className="flex items-center gap-2">
           <span className="text-slate-400">Historical Source</span>{" "}
-          <span className="font-semibold">{row.original.source}</span>
+          <span className="font-semibold">
+            {row.original.source === ""
+              ? "Source not specified"
+              : row.original.source}
+          </span>
         </div>
       </div>
     ),
@@ -35,9 +39,8 @@ export const columns = (): ColumnDef<HistoricalVaccineInterface>[] => [
             : "text-green-500"
         }`}
       >
-        {row.original.status}
+        {row.original.status.toUpperCase()}
       </div>
     ),
   },
 ];
-

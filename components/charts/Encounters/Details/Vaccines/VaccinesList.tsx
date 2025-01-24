@@ -1,60 +1,32 @@
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  deleteHistoricalVaccine,
-  getHistoricalVaccine,
-} from "@/services/chartDetailsServices";
-import {
-  HistoricalVaccineInterface,
-  UserEncounterData,
-} from "@/types/chartsInterface";
+import { deleteHistoricalVaccine } from "@/services/chartDetailsServices";
+import { HistoricalVaccineInterface } from "@/types/chartsInterface";
 import { showToast } from "@/utils/utils";
-import { Trash2Icon } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { Edit2Icon, Trash2Icon } from "lucide-react";
+import { useState } from "react";
 
 interface VaccinesListProps {
-  patientDetails: UserEncounterData;
-  // onDialogOpen: (open: boolean) => void;
+  historicalVaccineData: HistoricalVaccineInterface[];
+  error: string;
+  onDialogOpen: (open: boolean) => void;
+  onFetchHistoricalData: () => void;
+  onSetVaccineData: (vaccineData: HistoricalVaccineInterface) => void;
 }
 
-function VaccinesList({ patientDetails }: VaccinesListProps) {
-  // Historical Vaccine State
-  const [historicalVaccineData, setHistoricalVaccineData] = useState<
-    HistoricalVaccineInterface[]
-  >([]);
-  console.log(patientDetails);
-
+function VaccinesList({
+  historicalVaccineData,
+  error,
+  onDialogOpen,
+  onFetchHistoricalData,
+  onSetVaccineData,
+}: VaccinesListProps) {
   // Loading State
   const [loading, setLoading] = useState(false);
 
-  // Error State
-  const [error, setError] = useState("");
-
   // Toast State
   const { toast } = useToast();
-
-  // GET Historical Vaccine Data
-  const fetchHistoricalVaccine = useCallback(async () => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await getHistoricalVaccine({ userDetailsId: "" });
-
-      if (response) {
-        setHistoricalVaccineData(response.data);
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError("Could not fetch vaccines data");
-      } else {
-        setError("Could not fetch vaccines data. Unknown error occurred");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   // DELETE Historical Vaccine
   const handleDeleteHistoricalVaccine = async (id: string) => {
@@ -85,14 +57,9 @@ function VaccinesList({ patientDetails }: VaccinesListProps) {
       }
     } finally {
       setLoading(false);
-      fetchHistoricalVaccine();
+      onFetchHistoricalData();
     }
   };
-
-  // Effects
-  useEffect(() => {
-    fetchHistoricalVaccine();
-  }, [fetchHistoricalVaccine]);
 
   if (loading) return <LoadingButton />;
 
@@ -107,9 +74,15 @@ function VaccinesList({ patientDetails }: VaccinesListProps) {
               <div className="flex justify-between items-center">
                 <p className="font-bold">{vaccine.vaccine_name}</p>
                 <div className="flex items-center">
-                  {/* <Button variant="ghost" onClick={() => onDialogOpen(true)}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      onSetVaccineData(vaccine);
+                      onDialogOpen(true);
+                    }}
+                  >
                     <Edit2Icon color="#84012A" />
-                  </Button> */}
+                  </Button>
                   <Button
                     variant="ghost"
                     onClick={() => {
@@ -122,7 +95,17 @@ function VaccinesList({ patientDetails }: VaccinesListProps) {
                 </div>
               </div>
               <p>Date: {vaccine.date}</p>
-              <p>Source: {vaccine.source}</p>
+              <p>
+                Source:{" "}
+                {vaccine.source === ""
+                  ? "Source not specified"
+                  : vaccine.source}
+              </p>
+              <p>Notes: {vaccine.notes === "" ? "No notes" : vaccine.notes}</p>
+              <p>
+                # In Series:{" "}
+                {vaccine.in_series === "" ? "Not specified" : vaccine.in_series}
+              </p>
             </li>
           ))}
         </ul>

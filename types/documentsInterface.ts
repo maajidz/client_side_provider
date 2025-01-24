@@ -5,7 +5,7 @@ export interface DocumentsInterface {
   createdAt: string;
   internalComment: string;
   reviewerId: string;
-  documents: string[];
+  documents: DocumentsMetaDataInterface;
   status: "Pending" | "Completed";
 }
 
@@ -19,9 +19,21 @@ export interface DocumentsResponseInterface {
 }
 
 export interface DocumentsMetaDataInterface {
-  documentName: string;
+  images: File;
   documentId: string;
-  tests: string[];
-  status: string;
+  documentName: string;
+  document_type: string;
+  documents: string[];
+  notes?: string;
+  file_for_review?: boolean;
+  provderId: string;
+  userDetailsId: string;
+  date: string;
   createdAt: string;
+  updatedAt: string;
 }
+
+export type UploadDocumentType = Omit<
+  DocumentsMetaDataInterface,
+  "createdAt" | "updatedAt" | "documentId" | "documents" | "documentName"
+>;

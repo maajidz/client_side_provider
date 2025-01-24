@@ -1,9 +1,9 @@
-import { DataTable } from "@/components/ui/data-table";
-import { useCallback, useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
-import { columns } from "@/components/charts/Encounters/Preview/Documents/columns";
-import { DocumentsInterface } from "@/types/documentsInterface";
+import { DataTable } from "@/components/ui/data-table";
 import { getDocumentsData } from "@/services/documentsServices";
+import { DocumentsInterface } from "@/types/documentsInterface";
+import { columns } from "./column";
+import { useCallback, useEffect, useState } from "react";
 
 function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
   const [documentsData, setDocumentsData] = useState<DocumentsInterface[]>([]);
@@ -47,18 +47,16 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
 
   return (
     <>
-      <div className="py-5">
-        {paginatedData && (
-          <DataTable
-            searchKey="Documents"
-            columns={columns()}
-            data={paginatedData}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
-          />
-        )}
-      </div>
+      {paginatedData && (
+        <DataTable
+          searchKey="Documents"
+          columns={columns()}
+          data={paginatedData}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
+      )}
     </>
   );
 }
