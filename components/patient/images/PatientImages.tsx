@@ -29,8 +29,8 @@ const PatientImages = ({ userDetailsId }: { userDetailsId: string }) => {
               onClick={() =>
                 router.push(
                   activeTab === "imageResults"
-                    ? `/dashboard/patients/${userDetailsId}/images/create_patient_image_results`
-                    : `/dashboard/patients/${userDetailsId}/images/create_patient_image_orders`
+                    ? `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_results`
+                    : `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_orders`
                 )
               }
             >

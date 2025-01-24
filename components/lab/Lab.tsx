@@ -29,8 +29,8 @@ export default function Lab() {
               onClick={() => 
                 router.push(
                   activeTab === "labResults"
-                    ? "/dashboard/labs/create_lab_results"
-                    : "/dashboard/labs/create_lab_orders"
+                    ? "/dashboard/provider/labs/create_lab_results"
+                    : "/dashboard/provider/labs/create_lab_orders"
                 )
                }
             >

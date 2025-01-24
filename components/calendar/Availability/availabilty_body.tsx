@@ -62,7 +62,7 @@ const AppointmentForm = () => {
       const request = await providerAvailabilityRequest({requestData: requestData});
       console.log("Success:", request);
       if(request){
-        router.push('/dashboard/calendar')
+        router.push('/dashboard/provider/calendar')
       }
     } catch (error) {
       console.log("Failed to submit form:", error);

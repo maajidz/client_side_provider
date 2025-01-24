@@ -254,7 +254,7 @@ const CreateResultRecord = () => {
           type: "success",
           message: "Lab Result saved successfully!",
         });
-        router.replace("/dashboard/labs");
+        router.replace("/dashboard/provider/labs");
       }
     } catch (e) {
       console.log("Error", e);
@@ -281,7 +281,7 @@ const CreateResultRecord = () => {
               className="border border-[#84012A] text-[#84012A]"
               onClick={() => {
                 form.reset();
-                router.replace("/dashboard/labs");
+                router.replace("/dashboard/provider/labs");
               }}
             >
               Cancel

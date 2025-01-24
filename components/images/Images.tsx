@@ -30,8 +30,8 @@ function Images() {
               onClick={() =>
                 router.push(
                   activeTab === "imageResults"
-                    ? "/dashboard/images/create_image_results"
-                    : "/dashboard/images/create_image_orders"
+                    ? "/dashboard/provider/images/create_image_results"
+                    : "/dashboard/provider/images/create_image_orders"
                 )
               }
             >

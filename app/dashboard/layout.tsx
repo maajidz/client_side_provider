@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import imageUrl from "@/public/images/Logo-white.png";
 import Link from "next/link";
-import Sidebar from "@/components/layout/sidebar";
 
 export const metadata: Metadata = {
   title: "Provider - Join Pomegaranate",
@@ -19,7 +18,7 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="flex h-dvh">
-      <Sidebar />
+      {/* <Sidebar /> */}
       <main className="w-full flex-1 overflow-hidden">
         <Toaster />
         <div className="flex p-4 bg-[#84012A]">

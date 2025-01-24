@@ -24,15 +24,15 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
 
   const handleAppointmentClick = () => {
-    router.push(`/dashboard/patient/appointments/${data.userDetailsId}`);
+    router.push(`/dashboard/provider/patient/appointments/${data.userDetailsId}`);
   };
 
   const handleSubscriptionClick = () => {
-    router.push(`/dashboard/patient/subscriptions/${data.id}`);
+    router.push(`/dashboard/provider/patient/subscriptions/${data.id}`);
   };
 
   const handlePaymentsClick = () => {
-    router.push(`/dashboard/patient/payments/${data.id}`);
+    router.push(`/dashboard/provider/patient/payments/${data.id}`);
   };
 
   const onConfirm = async () => {
