@@ -10,13 +10,26 @@ export const uploadDocument = async ({
 }: {
   requestData: UploadDocumentType;
 }) => {
+  const formData = new FormData();
+
+  formData.append("document_type", requestData.document_type);
+  formData.append("provderId", requestData.provderId);
+  formData.append("date", requestData.date);
+  formData.append("file_for_review", requestData.file_for_review?.toString() || "false");
+  formData.append("userDetailsId", requestData.userDetailsId);
+
+  // Append each file in the `images` array
+  requestData.images.forEach((file) => {
+    formData.append("images", file);
+  });
+
   const response = await ApiFetch({
     url: "/provider/documents/upload",
     method: "POST",
     headers: {
       "Content-Type": "multipart/form-data",
     },
-    data: requestData,
+    data: formData,
   });
 
   const data = await response.data;

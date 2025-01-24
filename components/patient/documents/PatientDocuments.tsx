@@ -10,7 +10,7 @@ const PatientDocuments = ({ userDetailsId }: { userDetailsId: string }) => {
     <PageContainer scrollable={true}>
       <div className="flex flex-col gap-3 rounded-lg">
         <div className="flex justify-end">
-          <UploadDocumentDialog userDetailsId={userDetailsId} />
+          <UploadDocumentDialog userDetailsId={userDetailsId} /> 
         </div>
 
         <Tabs defaultValue="all" className="flex gap-4">

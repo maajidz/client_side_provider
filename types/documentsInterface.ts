@@ -19,7 +19,7 @@ export interface DocumentsResponseInterface {
 }
 
 export interface DocumentsMetaDataInterface {
-  images: File;
+  images: File[];
   documentId: string;
   documentName: string;
   document_type: string;
@@ -33,7 +33,17 @@ export interface DocumentsMetaDataInterface {
   updatedAt: string;
 }
 
-export type UploadDocumentType = Omit<
-  DocumentsMetaDataInterface,
-  "createdAt" | "updatedAt" | "documentId" | "documents" | "documentName"
->;
+// export type UploadDocumentType = Omit<
+//   DocumentsMetaDataInterface,
+//   "createdAt" | "updatedAt" | "documentId" | "documents" | "documentName"
+// >;
+
+export interface UploadDocumentType {
+  images: File[];
+  document_type: string;
+  notes?: string;
+  file_for_review?: boolean;
+  provderId: string;
+  userDetailsId: string;
+  date: string;
+}

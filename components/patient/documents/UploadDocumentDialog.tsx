@@ -44,7 +44,7 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // File Input State
-  const [fileInput, setFileInput] = useState<File[]>([]);
+  const [images, setImages] = useState<File[]>([]);
 
   // Dialog State
   const [isOpen, setIsOpen] = useState(false);
@@ -65,22 +65,42 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
 
   const handleFileInput = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      // const files = Array.from(event.target.files);
-      setFileInput(Array.from(event.target.files));
+      const selectedFiles = Array.from(event.target.files);
+      setImages((prev) => [
+        ...prev,
+        ...selectedFiles.filter(
+          (file) =>
+            !prev.some((existingFile) => existingFile.name === file.name)
+        ),
+      ]);
     }
     setIsOpen(true);
   };
 
   const handleButtonClick = () => {
-    // opens the file dialog
     fileInputRef.current?.click();
   };
 
   const onSubmit = async (values: z.infer<typeof uploadDocumentSchema>) => {
+    if (images.length === 0) {
+      showToast({
+        toast,
+        type: "error",
+        message: "Please upload at least one document.",
+      });
+      return;
+    }
+
     setLoading(true);
 
+    const formData = new FormData();
+
+    images.forEach((file) => {
+      formData.append("images[]", file);
+    });
+
     const finalRequestData: UploadDocumentType = {
-      images: fileInput[0],
+      images,
       document_type: values.document_type,
       date: values.date,
       file_for_review: values.file_for_review,
@@ -109,27 +129,29 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
       form.reset();
       setLoading(false);
       setIsOpen(false);
-      setFileInput([]);
+      setImages([]);
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger>
-        <Button
-          variant="default"
-          className="bg-[#84012A] hover:bg-[#6C011F]"
-          onClick={handleButtonClick}
-        >
-          Import
-        </Button>
-        <Input
-          type="file"
-          ref={fileInputRef}
-          className="hidden"
-          multiple
-          onChange={handleFileInput}
-        />
+      <DialogTrigger asChild>
+        <div>
+          <Button
+            variant="default"
+            className="bg-[#84012A] hover:bg-[#6C011F]"
+            onClick={handleButtonClick}
+          >
+            Import
+          </Button>
+          <Input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            multiple
+            onChange={handleFileInput}
+          />
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
@@ -144,41 +166,23 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
             <FormField
               control={form.control}
               name="file"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Documents</FormLabel>
                   <FormControl>
                     <>
-                      {fileInput && (
-                        <ul className="text-sm mt-2">
-                          {Array.from(fileInput).map((file, index) => (
-                            <li key={index} className="font-semibold">
-                              {file.name}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                      <ul className="text-sm mt-2">
+                        {images.map((file, index) => (
+                          <li key={`${file} ${index}`} className="font-semibold">
+                            {file.name}
+                          </li>
+                        ))}
+                      </ul>
                       <Input
                         type="file"
                         className="min-h-[90px] w-full"
                         multiple
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            const selectedFiles = Array.from(e.target.files);
-
-                            setFileInput((prev) => {
-                              const newFiles = selectedFiles.filter(
-                                (file) =>
-                                  !prev.some(
-                                    (existingFile) =>
-                                      existingFile.name === file.name
-                                  )
-                              );
-                              return [...prev, ...newFiles];
-                            });
-                            field.onChange(selectedFiles);
-                          }
-                        }}
+                        onChange={handleFileInput}
                       />
                     </>
                   </FormControl>
@@ -206,7 +210,6 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
                           <SelectItem value="labResults">
                             Lab Results
                           </SelectItem>
-
                           <SelectItem value="imageResults">
                             Image Results
                           </SelectItem>
@@ -320,4 +323,3 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
 }
 
 export default UploadDocumentDialog;
-
