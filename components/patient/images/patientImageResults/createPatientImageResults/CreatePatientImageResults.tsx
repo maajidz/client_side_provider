@@ -28,7 +28,11 @@ import { RootState } from "@/store/store";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
 
-const CreatePatientImageResults = ({userDetailsId}: {userDetailsId: string}) => {
+const CreatePatientImageResults = ({
+  userDetailsId,
+}: {
+  userDetailsId: string;
+}) => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [selectedTests, setSelectedTests] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -139,6 +143,7 @@ const CreatePatientImageResults = ({userDetailsId}: {userDetailsId: string}) => 
                 <div key={test}>
                   <UploadImageResults
                     onUploadComplete={(images) => handleUploadComplete(images)}
+                    userDetailsId={userDetailsId}
                   />
                   {uploadedImages &&
                     uploadedImages.map((image) => (

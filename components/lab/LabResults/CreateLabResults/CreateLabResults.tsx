@@ -44,6 +44,8 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
+import { fetchUserDataResponse } from "@/services/userServices";
+import { UserData } from "@/types/userInterface";
 
 const CreateLabResults = () => {
   const form = useForm<z.infer<typeof createLabResultsSchema>>({
@@ -75,12 +77,7 @@ const CreateLabResults = () => {
     name: "testResults",
   });
 
-  const [patients] = useState([
-    "John Doe",
-    "Jane Smith",
-    "Emily Davis",
-    "David Johnson",
-  ]);
+  const [patients, setPatients] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
   const [selectedTests, setSelectedTests] = useState<string[]>([]);
@@ -147,19 +144,41 @@ const CreateLabResults = () => {
     [labResponse]
   );
 
+  const fetchPatientList = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchUserDataResponse({
+        pageNo: 1,
+        pageSize: 10,
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
+      if (response) {
+        setPatients(response.data);
+      }
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm]);
+
   useEffect(() => {
     fetchLabsData();
     fetchProvidersList();
   }, [fetchLabsData, fetchProvidersList]);
 
   useEffect(() => {
+    fetchPatientList();
     if (selectedLab) {
       fetchLabTestsData(selectedLab);
     }
-  }, [selectedLab, fetchLabTestsData]);
+  }, [selectedLab, fetchLabTestsData, searchTerm, fetchPatientList]);
 
   const filteredPatients = patients.filter((patient) =>
-    patient.toLowerCase().includes(searchTerm.toLowerCase())
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
   );
 
   const onSubmit = async (values: z.infer<typeof createLabResultsSchema>) => {
@@ -190,7 +209,7 @@ const CreateLabResults = () => {
           type: "success",
           message: "Lab Result saved sucessfully!",
         });
-        router.replace('/dashboard/provider/labs')
+        router.replace("/dashboard/provider/labs");
       }
     } catch (e) {
       console.log("Error", e);
@@ -249,17 +268,19 @@ const CreateLabResults = () => {
                         {searchTerm && visibleSearchList && (
                           <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
                             {filteredPatients.length > 0 ? (
-                              filteredPatients.map((patient, index) => (
+                              filteredPatients.map((patient) => (
                                 <div
-                                  key={index}
+                                  key={patient.id}
                                   className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                   onClick={() => {
-                                    setSearchTerm(patient);
-                                    field.onChange(patient);
+                                    field.onChange(patient.id);
+                                    setSearchTerm(
+                                      `${patient.user.firstName} ${patient.user.lastName}`
+                                    );
                                     setVisibleSearchList(false);
                                   }}
                                 >
-                                  {patient}
+                                  {`${patient.user.firstName} ${patient.user.lastName}`}
                                 </div>
                               ))
                             ) : (
@@ -294,15 +315,15 @@ const CreateLabResults = () => {
                           </SelectTrigger>
                           <SelectContent>
                             {providerListData.data.map((providerList) => {
-                              const providerId = providerList.providerDetails?.id ?? providerList.id
+                              const providerId =
+                                providerList.providerDetails?.id ??
+                                providerList.id;
                               return (
-                                (
-                                  <SelectItem
-                                    key={providerList.id}
-                                    value={providerId}
-                                  >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
-                                )
-                              )
+                                <SelectItem
+                                  key={providerList.id}
+                                  value={providerId}
+                                >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
+                              );
                             })}
                           </SelectContent>
                         </Select>

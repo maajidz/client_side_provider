@@ -5,12 +5,13 @@ import React, { useState } from "react";
 
 const UploadImageResults = ({
   onUploadComplete,
+  userDetailsId
 }: {
   onUploadComplete: (uploadedImages: string[]) => void;
+  userDetailsId: string
 }) => {
   const [images, setImages] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
-  const userDetailsId = "97f41397-3fe3-4f0b-a242-d3370063db33";
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

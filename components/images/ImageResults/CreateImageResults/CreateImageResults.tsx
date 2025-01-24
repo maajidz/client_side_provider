@@ -27,15 +27,12 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { UserData } from "@/types/userInterface";
+import { fetchUserDataResponse } from "@/services/userServices";
 
 const CreateImageResults = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [patients] = useState([
-    "John Doe",
-    "Jane Smith",
-    "Emily Davis",
-    "David Johnson",
-  ]);
+  const [patients, setPatients] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
   const [selectedTests, setSelectedTests] = useState<string[]>([]);
@@ -56,6 +53,25 @@ const CreateImageResults = () => {
       ],
     },
   });
+
+  const fetchPatientList = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchUserDataResponse({
+        pageNo: 1,
+        pageSize: 10,
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
+      if (response) {
+        setPatients(response.data);
+      }
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm]);
 
   const handleUploadComplete = (images: string[]) => {
     setUploadedImages((prevImages) => [...prevImages, ...images]);
@@ -78,15 +94,18 @@ const CreateImageResults = () => {
   }, []);
 
   useEffect(() => {
+    fetchPatientList();
     fetchImageTestsData();
-  }, [fetchImageTestsData]);
+  }, [fetchImageTestsData, searchTerm, fetchPatientList]);
 
   const filteredPatients = patients.filter((patient) =>
-    patient.toLowerCase().includes(searchTerm.toLowerCase())
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
   );
 
   const onSubmit = async (values: z.infer<typeof createImageResultsSchema>) => {
-    console.log("values", values )
+    console.log("values", values);
     try {
       const requestData: CreateImageResultInterface = {
         userDetailsId: values.patient,
@@ -97,7 +116,7 @@ const CreateImageResults = () => {
           documents: uploadedImages,
         })),
       };
-      console.log("Request", requestData)
+      console.log("Request", requestData);
       const response = await createImageResultRequest({
         requestData: requestData,
       });
@@ -153,17 +172,19 @@ const CreateImageResults = () => {
                       {searchTerm && visibleSearchList && (
                         <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
                           {filteredPatients.length > 0 ? (
-                            filteredPatients.map((patient, index) => (
+                            filteredPatients.map((patient) => (
                               <div
-                                key={index}
+                                key={patient.id}
                                 className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                 onClick={() => {
-                                  setSearchTerm(patient);
-                                  field.onChange(patient);
+                                  field.onChange(patient.id);
+                                  setSearchTerm(
+                                    `${patient.user.firstName} ${patient.user.lastName}`
+                                  );
                                   setVisibleSearchList(false);
                                 }}
                               >
-                                {patient}
+                                {`${patient.user.firstName} ${patient.user.lastName}`}
                               </div>
                             ))
                           ) : (
@@ -196,6 +217,7 @@ const CreateImageResults = () => {
                 <div key={test}>
                   <UploadImageResults
                     onUploadComplete={(images) => handleUploadComplete(images)}
+                    userDetailsId= {form.getValues().patient}
                   />
                   {uploadedImages &&
                     uploadedImages.map((image) => (
@@ -226,11 +248,15 @@ const CreateImageResults = () => {
                 </div>
               </div>
             ))}
-            <Button type="submit" onClick={() => 
-              {
-                console.log("Submit Clicked")
-                console.log(form.getValues())
-              }}>Submit</Button>
+            <Button
+              type="submit"
+              onClick={() => {
+                console.log("Submit Clicked");
+                console.log(form.getValues());
+              }}
+            >
+              Submit
+            </Button>
           </form>
         </Form>
       </div>
@@ -239,5 +265,3 @@ const CreateImageResults = () => {
 };
 
 export default CreateImageResults;
-
-
