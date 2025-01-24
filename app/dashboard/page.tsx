@@ -12,13 +12,14 @@ export default function Page() {
   const providerDetails = useSelector((state: RootState) => state.login);
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-col gap-3 p-10">
+      <div className="flex flex-col items-center justify-center gap-3 p-10">
         <h2 className="text-2xl font-bold text-center">
           Hi, {providerDetails.firstName} {providerDetails.lastName} Welcome
           back 👋
         </h2>
       </div>
-      <div className="grid grid-cols-4 gap-3 items-center p-10 justify-items-center">
+      {/* <div className="flex flex-wrap space-x-28 space-y-5 h-full justify-center items-center p-10"> */}
+      <div className="grid grid-cols-5 gap-6 justify-center items-center p-10">
         {navItems.map((item, index) => {
           const Icon = item.icon && Icons[item.icon as keyof typeof Icons];
           return (
