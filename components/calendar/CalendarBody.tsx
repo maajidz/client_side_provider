@@ -42,7 +42,7 @@ export const CalendarBody = () => {
   const [customRange, setCustomRange] = useState(false);
 
   const handleClick = () => {
-    router.push('/dashboard/calendar/availability')
+    router.push('/dashboard//provider/calendar/availability')
   }
 
   const fetchAvailability = useCallback(

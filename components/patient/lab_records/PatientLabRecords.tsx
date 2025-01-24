@@ -28,8 +28,8 @@ const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
               onClick={() =>
                 router.push(
                   activeTab === "labResults"
-                    ? `/dashboard/patients/${userDetailsId}/lab_records/create-lab-result`
-                    : `/dashboard/patients/${userDetailsId}/lab_records/create-lab-order`
+                    ? `/dashboard/provider/patient/${userDetailsId}/lab_records/create-lab-result`
+                    : `/dashboard/provider/patient/${userDetailsId}/lab_records/create-lab-order`
                 )
               }
             >

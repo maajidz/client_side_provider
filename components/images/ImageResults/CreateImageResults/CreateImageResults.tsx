@@ -89,7 +89,7 @@ const CreateImageResults = () => {
     console.log("values", values )
     try {
       const requestData: CreateImageResultInterface = {
-        userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+        userDetailsId: values.patient,
         reviewerId: providerDetails.providerId,
         testResults: values.testResults.map((test, index) => ({
           imageTestId: selectedTests[index],

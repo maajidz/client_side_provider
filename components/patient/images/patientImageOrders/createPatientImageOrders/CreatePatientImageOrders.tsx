@@ -74,7 +74,7 @@ const CreatePatientImageOrders = ({
               className="border border-[#84012A] text-[#84012A]"
               onClick={() => {
                 form.reset();
-                router.replace("/dashboard/images");
+                router.replace("/dashboard/provider/images");
               }}
             >
               Cancel
