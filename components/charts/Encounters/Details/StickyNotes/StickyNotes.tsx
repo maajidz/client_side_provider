@@ -77,7 +77,7 @@ const StickyNotes = ({ patientDetails }: { patientDetails: UserEncounterData }) 
                             <PlusCircle />
                         </Button>
                         <StickyNotesDialog
-                            patientDetails={patientDetails}
+                            chartId={patientDetails.chart.id}
                             stickyNotesData={editData}
                             onClose={() => {
                                 setIsDialogOpen(false)
