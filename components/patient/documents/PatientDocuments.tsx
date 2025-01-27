@@ -1,18 +1,12 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import React from "react";
 import ViewPatientDocuments from "./ViewPatientDocuments";
 import { Separator } from "@/components/ui/separator";
-import UploadDocumentDialog from "./UploadDocumentDialog";
 import PageContainer from "@/components/layout/page-container";
 
 const PatientDocuments = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-col gap-3 rounded-lg">
-        <div className="flex justify-end">
-          <UploadDocumentDialog userDetailsId={userDetailsId} /> 
-        </div>
-
         <Tabs defaultValue="all" className="flex gap-4">
           <TabsList className="flex flex-col gap-4 h-full p-2 rounded-lg border">
             <TabsTrigger value="lastvisit" className="hover:bg-white">

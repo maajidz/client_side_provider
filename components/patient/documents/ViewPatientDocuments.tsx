@@ -4,6 +4,8 @@ import { getDocumentsData } from "@/services/documentsServices";
 import { DocumentsInterface } from "@/types/documentsInterface";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
+import DragAndDrop from "./DragAndDrop";
+import UploadDocumentDialog from "./UploadDocumentDialog";
 
 function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
   const [documentsData, setDocumentsData] = useState<DocumentsInterface[]>([]);
@@ -11,6 +13,17 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const itemsPerPage = 10;
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [droppedFiles, setDroppedFiles] = useState<File[]>([]);
+
+  const handleOpenUploadDialog = (status: boolean, files?: File[]) => {
+    setIsOpen(status);
+    if (files) {
+      setDroppedFiles(files);
+    }
+  };
 
   const fetchDocumentsData = useCallback(async () => {
     try {
@@ -47,7 +60,16 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
 
   return (
     <>
-      {paginatedData && (
+      <div className="flex justify-end">
+        <UploadDocumentDialog
+          userDetailsId={userDetailsId}
+          open={isOpen}
+          droppedFiles={droppedFiles}
+          onFileSelected={(status: boolean) => handleOpenUploadDialog(status)}
+          onFetchDocuments={fetchDocumentsData}
+        />
+      </div>
+      {paginatedData ? (
         <DataTable
           searchKey="Documents"
           columns={columns()}
@@ -55,6 +77,12 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
           pageNo={page}
           totalPages={totalPages}
           onPageChange={(newPage: number) => setPage(newPage)}
+        />
+      ) : (
+        <DragAndDrop
+          onFilesDropped={(status: boolean, files: File[]) =>
+            handleOpenUploadDialog(status, files)
+          }
         />
       )}
     </>
