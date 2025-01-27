@@ -37,3 +37,8 @@ export interface ExistingProviderDetails {
     createdAt: string
     updatedAt: string
 }
+
+export interface ChangePasswordInterface {
+  oldPassword: string;
+  newPassword: string;
+}

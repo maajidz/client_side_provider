@@ -1,10 +1,11 @@
 //dashboard/layout.tsx
+import AccountIcon from "@/components/account/AccountIcon";
 import Header from "@/components/layout/header";
 import { Toaster } from "@/components/ui/toaster";
-import type { Metadata } from "next";
-import Image from "next/image";
 import imageUrl from "@/public/images/Logo-white.png";
+import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Provider - Join Pomegaranate",
@@ -21,11 +22,12 @@ export default function DashboardLayout({
       {/* <Sidebar /> */}
       <main className="w-full flex-1 overflow-hidden">
         <Toaster />
-        <div className="flex p-4 bg-[#84012A]">
+        <div className="flex justify-between items-center p-4 bg-[#84012A]">
           <Link href={"/dashboard"}>
             <Image src={imageUrl} alt={"logo"} height={24} priority />
           </Link>
           <Header />
+          <AccountIcon />
         </div>
         {children}
       </main>

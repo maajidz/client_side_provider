@@ -31,12 +31,24 @@ import { RootState } from "@/store/store";
 import { UploadDocumentType } from "@/types/documentsInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 
-function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
+function UploadDocumentDialog({
+  userDetailsId,
+  open,
+  droppedFiles,
+  onFileSelected,
+  onFetchDocuments,
+}: {
+  userDetailsId: string;
+  open: boolean;
+  droppedFiles: File[];
+  onFileSelected: (status: boolean) => void;
+  onFetchDocuments: () => void;
+}) {
   // Provider Details
   const providerDetails = useSelector((state: RootState) => state.login);
 
@@ -45,9 +57,6 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
 
   // File Input State
   const [images, setImages] = useState<File[]>([]);
-
-  // Dialog State
-  const [isOpen, setIsOpen] = useState(false);
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -63,6 +72,12 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
     },
   });
 
+  useEffect(() => {
+    if (droppedFiles.length > 0) {
+      setImages(droppedFiles);
+    }
+  }, [droppedFiles]);
+
   const handleFileInput = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const selectedFiles = Array.from(event.target.files);
@@ -74,7 +89,7 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
         ),
       ]);
     }
-    setIsOpen(true);
+    onFileSelected(true);
   };
 
   const handleButtonClick = () => {
@@ -93,12 +108,6 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
 
     setLoading(true);
 
-    const formData = new FormData();
-
-    images.forEach((file) => {
-      formData.append("images[]", file);
-    });
-
     const finalRequestData: UploadDocumentType = {
       images,
       document_type: values.document_type,
@@ -108,9 +117,14 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
       userDetailsId,
     };
 
-    console.log(finalRequestData);
     try {
       await uploadDocument({ requestData: finalRequestData });
+
+      showToast({
+        toast,
+        type: "success",
+        message: "Document(s) uploaded successfully",
+      });
     } catch (err) {
       if (err instanceof Error) {
         showToast({
@@ -127,14 +141,15 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
       }
     } finally {
       form.reset();
+      onFetchDocuments();
       setLoading(false);
-      setIsOpen(false);
+      onFileSelected(false);
       setImages([]);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={open} onOpenChange={onFileSelected}>
       <DialogTrigger asChild>
         <div>
           <Button
@@ -173,7 +188,10 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
                     <>
                       <ul className="text-sm mt-2">
                         {images.map((file, index) => (
-                          <li key={`${file} ${index}`} className="font-semibold">
+                          <li
+                            key={`${file} ${index}`}
+                            className="font-semibold"
+                          >
                             {file.name}
                           </li>
                         ))}
@@ -260,50 +278,17 @@ function UploadDocumentDialog({ userDetailsId }: { userDetailsId: string }) {
                   </FormItem>
                 )}
               />
-
-              {/* Share With Patient */}
-              {/* <div className="flex items-center gap-6">
-                <FormField
-                  control={form.control}
-                  name="file_for_review"
-                  render={() => (
-                    <FormItem className="flex flex-row items-center gap-2 space-y-0">
-                      <FormLabel
-                        htmlFor="share"
-                        className="text-sm font-medium"
-                      >
-                        Share document(s) with patient
-                      </FormLabel>
-                      <FormControl>
-                        <div className="flex items-center gap-2">
-                          <Checkbox id="share" />
-                          <FormLabel
-                            htmlFor="share"
-                            className="text-sm font-medium"
-                          >
-                            To PHR
-                          </FormLabel>
-                          <Checkbox id="share" />
-                          <FormLabel
-                            htmlFor="share"
-                            className="text-sm font-medium"
-                          >
-                            By Text
-                          </FormLabel>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div> */}
             </div>
             <DialogFooter className="flex flex-row-reverse gap-2">
               <Button
                 type="button"
                 variant="outline"
                 className="bg-slate-200 hover:bg-slate-100"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  onFileSelected(false);
+                  setImages([]);
+                  form.reset();
+                }}
               >
                 Cancel
               </Button>
