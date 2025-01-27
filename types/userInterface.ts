@@ -1,21 +1,28 @@
+export interface CreateUser {
+  user: CreateUserDataInterface;
+  userDetails: CreateUserDetails
+}
+
 export interface UserInfo {
   data: UserDataInterface
 }
 
-export interface UserDataInterface {
-  id: string
+export interface CreateUserDataInterface {
   firstName: string
   lastName: string
   email: string
   phoneNumber: string
+}
+
+export interface UserDataInterface extends CreateUserDataInterface {
+  id: string
   userDetailsId: string
   createdAt: string
   updatedAt: string
   userDetails: UserDetails
 }
 
-export interface UserDetails {
-  id: string
+export interface CreateUserDetails {
   dob: string
   height: number
   heightType: string
@@ -23,6 +30,10 @@ export interface UserDetails {
   weightType: string
   location: string
   gender: string
+}
+
+export interface UserDetails extends CreateUserDetails {
+  id: string
   createdAt: string
   updatedAt: string
 }

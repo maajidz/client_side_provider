@@ -1,25 +1,24 @@
 //dashboard
-"use client";
 
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { SearchInput } from "@/components/dashboard/SearchInput";
 import { Icons } from "@/components/icons";
 import PageContainer from "@/components/layout/page-container";
 import { navItems } from "@/constants/data";
-import { RootState } from "@/store/store";
+import { UserPlus } from "lucide-react";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 
 export default function Page() {
-  const providerDetails = useSelector((state: RootState) => state.login);
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-col justify-center items-center gap-3 p-10">
-        <h2 className="text-2xl font-bold text-center">
-          Hi, {providerDetails.firstName} {providerDetails.lastName} Welcome
-          back 👋
-        </h2>
-        <SearchInput />
-        {/* <div className="flex flex-wrap space-x-28 space-y-5 h-full justify-center items-center p-10"> */}
+        <DashboardHeader />
+        <div className="flex gap-2 items-center">
+          <SearchInput />
+          <Link href={`/dashboard/patient/provider/add_patient`}>
+            <UserPlus size={25} className="text-[#84012A]" />
+          </Link>
+        </div>
         <div className="grid grid-cols-5 gap-6 justify-center items-center p-10">
           {navItems.map((item, index) => {
             const Icon = item.icon && Icons[item.icon as keyof typeof Icons];

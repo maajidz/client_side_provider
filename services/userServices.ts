@@ -1,5 +1,6 @@
 import ApiFetch from "@/config/api";
 import {
+  CreateUser,
   PatientMedicationInterface,
   PaymentInterface,
   UserAppointmentInterface,
@@ -39,6 +40,24 @@ export const fetchUserDataResponse = async ({
     return null;
   }
 };
+
+
+export const createNewPatient = async ({
+  requestData,
+}: {
+  requestData: CreateUser;
+}) => {
+  const response = await ApiFetch({
+    method: "POST",
+    url: `/provider/patients/add`,
+    data : requestData
+  });
+  console.log(response.data);
+  const data = await response.data;
+  console.log(data);
+  return data;
+};
+
 
 export const fetchUserInfo = async ({
   userDetailsId,
