@@ -68,9 +68,15 @@ function SelectedUserActions({ user }: { user: UserData }) {
 
   const age = calculateAge(user.dob);
 
+  const openStickyDialog = () => setIsStickyDialogOpen(true);
+  const closeStickyDialog = () => setIsStickyDialogOpen(false);
+
+  const openMessageDialog = () => setIsMessageDialogOpen(true);
+  const closeMessageDialog = () => setIsMessageDialogOpen(false);
+
   return (
     <div className="absolute mt-10 space-y-2">
-      <div className="border-2 border-white rounded-2xl p-2 shadow-2xl bg-white">
+      <div className="border-2 border-white rounded-2xl p-2 shadow-2xl bg-white w-full">
         <div className="flex flex-col gap-3 p-4 w-full">
           <div className="flex gap-3 items-center w-full">
             <div className="bg-[#FFE7E7] p-2 rounded-full">
@@ -89,54 +95,40 @@ function SelectedUserActions({ user }: { user: UserData }) {
             </div>
           </div>
           <Separator />
-          <div className="flex flex-wrap gap-3">
+          <div className="flex gap-3 w-full">
             {links.map((link) =>
               link.label === "Sticky" ? (
-                <>
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setIsStickyDialogOpen(true);
-                    }}
-                  >
-                    <div className="flex items-center gap-2 text-[#717171] py-3 px-4 hover:underline hover:text-blue-400 text-xs">
+                <div key={link.label}>
+                  <Button variant="ghost" onClick={openStickyDialog}>
+                    <div className="flex items-center gap-2 text-[#717171] py-3 px-4 hover:underline hover:text-blue-400 text-xs w-full">
                       <PlusIcon size={16} />
                       <div>{link.label}</div>
                     </div>
                   </Button>
                   <StickyNotesDialog
                     chartId=""
-                    onClose={() => {
-                      setIsStickyDialogOpen(false);
-                    }}
+                    onClose={closeStickyDialog}
                     isOpen={isStickyDialogOpen}
                   />
-                </>
+                </div>
               ) : link.label === "Message" ? (
-                <>
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setIsMessageDialogOpen(true);
-                    }}
-                  >
-                    <div className="flex items-center gap-2 text-[#717171] py-3 px-4 hover:underline hover:text-blue-400 text-xs">
+                <div key={link.label}>
+                  <Button variant="ghost" onClick={openMessageDialog}>
+                    <div className="flex items-center gap-2 text-[#717171] py-3 px-4 hover:underline hover:text-blue-400 text-xs w-full">
                       <PlusIcon size={16} />
                       <div>{link.label}</div>
                     </div>
                   </Button>
                   <MessagesDialog
-                    onClose={() => {
-                      setIsMessageDialogOpen(false);
-                    }}
+                    onClose={closeMessageDialog}
                     isOpen={isMessageDialogOpen}
                   />
-                </>
+                </div>
               ) : (
                 <Link key={link.label} href={link.href}>
-                  <div className="flex items-center gap-2 text-[#717171] py-3 px-4 hover:underline hover:text-blue-400 text-xs">
+                  <div className="flex flex-row items-center gap-2 text-[#717171] py-3 px-4 hover:underline hover:text-blue-400 text-xs w-full">
                     <PlusIcon size={16} />
-                    <div>{link.label}</div>
+                    <div className="w-16">{link.label}</div>
                   </div>
                 </Link>
               )
@@ -154,17 +146,17 @@ export function SearchInput() {
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const delayDebounceFn = setTimeout(() => {
-    if (searchTerm.trim() && !selectedUser) {
-      handleSearch();
-    } else {
-      setUserData([]);
-    }
-  }, 300);
-
   useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim() && !selectedUser) {
+        handleSearch();
+      } else {
+        setUserData([]);
+      }
+    }, 300);
+
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, selectedUser, delayDebounceFn]);
+  }, [searchTerm, selectedUser]);
 
   const handleSearch = async () => {
     setLoading(true);
