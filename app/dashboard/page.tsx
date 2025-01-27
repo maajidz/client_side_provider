@@ -15,7 +15,7 @@ export default function Page() {
         <DashboardHeader />
         <div className="flex gap-2 items-center">
           <SearchInput />
-          <Link href={`/dashboard/patient/provider/add_patient`}>
+          <Link href={`/dashboard/patient/provider/patient/add_patient`}>
             <UserPlus size={25} className="text-[#84012A]" />
           </Link>
         </div>
