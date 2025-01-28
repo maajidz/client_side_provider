@@ -1,6 +1,5 @@
 //dashboard/layout.tsx
 import AccountIcon from "@/components/account/AccountIcon";
-import Header from "@/components/layout/header";
 import { Toaster } from "@/components/ui/toaster";
 import imageUrl from "@/public/images/Logo-white.png";
 import Image from "next/image";
@@ -26,7 +25,6 @@ export default function DashboardLayout({
           <Link href={"/dashboard"}>
             <Image src={imageUrl} alt={"logo"} height={24} priority />
           </Link>
-          <Header />
           <AccountIcon />
         </div>
         {children}
