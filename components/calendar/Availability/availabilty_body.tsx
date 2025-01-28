@@ -24,7 +24,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
-import SubmitButton from '@/components/custom_buttons/SubmitButton';
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const AppointmentForm = () => {
   const router = useRouter();
@@ -161,13 +161,9 @@ const AppointmentForm = () => {
                       Add Time Slot
                     </DefaultButton>
                   </div>
-                  <Button className="bg-[#84012A]" type="submit">
-                    Submit
-                  </Button>
+                  <SubmitButton label="Submit" />
                 </div>
-                <SubmitButton label='Submit' />
-              </div>
-              }
+              )}
             </div>
           </form>
         </FormProvider>
