@@ -7,8 +7,8 @@ import { showToast } from "@/utils/utils";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import VitalDialog from "./VitalDialog";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   // Vitals State
@@ -59,16 +59,15 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <div className="py-5">
       <div className="flex justify-end mb-4">
-        <Button
-          className="bg-[#84012A] hover:bg-[#6C011F] flex items-center gap-2"
+        <DefaultButton
           onClick={() => {
-            setEditData(undefined); // Clear edit data for "add" mode
+            setEditData(undefined); 
             setIsDialogOpen(true);
           }}
         >
           <PlusIcon />
           Add Vitals
-        </Button>
+        </DefaultButton>
       </div>
       <DataTable
         searchKey="vitals"

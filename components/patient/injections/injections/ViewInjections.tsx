@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { showToast } from "@/utils/utils";
 import InjectionsDialog from "@/components/charts/Encounters/Details/Injections/InjectionsDialog";
 import { PlusIcon } from "lucide-react";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
   const [editData, setEditData] = useState<InjectionsData | null>(null);
@@ -72,8 +73,7 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <>
       <div className="flex justify-end">
-        <Button
-          className="bg-[#84012A]"
+        <DefaultButton
           onClick={() => {
             setEditData(null);
             setIsDialogOpen(true);
@@ -83,7 +83,7 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             Injections
           </div>
-        </Button>
+        </DefaultButton>
         <InjectionsDialog
           userDetailsId={userDetailsId}
           injectionsData={editData}

@@ -1,8 +1,8 @@
 import AlertDialog from "@/components/charts/Encounters/Details/Alerts/AlertDialog";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import ViewPatientAlerts from "./ViewPatientAlerts";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -10,8 +10,7 @@ const PatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <>
       <div className="flex justify-end">
-        <Button
-          className="bg-[#84012A]"
+        <DefaultButton
           onClick={() => {
             setIsDialogOpen(true);
           }}
@@ -20,7 +19,7 @@ const PatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             Alerts
           </div>
-        </Button>
+        </DefaultButton>
         <AlertDialog
           userDetailsId={userDetailsId}
           onClose={() => {

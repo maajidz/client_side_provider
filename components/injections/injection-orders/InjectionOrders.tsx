@@ -1,3 +1,4 @@
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -187,13 +188,12 @@ function InjectionOrders() {
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="bg-[#84012A] hover:bg-[#6C011F] text-white hover:text-white"
-        >
-          <PlusIcon />
-          Injection Order
-        </Button>
+        <DefaultButton>
+          <div className="flex gap-1 items-center">
+            <PlusIcon />
+            <div>Injection Order</div>
+          </div>
+        </DefaultButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>

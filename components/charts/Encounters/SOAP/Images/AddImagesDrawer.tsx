@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
 import { useToast } from '@/hooks/use-toast'
 import { showToast } from '@/utils/utils'
+import DefaultButton from '@/components/custom_buttons/buttons/DefaultButton'
 
 const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
     const [response, setResponse] = useState<ImagesResponseInterface>()
@@ -151,7 +152,7 @@ const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
                                         </SelectContent>
                                     </Select>
                                 } />
-                                <Button className='bg-[#84012A]' onClick={handleImageOrder}>Order Image</Button>
+                                <DefaultButton onClick={handleImageOrder}>Order Image</DefaultButton>
                             </div>
                         )}
                     </div>

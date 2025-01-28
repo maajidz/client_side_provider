@@ -4,10 +4,10 @@ import PageContainer from "@/components/layout/page-container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import ImageResults from "./ImageResults/ImageResults";
 import ImageOrders from "./ImageOrders/ImageOrders";
+import DefaultButton from "../custom_buttons/buttons/DefaultButton";
 
 function Images() {
   const [activeTab, setActiveTab] = useState("imageResults");
@@ -25,8 +25,7 @@ function Images() {
               <TabsTrigger value="imageResults">Image Results</TabsTrigger>
               <TabsTrigger value="imageOrders">Image Orders</TabsTrigger>
             </TabsList>
-            <Button
-              className="bg-[#84012A]"
+            <DefaultButton
               onClick={() =>
                 router.push(
                   activeTab === "imageResults"
@@ -41,7 +40,7 @@ function Images() {
                   ? "Image Results"
                   : "Image Orders"}
               </div>
-            </Button>
+            </DefaultButton>
           </div>
           <TabsContent value="imageResults">
             <ImageResults />

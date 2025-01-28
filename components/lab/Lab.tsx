@@ -4,9 +4,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState } from "react";
 import LabOrders from "./LabOrders/LabOrders";
 import LabResults from "./LabResults/LabResults";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import DefaultButton from "../custom_buttons/buttons/DefaultButton";
 
 export default function Lab() {
   const [activeTab, setActiveTab] = useState<string>("labResults");
@@ -24,21 +24,20 @@ export default function Lab() {
               <TabsTrigger value="labResults">Lab Results</TabsTrigger>
               <TabsTrigger value="labOrders">Lab Orders</TabsTrigger>
             </TabsList>
-            <Button
-              className="bg-[#84012A]"
-              onClick={() => 
+            <DefaultButton
+              onClick={() =>
                 router.push(
                   activeTab === "labResults"
                     ? "/dashboard/provider/labs/create_lab_results"
                     : "/dashboard/provider/labs/create_lab_orders"
                 )
-               }
+              }
             >
               <div className="flex items-center gap-3">
                 <PlusIcon />
                 {activeTab === "labResults" ? "Lab Results" : "Lab Orders"}
               </div>
-            </Button>
+            </DefaultButton>
           </div>
           <TabsContent value="labResults">
             <LabResults />

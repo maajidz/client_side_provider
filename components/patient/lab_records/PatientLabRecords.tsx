@@ -1,11 +1,11 @@
 import PageContainer from "@/components/layout/page-container";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OrderRecords from "./orders/OrderRecords";
 import ResultRecords from "./results/ResultRecords";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
   const [activeTab, setActiveTab] = useState<string>("labResults");
@@ -23,8 +23,7 @@ const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
               <TabsTrigger value="labResults">Lab Results</TabsTrigger>
               <TabsTrigger value="labOrders">Lab Orders</TabsTrigger>
             </TabsList>
-            <Button
-              className="bg-[#84012A]"
+            <DefaultButton
               onClick={() =>
                 router.push(
                   activeTab === "labResults"
@@ -37,7 +36,7 @@ const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
                 <PlusIcon />
                 {activeTab === "labResults" ? "Lab Results" : "Lab Orders"}
               </div>
-            </Button>
+            </DefaultButton>
           </div>
           <TabsContent value="labResults">
             <ResultRecords userDetailsId={userDetailsId} />

@@ -1,16 +1,15 @@
 import RecallsDialog from "@/components/charts/Encounters/Details/Recalls/RecallsDialog";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import ViewRecalls from "./ViewRecalls";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   return (
     <>
       <div className="flex justify-end">
-        <Button
-          className="bg-[#84012A]"
+        <DefaultButton
           onClick={() => {
             setIsDialogOpen(true);
           }}
@@ -19,7 +18,7 @@ const PatientRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             Recalls
           </div>
-        </Button>
+        </DefaultButton>
         <RecallsDialog
           userDetailsId={userDetailsId}
           onClose={() => {

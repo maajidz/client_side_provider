@@ -327,6 +327,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
                                                     <Button type="button" onClick={() => append({ startTime: '', endTime: '' })}>
                                                         Add Slot
                                                     </Button>
+                                                    
                                                 </FormItem>
                                             )}
                                         />

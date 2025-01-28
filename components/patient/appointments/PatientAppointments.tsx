@@ -1,16 +1,15 @@
 import { PatientAppointmentClient } from "@/components/tables/patient/patientAppointments/client";
 import React, { useState } from "react";
 import { AppointmentsDialog } from "./AppointmentsDialog";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   return (
     <>
       <div className="flex justify-end">
-        <Button
-          className="bg-[#84012A]"
+        <DefaultButton
           onClick={() => {
             setIsDialogOpen(true);
           }}
@@ -19,7 +18,7 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             New Appointment
           </div>
-        </Button>
+        </DefaultButton>
         <AppointmentsDialog
           userDetailsId={userDetailsId}
           onClose={() => {

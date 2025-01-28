@@ -1,19 +1,29 @@
-import { useForm, useFieldArray, Control, FormProvider } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { providerAvailabilityRequest } from '@/services/availabilityServices';
-import { appointmentDateSchema, FormSchema } from '@/schema/availabilitySchema';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
-import { useRouter } from 'next/navigation';
+import { useForm, useFieldArray, Control, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { providerAvailabilityRequest } from "@/services/availabilityServices";
+import { appointmentDateSchema, FormSchema } from "@/schema/availabilitySchema";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { useRouter } from "next/navigation";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const AppointmentForm = () => {
   const router = useRouter();
@@ -23,8 +33,8 @@ const AppointmentForm = () => {
       appointmentDate: new Date(),
       timeSlot: [
         {
-          startTime: '',
-          endTime: '',
+          startTime: "",
+          endTime: "",
         },
       ],
     },
@@ -35,7 +45,7 @@ const AppointmentForm = () => {
 
   const { fields, append, remove } = useFieldArray({
     control: methods.control,
-    name: 'timeSlot',
+    name: "timeSlot",
   });
 
   useEffect(() => {
@@ -44,25 +54,27 @@ const AppointmentForm = () => {
     }
   }, [date]);
 
-  const onSubmit = async(data: FormSchema) => {
-    const formValues = methods.getValues()
-    const formattedDate = format(formValues.appointmentDate, 'yyyy-MM-dd');
+  const onSubmit = async (data: FormSchema) => {
+    const formValues = methods.getValues();
+    const formattedDate = format(formValues.appointmentDate, "yyyy-MM-dd");
     console.log(data);
     const requestData = {
       availabilities: [
         {
           date: formattedDate,
           providerId: providerID,
-          slots: formValues.timeSlot
-        }
-      ]
-    }
-    console.log(requestData)
-    try{
-      const request = await providerAvailabilityRequest({requestData: requestData});
+          slots: formValues.timeSlot,
+        },
+      ],
+    };
+    console.log(requestData);
+    try {
+      const request = await providerAvailabilityRequest({
+        requestData: requestData,
+      });
       console.log("Success:", request);
-      if(request){
-        router.push('/dashboard/provider/calendar')
+      if (request) {
+        router.push("/dashboard/provider/calendar");
       }
     } catch (error) {
       console.log("Failed to submit form:", error);
@@ -74,19 +86,28 @@ const AppointmentForm = () => {
       <div className="flex flex-col gap-6 py-8 border-b">
         <div className="flex flex-row justify-between">
           <p className="text-[#84012A] font-medium text-[18px]">
-            Configure the regular working hours of Fahd Kazi at Pomegranate Health.
+            Configure the regular working hours of Fahd Kazi at Pomegranate
+            Health.
           </p>
         </div>
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <div className='flex flex-col gap-3'>
-              <div className={`text-sm font-normal text-[#444444] flex ${isTimeSlotVisible ? "flex-row gap-3 items-center" : "flex-col gap-8"} `}>
-                {!isTimeSlotVisible ? <CalendarView
-                  control={methods.control}
-                  selectedDate={date}
-                  onDateChange={setDate}
-                /> :
-                  <div className='flex flex-col gap-3'>
+            <div className="flex flex-col gap-3">
+              <div
+                className={`text-sm font-normal text-[#444444] flex ${
+                  isTimeSlotVisible
+                    ? "flex-row gap-3 items-center"
+                    : "flex-col gap-8"
+                } `}
+              >
+                {!isTimeSlotVisible ? (
+                  <CalendarView
+                    control={methods.control}
+                    selectedDate={date}
+                    onDateChange={setDate}
+                  />
+                ) : (
+                  <div className="flex flex-col gap-3">
                     <label>Availability Date:</label>
                     <CalendarField
                       control={methods.control}
@@ -94,46 +115,56 @@ const AppointmentForm = () => {
                       setDate={setDate}
                     />
                   </div>
-                }
+                )}
               </div>
-              {isTimeSlotVisible && <div className='flex flex-col gap-3'>
-                <div>
-                  <div className=' flex flex-col gap-3 text-sm font-normal text-[#444444]'>
-                    <label>Time Slot:</label>
-                    {fields.map((field, index) => (
-                      <div key={field.id} style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                        <Input
-                          type="time"
-                          className='w-fit'
-                          {...methods.register(`timeSlot.${index}.startTime` as const)}
-                          placeholder="HH:MM"
-                        />
-                        <Input
-                          type="time"
-                          className='w-fit'
-                          {...methods.register(`timeSlot.${index}.endTime` as const)}
-                          placeholder="End Time"
-                        />
-                        <Button type="button" className='bg-[#84012A]' onClick={() => remove(index)}>
-                          Remove
-                        </Button>
-                      </div>
-                    ))}
+              {isTimeSlotVisible && (
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <div className=" flex flex-col gap-3 text-sm font-normal text-[#444444]">
+                      <label>Time Slot:</label>
+                      {fields.map((field, index) => (
+                        <div
+                          key={field.id}
+                          style={{
+                            display: "flex",
+                            gap: "10px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <Input
+                            type="time"
+                            className="w-fit"
+                            {...methods.register(
+                              `timeSlot.${index}.startTime` as const
+                            )}
+                            placeholder="HH:MM"
+                          />
+                          <Input
+                            type="time"
+                            className="w-fit"
+                            {...methods.register(
+                              `timeSlot.${index}.endTime` as const
+                            )}
+                            placeholder="End Time"
+                          />
+                          <DefaultButton onClick={() => remove(index)}>
+                            Remove
+                          </DefaultButton>
+                        </div>
+                      ))}
+                    </div>
+                    <DefaultButton
+                      onClick={() => append({ startTime: "", endTime: "" })}
+                    >
+                      {" "}
+                      Add Time Slot
+                    </DefaultButton>
                   </div>
-
-                  <Button
-                    type="button"
-                    className='bg-[#84012A]'
-                    onClick={() =>
-                      append({ startTime: '', endTime: '' }) // Adds a new empty time slot
-                    }
-                  >
-                    Add Time Slot
+                  <Button className="bg-[#84012A]" type="submit">
+                    Submit
                   </Button>
                 </div>
-                <Button className='bg-[#84012A]' type="submit">Submit</Button>
-              </div>
-              }
+              )}
             </div>
           </form>
         </FormProvider>
@@ -142,22 +173,28 @@ const AppointmentForm = () => {
   );
 };
 
-const CalendarView = ({ selectedDate, onDateChange, control, }: {
+const CalendarView = ({
+  selectedDate,
+  onDateChange,
+  control,
+}: {
   selectedDate: Date | undefined;
   onDateChange: (date: Date | undefined) => void;
   control: Control<FormSchema>;
 }) => {
-
   const todayClass = "w-full bg-[#84012A] text-[#84012A] ";
-  const selectedClass = "w-full bg-[#84012A] text-white rounded-2xl hover:bg-[#84012A] hover:text-white";
+  const selectedClass =
+    "w-full bg-[#84012A] text-white rounded-2xl hover:bg-[#84012A] hover:text-white";
   const defaultClass = "w-full bg-white text-black";
 
   const isToday = (date: Date | undefined) => {
     if (!date) return false;
     const today = new Date();
-    return date.getDate() === today.getDate() &&
+    return (
+      date.getDate() === today.getDate() &&
       date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear();
+      date.getFullYear() === today.getFullYear()
+    );
   };
 
   const isSelected = (date: Date | undefined) => {
@@ -177,13 +214,17 @@ const CalendarView = ({ selectedDate, onDateChange, control, }: {
                 selected={selectedDate}
                 onSelect={(newDate) => {
                   field.onChange(newDate);
-                  onDateChange(newDate)
+                  onDateChange(newDate);
                 }}
-                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                disabled={(date) =>
+                  date < new Date(new Date().setHours(0, 0, 0, 0))
+                }
                 className="h-[270px] w-full rounded-2xl bg-white border"
                 classNames={{
                   day_today: isToday(selectedDate) ? todayClass : defaultClass,
-                  day_selected: isSelected(selectedDate) ? selectedClass : defaultClass,
+                  day_selected: isSelected(selectedDate)
+                    ? selectedClass
+                    : defaultClass,
                   month: "w-full font-semibold text-[#344054]",
                   head_row: "w-full",
                   row: "w-full",
@@ -192,7 +233,8 @@ const CalendarView = ({ selectedDate, onDateChange, control, }: {
             </FormControl>
             <FormMessage className="text-[10px]" />
           </FormItem>
-        )} />
+        )}
+      />
     </div>
   );
 };

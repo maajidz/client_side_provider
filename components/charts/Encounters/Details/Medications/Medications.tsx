@@ -23,7 +23,7 @@ const Medications = ({ patientDetails }: MedicationsProps) => {
         <AccordionItem value="medications">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Medications</AccordionTrigger>
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={()=> setIsDialogOpen(true)}>
               <PlusCircle />
             </Button>
             <AddMedicationDialog

@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { RootState } from "@/store/store";
 import { User } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import DefaultButton from "../custom_buttons/buttons/DefaultButton";
 
 function AccountIcon() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -72,9 +72,7 @@ function AccountIcon() {
             </div>
           </div>
           <div className="flex justify-end gap-3">
-            <Button className="flex gap-3.5 px-4 py-2.5 border rounded-sm bg-[#8B2020] hover:bg-[#6C011F]">
-              Sign Out
-            </Button>
+            <DefaultButton>Sign Out</DefaultButton>
           </div>
         </div>
       )}

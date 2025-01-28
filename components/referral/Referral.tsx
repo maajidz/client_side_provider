@@ -2,12 +2,12 @@
 import PageContainer from "@/components/layout/page-container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import ReferralOutDialog from "./ReferralOut/ReferralOutDialog";
 import ReferralInDialog from "./Referraln/ReferralInDialog";
 import ViewReferralOut from "./ReferralOut/ViewReferralOut";
 import ViewReferralIn from "./Referraln/ViewReferralIn";
+import DefaultButton from "../custom_buttons/buttons/DefaultButton";
 
 const Referral = () => {
   const [activeTab, setActiveTab] = useState<string>("referralOut");
@@ -29,8 +29,7 @@ const Referral = () => {
               <TabsTrigger value="referralIn">Referral In</TabsTrigger>
             </TabsList>
             {activeTab === "referralOut" ? (
-              <Button
-                className="bg-[#84012A]"
+              <DefaultButton
                 onClick={() => {
                   setIsReferralOutDialogOpen(true);
                 }}
@@ -39,10 +38,9 @@ const Referral = () => {
                   <PlusIcon />
                   Referral Out
                 </div>
-              </Button>
+              </DefaultButton>
             ) : (
-              <Button
-                className="bg-[#84012A]"
+              <DefaultButton
                 onClick={() => {
                   setIsReferralInDialogOpen(true);
                 }}
@@ -51,7 +49,7 @@ const Referral = () => {
                   <PlusIcon />
                   Referral In
                 </div>
-              </Button>
+              </DefaultButton>
             )}
             <ReferralOutDialog
               onClose={() => {
