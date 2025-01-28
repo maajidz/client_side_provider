@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { getQuickNotesData } from "@/services/quickNotesServices";
 import { QuickNotesInterface } from "@/types/quickNotesInterface";
@@ -7,6 +6,7 @@ import QuickNotesDialog from "./QuickNotesDialog";
 import ViewPatientQuickNotes from "./ViewPatientQuickNotes";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
   // Dialog State
@@ -58,8 +58,7 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <>
       <div className="flex justify-end">
-        <Button
-          className="bg-[#84012A] hover:bg-[#6C011F]"
+        <DefaultButton
           onClick={() => {
             setIsDialogOpen(true);
           }}
@@ -68,7 +67,7 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             Note
           </div>
-        </Button>
+        </DefaultButton>
         <QuickNotesDialog
           userDetailsId={userDetailsId}
           isOpen={isDialogOpen}

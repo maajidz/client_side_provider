@@ -4,9 +4,9 @@ import { getHistoricalVaccine } from "@/services/chartDetailsServices";
 import { HistoricalVaccineInterface } from "@/types/chartsInterface";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import VaccinesDialog from "@/components/charts/Encounters/Details/Vaccines/VaccinesDialog";
 import { PlusIcon } from "lucide-react";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 interface HistoricalVaccinesProps {
   userDetailsId: string;
@@ -68,8 +68,7 @@ const HistoricalVaccinesClient = ({
   return (
     <div className="py-5">
       <div className="flex justify-end">
-        <Button
-          className="bg-[#84012A]"
+        <DefaultButton
           onClick={() => {
             setIsVaccinesDialogOpen(true);
           }}
@@ -78,7 +77,7 @@ const HistoricalVaccinesClient = ({
             <PlusIcon />
             Vaccines
           </div>
-        </Button>
+        </DefaultButton>
         <VaccinesDialog
           userDetailsId={userDetailsId}
           isOpen={isVaccinesDialogOpen}

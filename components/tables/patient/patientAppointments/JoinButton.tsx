@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import DefaultButton from '@/components/custom_buttons/buttons/DefaultButton';
 import React from 'react'
 
 const JoinButton = ({appointmentLink}: {appointmentLink: string}) => {
@@ -6,9 +6,9 @@ const JoinButton = ({appointmentLink}: {appointmentLink: string}) => {
         window.open(appointmentLink, '_blank'); // Open the link in a new tab
     };
     return (
-        <Button className='bg-[#84012A] h-7 rounded-lg px-3 py-4' onClick={handleJoinClick}>
+        <DefaultButton  onClick={handleJoinClick}>
             Join
-        </Button>
+        </DefaultButton>
     )
 }
 

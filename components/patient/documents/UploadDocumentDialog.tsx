@@ -1,3 +1,4 @@
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -153,13 +154,7 @@ function UploadDocumentDialog({
     <Dialog open={open} onOpenChange={onFileSelected}>
       <DialogTrigger asChild>
         <div>
-          <Button
-            variant="default"
-            className="bg-[#84012A] hover:bg-[#6C011F]"
-            onClick={handleButtonClick}
-          >
-            Import
-          </Button>
+          <DefaultButton  onClick={handleButtonClick}>Import</DefaultButton>
           <Input
             type="file"
             ref={fileInputRef}

@@ -1,17 +1,16 @@
 "use client";
 import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import ViewPatientTasks from "./ViewPatientTasks";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   return (
     <>
       <div className="flex justify-end">
-        <Button
-          className="bg-[#84012A]"
+        <DefaultButton
           onClick={() => {
             setIsDialogOpen(true);
           }}
@@ -20,7 +19,7 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             Tasks
           </div>
-        </Button>
+        </DefaultButton>
         <TasksDialog
           userDetailsId={userDetailsId}
           onClose={() => {

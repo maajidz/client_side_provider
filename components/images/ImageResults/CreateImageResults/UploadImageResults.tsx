@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { Input } from "@/components/ui/input";
 import { uploadImageRequest } from "@/services/imageResultServices";
 import React, { useState } from "react";
 
 const UploadImageResults = ({
   onUploadComplete,
-  userDetailsId
+  userDetailsId,
 }: {
   onUploadComplete: (uploadedImages: string[]) => void;
-  userDetailsId: string
+  userDetailsId: string;
 }) => {
   const [images, setImages] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -53,9 +53,9 @@ const UploadImageResults = ({
         <label htmlFor="images">Upload Images</label>
         <Input id="images" type="file" multiple onChange={handleFileChange} />
       </div>
-      <Button disabled={uploading} onClick={handleimageSubmit}>
+      <DefaultButton disabled={uploading} onClick={handleimageSubmit}>
         {uploading ? "Uploading" : "Upload Images"}
-      </Button>
+      </DefaultButton>
     </>
   );
 };

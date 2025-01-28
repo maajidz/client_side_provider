@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import AddMedicationDialog from "@/components/charts/Encounters/Details/Medications/AddMedicationDialog";
 import PatientMedicationDialog from "./PatientMedicationDialog";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientMedication = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isMedicationsDialogOpen, setIsMedicationsDialogOpen] =
@@ -12,8 +12,7 @@ const PatientMedication = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <>
       <div className="flex gap-5 justify-end">
-        <Button
-          className="bg-[#84012A]"
+        <DefaultButton
           onClick={() => {
             setIsMedicationsDialogOpen(true);
           }}
@@ -22,9 +21,8 @@ const PatientMedication = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             Medications
           </div>
-        </Button>
-        <Button
-          className="bg-[#84012A]"
+        </DefaultButton>
+        <DefaultButton
           onClick={() => {
             setIsPrescriptionsDialogOpen(true);
           }}
@@ -33,7 +31,7 @@ const PatientMedication = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             Prescriptions
           </div>
-        </Button>
+        </DefaultButton>
         <AddMedicationDialog
           userDetailsId={userDetailsId}
           onClose={() => {

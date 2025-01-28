@@ -36,7 +36,7 @@ export const fetchUserDataResponse = async ({
     const data: UserResponseInterface = await response.data;
     return data;
   } catch (error) {
-    console.error("Error fetching response", error);
+    console.log("Error fetching response", error);
     return null;
   }
 };

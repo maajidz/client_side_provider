@@ -1,16 +1,15 @@
 import SupplementsDialog from "@/components/charts/Encounters/Details/Supplements/SupplementsDialog";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import ViewPatientSupplements from "./ViewPatientSupplements";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientSupplements = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   return (
     <>
       <div className="flex justify-end">
-        <Button
-          className="bg-[#84012A]"
+        <DefaultButton
           onClick={() => {
             setIsDialogOpen(true);
           }}
@@ -19,7 +18,7 @@ const PatientSupplements = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             Supplements
           </div>
-        </Button>
+        </DefaultButton>
         <SupplementsDialog
           userDetailsId={userDetailsId}
           onClose={() => {

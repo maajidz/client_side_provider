@@ -1,8 +1,8 @@
 import AllergiesDialog from "@/components/charts/Encounters/Details/Allergies/AllergiesDialog";
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import ViewPatientAllergies from "./ViewPatientAllergies";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -10,17 +10,16 @@ const PatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <>
       <div className="flex justify-end">
-        <Button
-          className="bg-[#84012A]"
+        <DefaultButton
           onClick={() => {
             setIsDialogOpen(true);
           }}
         >
           <div className="flex gap-2">
             <PlusIcon />
-            Allergy
+            Alerts
           </div>
-        </Button>
+        </DefaultButton>
         <AllergiesDialog
           userDetailsId={userDetailsId}
           onClose={() => {

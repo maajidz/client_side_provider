@@ -1,38 +1,44 @@
-'use client';
+"use client";
 
-import { Heading } from '@/components/ui/heading';
-import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
-import LoadingButton from '@/components/LoadingButton';
-import { ProviderAvailability } from '@/types/calendarInterface';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
-import React from 'react';
-import { fetchProviderAvaialability } from '@/services/availabilityServices';
-import { Button } from '@/components/ui/button';
-import { PlusIcon } from 'lucide-react';
-import CalendarComponent from '@/components/calendar/CalendarComponent';
+import { Heading } from "@/components/ui/heading";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import LoadingButton from "@/components/LoadingButton";
+import { ProviderAvailability } from "@/types/calendarInterface";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import React from "react";
+import { fetchProviderAvaialability } from "@/services/availabilityServices";
+import { PlusIcon } from "lucide-react";
+import CalendarComponent from "@/components/calendar/CalendarComponent";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ListViewBody from "@/components/calendar/ListViewBody";
+import { fetchProviderAppointments } from "@/services/providerAppointments";
+import { ProviderAppointmentsInterface } from "@/types/appointments";
+import { DateRange } from "react-day-picker";
+import { addDays, format } from "date-fns";
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import ListViewBody from '@/components/calendar/ListViewBody';
-import { fetchProviderAppointments } from '@/services/providerAppointments';
-import { ProviderAppointmentsInterface } from '@/types/appointments';
-import { DateRange } from 'react-day-picker';
-import { addDays, format } from 'date-fns';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { Calendar } from '../ui/calendar';
-
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Calendar } from "../ui/calendar";
+import DefaultButton from "../custom_buttons/buttons/DefaultButton";
 
 export const CalendarBody = () => {
   const [loading, setLoading] = useState(false);
-  const [providerAvailability, setProviderAvailability] = useState<ProviderAvailability | null>(null);
-  const [providerAppointment, setProviderAppointment] = useState<ProviderAppointmentsInterface | null>(null);
+  const [providerAvailability, setProviderAvailability] =
+    useState<ProviderAvailability | null>(null);
+  const [providerAppointment, setProviderAppointment] =
+    useState<ProviderAppointmentsInterface | null>(null);
   const router = useRouter();
   const providerID = useSelector((state: RootState) => state.login.providerId);
   const [date, setDate] = React.useState<DateRange | undefined>({
@@ -42,74 +48,65 @@ export const CalendarBody = () => {
   const [customRange, setCustomRange] = useState(false);
 
   const handleClick = () => {
-    router.push('/dashboard//provider/calendar/availability')
-  }
+    router.push("/dashboard//provider/calendar/availability");
+  };
 
-  const fetchAvailability = useCallback(
-    async () => {
-      if (providerID) {
-        setLoading(true);
-        try {
-          const fetchedAvailabilties = await fetchProviderAvaialability({
-            providerID,
-            startDate: '',
-            endDate: '',
-            limit: 7,
-            page: 1
-          });
+  const fetchAvailability = useCallback(async () => {
+    if (providerID) {
+      setLoading(true);
+      try {
+        const fetchedAvailabilties = await fetchProviderAvaialability({
+          providerID,
+          startDate: "",
+          endDate: "",
+          limit: 7,
+          page: 1,
+        });
 
-          console.log("Fetched Availabilties:", fetchedAvailabilties);
+        console.log("Fetched Availabilties:", fetchedAvailabilties);
 
-          if (fetchedAvailabilties) {
-            setProviderAvailability(fetchedAvailabilties)
-          }
+        if (fetchedAvailabilties) {
+          setProviderAvailability(fetchedAvailabilties);
         }
-        catch (error) {
-          console.error('Error fetching availability:', error);
-        }
-        finally {
-          setLoading(false)
-        }
+      } catch (error) {
+        console.error("Error fetching availability:", error);
+      } finally {
+        setLoading(false);
       }
-    }, [providerID]
-  )
+    }
+  }, [providerID]);
 
-  const fetchAppointments = useCallback(
-    async () => {
-      if (providerID && date?.from && date?.to) {
-        setLoading(true);
-        const startDate = format(date.from, 'yyyy-MM-dd');
-        const endDate = format(date.to, 'yyyy-MM-dd');
-        try {
-          const fetchedAppointments = await fetchProviderAppointments({
-            providerId: providerID,
-            startDate,
-            endDate,
-            limit: 7,
-            page: 1
-          });
+  const fetchAppointments = useCallback(async () => {
+    if (providerID && date?.from && date?.to) {
+      setLoading(true);
+      const startDate = format(date.from, "yyyy-MM-dd");
+      const endDate = format(date.to, "yyyy-MM-dd");
+      try {
+        const fetchedAppointments = await fetchProviderAppointments({
+          providerId: providerID,
+          startDate,
+          endDate,
+          limit: 7,
+          page: 1,
+        });
 
-          console.log("Fetched Appointments:", fetchedAppointments);
+        console.log("Fetched Appointments:", fetchedAppointments);
 
-          if (fetchedAppointments) {
-            setProviderAppointment(fetchedAppointments)
-          }
+        if (fetchedAppointments) {
+          setProviderAppointment(fetchedAppointments);
         }
-        catch (error) {
-          console.error('Error fetching Appointments:', error);
-        }
-        finally {
-          setLoading(false)
-        }
+      } catch (error) {
+        console.error("Error fetching Appointments:", error);
+      } finally {
+        setLoading(false);
       }
-    }, [providerID, date?.from, date?.to]
-  )
+    }
+  }, [providerID, date?.from, date?.to]);
 
   useEffect(() => {
     fetchAvailability();
     fetchAppointments();
   }, [fetchAvailability, fetchAppointments]);
-
 
   if (loading) {
     return (
@@ -122,21 +119,16 @@ export const CalendarBody = () => {
   return (
     <>
       <div className="flex items-start justify-between">
-        <Heading
-          title={`Calendar`}
-          description=""
-        />
+        <Heading title={`Calendar`} description="" />
         <div>
-          <Button className='bg-[#84012A]  rounded-lg px-3 py-4' onClick={
-            handleClick
-          }>
-            <div className='flex flex-row items-center gap-2'>
+          <DefaultButton onClick={handleClick}>
+            <div className="flex flex-row items-center gap-2">
               <PlusIcon />
-              <div className='hidden md:block lg:blocl'>
+              <div className="hidden md:block lg:blocl">
                 Update my availability
               </div>
             </div>
-          </Button>
+          </DefaultButton>
         </div>
       </div>
       <Tabs defaultValue="listView" className="w-full">
@@ -145,17 +137,17 @@ export const CalendarBody = () => {
           <TabsTrigger value="calendarView">Calendar View</TabsTrigger>
         </TabsList>
         <TabsContent value="listView">
-          <div className='flex flex-col gap-3 '>
+          <div className="flex flex-col gap-3 ">
             <div className={cn("grid gap-2")}>
               <Popover open={customRange} onOpenChange={setCustomRange}>
                 <PopoverTrigger asChild>
                   <div>
                     <Select
                       onValueChange={(value) => {
-                        if (value === 'custom') {
-                          setCustomRange(true); 
+                        if (value === "custom") {
+                          setCustomRange(true);
                         } else {
-                          setCustomRange(false); 
+                          setCustomRange(false);
                           const days = parseInt(value);
                           const newDate = addDays(new Date(), days);
                           setDate({
@@ -192,12 +184,10 @@ export const CalendarBody = () => {
               </Popover>
             </div>
             {providerAppointment?.data.map((data) => (
-              <div key={data.id}>
-                {data.patientName}
-              </div>
+              <div key={data.id}>{data.patientName}</div>
             ))}
             {providerAppointment && (
-              <ListViewBody appointments={providerAppointment.data}/>
+              <ListViewBody appointments={providerAppointment.data} />
             )}
           </div>
         </TabsContent>
@@ -205,13 +195,10 @@ export const CalendarBody = () => {
           {providerAvailability && (
             <div>
               {!loading && providerAvailability && (
-                <CalendarComponent
-                  appointments={providerAvailability?.data}
-                />
+                <CalendarComponent appointments={providerAvailability?.data} />
               )}
             </div>
-          )
-          }
+          )}
         </TabsContent>
       </Tabs>
       {/* {providerAvailability  && providerAvailability.data && (
@@ -229,6 +216,3 @@ export const CalendarBody = () => {
     </>
   );
 };
-
-
-
