@@ -41,13 +41,13 @@ const PatientHeader = ({ userId }: { userId: string }) => {
         <div className={styles.infoBox}>
           <PatientLabelDetails
             label="Name:"
-            value={`${response?.user.firstName} ${response?.user.lastName}`}
+            value={`${response?.user?.firstName} ${response?.user?.lastName}`}
           />
           <div className="flex flex-row gap-3">
             <div>{response?.gender}/Age</div>
             <PatientLabelDetails label="ID:" value={userId} />
           </div>
-          <PatientLabelDetails label="DOB:" value={`${response?.dob.split('T')[0]}`} />
+          <PatientLabelDetails label="DOB:" value={`${response?.dob && response?.dob.split('T')[0]}`} />
         </div>
         <div className={styles.infoBox}>
           <PatientLabelDetails
