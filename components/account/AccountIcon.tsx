@@ -40,20 +40,20 @@ function AccountIcon() {
     <div className="relative" ref={dropdownRef}>
       <User
         color="#84012A"
-        className="w-14 h-14 p-2 rounded-full cursor-pointer bg-[#E6E6E6]"
+        className="w-8 h-8 p-2 rounded-full cursor-pointer bg-[#FFE7E7]"
         onClick={handleShowDropdown}
       />
       {showDropdown && (
-        <div className="absolute right-0 translate-x-[-5%] mt-2 w-[450px] bg-white shadow-lg rounded-2xl z-10 p-4">
-          <div className="flex items-center gap-2.5">
+        <div className="flex flex-col gap-6 absolute right-0 translate-x-[-5%] mt-2 w-[450px] px-4 py-[1.125rem] bg-white shadow-lg rounded-2xl z-10">
+          <div className="flex items-center gap-3">
             <User
               color="#84012A"
-              className="w-16 h-16 p-2 rounded-full cursor-pointer bg-[#FFE7E7]"
+              className="flex gap-2.5 w-8 h-8 p-1.5 rounded-full cursor-pointer bg-[#FFE7E7]"
             />
             <div className="flex flex-col gap-2">
-              <h6 className="text-base font-medium text-[#84012a] break-words">
+              <span className="text-base font-medium text-[#84012a]">
                 {providerDetails.firstName} {providerDetails.lastName}
-              </h6>
+              </span>
               <span className="text-xs font-normal text-[#717171]">
                 {providerDetails.roleName}
               </span>
@@ -83,3 +83,4 @@ function AccountIcon() {
 }
 
 export default AccountIcon;
+
