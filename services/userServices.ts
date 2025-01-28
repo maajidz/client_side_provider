@@ -1,6 +1,8 @@
 import ApiFetch from "@/config/api";
 import {
   CreateUser,
+  PatientCareTeamInterface,
+  PatientDetailsInterface,
   PatientMedicationInterface,
   PaymentInterface,
   UserAppointmentInterface,
@@ -41,7 +43,6 @@ export const fetchUserDataResponse = async ({
   }
 };
 
-
 export const createNewPatient = async ({
   requestData,
 }: {
@@ -50,14 +51,13 @@ export const createNewPatient = async ({
   const response = await ApiFetch({
     method: "POST",
     url: `/provider/patients/add`,
-    data : requestData
+    data: requestData,
   });
   console.log(response.data);
   const data = await response.data;
   console.log(data);
   return data;
 };
-
 
 export const fetchUserInfo = async ({
   userDetailsId,
@@ -70,7 +70,7 @@ export const fetchUserInfo = async ({
       url: `/provider/patients/${userDetailsId}`,
     });
 
-    const data: UserData = await response.data;
+    const data: PatientDetailsInterface = await response.data;
     console.log(data);
     return data;
   } catch (error) {
@@ -195,4 +195,26 @@ export const fetchOnboardingUserForms = async ({
   const data: UserFormInterface = await response.data;
   console.log(data);
   return data;
+};
+
+//care team
+
+export const fetchUserCareTeam = async ({
+  userDetailsId,
+}: {
+  userDetailsId: string;
+}) => {
+  try {
+    const response = await ApiFetch({
+      method: "get",
+      url: `/provider/patients/care-team/${userDetailsId}`,
+    });
+
+    const data: PatientCareTeamInterface = await response.data;
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log("Error fetching response", error);
+    return null;
+  }
 };

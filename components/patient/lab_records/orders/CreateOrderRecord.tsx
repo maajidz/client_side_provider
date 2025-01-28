@@ -20,14 +20,14 @@ import AddLabsDialog from "@/components/charts/Encounters/SOAP/Labs/AddLabsDialo
 import PastOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/PastOrdersDialog";
 import ViewOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/ViewOrdersDialog";
 import { fetchUserInfo } from "@/services/userServices";
-import { UserData } from "@/types/userInterface";
+import { PatientDetails } from "@/types/userInterface";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const CreateOrderRecord = () => {
-  const [patient, setPatient] = useState<UserData>();
+  const [patient, setPatient] = useState<PatientDetails>();
 
   // Loading State
   const [loading, setLoading] = useState({
@@ -75,7 +75,7 @@ const CreateOrderRecord = () => {
         const response = await fetchUserInfo({ userDetailsId });
 
         if (response) {
-          setPatient(response);
+          setPatient(response?.userDetails);
         }
       }
     } catch (err) {
@@ -143,19 +143,20 @@ const CreateOrderRecord = () => {
             <SubmitButton label="Submit" />
           </form>
         </Form>
-        <div className="flex py-5 items-center space-x-4 text-sm">
-          <SearchAndAddDrawer userDetailsId={""} />
-          <Separator orientation="vertical" />
-          <AddLabsDialog userDetailsId={""} />
-          <Separator orientation="vertical" />
-          <PastOrdersDialog userDetailsId={""} />
-          <Separator orientation="vertical" />
-          <ViewOrdersDialog userDetailsId={""} />
-        </div>
+        {userDetailsId && (
+          <div className="flex py-5 items-center space-x-4 text-sm">
+            <SearchAndAddDrawer userDetailsId={userDetailsId} />
+            <Separator orientation="vertical" />
+            <AddLabsDialog userDetailsId={userDetailsId} />
+            <Separator orientation="vertical" />
+            <PastOrdersDialog userDetailsId={userDetailsId} />
+            <Separator orientation="vertical" />
+            <ViewOrdersDialog userDetailsId={userDetailsId} />
+          </div>
+        )}
       </div>
     </>
   );
 };
 
 export default CreateOrderRecord;
-

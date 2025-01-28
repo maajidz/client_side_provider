@@ -42,7 +42,7 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { fetchUserDataResponse, fetchUserInfo } from "@/services/userServices";
 import { LabsDataResponse, Test } from "@/types/chartsInterface";
 import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
-import { UserData } from "@/types/userInterface";
+import { PatientDetails, UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState, useCallback, useEffect } from "react";
@@ -51,7 +51,7 @@ import SubmitButton from "@/components/custom_buttons/SubmitButton";
 const CreateResultRecord = () => {
   // Patients State
   const [patientData, setPatientData] = useState<UserData[]>([]);
-  const [patient, setPatient] = useState<UserData>();
+  const [patient, setPatient] = useState<PatientDetails>();
 
   // Search State
   const [searchTerm, setSearchTerm] = useState("");
@@ -125,7 +125,7 @@ const CreateResultRecord = () => {
         const response = await fetchUserInfo({ userDetailsId });
 
         if (response) {
-          setPatient(response);
+          setPatient(response?.userDetails);
         }
       }
     } catch (err) {

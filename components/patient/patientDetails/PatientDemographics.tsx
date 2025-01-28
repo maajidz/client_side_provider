@@ -3,18 +3,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./patient.module.css";
 import LoadingButton from "../../LoadingButton";
-import { UserData } from "@/types/userInterface";
+import { PatientDetails } from "@/types/userInterface";
 import { fetchUserInfo } from "@/services/userServices";
 
 const PatientDemographics = ({userId}: {userId: string}) => {
-  const [response, setResponse] = useState<UserData>();
+  const [response, setResponse] = useState<PatientDetails>();
   const [loading, setLoading] = useState(false);
 
   const fetchAndSetResponse = useCallback(async () => {
     setLoading(true);
     const userData = await fetchUserInfo({ userDetailsId: userId });
     if (userData) {
-      setResponse(userData);
+      setResponse(userData?.userDetails);
       setLoading(false);
     }
   }, [userId]);
