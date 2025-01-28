@@ -43,6 +43,7 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 function FamilyHistoryDialog({
   patientDetails,
@@ -295,9 +296,7 @@ function FamilyHistoryDialog({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A]">
-                Save
-              </Button>
+              <SubmitButton label="Save" />
             </div>
           </form>
         </Form>

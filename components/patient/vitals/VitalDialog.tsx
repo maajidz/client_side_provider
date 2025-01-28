@@ -1,3 +1,4 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -312,13 +313,7 @@ function VitalDialog({
                 />
               </div>
               <div className="flex flex-row-reverse gap-4">
-                <Button
-                  type="submit"
-                  className="bg-[#84012A] hover:bg-[#6C011F]"
-                  disabled={loading}
-                >
-                  Save
-                </Button>
+                <SubmitButton label="Save" disabled={loading} />
                 <Button
                   type="button"
                   variant="outline"

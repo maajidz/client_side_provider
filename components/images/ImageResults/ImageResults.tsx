@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
@@ -27,6 +26,7 @@ import LoadingButton from "@/components/LoadingButton";
 import { getImageResults } from "@/services/imageResultServices";
 import { ImageResultResponseInterface } from "@/types/imageResults";
 import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 function ImageResults() {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -126,7 +126,7 @@ function ImageResults() {
             />
 
             <div className="flex items-end">
-              <Button type="submit">Search</Button>
+              <SubmitButton label="Search" />
             </div>
           </form>
         </Form>

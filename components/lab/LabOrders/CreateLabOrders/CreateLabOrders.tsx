@@ -24,6 +24,7 @@ import PastOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/PastOrder
 import ViewOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/ViewOrdersDialog";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const CreateLabResults = () => {
   const form = useForm<z.infer<typeof createLabResultsSchema>>({
@@ -182,7 +183,7 @@ const CreateLabResults = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <SubmitButton label="Submit" />
             </div>
           </form>
         </Form>

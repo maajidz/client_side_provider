@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -37,6 +36,7 @@ import { RootState } from "@/store/store";
 import { useToast } from "@/hooks/use-toast";
 import { AlertTypeInterface } from "@/types/alertInterface";
 import { showToast } from "@/utils/utils";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const AlertDialog = ({
   userDetailsId,
@@ -187,9 +187,7 @@ const AlertDialog = ({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A]">
-                Save
-              </Button>
+              <SubmitButton label="Save" />
             </div>
           </form>
         </Form>

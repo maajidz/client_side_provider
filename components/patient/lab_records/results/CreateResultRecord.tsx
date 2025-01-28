@@ -46,6 +46,7 @@ import { UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState, useCallback, useEffect } from "react";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const CreateResultRecord = () => {
   // Patients State
@@ -583,7 +584,7 @@ const CreateResultRecord = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <SubmitButton label="Submit" />
           </form>
         </Form>
       </div>

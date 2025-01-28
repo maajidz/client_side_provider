@@ -33,6 +33,7 @@ import { RootState } from "@/store/store";
 import { useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
 import { AllergeyRequestInterface } from "@/types/allergyInterface";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 interface AllergiesDialogProps {
   userDetailsId: string;
@@ -325,9 +326,7 @@ function AllergiesDialog({
                 Add More
               </Button>
 
-              <Button type="submit" className="bg-[#84012A]">
-                Save
-              </Button>
+              <SubmitButton label="Save" />
             </div>
           </form>
         </Form>

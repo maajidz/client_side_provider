@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
@@ -139,7 +139,7 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
             />
 
             <div className="flex items-end">
-              <Button type="submit">Search</Button>
+              <SubmitButton label="Search" />
             </div>
           </form>
         </Form>

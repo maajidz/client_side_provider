@@ -38,6 +38,7 @@ import { PlusCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 interface PharmacyDialogInterface {
   form: UseFormReturn<z.infer<typeof addPharmacyFormSchema>>;
@@ -262,7 +263,7 @@ function PharmacyDialog({ form, patientDetails }: PharmacyDialogInterface) {
               />
 
               <div className="flex items-end">
-                <Button type="submit">Search</Button>
+                <SubmitButton label="Search" />
               </div>
             </form>
           </Form>

@@ -1,3 +1,4 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -227,13 +228,7 @@ function EditMedicationPrescription({
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  className="bg-[#84012A] text-white hover:bg-[#6C011F]"
-                  disabled={loading}
-                >
-                  Save
-                </Button>
+                <SubmitButton label="Save" disabled={loading} />
               </div>
             </div>
           </form>

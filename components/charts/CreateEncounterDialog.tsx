@@ -44,6 +44,7 @@ import { useRouter } from "next/navigation";
 import { createEncounterRequest } from "@/services/chartsServices";
 import { fetchUserDataResponse } from "@/services/userServices";
 import LoadingButton from "../LoadingButton";
+import SubmitButton from "../custom_buttons/SubmitButton";
 
 const CreateEncounterDialog = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -170,8 +171,12 @@ const CreateEncounterDialog = () => {
                           const searchTerms = patient.toLowerCase().split(" ");
                           return searchTerms.every(
                             (term) =>
-                              userData?.user?.firstName?.toLowerCase().includes(term) ||
-                              userData?.user?.lastName?.toLowerCase().includes(term) ||
+                              userData?.user?.firstName
+                                ?.toLowerCase()
+                                .includes(term) ||
+                              userData?.user?.lastName
+                                ?.toLowerCase()
+                                .includes(term) ||
                               userData?.id?.toLowerCase().includes(term)
                           );
                         })
@@ -181,12 +186,15 @@ const CreateEncounterDialog = () => {
                             className="cursor-pointer hover:bg-gray-100 p-2 rounded"
                             onClick={() => {
                               setSeletedPatient(userData);
-                              setPatient(`${userData.user.firstName} ${userData.user.lastName}`);
+                              setPatient(
+                                `${userData.user.firstName} ${userData.user.lastName}`
+                              );
                               setIsOpen(!isOpen);
                               setShowEncounterForm(!showEncounterForm);
                             }}
                           >
-                            {userData.user.firstName} {userData.user.lastName} (ID: {userData.id})
+                            {userData.user.firstName} {userData.user.lastName}{" "}
+                            (ID: {userData.id})
                           </li>
                         ))}
                     </ul>
@@ -332,9 +340,7 @@ const CreateEncounterDialog = () => {
                     )}
                   />
                   <div className="flex justify-center mt-3">
-                    <Button type="submit" className="bg-[#84012A]">
-                      Create
-                    </Button>
+                    <SubmitButton label="Create" />
                   </div>
                 </form>
               </Form>

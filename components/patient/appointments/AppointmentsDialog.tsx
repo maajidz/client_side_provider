@@ -36,6 +36,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import LoadingButton from "@/components/LoadingButton";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 export function AppointmentsDialog({
   userDetailsId,
@@ -98,8 +99,8 @@ export function AppointmentsDialog({
     console.log("Form Values:", values);
   };
 
-  if(loading){
-    return <LoadingButton />
+  if (loading) {
+    return <LoadingButton />;
   }
 
   return (
@@ -315,10 +316,12 @@ export function AppointmentsDialog({
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Create</Button>
-                <Button type="button" variant="secondary">
-                  Cancel
-                </Button>
+                <div className="flex gap-2.5">
+                  <Button type="button" variant="secondary">
+                    Cancel
+                  </Button>
+                  <SubmitButton label="Create" />
+                </div>
               </form>
             </Form>
           </div>

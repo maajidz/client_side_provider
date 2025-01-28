@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import {
   Form,
   FormControl,
@@ -276,13 +276,7 @@ function ChangePassword() {
               )}
             />
           </div>
-          <Button
-            type="submit"
-            className="w-full px-3 py-4 rounded-lg cursor-pointer bg-[#84012A] hover:bg-[#6C011F]"
-            disabled={!isValid || loading}
-          >
-            Update
-          </Button>
+          <SubmitButton label="Update" disabled={!isValid || loading} />
         </form>
       </Form>
     </div>
@@ -290,6 +284,4 @@ function ChangePassword() {
 }
 
 export default ChangePassword;
-
-
 

@@ -17,6 +17,7 @@ import { UserEncounterData } from '@/types/chartsInterface';
 import { useToast } from '@/components/ui/use-toast';
 import { createFollowUp, createSOAPChart } from '@/services/chartsServices';
 import { showToast } from '@/utils/utils';
+import SubmitButton from '@/components/custom_buttons/SubmitButton';
 
 interface Row {
     type: string;
@@ -224,7 +225,7 @@ const FollowUpDialog = ({ patientDetails, encounterId }: { patientDetails: UserE
                     <div className='flex justify-between w-full'>
                         <Button variant={'ghost'} onClick={handleAddRow} className="text-blue-500 underline"> More</Button>
                         <div className='flex gap-3'>
-                            <Button type="submit" onClick={handleSubmit} className='bg-[#84012A]'>Save changes</Button>
+                            <SubmitButton label='Save Changes' onClick={handleSubmit} />
                             <Button variant={'outline'} > Cancel</Button>
                         </div>
                     </div>

@@ -42,6 +42,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const ReferralOutDialog = ({
   onClose,
@@ -202,9 +203,7 @@ const ReferralOutDialog = ({
               <div className="flex justify-between">
                 <div>Add Referral Out</div>
                 <div className="flex gap-3">
-                  <Button type="submit" className="bg-[#84012A]" disabled={loading}>
-                    Save
-                  </Button>
+                  <SubmitButton label="Save" />
                   {/* <Button variant={'outline'}>Preview</Button>  */}
                 </div>
               </div>

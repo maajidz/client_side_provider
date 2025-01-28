@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const CreatePatientImageResults = ({
   userDetailsId,
@@ -174,15 +175,7 @@ const CreatePatientImageResults = ({
                 </div>
               </div>
             ))}
-            <Button
-              type="submit"
-              onClick={() => {
-                console.log("Submit Clicked");
-                console.log(form.getValues());
-              }}
-            >
-              Submit
-            </Button>
+            <SubmitButton label="Submit" />
           </form>
         </Form>
       </div>

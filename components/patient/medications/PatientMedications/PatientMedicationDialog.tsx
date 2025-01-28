@@ -30,6 +30,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
 import { Switch } from "@/components/ui/switch";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const PatientMedicationDialog = ({
   userDetailsId,
@@ -609,9 +610,7 @@ const PatientMedicationDialog = ({
                 />
               </div>
               <div className="flex gap-3">
-                <Button type="submit" className="bg-[#84012A]">
-                  Save
-                </Button>
+                <SubmitButton label="Save" />
                 <Button
                   variant={"outline"}
                   onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}

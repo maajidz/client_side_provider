@@ -5,7 +5,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -39,6 +38,7 @@ import LoadingButton from "@/components/LoadingButton";
 import { createInjection, updateInjection } from "@/services/injectionsServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const InjectionsDialog = ({
   userDetailsId,
@@ -427,9 +427,7 @@ const InjectionsDialog = ({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A] w-full">
-                Submit
-              </Button>
+              <SubmitButton label="Submit" />
             </form>
           </Form>
         </ScrollArea>

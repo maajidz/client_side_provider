@@ -1,5 +1,5 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
@@ -191,7 +191,7 @@ const ViewReferralIn = () => {
             />
 
             <div className="flex items-end pb-2">
-              <Button type="submit">Search</Button>
+              <SubmitButton label="Search" />
             </div>
           </form>
         </Form>

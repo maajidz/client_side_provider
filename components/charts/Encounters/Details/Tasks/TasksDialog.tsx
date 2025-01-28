@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -42,6 +41,7 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { categoryOptions, priority, reminderOptions } from "@/constants/data";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 function TasksDialog({
   userDetailsId,
@@ -366,9 +366,7 @@ function TasksDialog({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A] hover:bg-[#6C011F]">
-                Save
-              </Button>
+              <SubmitButton label="Save" />
             </div>
           </form>
         </Form>

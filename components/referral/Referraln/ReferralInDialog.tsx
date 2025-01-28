@@ -1,3 +1,4 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
@@ -203,9 +204,7 @@ const ReferralInDialog = ({
               <div className="flex justify-between">
                 <div>Add Referral Out</div>
                 <div className="flex gap-3">
-                  <Button type="submit" className="bg-[#84012A]" disabled={loading}>
-                    Save
-                  </Button>
+                  <SubmitButton label="Save" disabled={loading} />
                   {/* <Button variant={'outline'}>Preview</Button>  */}
                 </div>
               </div>

@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -44,6 +43,7 @@ import { showToast } from "@/utils/utils";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import LoadingButton from "../LoadingButton";
+import SubmitButton from "../custom_buttons/SubmitButton";
 
 const TasksDialog = ({
   tasksData,
@@ -466,9 +466,7 @@ const TasksDialog = ({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A] hover:bg-[#6C011F]">
-                Save
-              </Button>
+              <SubmitButton label="Save" />
             </div>
           </form>
         </Form>

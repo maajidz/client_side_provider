@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import SubmitButton from '@/components/custom_buttons/SubmitButton'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -232,7 +233,7 @@ const RecallsDialog = ({ userDetailsId, recallsData, onClose, isOpen }: {
                             )}
                         />
                         <div className="flex justify-end gap-2">
-                            <Button type="submit">Add</Button>
+                            <SubmitButton label='Add' />
                             <Button variant="outline" type="button">
                                 Cancel
                             </Button>

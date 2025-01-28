@@ -40,6 +40,7 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -352,9 +353,7 @@ function EditTask({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A] hover:bg-[#6C011F]">
-                Save
-              </Button>
+              <SubmitButton label="Save" />
             </div>
           </form>
         </Form>

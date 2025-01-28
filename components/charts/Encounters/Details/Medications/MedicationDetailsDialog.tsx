@@ -37,6 +37,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 interface MedicationDetailsDialogProps {
   isOpen: boolean;
@@ -51,7 +52,7 @@ const MedicationDetailsDialog = ({
   selectedMedication,
   onClose,
 }: MedicationDetailsDialogProps) => {
-  const providerDetails = useSelector((state: RootState) => state.login)
+  const providerDetails = useSelector((state: RootState) => state.login);
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -72,10 +73,7 @@ const MedicationDetailsDialog = ({
     console.log("Form Values:", values);
     setLoading(true);
     try {
-      if (
-        userDetailsId &&
-        selectedMedication?.id
-      ) {
+      if (userDetailsId && selectedMedication?.id) {
         const medicationData: CreateMedicationPrescriptionInterface = {
           ...values,
           medicationNameId: selectedMedication?.id,
@@ -207,12 +205,7 @@ const MedicationDetailsDialog = ({
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  className="bg-[#84012A] text-white hover:bg-[#6C011F]"
-                >
-                  Save
-                </Button>
+                <SubmitButton label="Save" />
               </div>
             </div>
           </form>

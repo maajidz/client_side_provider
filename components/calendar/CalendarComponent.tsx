@@ -27,6 +27,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import { showToast } from '@/utils/utils';
+import SubmitButton from '../custom_buttons/SubmitButton';
 
 interface EventData {
     id: string;
@@ -330,7 +331,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
                                                 </FormItem>
                                             )}
                                         />
-                                        <Button type="submit" className='bg-[#84012A] text-white'>Save changes</Button>
+                                        <SubmitButton label='Save Changes' />
                                     </form>
                                 </FormProvider>
                             </TabsContent>

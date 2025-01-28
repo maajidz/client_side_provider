@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -38,6 +37,7 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import { useToast } from "@/components/ui/use-toast";
 import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const ProceduresSurgeriesAndHospitalizationDialog = ({
   patientDetails,
@@ -214,9 +214,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A]" onClick={()=> console.log(form.getValues())}>
-                Save
-              </Button>
+              <SubmitButton label="Save" />
             </div>
           </form>
         </Form>

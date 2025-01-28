@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { DocumentsInterface } from "@/types/documentsInterface";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
+import SubmitButton from "../custom_buttons/SubmitButton";
 import {
   Select,
   SelectContent,
@@ -19,10 +19,10 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
+import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { searchParamsForDocumentsSchema } from "@/schema/documentsSchema";
-import { Input } from "../ui/input";
 import { useState } from "react";
 
 interface FilterDocumentsProps {
@@ -202,12 +202,7 @@ function FilterDocuments({
 
           {/* Search Button */}
           <div className="flex justify-center items-center w-full sm:w-auto">
-            <Button
-              type="submit"
-              className="p-3 bg-[#84012A] text-white rounded-md hover:bg-[#6C011F] focus:outline-none focus:ring-2 focus:ring-[#6C011F]"
-            >
-              Search
-            </Button>
+            <SubmitButton label="Search" />
           </div>
         </form>
       </Form>

@@ -1,3 +1,4 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -299,13 +300,7 @@ function VaccineOrders() {
             />
 
             <div className="flex flex-row-reverse gap-2">
-              <Button
-                type="submit"
-                className="bg-[#84012A] hover:bg-[#6C011F]"
-                disabled={loading.post}
-              >
-                Save
-              </Button>
+              <SubmitButton label="Save" disabled={loading.post} />
               <Button
                 variant="outline"
                 className="bg-slate-200 hover:bg-slate-100"

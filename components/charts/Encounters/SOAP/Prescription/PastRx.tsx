@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import LoadingButton from '@/components/LoadingButton'
 import { FetchPrescription, UserEncounterData } from '@/types/chartsInterface'
 import { getPrescriptionsData } from '@/services/chartsServices'
+import SubmitButton from '@/components/custom_buttons/SubmitButton'
 
 const PastRx = ({patientDetails}: {patientDetails: UserEncounterData }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -101,7 +102,7 @@ const PastRx = ({patientDetails}: {patientDetails: UserEncounterData }) => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Save changes</Button>
+                    <SubmitButton label='Save Changes' />
                 </DialogFooter>
             </DialogContent>
         </Dialog>

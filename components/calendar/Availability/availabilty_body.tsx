@@ -14,6 +14,7 @@ import { appointmentDateSchema, FormSchema } from '@/schema/availabilitySchema';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useRouter } from 'next/navigation';
+import SubmitButton from '@/components/custom_buttons/SubmitButton';
 
 const AppointmentForm = () => {
   const router = useRouter();
@@ -131,7 +132,7 @@ const AppointmentForm = () => {
                     Add Time Slot
                   </Button>
                 </div>
-                <Button className='bg-[#84012A]' type="submit">Submit</Button>
+                <SubmitButton label='Submit' />
               </div>
               }
             </div>

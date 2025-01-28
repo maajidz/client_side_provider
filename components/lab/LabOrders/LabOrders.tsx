@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
@@ -27,6 +26,7 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 function LabOrders() {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -151,7 +151,7 @@ function LabOrders() {
             />
 
             <div className="flex items-end">
-              <Button type="submit">Search</Button>
+              <SubmitButton label="Search" />
             </div>
           </form>
         </Form>

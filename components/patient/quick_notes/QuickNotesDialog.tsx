@@ -1,5 +1,5 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -131,9 +131,7 @@ const QuickNotesDialog = ({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A]">
-                Save
-              </Button>
+              <SubmitButton label="Save" />
             </div>
           </form>
         </Form>

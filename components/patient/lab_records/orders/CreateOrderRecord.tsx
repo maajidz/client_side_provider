@@ -24,6 +24,7 @@ import { UserData } from "@/types/userInterface";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const CreateOrderRecord = () => {
   const [patient, setPatient] = useState<UserData>();
@@ -139,7 +140,7 @@ const CreateOrderRecord = () => {
                 )}
               />
             </div>
-            <Button className="w-fit" type="submit">Submit</Button>
+            <SubmitButton label="Submit" />
           </form>
         </Form>
         <div className="flex py-5 items-center space-x-4 text-sm">

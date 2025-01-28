@@ -1,5 +1,5 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
@@ -143,7 +143,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
           />
 
           <div className="flex items-end">
-            <Button type="submit">Search</Button>
+            <SubmitButton label="Search" />
           </div>
         </form>
       </Form>

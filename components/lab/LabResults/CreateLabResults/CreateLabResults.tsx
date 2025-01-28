@@ -46,6 +46,7 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const CreateLabResults = () => {
   const form = useForm<z.infer<typeof createLabResultsSchema>>({
@@ -530,7 +531,7 @@ const CreateLabResults = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <SubmitButton label="Submit" />
           </form>
         </Form>
       </div>

@@ -1,5 +1,5 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
-import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import {
   Dialog,
@@ -363,13 +363,10 @@ function SupplementsDialog({
                   </FormItem>
                 )}
               />
-              <Button
-                type="submit"
-                className="bg-[#84012A] hover:bg-[#6C011F]"
+              <SubmitButton
+                label={selectedSupplement ? "Update " : "Save"}
                 disabled={loading}
-              >
-                {selectedSupplement ? "Update " : "Save"}
-              </Button>
+              />
             </div>
           </form>
         </Form>

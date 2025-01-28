@@ -22,6 +22,7 @@ import AddImagesDrawer from "@/components/charts/Encounters/SOAP/Images/AddImage
 import PastImageOrders from "@/components/charts/Encounters/SOAP/Images/PastImageOrders";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const CreateImageResults = () => {
   const [patients, setPatients] = useState<UserData[]>([]);
@@ -180,7 +181,7 @@ const CreateImageResults = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <SubmitButton label="Submit" />
             </div>
           </form>
         </Form>

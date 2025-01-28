@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
@@ -31,6 +30,7 @@ import LoadingButton from "@/components/LoadingButton";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 function LabResults() {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -296,7 +296,7 @@ function LabResults() {
             />
 
             <div className="flex items-end">
-              <Button type="submit">Search</Button>
+              <SubmitButton label="Search" />
             </div>
           </form>
         </Form>

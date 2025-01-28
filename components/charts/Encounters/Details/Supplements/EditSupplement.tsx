@@ -35,6 +35,7 @@ import { showToast } from "@/utils/utils";
 import { Edit2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 interface EditSupplementProps {
   selectedSupplement: SupplementInterface;
@@ -309,13 +310,7 @@ function EditSupplement({
                   </FormItem>
                 )}
               />
-              <Button
-                type="submit"
-                className="bg-[#84012A] hover:bg-[#6C011F]"
-                disabled={loading}
-              >
-                Save
-              </Button>
+              <SubmitButton label="Save" disabled={loading} />
             </div>
           </form>
         </Form>
@@ -325,4 +320,3 @@ function EditSupplement({
 }
 
 export default EditSupplement;
-

@@ -22,6 +22,7 @@ import LoadingButton from '@/components/LoadingButton'
 import { Switch } from '@/components/ui/switch'
 import { showToast } from '@/utils/utils'
 import { useToast } from '@/hooks/use-toast'
+import SubmitButton from '@/components/custom_buttons/SubmitButton'
 
 const AddRx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -519,7 +520,7 @@ const AddRx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
                                 />
                             </div>
                             <div className='flex gap-3'>
-                                <Button type="submit" className='bg-[#84012A]'>Save</Button>
+                                <SubmitButton label='Save' />
                                 <Button variant={'outline'} onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}>Cancel</Button>
                             </div>
                         </form>

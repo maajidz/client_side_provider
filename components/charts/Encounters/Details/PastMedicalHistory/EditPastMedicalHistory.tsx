@@ -29,6 +29,7 @@ import { Edit2Icon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 interface PastMedicalHistoryDialogProps {
   patientDetails: UserEncounterData;
@@ -133,13 +134,7 @@ function EditPastMedicalHistory({
                   </FormItem>
                 )}
               />
-              <Button
-                type="submit"
-                className="bg-[#84012A] hover:bg-[#6C011F]"
-                disabled={loading}
-              >
-                Save
-              </Button>
+              <SubmitButton label="Save" disabled={loading} />
             </div>
           </form>
         </Form>

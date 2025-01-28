@@ -14,6 +14,7 @@ import { UserEncounterData } from '@/types/chartsInterface'
 import { useToast } from '@/components/ui/use-toast'
 import { createDiagnoses, createSOAPChart, updateSOAPChart } from '@/services/chartsServices'
 import { showToast } from '@/utils/utils'
+import SubmitButton from '@/components/custom_buttons/SubmitButton'
 
 const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterData, encounterId: string }) => {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -83,62 +84,78 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
     };
 
     return (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-                <Button variant="ghost" className='text-blue-500 underline'>Add Dx</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-lg">
-                <DialogHeader>
-                    <DialogTitle>Add Diagnoses</DialogTitle>
-                </DialogHeader>
-                <div className='flex flex-col gap-4'>
-                    <div className="flex gap-3">
-                        <div className='w-32'>Diagnosis</div>
-                        <div className='w-32'>ICD Codes</div>
-                        <div className='w-32'>Notes</div>
-                    </div>
-                    <div className='flex flex-col gap-2'>
-                        {rows.map((row, index) => (
-                            <div className="flex justify-between" key={index}>
-                                <Input
-                                    type="text"
-                                    placeholder="Enter Diagnosis"
-                                    value={row.diagnosis_name}
-                                    onChange={(e) => handleChange(index, 'diagnosis_name', e.target.value)}
-                                    className="col-span-4 border rounded sm:max-w-32"
-                                />
-                                <Input
-                                    type="text"
-                                    placeholder="ICD Codes"
-                                    value={row.ICD_Code}
-                                    onChange={(e) => handleChange(index, 'ICD_Code', e.target.value)}
-                                    className="col-span-4 border rounded sm:max-w-32 "
-                                />
-                                <Input
-                                    type="text"
-                                    placeholder="Notes"
-                                    value={row.notes}
-                                    onChange={(e) => handleChange(index, 'notes', e.target.value)}
-                                    className="col-span-3 border rounded sm:max-w-32"
-                                />
-                                <Button variant={'ghost'}
-                                    onClick={() => handleDeleteRow(index)}
-                                >
-                                    <TrashIcon />
-                                </Button>
-                            </div>
-                        ))}
-                    </div>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogTrigger asChild>
+          <Button variant="ghost" className="text-blue-500 underline">
+            Add Dx
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Add Diagnoses</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-3">
+              <div className="w-32">Diagnosis</div>
+              <div className="w-32">ICD Codes</div>
+              <div className="w-32">Notes</div>
+            </div>
+            <div className="flex flex-col gap-2">
+              {rows.map((row, index) => (
+                <div className="flex justify-between" key={index}>
+                  <Input
+                    type="text"
+                    placeholder="Enter Diagnosis"
+                    value={row.diagnosis_name}
+                    onChange={(e) =>
+                      handleChange(index, "diagnosis_name", e.target.value)
+                    }
+                    className="col-span-4 border rounded sm:max-w-32"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="ICD Codes"
+                    value={row.ICD_Code}
+                    onChange={(e) =>
+                      handleChange(index, "ICD_Code", e.target.value)
+                    }
+                    className="col-span-4 border rounded sm:max-w-32 "
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Notes"
+                    value={row.notes}
+                    onChange={(e) =>
+                      handleChange(index, "notes", e.target.value)
+                    }
+                    className="col-span-3 border rounded sm:max-w-32"
+                  />
+                  <Button
+                    variant={"ghost"}
+                    onClick={() => handleDeleteRow(index)}
+                  >
+                    <TrashIcon />
+                  </Button>
                 </div>
-                <DialogFooter>
-                    <div className='flex justify-between w-full'>
-                        <Button variant={'ghost'} onClick={handleAddRow} > Add Row</Button>
-                        <Button type="submit" onClick={handleSubmit} className='bg-[#84012A]' disabled = {rows[0].diagnosis_name == '' ? true: false}>Save changes</Button>
-                    </div>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    )
+              ))}
+            </div>
+          </div>
+          <DialogFooter>
+            <div className="flex justify-between w-full">
+              <Button variant={"ghost"} onClick={handleAddRow}>
+                {" "}
+                Add Row
+              </Button>
+              <SubmitButton
+                label="Save Changes"
+                disabled={rows[0].diagnosis_name == "" ? true : false}
+                onClick={handleSubmit}
+              />
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
 }
 
 export default AddDx

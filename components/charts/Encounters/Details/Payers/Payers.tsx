@@ -1,3 +1,4 @@
+import SubmitButton from '@/components/custom_buttons/SubmitButton'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { PlusCircle } from 'lucide-react'
@@ -16,7 +17,7 @@ const Payers = () => {
                         <DialogTitle>Edit profile</DialogTitle>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button type="submit">Save changes</Button>
+                        <SubmitButton label='Save Changes' />
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

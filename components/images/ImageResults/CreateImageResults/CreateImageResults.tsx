@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useEffect } from "react";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -217,7 +218,7 @@ const CreateImageResults = () => {
                 <div key={test}>
                   <UploadImageResults
                     onUploadComplete={(images) => handleUploadComplete(images)}
-                    userDetailsId= {form.getValues().patient}
+                    userDetailsId={form.getValues().patient}
                   />
                   {uploadedImages &&
                     uploadedImages.map((image) => (
@@ -248,15 +249,7 @@ const CreateImageResults = () => {
                 </div>
               </div>
             ))}
-            <Button
-              type="submit"
-              onClick={() => {
-                console.log("Submit Clicked");
-                console.log(form.getValues());
-              }}
-            >
-              Submit
-            </Button>
+            <SubmitButton label="Submit" />
           </form>
         </Form>
       </div>

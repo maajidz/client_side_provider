@@ -27,6 +27,7 @@ import { z } from "zod";
 import { CreatePastMedicalHistoryType } from "@/services/pastMedicalHistoryInterface";
 import { createPastMedicalHistory } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 interface PastMedicalHistoryDialogProps {
   patientDetails: UserEncounterData;
@@ -126,9 +127,7 @@ function PastMedicalHistoryDialog({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-[#84012A] hover:bg-[#6C011F]">
-                Save
-              </Button>
+              <SubmitButton label="Save" />
             </div>
           </form>
         </Form>

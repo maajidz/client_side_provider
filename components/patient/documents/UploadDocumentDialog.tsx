@@ -1,3 +1,4 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -292,13 +293,7 @@ function UploadDocumentDialog({
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                className="bg-[#84012A] rounded-md hover:bg-[#6C011F]"
-                disabled={loading}
-              >
-                Upload
-              </Button>
+              <SubmitButton label="Upload" disabled={loading} />
             </DialogFooter>
           </form>
         </Form>

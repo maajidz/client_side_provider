@@ -8,6 +8,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
+import SubmitButton from '@/components/custom_buttons/SubmitButton'
 
 const MapDxDialog = () => {
     return (
@@ -20,7 +21,7 @@ const MapDxDialog = () => {
                     <DialogTitle>Edit profile</DialogTitle>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button type="submit">Save changes</Button>
+                    <SubmitButton label='Save Changes' />
                 </DialogFooter>
             </DialogContent>
         </Dialog>
