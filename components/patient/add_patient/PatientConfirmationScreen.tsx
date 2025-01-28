@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
 } from "@/components/ui/dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 const PatientConfirmationScreen = ({
   onClose,
@@ -15,7 +16,7 @@ const PatientConfirmationScreen = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <DialogHeader>Patient Created Succesfully!</DialogHeader>
+        <DialogHeader><DialogTitle>Patient Created Succesfully!</DialogTitle></DialogHeader>
         To get Login Details check your email.
       </DialogContent>
     </Dialog>
