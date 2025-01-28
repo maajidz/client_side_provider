@@ -1,23 +1,23 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import styles from "./patient.module.css";
-import LoadingButton from "../../LoadingButton";
+import styles from "../patient.module.css";
+import LoadingButton from "../../../LoadingButton";
 import { PatientDetails } from "@/types/userInterface";
 import { fetchUserInfo } from "@/services/userServices";
 
-const PatientDemographics = ({userId}: {userId: string}) => {
+const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<PatientDetails>();
   const [loading, setLoading] = useState(false);
 
   const fetchAndSetResponse = useCallback(async () => {
     setLoading(true);
-    const userData = await fetchUserInfo({ userDetailsId: userId });
+    const userData = await fetchUserInfo({ userDetailsId: userDetailsId });
     if (userData) {
       setResponse(userData?.userDetails);
       setLoading(false);
     }
-  }, [userId]);
+  }, [userDetailsId]);
 
   useEffect(() => {
     fetchAndSetResponse();

@@ -3,11 +3,9 @@ import React from "react";
 
 const CustomTabsTrigger = ({
   value,
-  key,
   children,
 }: {
   value: string;
-  key: string;
   children: React.ReactNode;
 }) => {
   return (
@@ -16,7 +14,6 @@ const CustomTabsTrigger = ({
           data-[state=active]:shadow-md data-[state=active]:shadow-[#FFE7E7] 
           data-[state=active]:border-[#FFE7E7]"
       value={value}
-      key={key}
     >
       {children}
     </TabsTrigger>
