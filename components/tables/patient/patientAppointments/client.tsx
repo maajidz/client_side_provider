@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
 import { UserAppointmentInterface } from "@/types/userInterface";
 import { fetchUserAppointments } from "@/services/userServices";
+import { AppointmentsDialog } from "@/components/patient/appointments/AppointmentsDialog";
 
 export function PatientAppointmentClient({
   userDetailsId,
@@ -17,6 +18,10 @@ export function PatientAppointmentClient({
   const [loading, setLoading] = useState(true);
   const [pageNo, setPageNo] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [editData, setEditData] = useState<UserAppointmentInterface | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchAndSetResponse = async () => {
@@ -39,6 +44,11 @@ export function PatientAppointmentClient({
     fetchAndSetResponse();
   }, [userDetailsId]);
 
+  const handleRowClick = (appointmentData: UserAppointmentInterface) => {
+    setEditData(appointmentData);
+    setIsDialogOpen(true);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -53,7 +63,7 @@ export function PatientAppointmentClient({
         <div className="space-y-4">
           <DataTable
             searchKey="name"
-            columns={columns()}
+            columns={columns(handleRowClick)}
             data={userAppointment}
             pageNo={pageNo}
             totalPages={totalPages}
@@ -65,6 +75,14 @@ export function PatientAppointmentClient({
           User hasn&apos;t booked any appointment
         </div>
       )}
+      <AppointmentsDialog
+        userDetailsId={userDetailsId}
+        onClose={() => {
+          setIsDialogOpen(false);
+        }}
+        appointmentsData={editData}
+        isOpen={isDialogOpen}
+      />
     </>
   );
 }
