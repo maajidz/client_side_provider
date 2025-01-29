@@ -33,7 +33,6 @@ import {
   createFamilyHistory,
   updateFamilyHistoryData,
 } from "@/services/chartDetailsServices";
-import { UserEncounterData } from "@/types/chartsInterface";
 import {
   ActiveProblem,
   EditFamilyHistoryInterface,
@@ -46,15 +45,15 @@ import { RootState } from "@/store/store";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 function FamilyHistoryDialog({
-  patientDetails,
+  userDetailsId,
   onClose,
   isOpen,
   familyHistoryData,
 }: {
-  patientDetails: UserEncounterData;
+  userDetailsId: string;
   onClose: () => void;
   isOpen: boolean;
-  familyHistoryData: EditFamilyHistoryInterface | null;
+  familyHistoryData?: EditFamilyHistoryInterface | null;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [customProblem, setCustomProblem] = useState<string>("");
@@ -108,7 +107,7 @@ function FamilyHistoryDialog({
 
   const onSubmit = async (values: z.infer<typeof familyHistorySchema>) => {
     console.log("Form Values:", values);
-    if (patientDetails.userDetails.id) {
+    if (userDetailsId) {
       const transformedActiveProblems: ActiveProblem[] =
         values.activeProblems?.map((problemName) => ({
           name: problemName,
@@ -136,7 +135,7 @@ function FamilyHistoryDialog({
             age: Number(values.age),
             comments: values.comments || "",
             activeProblems: transformedActiveProblems,
-            userDetailsId: patientDetails.userDetails.id,
+            userDetailsId,
             providerId: providerDetails.providerId,
           };
           await createFamilyHistory({ requestData: requestData });

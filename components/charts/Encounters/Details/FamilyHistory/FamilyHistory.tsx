@@ -95,7 +95,7 @@ const FamilyHistory = ({
               <PlusCircle />
             </Button>
             <FamilyHistoryDialog
-              patientDetails={patientDetails}
+              userDetailsId={patientDetails.userDetails.id}
               familyHistoryData={editData}
               onClose={() => {
                 setIsDialogOpen(false);

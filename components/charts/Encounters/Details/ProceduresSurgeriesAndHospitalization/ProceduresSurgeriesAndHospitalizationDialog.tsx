@@ -30,25 +30,22 @@ import {
   createProcedure,
   updateProcedureData,
 } from "@/services/chartDetailsServices";
-import {
-  UpdateProceduresInterface,
-} from "@/types/procedureInterface";
-import { UserEncounterData } from "@/types/chartsInterface";
+import { UpdateProceduresInterface } from "@/types/procedureInterface";
 import { useToast } from "@/components/ui/use-toast";
 import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 const ProceduresSurgeriesAndHospitalizationDialog = ({
-  patientDetails,
+  userDetailsId,
   procedureData,
   onClose,
   isOpen,
 }: {
-  patientDetails: UserEncounterData;
+  userDetailsId: string;
   procedureData?: UpdateProceduresInterface | null;
-  onClose: () => void;
   isOpen: boolean;
+  onClose: () => void;
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
@@ -62,6 +59,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
       name: procedureData?.name || "",
       fromDate:
         procedureData?.fromDate || new Date().toISOString().split("T")[0],
+      toDate: procedureData?.toDate || new Date().toISOString().split("T")[0],
       notes: procedureData?.notes || "",
     },
   });
@@ -73,6 +71,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
         name: procedureData?.name || "",
         fromDate:
           procedureData?.fromDate || new Date().toISOString().split("T")[0],
+        toDate: procedureData?.toDate || new Date().toISOString().split("T")[0],
         notes: procedureData?.notes || "",
       });
     }
@@ -81,16 +80,16 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
   const onSubmit = async (
     values: z.infer<typeof addProceduresSurgeriesAndHospitalizationFormSchema>
   ) => {
-    console.log("Form Values:", values);
     setLoading(true);
     try {
-       if (!procedureData) {
+      if (!procedureData) {
         const requestData = {
           type: values.type ?? "",
           name: values.name,
           fromDate: values.fromDate ?? "",
+          toDate: values.toDate ?? "",
           notes: values.notes ?? "",
-          userDetailsId: patientDetails.userDetails.id,
+          userDetailsId,
         };
         const response = await createProcedure({ requestData: requestData });
         if (response) {
@@ -100,23 +99,27 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
             message: "Added procedure successfully",
           });
         }
-        } else {
-          const requestData = {
-            type: values.type ?? "",
-            name: values.name,
-            fromDate: values.fromDate ?? "",
-            notes: values.notes ?? "",
-            userDetailsId: patientDetails.userDetails.id,
-          };
-          const response = await updateProcedureData({ requestData: requestData, id: procedureData.id });
-          if (response) {
-            showToast({
-              toast,
-              type: "success",
-              message: "Edited procedure successfully",
-            });
-          }
+      } else {
+        const requestData = {
+          type: values.type ?? "",
+          name: values.name,
+          fromDate: values.fromDate ?? "",
+          toDate: values.toDate ?? "",
+          notes: values.notes ?? "",
+          userDetailsId,
+        };
+        const response = await updateProcedureData({
+          requestData: requestData,
+          id: procedureData.id,
+        });
+        if (response) {
+          showToast({
+            toast,
+            type: "success",
+            message: "Edited procedure successfully",
+          });
         }
+      }
       onClose();
     } catch (e) {
       console.log("Error:", e);
@@ -194,6 +197,19 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                 render={({ field }) => (
                   <FormItem className="flex gap-2 items-center">
                     <FormLabel>From Date:</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="toDate"
+                render={({ field }) => (
+                  <FormItem className="flex gap-2 items-center">
+                    <FormLabel>To Date:</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>

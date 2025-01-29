@@ -30,7 +30,9 @@ const ProceduresSurgeriesAndHospitalization = ({
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const [data, setData] = useState<ProcedureResponse>();
-  const [editData, setEditData] = useState<UpdateProceduresInterface | null>(null);
+  const [editData, setEditData] = useState<UpdateProceduresInterface | null>(
+    null
+  );
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const fetchProcedures = useCallback(async () => {
@@ -62,11 +64,11 @@ const ProceduresSurgeriesAndHospitalization = ({
         type: "success",
         message: `Procedure deleted successfully`,
       });
-      fetchProcedures();
     } catch (e) {
       showToast({ toast, type: "error", message: `Error` });
       console.log("Error:", e);
     } finally {
+      fetchProcedures();
       setLoading(false);
     }
   };
@@ -93,13 +95,13 @@ const ProceduresSurgeriesAndHospitalization = ({
               <PlusCircle />
             </Button>
             <ProceduresSurgeriesAndHospitalizationDialog
-              patientDetails={patientDetails}
+              userDetailsId={patientDetails.userDetails.id}
               procedureData={editData}
+              isOpen={isDialogOpen}
               onClose={() => {
                 setIsDialogOpen(false);
                 fetchProcedures();
               }}
-              isOpen={isDialogOpen}
             />
           </div>
           <AccordionContent className="sm:max-w-4xl">
@@ -123,6 +125,7 @@ const ProceduresSurgeriesAndHospitalization = ({
                               type: procedure.type,
                               name: procedure.name,
                               fromDate: procedure.fromDate,
+                              toDate: procedure.toDate,
                               notes: procedure.notes,
                               userDetailsId: procedure.userDetailsId,
                             });
@@ -144,6 +147,10 @@ const ProceduresSurgeriesAndHospitalization = ({
                       <FormLabels
                         label="From date"
                         value={procedure.fromDate.split("T")[0]}
+                      />
+                      <FormLabels
+                        label="To date"
+                        value={procedure.toDate?.split("T")[0] ?? ""}
                       />
                       <FormLabels label="Notes" value={procedure.notes} />
                     </div>
