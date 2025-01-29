@@ -24,7 +24,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
 
   const handleAppointmentClick = () => {
-    router.push(`/dashboard/provider/patient/appointments/${data.userDetailsId}`);
+    router.push(`/dashboard/provider/patient/${data.id}appointments/`);
   };
 
   const handleSubscriptionClick = () => {

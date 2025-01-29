@@ -25,7 +25,7 @@ export default function PatientSidebar({
     >
       <>
         <div className="h-5"></div>
-        <ScrollArea className="h-[95vh] w-48 ">
+        <ScrollArea className="h-[75vh] w-48 ">
           <div className="p-4">
             <PatientNav items={items} />
           </div>

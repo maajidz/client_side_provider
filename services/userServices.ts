@@ -87,14 +87,14 @@ export const fetchUserAppointments = async ({
   try {
     const response = await ApiFetch({
       method: "get",
-      url: `/appointments/${userDetailsId}?q=ALL`,
+      url: `/provider/appointments/patient/${userDetailsId}?q=AL`,
     });
     console.log(response.data);
     const data: UserAppointmentInterface[] = await response.data;
     console.log(data);
     return data;
   } catch (error) {
-    console.error("Error fetching response", error);
+    console.log("Error fetching response", error);
   }
 };
 
@@ -115,7 +115,7 @@ export const fetchUserSubscriptions = async ({
     console.log(data);
     return data;
   } catch (error) {
-    console.error("Error fetching response", error);
+    console.log("Error fetching response", error);
   }
 };
 
@@ -136,7 +136,7 @@ export const fetchUserPayments = async ({
     console.log(data);
     return data.payments;
   } catch (error) {
-    console.error("Error fetching response", error);
+    console.log("Error fetching response", error);
   }
 };
 
@@ -155,7 +155,7 @@ export const fetchUserMedication = async ({
     console.log(data);
     return data;
   } catch (error) {
-    console.error("Error fetching response", error);
+    console.log("Error fetching response", error);
   }
 };
 
@@ -176,7 +176,7 @@ export const fetchUserForms = async ({
     console.log(data);
     return data;
   } catch (error) {
-    console.error("Error fetching response", error);
+    console.log("Error fetching response", error);
   }
 };
 

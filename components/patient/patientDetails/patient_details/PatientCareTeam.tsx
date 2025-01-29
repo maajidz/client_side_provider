@@ -38,8 +38,13 @@ const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="">Primary Care Physician {careTeam?.primaryCarePhysician.NameOfPhysician}</div>
+    <div className="flex flex-row gap-5">
+      <div className="flex flex-col">
+        <div className="">
+          Primary Care Physician{" "}
+          {careTeam?.primaryCarePhysician.NameOfPhysician}
+        </div>
+      </div>
       <div>Referring Provider</div>
       <div> In-house Care Team</div>
     </div>

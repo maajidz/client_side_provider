@@ -1,115 +1,5 @@
 import { NavItem, PatientItem } from "@/types";
 
-export type User = {
-  id: number;
-  name: string;
-  company: string;
-  role: string;
-  verified: boolean;
-  status: string;
-};
-export const users: User[] = [
-  {
-    id: 1,
-    name: "Candice Schiner",
-    company: "Dell",
-    role: "Frontend Developer",
-    verified: false,
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "John Doe",
-    company: "TechCorp",
-    role: "Backend Developer",
-    verified: true,
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    company: "WebTech",
-    role: "UI Designer",
-    verified: true,
-    status: "Active",
-  },
-  {
-    id: 4,
-    name: "David Smith",
-    company: "Innovate Inc.",
-    role: "Fullstack Developer",
-    verified: false,
-    status: "Inactive",
-  },
-  {
-    id: 5,
-    name: "Emma Wilson",
-    company: "TechGuru",
-    role: "Product Manager",
-    verified: true,
-    status: "Active",
-  },
-  {
-    id: 6,
-    name: "James Brown",
-    company: "CodeGenius",
-    role: "QA Engineer",
-    verified: false,
-    status: "Active",
-  },
-  {
-    id: 7,
-    name: "Laura White",
-    company: "SoftWorks",
-    role: "UX Designer",
-    verified: true,
-    status: "Active",
-  },
-  {
-    id: 8,
-    name: "Michael Lee",
-    company: "DevCraft",
-    role: "DevOps Engineer",
-    verified: false,
-    status: "Active",
-  },
-  {
-    id: 9,
-    name: "Olivia Green",
-    company: "WebSolutions",
-    role: "Frontend Developer",
-    verified: true,
-    status: "Active",
-  },
-  {
-    id: 10,
-    name: "Robert Taylor",
-    company: "DataTech",
-    role: "Data Analyst",
-    verified: false,
-    status: "Active",
-  },
-];
-
-export type Employee = {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  gender: string;
-  date_of_birth: string;
-  street: string;
-  city: string;
-  state: string;
-  country: string;
-  zipcode: string;
-  longitude?: number;
-  latitude?: number;
-  job: string;
-  profile_picture?: string | null;
-};
-
 export const navItems: NavItem[] = [
   // {
   //   title: 'Dashboard',
@@ -307,11 +197,7 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
     href: `/dashboard/provider/patient/${userDetailsId}/referrals`,
     label: "Referrals",
   },
-  {
-    title: "",
-    href: `/dashboard`,
-    label: "",
-  },
+
   // {
   //   title: "Audit Trails",
   //   href: `/dashboard/patients/${userDetailsId}/audit_trails`,
@@ -415,4 +301,72 @@ export const US_STATES = [
   { name: "West Virginia" },
   { name: "Wisconsin" },
   { name: "Wyoming" },
+];
+
+export const timeZonesList = [
+  {
+    label: 'America',
+    values: [
+      { value: "America/Adak", label: 'Adak' },
+      { value: "America/Anchorage", label: 'Anchorage' },
+      { value: "America/Juneau", label: 'Juneau' },
+      { value: "America/Metlakatla", label: 'Metlakatla' },
+      { value: "America/Nome", label: 'Nome' },
+      { value: "America/Sitka", label: 'Sitka' },
+      { value: "America/Yakutat", label: 'Yakutat' },
+      { value: "America/Dawson", label: 'Dawson' },
+      { value: "America/Dawson_Creek", label: 'Dawson Creek' },
+      { value: "America/Creston", label: 'Creston' },
+      { value: "America/Whitehorse", label: 'Whitehorse' },
+      { value: "America/Phoenix", label: 'Phoenix' },
+      { value: "America/Fort_Nelson", label: 'Fort Nelson' },
+      { value: "America/Vancouver", label: 'Vancouver' },
+      { value: "America/Los_Angeles", label: 'Los Angeles' },
+      { value: "America/Tijuana", label: 'Tijuana' },
+      { value: "America/Hermosillo", label: 'Hermosillo' },
+      { value: "America/Boise", label: 'Boise' },
+      { value: "America/Denver", label: 'Denver' },
+      { value: "America/Inuvik", label: 'Inuvik' },
+      { value: "America/Yellowknife", label: 'Yellowknife' },
+      { value: "America/Cambridge_Bay", label: 'Cambridge Bay' },
+      { value: "America/Ojinaga", label: 'Ojinaga' },
+      { value: "America/Edmonton", label: 'Edmonton' },
+      { value: "America/Mazatlan", label: 'Mazatlan' },
+      { value: "America/Chihuahua", label: 'Chihuahua' },
+      { value: "America/Belize", label: 'Belize' },
+      { value: "America/Guatemala", label: 'Guatemala' },
+      { value: "America/Costa_Rica", label: 'Costa Rica' },
+      { value: "America/Managua", label: 'Managua' },
+      { value: "America/Regina", label: 'Regina' },
+      { value: "America/El_Salvador", label: 'El Salvador' },
+      { value: "America/Swift_Current", label: 'Swift Current' },
+      { value: "America/Tegucigalpa", label: 'Tegucigalpa' },
+      { value: "America/Rio_Branco", label: 'Rio Branco' },
+      { value: "America/Eirunepe", label: 'Eirunepe' },
+      { value: "America/Cancun", label: 'Cancun' },
+      { value: "America/Atikokan", label: 'Atikokan' },
+      { value: "America/Panama", label: 'Panama' },
+      { value: "America/Jamaica", label: 'Jamaica' },
+      { value: "America/Bogota", label: 'Bogota' },
+      { value: "America/Lima", label: 'Lima' },
+      { value: "America/Bahia_Banderas", label: 'Bahia Banderas' },
+      { value: "America/Chicago", label: 'Chicago' },
+      { value: "America/New_York", label: 'New York' },
+      { value: "America/Indiana/Indianapolis", label: 'Indianapolis' },
+      { value: "America/Indiana/Knox", label: 'Knox' },
+      { value: "America/Indiana/Winamac", label: 'Winamac' },
+      { value: "America/Detroit", label: 'Detroit' },
+      { value: "America/North_Dakota/Center", label: 'Center' },
+      { value: "America/North_Dakota/New_Salem", label: 'New Salem' },
+      { value: "America/Grand_Turk", label: 'Grand Turk' },
+      { value: "America/Havana", label: 'Havana' },
+      { value: "America/Asuncion", label: 'Asuncion' },
+      { value: "America/Santiago", label: 'Santiago' },
+      { value: "America/Argentina/Buenos_Aires", label: 'Buenos Aires' },
+      { value: "America/Sao_Paulo", label: 'Sao Paulo' },
+      { value: "America/Caracas", label: 'Caracas' },
+      { value: "America/Puerto_Rico", label: 'Puerto Rico' },
+      { value: "America/Guayaquil", label: 'Guayaquil' },
+    ]
+  },
 ];

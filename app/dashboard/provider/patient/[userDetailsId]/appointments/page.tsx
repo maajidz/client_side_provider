@@ -10,6 +10,7 @@ const breadcrumbItems = [
   { title: "Patients", link: "/dashboard/provider/patient" },
   { title: "Appointments", link: "" },
 ];
+
 function Page() {
   const { userDetailsId } = useParams();
 

@@ -104,7 +104,7 @@ export interface UserAppointmentInterface {
   timeOfAppointment: string;
   timeZone: string;
   status: string;
-  userDetailsId: string;
+  userDetails: PatientDetails
   providerId: string;
   createdAt: string;
   updatedAt: string;
@@ -112,6 +112,7 @@ export interface UserAppointmentInterface {
   specialization: string;
   endtimeOfAppointment: string;
   meetingLink: string;
+  reason: string;
 }
 
 export interface AdditionalGuestInfo {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import styles from "../patient.module.css";
+import styles from "./patient.module.css";
 import LoadingButton from "../../../LoadingButton";
 import { PatientDetails } from "@/types/userInterface";
 import { fetchUserInfo } from "@/services/userServices";

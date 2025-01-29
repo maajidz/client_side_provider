@@ -25,10 +25,6 @@ export const columns = (): ColumnDef<UserAppointmentInterface>[] => [
     )
   },
   {
-    accessorKey: 'status',
-    header: 'Status'
-  },
-  {
     accessorKey: 'providerName',
     header: 'Provider Name'
   },

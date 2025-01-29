@@ -19,7 +19,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
       if (userData) {
         setResponse(userData.userDetails);
         setLoading(false);
-        setAge(calculateAge(userData.userDetails.dob))
+        setAge(calculateAge(userData.userDetails.dob));
       }
     };
 
@@ -43,22 +43,18 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             value={`${response?.user?.firstName} ${response?.user?.lastName}`}
           />
           <div className="flex flex-row gap-3">
-            <div>{response?.gender}/{age}</div>
+            <div>
+              {response?.gender}/{age}
+            </div>
             <PatientLabelDetails
               label="ID:"
               value={`${userId.slice(0, 6)}...`}
             />
           </div>
-          <PatientLabelDetails
-            label="DOB:"
-            value={`${response?.dob && response?.dob.split("T")[0]}`}
-          />
         </div>
         <div className={styles.infoBox}>
-          <div className="flex flex-col gap-3">
-            <div>Allergies</div>
             <PatientLabelDetails
-              label=""
+              label="Allergies:"
               value={`${
                 response?.allergies && response.allergies.length > 0
                   ? response.allergies
@@ -67,21 +63,22 @@ const PatientHeader = ({ userId }: { userId: string }) => {
                   : "N/A"
               }`}
             />
-          </div>
         </div>
         <div className={styles.infoBox}>
           <div>
-            <PatientLabelDetails
-              label="Weight:"
-              value={`${response?.vitals[0].weightLbs}lbs ${response?.vitals[0].weightOzs}ozs`}
-            />
+            <div className="flex flex-row gap-3">
+              <PatientLabelDetails
+                label="Weight:"
+                value={`${response?.vitals[0].weightLbs}lbs ${response?.vitals[0].weightOzs}ozs`}
+              />
+              <PatientLabelDetails
+                label="BMI:"
+                value={`${response?.vitals[0]?.BMI}`}
+              />
+            </div>
             <PatientLabelDetails
               label="Height:"
               value={`${response?.vitals[0]?.heightFeets} fts ${response?.vitals[0]?.heightInches} inches`}
-            />
-            <PatientLabelDetails
-              label="BMI:"
-              value={`${response?.vitals[0]?.BMI}`}
             />
           </div>
         </div>
