@@ -11,14 +11,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { deleteTask, updateTaskStatus } from "@/services/chartDetailsServices";
+import generateTasksPDF from "../patient/tasks/generateTasksPDF";
 
-const handleTasksDelete = async (  taskId: string,
+const handleTasksDelete = async (
+  taskId: string,
   setLoading: (loading: boolean) => void,
-  showToast: (args: { type: string; message: string }) => void,
+  showToast: (args: { type: string; message: string }) => void
 ) => {
   setLoading(true);
   try {
-    await deleteTask({id: taskId});
+    await deleteTask({ id: taskId });
     showToast({
       type: "success",
       message: "Task deleted successfully",
@@ -31,16 +33,17 @@ const handleTasksDelete = async (  taskId: string,
   }
 };
 
-const handleTasksStatusUpdate = async (  taskId: string,
+const handleTasksStatusUpdate = async (
+  taskId: string,
   setLoading: (loading: boolean) => void,
-  showToast: (args: { type: string; message: string }) => void,
+  showToast: (args: { type: string; message: string }) => void
 ) => {
   setLoading(true);
   try {
-    const requestData : Status = {
-      status: "COMPLETED"
-    }
-    await updateTaskStatus({id: taskId, requestData});
+    const requestData: Status = {
+      status: "COMPLETED",
+    };
+    await updateTaskStatus({ id: taskId, requestData });
     showToast({
       type: "success",
       message: "Task deleted successfully",
@@ -58,7 +61,7 @@ export const columns = ({
   setIsDialogOpen,
   setLoading,
   showToast,
-  fetchTasksList
+  fetchTasksList,
 }: {
   setEditData: (data: TasksResponseDataInterface | null) => void;
   setIsDialogOpen: (isOpen: boolean) => void;
@@ -157,15 +160,25 @@ export const columns = ({
             >
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {
-              handleTasksStatusUpdate(row.original.id, setLoading, showToast)
-            }}>Mark as completed</DropdownMenuItem>
-            <DropdownMenuItem onClick={() =>{
+            <DropdownMenuItem
+              onClick={() => {
+                handleTasksStatusUpdate(row.original.id, setLoading, showToast);
+              }}
+            >
+              Mark as completed
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
                 handleTasksDelete(row.original.id, setLoading, showToast);
-                fetchTasksList(); 
-            }
-              }>
+                fetchTasksList();
+              }}
+            >
               Delete
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => generateTasksPDF({ tasksData: row.original })}
+            >
+              Print
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

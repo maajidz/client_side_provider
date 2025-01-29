@@ -9,13 +9,13 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   return (
     <>
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-3">
         <DefaultButton
           onClick={() => {
             setIsDialogOpen(true);
           }}
         >
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <PlusIcon />
             Tasks
           </div>

@@ -38,7 +38,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const [resultList, setResultList] = useState<TasksResponseInterface>();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
-  const limit = 8;
+  const limit = 5;
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
@@ -112,11 +112,11 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-      <div className="">
+      <div className="flex flex-col gap-3">
         <Form {...form}>
           <form
             onChange={form.handleSubmit(onSubmit)}
-            className="flex justify-between"
+            className="flex gap-3"
           >
             <FormField
               control={form.control}
@@ -203,9 +203,8 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             />
           </form>
         </Form>
-
         {/* Results Table */}
-        <div className="py-5">
+        <div className="space-y-3">
           {resultList?.data && (
             <DataTable
               searchKey="id"
