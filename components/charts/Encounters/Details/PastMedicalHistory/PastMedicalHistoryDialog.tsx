@@ -1,8 +1,6 @@
 import LoadingButton from "@/components/LoadingButton";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -19,8 +17,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addPastMedicalHistorySchema } from "@/schema/addPastMedicalHistorySchema";
-import { UserEncounterData } from "@/types/chartsInterface";
-import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -30,11 +26,15 @@ import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 interface PastMedicalHistoryDialogProps {
-  patientDetails: UserEncounterData;
+  isOpen: boolean;
+  userDetailsId: string;
+  onClose: () => void,
 }
 
 function PastMedicalHistoryDialog({
-  patientDetails,
+  isOpen,
+  userDetailsId,
+  onClose,
 }: PastMedicalHistoryDialogProps) {
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
@@ -57,7 +57,7 @@ function PastMedicalHistoryDialog({
     const requestData: CreatePastMedicalHistoryType = {
       notes: values.notes,
       glp_refill_note_practice: values.glp_refill_note_practice,
-      userDetailsId: patientDetails.userDetails.id,
+      userDetailsId,
     };
 
     setLoading(true);
@@ -79,6 +79,7 @@ function PastMedicalHistoryDialog({
       }
     } finally {
       setLoading(false);
+      onClose();
       form.reset();
     }
   };
@@ -88,12 +89,7 @@ function PastMedicalHistoryDialog({
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost">
-          <PlusCircle />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Add Past Medical History</DialogTitle>

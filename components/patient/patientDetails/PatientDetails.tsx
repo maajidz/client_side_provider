@@ -5,7 +5,8 @@ import PatientCareTeam from "./patient_details/PatientCareTeam";
 import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 import PatientQuestionnaires from "./patient_details/PatientQuestionnaires";
 import PatientInsurance from "./patient_details/PatientInsurance";
-import PatientPharmacy from "./patient_details/PatientPharmacy";
+// import PatientPharmacy from "./pharmacy/PatientPharmacy";
+import MedicalHistory from "./medical-history/MedicalHistory";
 
 const patientDetailsTab = [
   {
@@ -14,14 +15,14 @@ const patientDetailsTab = [
     component: PatientDemographics,
   },
   { value: "care_team", label: "Care Team", component: PatientCareTeam },
-  { value: "medical_history", label: "Medical History", component: null },
+  { value: "medical_history", label: "Medical History", component: MedicalHistory },
   {
     value: "questionnaires",
     label: "Questionnaires",
     component: PatientQuestionnaires,
   },
   { value: "insurance", label: "Insurance", component: PatientInsurance },
-  { value: "pharmacy", label: "Pharmacy", component: PatientPharmacy },
+  { value: "pharmacy", label: "Pharmacy", component: null },
 ];
 
 const PatientDetails = ({ userId }: { userId: string }) => {

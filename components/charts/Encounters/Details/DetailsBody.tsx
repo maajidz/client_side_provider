@@ -17,6 +17,7 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import ProceduresSurgeriesAndHospitalization from "./ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalization";
 import Injections from "./Injections/Injections";
 import { calculateAge } from "@/utils/utils";
+import SocialHistory from "./SocialHistory/SocialHistory";
 
 const DetailsBody = ({
   patientDetails,
@@ -84,7 +85,7 @@ const DetailsBody = ({
             <Injections patientDetails={patientDetails} />
             <PastMedicalHistory patientDetails={patientDetails} />
             <FamilyHistory patientDetails={patientDetails} />
-            {/* <SocialHistory /> */}
+            <SocialHistory patientDetails={patientDetails} />
             <ProceduresSurgeriesAndHospitalization
               patientDetails={patientDetails}
             />
