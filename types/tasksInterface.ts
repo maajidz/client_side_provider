@@ -23,9 +23,9 @@ export interface CreateTaskType {
   priority?: "low" | "medium" | "high";
   dueDate?: string;
   assignedProviderId: string;
-  assignerProviderId?: string;
-  assignedByAdmin?: boolean;
-  userDetailsId?: string;
+  assignerProviderId: string;
+  assignedByAdmin: boolean;
+  userDetailsId: string;
 }
 
 export interface UpdateTaskType extends CreateTaskType {}

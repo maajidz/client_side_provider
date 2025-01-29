@@ -44,6 +44,7 @@ import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import LoadingButton from "../LoadingButton";
 import SubmitButton from "../custom_buttons/SubmitButton";
+import { ScrollArea } from "../ui/scroll-area";
 
 const TasksDialog = ({
   tasksData,
@@ -124,14 +125,14 @@ const TasksDialog = ({
   useEffect(() => {
     fetchOwnersList();
     fetchPatientList();
-  }, [fetchOwnersList, fetchPatientList])
+  }, [fetchOwnersList, fetchPatientList]);
 
   useEffect(() => {
     if (tasksData) {
       form.reset({
         category: tasksData.category || "",
         task: tasksData.notes || "",
-        owner: tasksData.assignerProvider.id || "",
+        owner: tasksData?.assignerProvider?.id || "",
         priority: tasksData.priority || "low",
         sendReminder: tasksData.reminder || [],
         comments: tasksData.description || "",
@@ -146,10 +147,10 @@ const TasksDialog = ({
       }
       setShowPatientSpecific(!!tasksData.userDetailsId);
       setSelectedOwner(
-        ownersList.find(owner => owner.id === tasksData.assignerProvider?.id)
-      );      
+        ownersList.find((owner) => owner.id === tasksData.assignerProvider?.id)
+      );
     }
-  }, [ form, tasksData, ownersList]);
+  }, [form, tasksData, ownersList]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     setLoading(true);
@@ -164,8 +165,8 @@ const TasksDialog = ({
         assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
         assignerProviderId: providerDetails.providerId,
         assignedByAdmin: true,
-        userDetailsId: values.userDetailsId,
-        reminders: values.sendReminder,
+        userDetailsId: values?.userDetailsId ?? "",
+        reminders: values?.sendReminder,
       };
       if (!tasksData) {
         await createTask({ requestBody: requestData });
@@ -183,7 +184,7 @@ const TasksDialog = ({
         });
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
       showToast({
         toast,
         type: "error",
@@ -202,10 +203,8 @@ const TasksDialog = ({
       .includes(searchTerm.toLowerCase())
   );
 
-  if(loading){
-    return (
-      <LoadingButton />
-    )
+  if (loading) {
+    return <LoadingButton />;
   }
 
   return (
@@ -217,256 +216,268 @@ const TasksDialog = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
-                    <FormLabel className="w-fit">Category</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Choose Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categoryOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="task"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
-                    <FormLabel>Task</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="owner"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
-                    <FormLabel className="w-fit">Owner</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={(value) => {
-                          field.onChange(value);
-                          const selected = ownersList.find(
-                            (owner) => owner.id === value
-                          );
-                          setSelectedOwner(selected);
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Owner" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ownersList.map((owner) => (
-                            <SelectItem key={owner.id} value={owner.id}>
-                              {owner.firstName} {owner.lastName}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="priority"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Priority</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Choose Priority" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {priority.map((priority) => (
-                            <SelectItem value={priority} key={priority}>
-                              {priority}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex items-center space-x-3">
-                <Checkbox
-                  id="isPatientSpecific"
-                  onCheckedChange={() =>
-                    setShowPatientSpecific(!showPatientSpecific)
-                  }
-                />
-                <label
-                  htmlFor="isPatientSpecific"
-                  className="text-sm font-medium"
-                >
-                  Is patient specific
-                </label>
-              </div>
-
-              {showPatientSpecific && (
-                <>
+              <ScrollArea className="h-96">
+                <div className="flex flex-col gap-5">
                   <FormField
                     control={form.control}
-                    name="userDetailsId"
+                    name="category"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="flex gap-2 items-center">
+                        <FormLabel className="w-fit">Category</FormLabel>
                         <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Search Patient "
-                              value={searchTerm}
-                              onChange={(e) => {
-                                setSearchTerm(e.target.value);
-                                setVisibleSearchList(true);
-                              }}
-                            />
-                            {searchTerm && visibleSearchList && (
-                              <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                                {filteredPatients.length > 0 ? (
-                                  filteredPatients.map((patient) => (
-                                    <div
-                                      key={patient.id}
-                                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                      onClick={() => {
-                                        field.onChange(patient.id);
-                                        setSearchTerm(
-                                          `${patient.user.firstName} ${patient.user.lastName}`
-                                        );
-                                        setVisibleSearchList(false);
-                                      }}
-                                    >
-                                      {`${patient.user.firstName} ${patient.user.lastName}`}
-                                    </div>
-                                  ))
-                                ) : (
-                                  <div className="px-4 py-2 text-gray-500">
-                                    No results found
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Choose Category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {categoryOptions.map((option) => (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                </>
-              )}
+                  <FormField
+                    control={form.control}
+                    name="task"
+                    render={({ field }) => (
+                      <FormItem className="flex gap-2 items-center">
+                        <FormLabel>Task</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="owner"
+                    render={({ field }) => (
+                      <FormItem className="flex gap-2 items-center">
+                        <FormLabel className="w-fit">Owner</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              const selected = ownersList.find(
+                                (owner) => owner.id === value
+                              );
+                              setSelectedOwner(selected);
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Owner" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {ownersList.map((owner) => (
+                                <SelectItem key={owner.id} value={owner.id}>
+                                  {owner.firstName} {owner.lastName}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="priority"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Priority</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Choose Priority" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {priority.map((priority) => (
+                                <SelectItem value={priority} key={priority}>
+                                  {priority}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-              <div className="flex items-center space-x-3">
-                <Checkbox
-                  id="assignDueDate"
-                  onCheckedChange={() => setShowDueDate(!showDueDate)}
-                />
-                <label htmlFor="assignDueDate" className="text-sm font-medium">
-                  Assign due date
-                </label>
-              </div>
-
-              {showDueDate && (
-                <>
-                  <div className="space-y-4 border-t pt-4">
-                    <h4 className="text-lg font-semibold">
-                      Date and Reminder Settings
-                    </h4>
-                    <FormField
-                      control={form.control}
-                      name="dueDate"
-                      render={({ field }) => (
-                        <FormItem className="flex gap-2 items-center">
-                          <FormLabel>From Date:</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      id="isPatientSpecific"
+                      onCheckedChange={() =>
+                        setShowPatientSpecific(!showPatientSpecific)
+                      }
                     />
-                    <FormField
-                      control={form.control}
-                      name="sendReminder"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Send Reminder Mail</FormLabel>
-                          {reminderOptions.map((option) => (
-                            <div
-                              key={option}
-                              className="flex items-center space-x-3"
-                            >
-                              <Checkbox
-                                id={option}
-                                checked={field.value?.includes(option)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([
-                                        ...(field.value || []),
-                                        option,
-                                      ])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== option
-                                        )
-                                      );
-                                }}
-                              />
-                              <label
-                                htmlFor={option}
-                                className="text-sm font-medium"
-                              >
-                                {option}
-                              </label>
-                            </div>
-                          ))}
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <label
+                      htmlFor="isPatientSpecific"
+                      className="text-sm font-medium"
+                    >
+                      Is patient specific
+                    </label>
                   </div>
-                </>
-              )}
-              <FormField
-                control={form.control}
-                name="comments"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
-                    <FormLabel>Comments</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <SubmitButton label="Save" />
+
+                  {showPatientSpecific && (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name="userDetailsId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  placeholder="Search Patient "
+                                  value={searchTerm}
+                                  onChange={(e) => {
+                                    setSearchTerm(e.target.value);
+                                    setVisibleSearchList(true);
+                                  }}
+                                />
+                                {searchTerm && visibleSearchList && (
+                                  <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                                    {filteredPatients.length > 0 ? (
+                                      filteredPatients.map((patient) => (
+                                        <div
+                                          key={patient.id}
+                                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                          onClick={() => {
+                                            field.onChange(patient.id);
+                                            setSearchTerm(
+                                              `${patient.user.firstName} ${patient.user.lastName}`
+                                            );
+                                            setVisibleSearchList(false);
+                                          }}
+                                        >
+                                          {`${patient.user.firstName} ${patient.user.lastName}`}
+                                        </div>
+                                      ))
+                                    ) : (
+                                      <div className="px-4 py-2 text-gray-500">
+                                        No results found
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
+
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      id="assignDueDate"
+                      onCheckedChange={() => setShowDueDate(!showDueDate)}
+                    />
+                    <label
+                      htmlFor="assignDueDate"
+                      className="text-sm font-medium"
+                    >
+                      Assign due date
+                    </label>
+                  </div>
+
+                  {showDueDate && (
+                    <>
+                      <div className="space-y-4 border-t pt-4">
+                        <h4 className="text-lg font-semibold">
+                          Date and Reminder Settings
+                        </h4>
+                        <FormField
+                          control={form.control}
+                          name="dueDate"
+                          render={({ field }) => (
+                            <FormItem className="flex gap-2 items-center">
+                              <FormLabel>From Date:</FormLabel>
+                              <FormControl>
+                                <Input type="date" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="sendReminder"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Send Reminder Mail</FormLabel>
+                              {reminderOptions.map((option) => (
+                                <div
+                                  key={option}
+                                  className="flex items-center space-x-3"
+                                >
+                                  <Checkbox
+                                    id={option}
+                                    checked={field.value?.includes(option)}
+                                    onCheckedChange={(checked) => {
+                                      return checked
+                                        ? field.onChange([
+                                            ...(field.value || []),
+                                            option,
+                                          ])
+                                        : field.onChange(
+                                            field.value?.filter(
+                                              (value) => value !== option
+                                            )
+                                          );
+                                    }}
+                                  />
+                                  <label
+                                    htmlFor={option}
+                                    className="text-sm font-medium"
+                                  >
+                                    {option}
+                                  </label>
+                                </div>
+                              ))}
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </>
+                  )}
+                  <FormField
+                    control={form.control}
+                    name="comments"
+                    render={({ field }) => (
+                      <FormItem className="flex gap-2 items-center">
+                        <FormLabel>Comments</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </ScrollArea>
+              <div className="flex justify-end">
+                <SubmitButton label="Save" />
+              </div>
             </div>
           </form>
         </Form>

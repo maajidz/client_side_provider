@@ -29,9 +29,9 @@ import {
 } from "@/types/tasksInterface";
 import { filterTasksSchema } from "@/schema/tasksSchema";
 import { categoryOptions, priority, status } from "@/constants/data";
-import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
+import AddTaskComment from "./AddTaskComment";
 
 const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -219,6 +219,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
                     message: "Deleted Successfully",
                   }),
                 fetchTasksList: () => fetchTasksList(page, userDetailsId),
+                isPatientTask: true
               })}
               data={resultList?.data}
               pageNo={page}
@@ -227,13 +228,12 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             />
           )}
 
-          <TasksDialog
+          <AddTaskComment
             tasksData={editData}
             onClose={() => {
               setIsDialogOpen(false);
             }}
             isOpen={isDialogOpen}
-            userDetailsId={userDetailsId}
           />
         </div>
       </div>

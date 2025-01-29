@@ -299,6 +299,7 @@ const ViewTasks = () => {
                     message: "Deleted Successfully",
                   }),
                 fetchTasksList: () => fetchTasksList(page),
+                isPatientTask: false
               })}
               data={resultList?.data}
               pageNo={page}

@@ -17,5 +17,9 @@ export const filterTasksSchema = z.object({
   category: z.string().optional(),
   status: z.string().optional(),
   priority: z.string().optional(),
-  userDetailsId:z.string().optional(),
+  userDetailsId: z.string().optional(),
+});
+
+export const addCommentToTasksSchema = z.object({
+  comments: z.string({ required_error: "Comment is required" }),
 });

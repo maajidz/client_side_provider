@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { deleteTask, updateTaskStatus } from "@/services/chartDetailsServices";
 import generateTasksPDF from "../patient/tasks/generateTasksPDF";
 
@@ -62,12 +62,14 @@ export const columns = ({
   setLoading,
   showToast,
   fetchTasksList,
+  isPatientTask,
 }: {
   setEditData: (data: TasksResponseDataInterface | null) => void;
   setIsDialogOpen: (isOpen: boolean) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchTasksList: () => void;
+  isPatientTask: boolean;
 }): ColumnDef<TasksResponseDataInterface>[] => [
   {
     accessorKey: "notes",
@@ -148,7 +150,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <DotsVerticalIcon />
+            <DotsHorizontalIcon />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
@@ -158,7 +160,7 @@ export const columns = ({
                 setIsDialogOpen(true);
               }}
             >
-              Edit
+              {isPatientTask ? "Add comment" : "Edit"}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
