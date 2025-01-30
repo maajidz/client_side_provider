@@ -1,7 +1,15 @@
 "use client";
 
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import {
   deleteUserPharmacyData,
@@ -9,14 +17,14 @@ import {
 } from "@/services/chartDetailsServices";
 import { UserPharmacyInterface } from "@/types/pharmacyInterface";
 import { showToast } from "@/utils/utils";
-import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
+import { Trash2Icon } from "lucide-react";
 
 interface ERxPharmacyClientProps {
   userDetailsId: string;
 }
 
-function ERxPharmacyClient({ userDetailsId }: ERxPharmacyClientProps) {
+function ERxPharmacyTable({ userDetailsId }: ERxPharmacyClientProps) {
   // eRx State
   const [eRxData, setERxData] = useState<UserPharmacyInterface>();
 
@@ -24,7 +32,7 @@ function ERxPharmacyClient({ userDetailsId }: ERxPharmacyClientProps) {
   const [loading, setLoading] = useState(false);
 
   // Toast State
-  const {toast} = useToast();
+  const { toast } = useToast();
 
   // GET User Pharmacy
   const fetchUserPharmacy = useCallback(async () => {
@@ -81,16 +89,41 @@ function ERxPharmacyClient({ userDetailsId }: ERxPharmacyClientProps) {
 
   return (
     <>
-      <DataTable
-        searchKey="eRx"
-        columns={columns(handleDeleteUserPharmacy)}
-        data={eRxData ? [eRxData] : []}
-        pageNo={1}
-        totalPages={1}
-        onPageChange={() => {}}
-      />
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Address</TableHead>
+            <TableHead>Phone Number</TableHead>
+            <TableHead>Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {eRxData ? (
+            <TableRow>
+              <TableCell>{eRxData.name}</TableCell>
+              <TableCell>{eRxData.address}</TableCell>
+              <TableCell>{eRxData.phoneNumber}</TableCell>
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  onClick={() => handleDeleteUserPharmacy(eRxData.id)}
+                >
+                  <Trash2Icon color="#84012A" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ) : (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center text-gray-500">
+                No Pharmacy Data Available
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </>
   );
 }
 
-export default ERxPharmacyClient;
+export default ERxPharmacyTable;

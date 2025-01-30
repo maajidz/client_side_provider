@@ -2,7 +2,7 @@
 
 import PharmacyDialog from "@/components/charts/Encounters/Details/Pharmacy/PharmacyDialog";
 import { Button } from "@/components/ui/button";
-import ERxPharmacyClient from "./client";
+import ERxPharmacyTable from "./ERxPharmacyTable";
 import { useState } from "react";
 
 interface ERxPharmacyProps {
@@ -30,7 +30,7 @@ function ERxPharmacy({ userDetailsId }: ERxPharmacyProps) {
           onClose={() => setIsOpen(false)}
         />
       </div>
-      <ERxPharmacyClient userDetailsId={userDetailsId} />
+      <ERxPharmacyTable userDetailsId={userDetailsId} />
     </div>
   );
 }
