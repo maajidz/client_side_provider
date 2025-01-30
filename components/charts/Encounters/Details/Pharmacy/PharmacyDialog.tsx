@@ -1,9 +1,8 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -30,22 +29,25 @@ import {
   addPharmacyData,
   getPharmacyData,
 } from "@/services/chartDetailsServices";
-import { UserEncounterData } from "@/types/chartsInterface";
 import { PharmacyInterface } from "@/types/pharmacyInterface";
 import { showToast } from "@/utils/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { columns } from "./column";
-import { PlusCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
 
 interface PharmacyDialogInterface {
-  form: UseFormReturn<z.infer<typeof addPharmacyFormSchema>>;
-  patientDetails: UserEncounterData;
+  isOpen: boolean;
+  userDetailsId: string;
+  onClose: () => void;
 }
 
-function PharmacyDialog({ form, patientDetails }: PharmacyDialogInterface) {
+function PharmacyDialog({
+  isOpen,
+  userDetailsId,
+  onClose,
+}: PharmacyDialogInterface) {
   // Data States
   const [originalData, setOriginalData] = useState<PharmacyInterface[]>([]);
   const [filteredData, setFilteredData] = useState<PharmacyInterface[]>([]);
@@ -60,6 +62,18 @@ function PharmacyDialog({ form, patientDetails }: PharmacyDialogInterface) {
 
   // Toast State
   const { toast } = useToast();
+
+  // Form State
+  const form = useForm<z.infer<typeof addPharmacyFormSchema>>({
+    resolver: zodResolver(addPharmacyFormSchema),
+    defaultValues: {
+      name: "",
+      city: "",
+      state: "",
+      zip: "",
+      phone: "",
+    },
+  });
 
   // GET Pharmacy Data
   const fetchPharmacyData = useCallback(async () => {
@@ -131,10 +145,10 @@ function PharmacyDialog({ form, patientDetails }: PharmacyDialogInterface) {
     try {
       setIsLoading((prev) => ({ ...prev, post: true }));
 
-      if (patientDetails?.userDetails?.id) {
+      if (userDetailsId) {
         const pharmacyData = {
           ...row,
-          userDetailsID: patientDetails.userDetails.id,
+          userDetailsID: userDetailsId,
         };
 
         await addPharmacyData(pharmacyData);
@@ -157,16 +171,12 @@ function PharmacyDialog({ form, patientDetails }: PharmacyDialogInterface) {
       }
     } finally {
       setIsLoading((prev) => ({ ...prev, post: false }));
+      onClose();
     }
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost">
-          <PlusCircle />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>Add Pharmacy</DialogTitle>

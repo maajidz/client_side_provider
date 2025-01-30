@@ -1,4 +1,5 @@
 import { NavItem, PatientItem } from "@/types";
+import { InsuranceType, IsInsuredType } from "@/types/insuranceInterface";
 
 export const navItems: NavItem[] = [
   // {
@@ -364,4 +365,44 @@ export const timeZonesList = [
   { value: "America/Caracas", label: "Caracas" },
   { value: "America/Puerto_Rico", label: "Puerto Rico" },
   { value: "America/Guayaquil", label: "Guayaquil" },
+];
+
+// * Insurance
+
+// Is Insured
+export const isInsured: IsInsuredType[] = [
+  {
+    isInsured: "Not Insured",
+  },
+  {
+    isInsured: "Private Commercial type",
+  },
+  {
+    isInsured: "Others",
+  },
+];
+
+// Insurance Type
+export const insuranceTypes: InsuranceType[] = [
+  {
+    type: "Medicare",
+  },
+  {
+    type: "Medicaid",
+  },
+  {
+    type: "Tricare Champus",
+  },
+  {
+    type: "Champva",
+  },
+  {
+    type: "Feka BLK Lung",
+  },
+  {
+    type: "Group Health Plan",
+  },
+  {
+    type: "Other",
+  },
 ];
