@@ -35,38 +35,35 @@ const PatientHeader = ({ userId }: { userId: string }) => {
   }
 
   return (
-    <div className="flex flex-row w-full items-center gap-3 px-3">
+    <div className="flex flex-row w-full items-center">
       <div className={styles.infoContainer}>
-        <div className={styles.infoBox}>
-          <PatientLabelDetails
-            label="Name:"
-            value={`${response?.user?.firstName} ${response?.user?.lastName}`}
-          />
-          <div className="flex flex-row gap-3">
+        <div className={`${styles.infoBox}   bg-[#EDF9F3]`}>
+          {`${response?.user?.firstName} ${response?.user?.lastName}`}
+          <div className="flex flex-row gap-3 items-center">
             <div>
               {response?.gender}/{age}
             </div>
             <PatientLabelDetails
               label="ID:"
-              value={`${userId.slice(0, 6)}...`}
+              value={`${userId.slice(0, 15)}...`}
             />
           </div>
         </div>
-        <div className={styles.infoBox}>
-            <PatientLabelDetails
-              label="Allergies:"
-              value={`${
-                response?.allergies && response.allergies.length > 0
-                  ? response.allergies
-                      .map((allergy) => allergy.Allergen)
-                      .join(", ")
-                  : "N/A"
-              }`}
-            />
+        <div className={`${styles.infoBox}  bg-[#ECF5FF]`}>
+          <PatientLabelDetails
+            label="Allergies:"
+            value={`${
+              response?.allergies && response.allergies.length > 0
+                ? response.allergies
+                    .map((allergy) => allergy.Allergen)
+                    .join(", ")
+                : "N/A"
+            }`}
+          />
         </div>
-        <div className={styles.infoBox}>
-          <div>
-            <div className="flex flex-row gap-3">
+        <div className={`${styles.infoBox}  bg-[#FFFFEA]`}>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-row gap-5">
               <PatientLabelDetails
                 label="Weight:"
                 value={`${response?.vitals[0].weightLbs}lbs ${response?.vitals[0].weightOzs}ozs`}
@@ -76,13 +73,13 @@ const PatientHeader = ({ userId }: { userId: string }) => {
                 value={`${response?.vitals[0]?.BMI}`}
               />
             </div>
-            <PatientLabelDetails
+            {/* <PatientLabelDetails
               label="Height:"
               value={`${response?.vitals[0]?.heightFeets} fts ${response?.vitals[0]?.heightInches} inches`}
-            />
+            /> */}
           </div>
         </div>
-        <div className={styles.infoBox}>
+        <div className={`${styles.infoBox}  bg-[#FFF2FF]`}>
           <PatientLabelDetails label="Wallet:" value={response?.wallet} />
         </div>
       </div>

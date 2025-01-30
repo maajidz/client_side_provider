@@ -40,26 +40,26 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
     );
   }
   return (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row gap-2 p-4">
       <div className={styles.infoBox}>
         <div className="flex flex-col gap-6">
           <div className="font-semibold text-2xl">Basic Information</div>
           <div className="flex flex-col gap-6">
             <div>
-              <div className="font-normal text-sm">First Name</div>
-              <div className="font-medium text-base">
+              <div className={styles.labelText}>First Name</div>
+              <div className={styles.valueText}>
                 {response?.user?.firstName}
               </div>
             </div>
             <div>
-              <div className="font-normal text-sm">Last Name</div>
-              <div className="font-medium text-base">
+              <div className={styles.labelText}>Last Name</div>
+              <div className={styles.valueText}>
                 {response?.user?.lastName}
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="font-normal text-sm">DOB | Age</div>
-              <div className="font-medium text-base">
+              <div className={styles.labelText}>DOB | Age</div>
+              <div className={styles.valueText}>
                 {formatDate(response?.dob, {
                   year: "numeric",
                   month: "2-digit",
@@ -69,8 +69,8 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
               </div>
             </div>
             <div>
-              <div className="font-normal text-sm">Birth Sex</div>
-              <div className="font-medium text-base">{response?.gender}</div>
+              <div className={styles.labelText}>Birth Sex</div>
+              <div className={styles.valueText}>{response?.gender}</div>
             </div>
           </div>
         </div>
@@ -80,18 +80,18 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
           <div className="font-semibold text-2xl">Contact Details</div>
           <div className="flex flex-col gap-6">
             <div>
-              <div className="font-normal text-sm">Address</div>
-              <div className="font-medium text-base">{response?.location}</div>
+              <div className={styles.labelText}>Address</div>
+              <div className={styles.valueText}>{response?.location}</div>
             </div>
             <div>
-              <div className="font-normal text-sm">Cell Phone</div>
-              <div className="font-medium text-base">
+              <div className={styles.labelText}>Cell Phone</div>
+              <div className={styles.valueText}>
                 {response?.user?.phoneNumber}
               </div>
             </div>
             <div>
-              <div className="font-normal text-sm">Email</div>
-              <div className="font-medium text-base">
+              <div className={styles.labelText}>Email</div>
+              <div className={styles.valueText}>
                 {response?.user?.email}
               </div>
             </div>
