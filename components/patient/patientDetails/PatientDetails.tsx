@@ -4,7 +4,7 @@ import PatientCareTeam from "./patient_details/PrimaryCareTeam/PatientCareTeam";
 import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 import InsuranceInformation from "./insurance/InsuranceInformation";
 import PatientQuestionnaires from "./patient_details/PatientQuestionnaires";
-import MedicalHistory from "./medical-history/MedicalHistory";
+import MedicalHistory from "@/components/patient/patientDetails/patient_details/medical-history/MedicalHistory";
 import PatientPharmacy from "./pharmacy/PatientPharmacy";
 import React from "react";
 
