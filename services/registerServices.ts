@@ -110,6 +110,34 @@ export const fetchProviderListDetails = async ({
   return data;
 };
 
+export const searchProviders = async ({
+  name,
+  page,
+  limit
+}: {
+  name: string;
+  page?: number;
+  limit? : number;
+}) => {
+  try {
+    const queryParams = new URLSearchParams();
+    if (name) queryParams.append("q", name);
+    if (page) queryParams.append("page", page.toString());
+    if (limit) queryParams.append("limit", limit.toString());
+
+    const response = await ApiFetch({
+      method: "get",
+      url: `/provider-details/search/name?${queryParams}`,
+    });
+
+    const data: FetchProviderListInterface = await response.data;
+    return data;
+  } catch (error) {
+    console.log("Error fetching response", error);
+    return null;
+  }
+};
+
 /*
  * Change Password
  */

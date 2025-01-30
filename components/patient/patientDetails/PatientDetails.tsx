@@ -1,7 +1,7 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import PatientDemographics from "./patient_details/PatientDemographics";
-import PatientCareTeam from "./patient_details/PatientCareTeam";
+import PatientCareTeam from "./patient_details/PrimaryCareTeam/PatientCareTeam";
 import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 import PatientQuestionnaires from "./patient_details/PatientQuestionnaires";
 import PatientInsurance from "./patient_details/PatientInsurance";

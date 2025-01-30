@@ -4,6 +4,10 @@ import { fetchUserCareTeam } from "@/services/userServices";
 import { PatientCareTeamInterface } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import React, { useCallback, useEffect, useState } from "react";
+import styles from "./patient_care_team.module.css";
+import PrimaryCarePhysician from "./PrimaryCarePhysician";
+import ReferringPhysicianSelect from "./ReferringPhysicianSelect";
+import InHouseCareTeam from "./InHouseCareTeam";
 
 const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,15 +42,10 @@ const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
   }
 
   return (
-    <div className="flex flex-row justify-evenly">
-      <div className="flex flex-col border p-5 flex-1">
-        <div className="flex flex-col ">
-          Primary Care Physician{" "}
-          <div>{careTeam?.primaryCarePhysician.NameOfPhysician}</div>
-        </div>
-      </div>
-      <div className="flex flex-col border p-5 flex-1">Referring Provider</div>
-      <div className="flex flex-col border p-5 flex-1"> In-house Care Team</div>
+    <div className={styles.infoContainer}>
+      <PrimaryCarePhysician careTeam={careTeam? careTeam : null}/>
+      <ReferringPhysicianSelect />
+      <InHouseCareTeam />
     </div>
   );
 };
