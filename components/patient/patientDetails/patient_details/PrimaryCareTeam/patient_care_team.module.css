@@ -1,0 +1,24 @@
+.infoContainer {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.infoBox {
+    display: flex;
+    flex-direction: column;
+    border-width: 1px;
+    padding: 1rem;
+    border-radius: 1rem;
+    width: 100%;
+    border-color: #D5D5D5;
+    justify-content: start;
+    height: 100%;
+}
+
+.infoBoxLabel {
+    font-weight: 600;
+    font-size: large;
+}
