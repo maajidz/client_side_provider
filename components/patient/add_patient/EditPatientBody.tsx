@@ -1,7 +1,7 @@
 "use client";
 
 import { addNewPatientSchema } from "@/schema/addNewPatientSchema";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,13 +24,17 @@ import {
 } from "@/components/ui/select";
 import { US_STATES } from "@/constants/data";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
-import { CreateUser } from "@/types/userInterface";
+import { CreateUser, PatientDetails } from "@/types/userInterface";
 import { createNewPatient } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
 import PatientConfirmationScreen from "./PatientConfirmationScreen";
 
-const AddPatientBody = () => {
+const EditPatientBody = ({
+  patientDetails,
+}: {
+  patientDetails: PatientDetails;
+}) => {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
@@ -40,21 +44,47 @@ const AddPatientBody = () => {
   const methods = useForm({
     resolver: zodResolver(addNewPatientSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      patientDetails,
+      firstName: patientDetails.user.firstName || "",
+      lastName: patientDetails.user.lastName || "",
       height: { unit: "cm", value: "" } as z.infer<
         typeof addNewPatientSchema.shape.height
       >,
       weight: { units: "kg", value: "" } as z.infer<
         typeof addNewPatientSchema.shape.weight
       >,
-      phoneNumber: "",
-      dob: String(new Date()),
-      state: "",
-      gender: "",
-      email: "",
+      phoneNumber: patientDetails.user.phoneNumber || "",
+      dob: patientDetails.dob || String(new Date()),
+      state: patientDetails.location || "",
+      gender: patientDetails.gender || "",
+      email: patientDetails.user.email || "",
     },
   });
+
+  useEffect(() => {
+    if (patientDetails) {
+      methods.reset({
+        patientDetails,
+        firstName: patientDetails.user.firstName,
+        lastName: patientDetails.user.lastName,
+        phoneNumber: patientDetails.user.phoneNumber,
+        dob: patientDetails.dob,
+        state: patientDetails.location,
+        gender: patientDetails.gender,
+        email: patientDetails.user.email,
+      });
+      if (patientDetails.heightType === "cm") {
+        methods.setValue("height.unit", patientDetails.heightType as "feet" | "cm");
+        methods.setValue("height.value", patientDetails.height.toString());
+      } else {
+        methods.setValue("height.unit", patientDetails.heightType as "feet" | "cm");
+        methods.setValue("height.feet", patientDetails.height.toString());
+      }
+      if(patientDetails.weightType === "kg"){
+        methods.setValue("weight.value", patientDetails.weight.toString())
+      }
+    }
+  }, [patientDetails, methods]);
 
   const filteredStates = useMemo(() => {
     return US_STATES.filter((state) =>
@@ -77,14 +107,6 @@ const AddPatientBody = () => {
     },
     [methods]
   );
-
-  // useEffect(() => {
-  //   setFilteredStates(
-  //     US_STATES.filter((state) =>
-  //       state.name.toLowerCase().includes(search.toLowerCase())
-  //     )
-  //   );
-  // }, [search]);
 
   const onSubmit = async (data: z.infer<typeof addNewPatientSchema>) => {
     setLoading(true);
@@ -142,7 +164,7 @@ const AddPatientBody = () => {
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-5">
             <div className="flex justify-end">
-              <SubmitButton label="Add" />
+              <SubmitButton label="Edit" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
@@ -488,4 +510,4 @@ const AddPatientBody = () => {
   );
 };
 
-export default AddPatientBody;
+export default EditPatientBody;
