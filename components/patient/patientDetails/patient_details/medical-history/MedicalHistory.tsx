@@ -11,14 +11,12 @@ interface MedicalHistoryProps {
 
 function MedicalHistory({ userDetailsId }: MedicalHistoryProps) {
   return (
-    // <ScrollArea className="h-[12.5rem] min-h-10">
-      <div className="flex flex-col">
-        <ProceduresSurgeriesAndHospitalization userDetailsId={userDetailsId} />
-        <PastMedicalHistory userDetailsId={userDetailsId} />
-        <FamilyHistory userDetailsId={userDetailsId} />
-        <SocialHistory userDetailsId={userDetailsId} />
-      </div>
-    // </ScrollArea>
+    <div className="mb-5">
+      <ProceduresSurgeriesAndHospitalization userDetailsId={userDetailsId} />
+      <PastMedicalHistory userDetailsId={userDetailsId} />
+      <FamilyHistory userDetailsId={userDetailsId} />
+      <SocialHistory userDetailsId={userDetailsId} />
+    </div>
   );
 }
 

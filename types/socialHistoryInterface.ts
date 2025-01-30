@@ -2,6 +2,8 @@ export interface SocialHistoryInterface {
   id: string;
   content: string;
   providerId: string;
+  createdAt: string;
+  updatedAt: string;
   userDetailsId: string;
 }
 
@@ -12,6 +14,10 @@ export interface SocialHistoryResponseInterface {
   limit: number;
 }
 
-export type CreateSocialHistoryType = Omit<SocialHistoryInterface, "id">;
+export type CreateSocialHistoryType = {
+  content: string;
+  providerId: string;
+  userDetailsId: string;
+};
 
 export type UpdateSocialHistoryType = CreateSocialHistoryType;

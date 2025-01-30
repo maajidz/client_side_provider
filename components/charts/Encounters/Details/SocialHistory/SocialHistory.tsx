@@ -148,6 +148,8 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
                             content: history.content,
                             userDetailsId: history.userDetailsId,
                             providerId: history.providerId,
+                            createdAt: history.createdAt,
+                            updatedAt: history.updatedAt,
                           });
                           setIsDialogOpen(true);
                         }}
