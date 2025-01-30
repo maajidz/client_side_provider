@@ -4,6 +4,7 @@ import ProceduresSurgeriesAndHospitalizationDialog from "@/components/charts/Enc
 import { Button } from "@/components/ui/button";
 import ProceduresSurgeriesAndHospitalizationClient from "./client";
 import { useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProceduresSurgeriesAndHospitalizationProps {
   userDetailsId: string;
@@ -32,9 +33,11 @@ function ProceduresSurgeriesAndHospitalization({
           userDetailsId={userDetailsId}
         />
       </div>
-      <ProceduresSurgeriesAndHospitalizationClient
-        userDetailsId={userDetailsId}
-      />
+      <ScrollArea className="h-[12.5rem] min-h-10">
+        <ProceduresSurgeriesAndHospitalizationClient
+          userDetailsId={userDetailsId}
+        />
+      </ScrollArea>
     </div>
   );
 }

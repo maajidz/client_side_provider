@@ -2,6 +2,7 @@ import SocialHistoryDialog from "@/components/charts/Encounters/Details/SocialHi
 import { Button } from "@/components/ui/button";
 import SocialHistoryData from "./SocialHistoryData";
 import { useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SocialHistoryProps {
   userDetailsId: string;
@@ -28,7 +29,9 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
           onClose={() => setIsOpen(false)}
         />
       </div>
-      <SocialHistoryData userDetailsId={userDetailsId} />
+      <ScrollArea className="h-[12.5rem] min-h-10">
+        <SocialHistoryData userDetailsId={userDetailsId} />
+      </ScrollArea>
     </div>
   );
 }

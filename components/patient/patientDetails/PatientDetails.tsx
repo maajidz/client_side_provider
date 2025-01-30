@@ -6,7 +6,7 @@ import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTri
 import PatientQuestionnaires from "./patient_details/PatientQuestionnaires";
 import PatientInsurance from "./patient_details/PatientInsurance";
 // import PatientPharmacy from "./pharmacy/PatientPharmacy";
-import MedicalHistory from "./medical-history/MedicalHistory";
+import MedicalHistory from "./patient_details/medical-history/MedicalHistory";
 
 const patientDetailsTab = [
   {

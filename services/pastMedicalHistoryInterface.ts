@@ -2,7 +2,8 @@ export interface PastMedicalHistoryInterface {
   id: string;
   notes: string;
   glp_refill_note_practice: string;
-  userDetailsId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface PastMedicalHistoryResponseInterface {
@@ -10,9 +11,12 @@ export interface PastMedicalHistoryResponseInterface {
   total: number;
 }
 
-export type CreatePastMedicalHistoryType = Omit<
-  PastMedicalHistoryInterface,
-  "id"
->;
+export interface CreatePastMedicalHistoryType {
+  notes: string;
+  glp_refill_note_practice: string;
+  userDetailsId: string;
+}
 
 export type UpdatePastMedicalHistoryType = CreatePastMedicalHistoryType;
+
+
