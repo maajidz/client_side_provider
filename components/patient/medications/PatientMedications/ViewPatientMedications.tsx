@@ -1,52 +1,69 @@
-import React from "react";
+import LoadingButton from "@/components/LoadingButton";
+import { DataTable } from "@/components/ui/data-table";
+import { useToast } from "@/hooks/use-toast";
+import { getUserPrescriptionsData } from "@/services/prescriptionsServices";
+import { RootState } from "@/store/store";
+import { PrescriptionDataInterface } from "@/types/prescriptionInterface";
+import { showToast } from "@/utils/utils";
+import { columns } from "./column";
+import { useEffect, useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 
 const ViewPatientMedications = ({
   userDetailsId,
 }: {
   userDetailsId: string;
 }) => {
-  // const providerDetails = useSelector((state: RootState) => state.login);
-  // const [resultList, setResultList] = useState<SupplementInterface[]>();
-  // const [loading, setLoading] = useState(true);
-  // const [page, setPage] = useState<number>(1);
-  // const [totalPages, setTotalPages] = useState<number>(1);
-  // const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  // const [editData, setEditData] = useState<SupplementInterface | null>(null);
-  // const { toast } = useToast();
+  const providerDetails = useSelector((state: RootState) => state.login);
+  const [resultList, setResultList] = useState<PrescriptionDataInterface[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // const fetchSupplementsList = useCallback(
-  //   async (userDetailsId: string) => {
-  //     try {
-  //       if (providerDetails) {
-  //         const response = await getSupplements({
-  //           userDetailsId,
-  //         });
-  //         if (response) {
-  //           setResultList(response?.data);
-  //           setTotalPages(Math.ceil(response.total / response.limit));
-  //         }
-  //         setLoading(false);
-  //       }
-  //     } catch (e) {
-  //       console.log("Error", e);
-  //     }
-  //   },
-  //   [providerDetails]
-  // );
+  // Pagination State
+  const itemsPerPage = 5;
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // useEffect(() => {
-  //   fetchSupplementsList(userDetailsId);
-  // }, [fetchSupplementsList, userDetailsId]);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [editData, setEditData] = useState<PrescriptionDataInterface | null>(null);
+  const { toast } = useToast();
 
-  // if (loading) {
-  //   return <LoadingButton />;
-  // }
+  console.log(isDialogOpen);
+  console.log(editData);
+
+  const fetchPrescriptionsList = useCallback(
+    async (userDetailsId: string) => {
+      try {
+        if (providerDetails) {
+          const response = await getUserPrescriptionsData({
+            userDetailsId,
+            page,
+            limit: itemsPerPage,
+          });
+          if (response) {
+            setResultList(response.data);
+            setTotalPages(Math.ceil(response.totalCount / itemsPerPage));
+          }
+          setLoading(false);
+        }
+      } catch (e) {
+        console.log("Error", e);
+      }
+    },
+    [providerDetails, page]
+  );
+
+  useEffect(() => {
+    fetchPrescriptionsList(userDetailsId);
+  }, [fetchPrescriptionsList, userDetailsId]);
+
+  if (loading) {
+    return <LoadingButton />;
+  }
 
   return (
     <>
       <div className="py-5">
-        {userDetailsId}
-        {/* {resultList && (
+        {resultList && (
           <DataTable
             searchKey="id"
             columns={columns({
@@ -59,14 +76,16 @@ const ViewPatientMedications = ({
                   type: "success",
                   message: "Deleted Successfully",
                 }),
-              fetchSupplementsList: () => fetchSupplementsList(userDetailsId),
+              fetchPrescriptionsList: () =>
+                fetchPrescriptionsList(userDetailsId),
             })}
             data={resultList}
             pageNo={page}
             totalPages={totalPages}
             onPageChange={(newPage: number) => setPage(newPage)}
           />
-        )} */}
+        )}
+        
       </div>
     </>
   );

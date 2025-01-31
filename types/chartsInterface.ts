@@ -344,6 +344,7 @@ export interface CreatePrescriptionInterface {
 }
 
 export interface Dosage {
+  id?: string;
   dosage_quantity: number;
   dosage_unit: string;
   route: string;

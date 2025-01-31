@@ -31,6 +31,9 @@ import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
 import { Switch } from "@/components/ui/switch";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+// import { createPrescriptions } from "@/services/chartsServices";
+// import { showToast } from "@/utils/utils";
+// import { useToast } from "@/hooks/use-toast";
 
 const PatientMedicationDialog = ({
   userDetailsId,
@@ -41,12 +44,13 @@ const PatientMedicationDialog = ({
   onClose: () => void;
   isOpen: boolean;
 }) => {
+  // const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [drugName, setDrugName] = useState<string>("");
   const [showPrescriptionForm, setShowPrescriptionForm] =
     useState<boolean>(false);
   const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
-//   const { toast } = useToast();
+  // const { toast } = useToast();
 
   const form = useForm<z.infer<typeof prescriptionSchema>>({
     resolver: zodResolver(prescriptionSchema),
@@ -74,8 +78,8 @@ const PatientMedicationDialog = ({
   });
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
+    setLoading(false);
     console.log(values);
-    setLoading(false)
     // if (patientDetails.chart?.id) {
     //   const requestData = {
     //     drug_name: drugName,
@@ -117,65 +121,11 @@ const PatientMedicationDialog = ({
     //     setLoading(false);
     //     setIsDialogOpen(false);
     //   }
-    // } else {
-    //   const data = {
-    //     subjective: "",
-    //     plan: `${JSON.stringify(values)}`,
-    //     encounterId: encounterId,
-    //   };
-    //   try {
-    //     setLoading(true);
-    //     // const response = await createSOAPChart({ requestData: data });
-    //     if (response) {
-    //       const chartId = response.id;
-    //       const requestData = {
-    //         drug_name: drugName,
-    //         dispense_as_written: dispenseAsWritten,
-    //         primary_diagnosis: values.primary_diagnosis,
-    //         secondary_diagnosis: values.secondary_diagnosis,
-    //         directions: values.directions,
-    //         dispense_quantity: values.dispense_quantity,
-    //         dispense_unit: String(values.dispense_quantity),
-    //         prior_auth: values.prior_auth,
-    //         prior_auth_decision: values.prior_auth_decision,
-    //         internal_comments: values.internal_comments || "",
-    //         days_of_supply: values.days_of_supply ?? 0,
-    //         additional_refills: values.additional_refills,
-    //         Note_to_Pharmacy: values.Note_to_Pharmacy,
-    //         earliest_fill_date: values.earliest_fill_date || "",
-    //         dosages: [
-    //           {
-    //             dosage_quantity: values.dosage_quantity,
-    //             dosage_unit: values.dosage_unit,
-    //             route: values.route,
-    //             frequency: values.frequency,
-    //             when: values.when,
-    //             duration_quantity: values.duration_quantity,
-    //             duration_unit: values.duration_unit,
-    //           },
-    //         ],
-    //         chartId: chartId,
-    //       };
-    //       await createPrescriptions({ requestData: requestData });
-    //       setShowPrescriptionForm(!showPrescriptionForm);
-    //     }
-    //     showToast({ toast, type: "success", message: "Saved!" });
-    //   } catch (e) {
-    //     console.log("Error", e);
-    //   } finally {
-    //     setLoading(false);
-    //     form.reset();
-    //     onClose();
-    //   }
     // }
   };
 
   if (loading) {
-    return (
-      <div>
-        <LoadingButton />
-      </div>
-    );
+    return <LoadingButton />;
   }
 
   return (
@@ -622,14 +572,17 @@ const PatientMedicationDialog = ({
           </Form>
         ) : (
           <div className="flex flex-col gap-2">
-            <RxPatientDetailsSection />
+            <RxPatientDetailsSection userDetailsId={userDetailsId} />
             <div className="flex flex-col p-3 rounded-lg border">
-              <div className="flex">
-                <div>Search & Add Rx</div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-lg font-semibold text-gray-700">
+                  Search & Add Rx
+                </span>
                 <Input
                   value={drugName}
-                  onChange={(e) => setDrugName(e.target.value)}
                   placeholder="Enter drug name"
+                  className="w-1/2 rounded-md"
+                  onChange={(e) => setDrugName(e.target.value)}
                 />
               </div>
               <div className="flex items-center">

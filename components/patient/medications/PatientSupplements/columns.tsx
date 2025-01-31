@@ -8,9 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { deleteTask } from "@/services/chartDetailsServices";
 import { SupplementInterface } from "@/types/supplementsInterface";
+import { Ellipsis } from "lucide-react";
 
 const handleSupplementDelete = async (
   taskId: string,
@@ -103,12 +103,12 @@ export const columns = ({
   },
   {
     accessorKey: "id",
-    header: "",
+    header: "Actions",
     cell: ({ row }) => (
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <DotsVerticalIcon />
+            <Ellipsis />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
@@ -127,6 +127,9 @@ export const columns = ({
               }}
             >
               Delete
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              Mark as Inactive
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

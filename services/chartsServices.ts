@@ -99,7 +99,7 @@ export const getUserEncounterDetails = async ({
       "Content-Type": "application/json",
     },
   });
-  console.log(response.data);
+  
   const data: UserEncounterInterface = await response.data;
   return data.response;
 };

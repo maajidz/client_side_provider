@@ -1,112 +1,127 @@
-import React, { useEffect, useState } from 'react'
-import { Input } from '@/components/ui/input'
+import React, { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
 import {
-    Dialog,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from '@/components/ui/button'
-import LoadingButton from '@/components/LoadingButton'
-import { FetchPrescription, UserEncounterData } from '@/types/chartsInterface'
-import { getPrescriptionsData } from '@/services/chartsServices'
-import SubmitButton from '@/components/custom_buttons/SubmitButton'
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import LoadingButton from "@/components/LoadingButton";
+import { FetchPrescription, UserEncounterData } from "@/types/chartsInterface";
+import { getPrescriptionsData } from "@/services/chartsServices";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import RxPatientDetailsSection from "./RxPatientDetailsSection";
 
-const PastRx = ({patientDetails}: {patientDetails: UserEncounterData }) => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [response, setResponse] = useState<FetchPrescription>()
+const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [response, setResponse] = useState<FetchPrescription>();
 
-    useEffect(()=>{
-        const fetchAndSetResponse = async () => {
-            if(patientDetails.chart?.id){
-                setLoading(true)
-            try {
-                const data = await getPrescriptionsData({ chartId: patientDetails.chart.id });
-                if (data) {
-                    setResponse(data);
-                }
-            } catch (e) {
-                console.log("Error", e);
-                setLoading(false);
-            } finally {
-                setLoading(false);
-            }
-            }
+  useEffect(() => {
+    const fetchAndSetResponse = async () => {
+      if (patientDetails.chart?.id) {
+        setLoading(true);
+        try {
+          const data = await getPrescriptionsData({
+            chartId: patientDetails.chart.id,
+          });
+          if (data) {
+            setResponse(data);
+          }
+        } catch (e) {
+          console.log("Error", e);
+          setLoading(false);
+        } finally {
+          setLoading(false);
         }
-        fetchAndSetResponse()    
-    }, [patientDetails.chart?.id])
+      }
+    };
+    fetchAndSetResponse();
+  }, [patientDetails.chart?.id]);
 
-    if(loading){
-        return(
-            <LoadingButton />
-        )
-    }
+  if (loading) {
+    return <LoadingButton />;
+  }
 
-    return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button variant="ghost" className='text-blue-500 underline'>Past Rx</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <DialogTitle>Add Prescription</DialogTitle>
-                </DialogHeader>
-                <div className='flex flex-col gap-2'>
-                    <div className="flex gap-3 p-1 border rounded-lg">
-                        <div className='flex flex-col border-r p-3'>
-                            <div>Patient Name</div>
-                            <div>Patient ID</div>
-                            <div className='flex gap-2'>
-                                <div>Gender</div>
-                                <div>/</div>
-                                <div>DOB</div>
-                            </div>
-                            <div>Address</div>
-                            <div>Phone No: Phoneno</div>
-                            <div>Cell: cell</div>
-                            <div>Vitals: weight</div>
-                        </div>
-                        <div className='flex flex-col p-3'>
-                            <div>Provider Name</div>
-                            <div>Provider ID</div>
-                            <div>Facility</div>
-                            <div>Address</div>
-                            <div>Phone No: Phoneno</div>
-                            <div>Fax: Fax</div>
-                        </div>
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="ghost" className="text-blue-500 underline">
+          Past Rx
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[625px]">
+        <DialogHeader>
+          <DialogTitle>Add Prescription</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col p-2 gap-4">
+          {/* Patient Details Section */}
+          <RxPatientDetailsSection
+            userDetailsId={patientDetails.userDetails.id}
+          />
+
+          {/* Search & Add Rx Section */}
+          <div className="flex flex-col p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-lg font-semibold text-gray-700">
+                Search & Add Rx
+              </span>
+              <Input
+                className="w-1/2rounded-md"
+                placeholder="Search for a drug..."
+              />
+            </div>
+            <div className="flex items-center text-sm text-gray-600">
+              <span>Please search for your drug. If not found,</span>
+              <Button
+                variant="ghost"
+                className="text-[#84012A] font-semibold ml-1"
+              >
+                Add a custom drug
+              </Button>
+            </div>
+          </div>
+
+          {/* Past Rx Section */}
+          <div className="flex flex-col p-4">
+            <span className="text-lg font-semibold text-gray-700 mb-2">
+              Past Rx
+            </span>
+            <div className="flex flex-col gap-3">
+              {response && response?.prescriptions.length > 0 ? (
+                response.prescriptions.map((prescription) => (
+                  <div
+                    key={prescription.id}
+                    className="p-3 border rounded-lg bg-white shadow-sm"
+                  >
+                    <div className="font-semibold">
+                      {prescription.drug_name}
                     </div>
-                    <div className='flex flex-col p-3 rounded-lg border'>
-                        <div className='flex'>
-                            <div>Search & Add Rx</div>
-                            <Input />
-                        </div>
-                        <div className='flex items-center'>
-                            <div >Please search for your drug. If not found,</div>
-                            <Button variant={'ghost'} className='text-[#84012A]'>Add a custom drug</Button>
-                        </div>
+                    <div>{prescription.directions}</div>
+                    <div>
+                      Primary Diagnosis: {prescription.primary_diagnosis}
                     </div>
-                    <div className='flex flex-col p-3 rounded-lg border'>
-                        <div>Past Rx</div>
-                        <div className='flex items-center'>
-                            {response?.prescriptions.map((prescription) => (
-                                <div key={prescription.id}>
-                                    <div>{prescription.drug_name}</div>
-                                    <div>{prescription.directions}</div>
-                                    <div>{prescription.primary_diagnosis}</div>
-                                    <div>{prescription.secondary_diagnosis}</div>
-                                </div>
-                            ))}
-                        </div>
+                    <div>
+                      Secondary Diagnosis: {prescription.secondary_diagnosis}
                     </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-sm text-gray-500 italic">
+                  No past prescriptions found.
                 </div>
-                <DialogFooter>
-                    <SubmitButton label='Save Changes' />
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    )
-}
+              )}
+            </div>
+          </div>
+        </div>
+        <DialogFooter>
+          <SubmitButton label="Save Changes" />
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
-export default PastRx
+export default PastRx;

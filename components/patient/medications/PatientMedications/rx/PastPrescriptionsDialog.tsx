@@ -1,0 +1,134 @@
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import RxPatientDetailsSection from "@/components/charts/Encounters/SOAP/Prescription/RxPatientDetailsSection";
+import LoadingButton from "@/components/LoadingButton";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { FetchPrescription } from "@/types/chartsInterface";
+// import { getPrescriptionsData } from "@/services/chartsServices";
+import { useEffect, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+interface PastPrescriptionsDialogProps {
+  isDialogOpen: boolean;
+  userDetailsId: string;
+  onClose: () => void;
+}
+
+const PastPrescriptionsDialog = ({
+  isDialogOpen,
+  userDetailsId,
+  onClose,
+}: PastPrescriptionsDialogProps) => {
+  const [loading,] = useState<boolean>(false);
+  const [response,] = useState<FetchPrescription>();
+
+  useEffect(() => {
+    const fetchAndSetResponse = async () => {
+      // ! Needs chart ID
+      // if (patientDetails.chart?.id) {
+      //   setLoading(true);
+      //   try {
+      //     const data = await getPrescriptionsData({
+      //       chartId: patientDetails.chart.id,
+      //     });
+      //     if (data) {
+      //       setResponse(data);
+      //     }
+      //   } catch (e) {
+      //     console.log("Error", e);
+      //     setLoading(false);
+      //   } finally {
+      //     setLoading(false);
+      //     onClose();
+      //   }
+      // }
+    };
+    fetchAndSetResponse();
+  }, []);
+
+  if (loading) {
+    return <LoadingButton />;
+  }
+
+  return (
+    <Dialog open={isDialogOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[625px]">
+        <DialogHeader>
+          <DialogTitle>Add Prescription</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col gap-4">
+          {/* Patient Details Section */}
+          <RxPatientDetailsSection userDetailsId={userDetailsId} />
+          <ScrollArea>
+            {/* Search & Add Rx Section */}
+            <div className="flex flex-col p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-lg font-semibold text-gray-700">
+                  Search & Add Rx
+                </span>
+                <Input
+                  className="w-1/2rounded-md"
+                  placeholder="Search for a drug..."
+                />
+              </div>
+              <div className="flex items-center text-sm text-gray-600">
+                <span>Please search for your drug. If not found,</span>
+                <Button
+                  variant="ghost"
+                  className="text-[#84012A] font-semibold ml-1"
+                >
+                  Add a custom drug
+                </Button>
+              </div>
+            </div>
+
+            {/* Past Rx Section */}
+            <div className="flex flex-col p-4">
+              <span className="text-lg font-semibold text-gray-700 mb-2">
+                Past Rx
+              </span>
+              <div className="flex flex-col gap-3">
+                {response && response?.prescriptions.length > 0 ? (
+                  response.prescriptions.map((prescription) => (
+                    <div
+                      key={prescription.id}
+                      className="p-3 border rounded-lg bg-white shadow-sm"
+                    >
+                      <div className="font-semibold">
+                        {prescription.drug_name}
+                      </div>
+                      <div>{prescription.directions}</div>
+                      <div>
+                        Primary Diagnosis: {prescription.primary_diagnosis}
+                      </div>
+                      <div>
+                        Secondary Diagnosis: {prescription.secondary_diagnosis}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-gray-500 italic">
+                    No past prescriptions found.
+                  </div>
+                )}
+              </div>
+            </div>
+          </ScrollArea>
+        </div>
+        <DialogFooter>
+          <SubmitButton label="Save Changes" />
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default PastPrescriptionsDialog;
+

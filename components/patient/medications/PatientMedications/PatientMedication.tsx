@@ -1,14 +1,19 @@
-import { PlusIcon } from "lucide-react";
-import React, { useState } from "react";
 import AddMedicationDialog from "@/components/charts/Encounters/Details/Medications/AddMedicationDialog";
-import PatientMedicationDialog from "./PatientMedicationDialog";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import ViewPatientMedications from "./ViewPatientMedications";
+import { PlusIcon } from "lucide-react";
+import { useState } from "react";
 
-const PatientMedication = ({ userDetailsId }: { userDetailsId: string }) => {
-  const [isMedicationsDialogOpen, setIsMedicationsDialogOpen] =
-    useState<boolean>(false);
-  const [isPrescriptionsDialogOpen, setIsPrescriptionsDialogOpen] =
-    useState<boolean>(false);
+const PatientMedication = ({
+  userDetailsId,
+  onSetQuickRxVisible,
+}: {
+  userDetailsId: string;
+  onSetQuickRxVisible: (visible: boolean) => void;
+}) => {
+  // Dialog State
+  const [isMedicationsDialogOpen, setIsMedicationsDialogOpen] = useState(false);
+
   return (
     <>
       <div className="flex gap-5 justify-end">
@@ -17,17 +22,17 @@ const PatientMedication = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsMedicationsDialogOpen(true);
           }}
         >
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <PlusIcon />
             Medications
           </div>
         </DefaultButton>
         <DefaultButton
           onClick={() => {
-            setIsPrescriptionsDialogOpen(true);
+            onSetQuickRxVisible(true);
           }}
         >
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <PlusIcon />
             Prescriptions
           </div>
@@ -39,15 +44,10 @@ const PatientMedication = ({ userDetailsId }: { userDetailsId: string }) => {
           }}
           isOpen={isMedicationsDialogOpen}
         />
-        <PatientMedicationDialog
-          userDetailsId={userDetailsId}
-          onClose={() => {
-            setIsPrescriptionsDialogOpen(false);
-          }}
-          isOpen={isPrescriptionsDialogOpen}
-        />
       </div>
-      {/* <ViewPatientMedications userDetailsId={userDetailsId} /> */}
+
+      {/* Patient Medications Table */}
+      <ViewPatientMedications userDetailsId={userDetailsId} />
     </>
   );
 };
