@@ -21,26 +21,27 @@ const generateAppointmentPDF = ({
   doc.line(10, 25, pageWidth - 10, 25);
 
   doc.setFontSize(14);
-  doc.text("Patient Tasks", 10, 35);
+  doc.text("Patient Appointments", 10, 35);
 
   autoTable(doc, {
     startY: 40,
-    head: [["Task ID", "Category", "Status", "Priority"]],
+    head: [["Name", "Email", "Phone Number", "Provider Name", "Date", "Time", "Note"]],
     body: appointmentData.map((appointment) => [
-      appointment.id,
       appointment.patientName,
       appointment.patientEmail,
       appointment.patientPhoneNumber,
-      appointment.providerId,
       appointment.providerName,
       appointment.dateOfAppointment,
       `${appointment.timeOfAppointment}- ${appointment.endtimeOfAppointment}`,
       appointment.additionalText,
-      appointment.meetingLink
     ]),
+    headStyles: {
+      fillColor: "#84012A",
+      textColor: "#FFFFFF",
+    },
   });
 
-  doc.save("Patient_Tasks.pdf");
+  doc.save("Patient_Appointments.pdf");
 };
 
 export default generateAppointmentPDF;
