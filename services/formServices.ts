@@ -5,9 +5,16 @@ import {
   FormResponseInterface,
   QuestionResponse,
   UserOnboardDetailsResponse,
+  QuestionnaireInterface,
 } from "@/types/formInterface";
 
-export const fetchResponse = async ({ type, pageNo }: { type: string, pageNo: number }) => {
+export const fetchResponse = async ({
+  type,
+  pageNo,
+}: {
+  type: string;
+  pageNo: number;
+}) => {
   const response = await ApiFetch({
     method: "get",
     url: `/questions/questionnaire?type=${type}&pageNo=${pageNo}`,
@@ -38,9 +45,15 @@ export const deleteQuestion = async ({ id }: { id: string }) => {
   const data = await response.data;
   console.log(data);
   return data;
-}
+};
 
-export const updateQuestion = async ({ id, requestData }: { id: string, requestData: FormRequestInterface; }) => {
+export const updateQuestion = async ({
+  id,
+  requestData,
+}: {
+  id: string;
+  requestData: FormRequestInterface;
+}) => {
   const response = await ApiFetch({
     method: "patch",
     url: `/admin/questionare/${id}`,
@@ -53,7 +66,7 @@ export const updateQuestion = async ({ id, requestData }: { id: string, requestD
   const data = await response.data;
   console.log(data);
   return data;
-}
+};
 
 export const sendQuestionnaireDetails = async ({
   requestData,
@@ -73,4 +86,25 @@ export const sendQuestionnaireDetails = async ({
   return data;
 };
 
+export const fetchUserQuestionnaire = async ({
+  userDetailsId,
+  limit,
+  page,
+}: {
+  userDetailsId: string;
+  page?: number;
+  limit?: number;
+}) => {
+  const queryParams = new URLSearchParams();
+  if(page) queryParams.append("page", page?.toString());
+  if(limit) queryParams.append("limit", limit?.toString());
 
+  const response = await ApiFetch({
+    method: "get",
+    url: `/provider/questionnaire/answers/${userDetailsId}?${queryParams}`,
+  });
+  console.log(response.data);
+  const data: QuestionnaireInterface = await response.data;
+  console.log(data);
+  return data;
+};
