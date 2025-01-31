@@ -25,10 +25,11 @@ import {
   UpdateTaskType,
 } from "@/types/tasksInterface";
 import { updateTask } from "@/services/chartDetailsServices";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
-import TasksDialog from "@/components/tasks/TasksDialog";
+// import TasksDialog from "@/components/tasks/TasksDialog";
 import { showToast } from "@/utils/utils";
+import formStyles from '@/components/formStyles.module.css'
 
 function AddTaskComment({
   tasksData,
@@ -40,10 +41,10 @@ function AddTaskComment({
   isOpen: boolean;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
-  const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
-    null
-  );
+  // const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+  // const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
+  //   null
+  // );
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof addCommentToTasksSchema>>({
@@ -58,7 +59,7 @@ function AddTaskComment({
       form.reset({
         comments: tasksData.description,
       });
-      setEditData(tasksData);
+      // setEditData(tasksData);
     }
   }, [form, tasksData]);
 
@@ -108,12 +109,12 @@ function AddTaskComment({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-auto">
         <DialogHeader>
           <DialogTitle>Add comment</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-3">
-          <div className="flex justify-end">
+          {/* <div className="flex justify-end">
             <Button
             variant={"outline"}
               className="border border-[#84012A] bg-white text-[#84012A]"
@@ -123,7 +124,7 @@ function AddTaskComment({
             >
               Edit
             </Button>
-          </div>
+          </div> */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-3">
@@ -131,7 +132,7 @@ function AddTaskComment({
                   control={form.control}
                   name="comments"
                   render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
+                    <FormItem className={formStyles.formItem}>
                       <FormLabel>Comments</FormLabel>
                       <FormControl>
                         <Textarea {...field} />
@@ -145,13 +146,13 @@ function AddTaskComment({
             </form>
           </Form>
         </div>
-        <TasksDialog
+        {/* <TasksDialog
           tasksData={editData}
           onClose={() => {
             setIsEditDialogOpen(false);
           }}
           isOpen={isEditDialogOpen}
-        />
+        /> */}
       </DialogContent>
     </Dialog>
   );

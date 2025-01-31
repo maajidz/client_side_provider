@@ -32,6 +32,7 @@ import { categoryOptions, priority, status } from "@/constants/data";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
 import AddTaskComment from "./AddTaskComment";
+import TasksDialog from "@/components/tasks/TasksDialog";
 
 const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -41,6 +42,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const limit = 5;
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isCommentDialogOpen, setIsCommentDialogOpen] = useState<boolean>(false);
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
     null
   );
@@ -114,10 +116,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
     <>
       <div className="flex flex-col gap-3">
         <Form {...form}>
-          <form
-            onChange={form.handleSubmit(onSubmit)}
-            className="flex gap-3"
-          >
+          <form onChange={form.handleSubmit(onSubmit)} className="flex gap-3">
             <FormField
               control={form.control}
               name="category"
@@ -211,6 +210,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
               columns={columns({
                 setEditData,
                 setIsDialogOpen,
+                setIsCommentDialogOpen,
                 setLoading,
                 showToast: () =>
                   showToast({
@@ -219,7 +219,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
                     message: "Deleted Successfully",
                   }),
                 fetchTasksList: () => fetchTasksList(page, userDetailsId),
-                isPatientTask: true
+                isPatientTask: true,
               })}
               data={resultList?.data}
               pageNo={page}
@@ -229,6 +229,14 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
           )}
 
           <AddTaskComment
+            tasksData={editData}
+            onClose={() => {
+              setIsCommentDialogOpen(false);
+            }}
+            isOpen={isCommentDialogOpen}
+          />
+
+          <TasksDialog
             tasksData={editData}
             onClose={() => {
               setIsDialogOpen(false);
