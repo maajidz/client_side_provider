@@ -67,7 +67,7 @@ export const columns = ({
 }: {
   setEditData: (data: TasksResponseDataInterface | null) => void;
   setIsDialogOpen: (isOpen: boolean) => void;
-  setIsCommentDialogOpen?: (isOpen: boolean) => void;
+  setIsCommentDialogOpen: (isOpen: boolean) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchTasksList: () => void;
@@ -160,7 +160,7 @@ export const columns = ({
               <DropdownMenuItem
                 onClick={() => {
                   setEditData(row.original);
-                  setIsCommentDialogOpen && setIsCommentDialogOpen(true);
+                  setIsCommentDialogOpen(true);
                 }}
               >
                 Add comment
