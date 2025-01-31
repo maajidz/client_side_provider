@@ -90,12 +90,15 @@ export const fetchUserQuestionnaire = async ({
   userDetailsId,
   limit,
   page,
+  type
 }: {
   userDetailsId: string;
   page?: number;
   limit?: number;
+  type: string
 }) => {
   const queryParams = new URLSearchParams();
+  if(type) queryParams.append("type", type);
   if(page) queryParams.append("page", page?.toString());
   if(limit) queryParams.append("limit", limit?.toString());
 
