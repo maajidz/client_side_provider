@@ -62,10 +62,12 @@ export const columns = ({
   setLoading,
   showToast,
   fetchTasksList,
+  setIsCommentDialogOpen,
   isPatientTask,
 }: {
   setEditData: (data: TasksResponseDataInterface | null) => void;
   setIsDialogOpen: (isOpen: boolean) => void;
+  setIsCommentDialogOpen: (isOpen: boolean) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchTasksList: () => void;
@@ -154,13 +156,23 @@ export const columns = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
+            {isPatientTask && (
+              <DropdownMenuItem
+                onClick={() => {
+                  setEditData(row.original);
+                  setIsCommentDialogOpen(true);
+                }}
+              >
+                Add comment
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onClick={() => {
                 setEditData(row.original);
                 setIsDialogOpen(true);
               }}
             >
-              {isPatientTask ? "Add comment" : "Edit"}
+              Edit
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {

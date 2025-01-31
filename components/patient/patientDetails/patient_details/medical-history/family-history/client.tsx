@@ -1,9 +1,9 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { getFamilyHistoryData } from "@/services/chartDetailsServices";
 import { FamilyHistoryResponseInterface } from "@/types/familyHistoryInterface";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
+import { CustomDataTable } from "@/components/custom_buttons/table/CustomDataTable";
 
 interface FamilyHistoryClientProps {
   userDetailsId: string;
@@ -51,8 +51,7 @@ function FamilyHistoryClient({ userDetailsId }: FamilyHistoryClientProps) {
   if (loading) return <LoadingButton />;
 
   return (
-    <DataTable
-      searchKey="past"
+    <CustomDataTable
       columns={columns()}
       data={data}
       pageNo={page}

@@ -44,6 +44,8 @@ import { timeZonesList } from "@/constants/data";
 import { CreateUserAppointmentsInterface } from "@/types/appointments";
 import { createUserAppointments } from "@/services/providerAppointments";
 import { fetchUserInfo } from "@/services/userServices";
+import formStyles from "@/components/formStyles.module.css";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function AppointmentsDialog({
   userDetailsId,
@@ -207,7 +209,7 @@ export function AppointmentsDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-auto">
+      <DialogContent className="w-[30rem]">
         <DialogHeader>
           <DialogTitle>
             {appointmentsData
@@ -217,7 +219,7 @@ export function AppointmentsDialog({
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-3 w-full">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 px-3">
             <FormLabels
               label="Email"
               value={
@@ -237,165 +239,185 @@ export function AppointmentsDialog({
           </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
-              {appointmentsData ? (
-                <FormLabels
-                  label="Provider:"
-                  value={appointmentsData.providerName}
-                />
-              ) : (
-                <FormField
-                  control={form.control}
-                  name="providerId"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
-                      <FormLabel>Provider</FormLabel>
-                      <Select
-                        defaultValue={field.value}
-                        onValueChange={(value) => {
-                          field.onChange(value);
-                          const selected = ownersList.find(
-                            (owner) => owner.id === value
-                          );
-                          setSelectedOwner(selected);
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a provider" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ownersList.map((owner) => (
-                            <SelectItem key={owner.id} value={owner.id}>
-                              {owner.firstName} {owner.lastName}
+              <ScrollArea className="h-96">
+                <div className="flex flex-col gap-3 p-3">
+                  {appointmentsData ? (
+                    <FormLabels
+                      label="Provider:"
+                      value={appointmentsData.providerName}
+                    />
+                  ) : (
+                    <FormField
+                      control={form.control}
+                      name="providerId"
+                      render={({ field }) => (
+                        <FormItem className={formStyles.formItem}>
+                          <FormLabel>Provider</FormLabel>
+                          <Select
+                            defaultValue={field.value}
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              const selected = ownersList.find(
+                                (owner) => owner.id === value
+                              );
+                              setSelectedOwner(selected);
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a provider" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {ownersList.map((owner) => (
+                                <SelectItem key={owner.id} value={owner.id}>
+                                  {owner.firstName} {owner.lastName}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem className={formStyles.formItem}>
+                        <FormLabel>Status</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={"Scheduled"}>
+                              Scheduled
                             </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2  items-center">
-                    <FormLabel>Status</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={"Scheduled"}>Scheduled</SelectItem>
-                        <SelectItem value={"Consulted"}>Consulted</SelectItem>
-                        <SelectItem value={"No Show"}>No Show</SelectItem>
-                        <SelectItem value={"Confirmed"}>Confirmed</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {appointmentsData ? (
-                <FormLabels
-                  label="Date"
-                  value={appointmentsData.dateOfAppointment}
-                />
-              ) : (
-                <FormField
-                  control={form.control}
-                  name="dateOfAppointment"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
-                      <FormLabel>Date</FormLabel>
-                      <Input
-                        type="date"
-                        {...field}
-                        value={field.value.toISOString().split("T")[0]}
-                      />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-              {appointmentsData ? (
-                <FormLabels label="Start Time"  value={`${appointmentsData.timeOfAppointment} / ${appointmentsData.timeZone}`} />
-              ) : (
-                <FormField
-                  control={form.control}
-                  name="timeOfAppointment"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
-                      <FormLabel className="w-28">Start Time</FormLabel>
-                      <Input type="time" {...field} value={field.value} />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-              {!appointmentsData && (
-                <FormField
-                  control={form.control}
-                  name="timeZone"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
-                      <FormLabel className="w-20">Time zone</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger className="border-none">
-                          <SelectValue placeholder="Select a timezone" />
-                        </SelectTrigger>
-                        <SelectContent>
+                            <SelectItem value={"Consulted"}>
+                              Consulted
+                            </SelectItem>
+                            <SelectItem value={"No Show"}>No Show</SelectItem>
+                            <SelectItem value={"Confirmed"}>
+                              Confirmed
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {appointmentsData ? (
+                    <FormLabels
+                      label="Date"
+                      value={appointmentsData.dateOfAppointment}
+                    />
+                  ) : (
+                    <FormField
+                      control={form.control}
+                      name="dateOfAppointment"
+                      render={({ field }) => (
+                        <FormItem className={formStyles.formItem}>
+                          <FormLabel>Date</FormLabel>
                           <Input
-                            type="text"
-                            placeholder="Search time zones"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full p-2 border rounded-md"
+                            type="date"
+                            {...field}
+                            value={field.value.toISOString().split("T")[0]}
                           />
-                          {filteredTimeZones.map((tz) => (
-                            <SelectItem key={tz.value} value={tz.value}>
-                              {tz.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   )}
-                />
-              )}
-              <FormField
-                control={form.control}
-                name="reason"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2  items-center">
-                    <FormLabel>Reason</FormLabel>
-                    <Textarea {...field} value={field.value} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="additionalText"
-                render={({ field }) => (
-                  <FormItem className="flex  items-center">
-                    <FormLabel className="w-48">Message to Patient</FormLabel>
-                    <Textarea {...field} value={field.value} />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  {appointmentsData ? (
+                    <FormLabels
+                      label="Start Time"
+                      value={`${appointmentsData.timeOfAppointment} / ${appointmentsData.timeZone}`}
+                    />
+                  ) : (
+                    <FormField
+                      control={form.control}
+                      name="timeOfAppointment"
+                      render={({ field }) => (
+                        <FormItem className={formStyles.formItem}>
+                          <FormLabel className="w-28">Start Time</FormLabel>
+                          <Input type="time" {...field} value={field.value} />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                  {!appointmentsData && (
+                    <FormField
+                      control={form.control}
+                      name="timeZone"
+                      render={({ field }) => (
+                        <FormItem className={formStyles.formItem}>
+                          <FormLabel className="w-20">Time zone</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="border-none">
+                              <SelectValue placeholder="Select a timezone" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <Input
+                                type="text"
+                                placeholder="Search time zones"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full p-2 border rounded-md"
+                              />
+                              {filteredTimeZones.map((tz) => (
+                                <SelectItem key={tz.value} value={tz.value}>
+                                  {tz.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                  <FormField
+                    control={form.control}
+                    name="reason"
+                    render={({ field }) => (
+                      <FormItem className={formStyles.formItem}>
+                        <FormLabel>Reason</FormLabel>
+                        <Textarea {...field} value={field.value} />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="additionalText"
+                    render={({ field }) => (
+                      <FormItem className={formStyles.formItem}>
+                        <FormLabel className="w-48">
+                          Message to Patient
+                        </FormLabel>
+                        <Textarea {...field} value={field.value} />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </ScrollArea>
               <div className="flex gap-3 justify-between w-full">
-                <Button type="button" variant="secondary" onClick={onClose}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={onClose}
+                  className="w-full"
+                >
                   Cancel
                 </Button>
-                <SubmitButton label={appointmentsData ? "Update": "Create" } />
+                <SubmitButton label={appointmentsData ? "Update" : "Create"} />
               </div>
             </form>
           </Form>

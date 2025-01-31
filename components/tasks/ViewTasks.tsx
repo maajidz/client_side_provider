@@ -290,6 +290,7 @@ const ViewTasks = () => {
               searchKey="id"
               columns={columns({
                 setEditData,
+                setIsCommentDialogOpen: () => {},
                 setIsDialogOpen,
                 setLoading,
                 showToast: () =>

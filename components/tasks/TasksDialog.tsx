@@ -45,6 +45,8 @@ import { fetchUserDataResponse } from "@/services/userServices";
 import LoadingButton from "../LoadingButton";
 import SubmitButton from "../custom_buttons/SubmitButton";
 import { ScrollArea } from "../ui/scroll-area";
+import formStyles from "@/components/formStyles.module.css";
+import { Button } from "../ui/button";
 
 const TasksDialog = ({
   tasksData,
@@ -217,12 +219,12 @@ const TasksDialog = ({
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-5">
               <ScrollArea className="h-96">
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-5 p-4">
                   <FormField
                     control={form.control}
                     name="category"
                     render={({ field }) => (
-                      <FormItem className="flex gap-2 items-center">
+                      <FormItem className={formStyles.formItem}>
                         <FormLabel className="w-fit">Category</FormLabel>
                         <FormControl>
                           <Select
@@ -252,7 +254,7 @@ const TasksDialog = ({
                     control={form.control}
                     name="task"
                     render={({ field }) => (
-                      <FormItem className="flex gap-2 items-center">
+                      <FormItem className={formStyles.formItem}>
                         <FormLabel>Task</FormLabel>
                         <FormControl>
                           <Textarea {...field} />
@@ -265,7 +267,7 @@ const TasksDialog = ({
                     control={form.control}
                     name="owner"
                     render={({ field }) => (
-                      <FormItem className="flex gap-2 items-center">
+                      <FormItem className={formStyles.formItem}>
                         <FormLabel className="w-fit">Owner</FormLabel>
                         <FormControl>
                           <Select
@@ -297,7 +299,7 @@ const TasksDialog = ({
                     control={form.control}
                     name="priority"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className={formStyles.formItem}>
                         <FormLabel>Priority</FormLabel>
                         <FormControl>
                           <Select
@@ -341,7 +343,7 @@ const TasksDialog = ({
                         control={form.control}
                         name="userDetailsId"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className={formStyles.formItem}>
                             <FormControl>
                               <div className="relative">
                                 <Input
@@ -409,7 +411,7 @@ const TasksDialog = ({
                           control={form.control}
                           name="dueDate"
                           render={({ field }) => (
-                            <FormItem className="flex gap-2 items-center">
+                            <FormItem className={formStyles.formItem}>
                               <FormLabel>From Date:</FormLabel>
                               <FormControl>
                                 <Input type="date" {...field} />
@@ -422,7 +424,7 @@ const TasksDialog = ({
                           control={form.control}
                           name="sendReminder"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className={formStyles.formItem}>
                               <FormLabel>Send Reminder Mail</FormLabel>
                               {reminderOptions.map((option) => (
                                 <div
@@ -464,7 +466,7 @@ const TasksDialog = ({
                     control={form.control}
                     name="comments"
                     render={({ field }) => (
-                      <FormItem className="flex gap-2 items-center">
+                      <FormItem className={formStyles.formItem}>
                         <FormLabel>Comments</FormLabel>
                         <FormControl>
                           <Textarea {...field} />
@@ -475,8 +477,11 @@ const TasksDialog = ({
                   />
                 </div>
               </ScrollArea>
-              <div className="flex justify-end">
-                <SubmitButton label="Save" />
+              <div className="flex gap-3 justify-between w-full">
+                <Button type="button" variant="secondary" onClick={onClose} className="w-full">
+                  Cancel
+                </Button>
+                <SubmitButton label={tasksData ? "Update" : "Create"} />
               </div>
             </div>
           </form>

@@ -91,7 +91,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className=' hover:cursor-pointer hover:text-blue-600'>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

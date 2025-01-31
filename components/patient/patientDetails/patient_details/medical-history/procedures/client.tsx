@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { getProcedureData } from "@/services/chartDetailsServices";
 import { ProceduresInterface } from "@/types/procedureInterface";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
+import { CustomDataTable } from "@/components/custom_buttons/table/CustomDataTable";
 
 interface ProceduresSurgeriesAndHospitalizationClientProps {
   userDetailsId: string;
@@ -52,8 +52,7 @@ function ProceduresSurgeriesAndHospitalizationClient({
 
   return (
     <>
-      <DataTable
-        searchKey="procedures"
+      <CustomDataTable
         columns={columns()}
         data={data}
         pageNo={page}

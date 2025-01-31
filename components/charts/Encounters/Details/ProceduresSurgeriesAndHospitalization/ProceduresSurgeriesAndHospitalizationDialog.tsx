@@ -35,6 +35,7 @@ import { useToast } from "@/components/ui/use-toast";
 import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from '@/components/formStyles.module.css';
 
 const ProceduresSurgeriesAndHospitalizationDialog = ({
   userDetailsId,
@@ -152,7 +153,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                 control={form.control}
                 name="type"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel className="w-fit">Type</FormLabel>
                     <FormControl>
                       <Select
@@ -182,7 +183,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                 control={form.control}
                 name="name"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel className="w-fit">Name</FormLabel>
                     <FormControl>
                       <Input {...field} />
@@ -195,7 +196,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                 control={form.control}
                 name="fromDate"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>From Date:</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
@@ -208,7 +209,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                 control={form.control}
                 name="toDate"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>To Date:</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
@@ -221,7 +222,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                 control={form.control}
                 name="notes"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>Notes</FormLabel>
                     <FormControl>
                       <Textarea {...field} />

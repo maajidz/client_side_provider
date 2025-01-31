@@ -6,6 +6,8 @@ import LoadingButton from "@/components/LoadingButton";
 import { UserAppointmentInterface } from "@/types/userInterface";
 import { fetchUserAppointments } from "@/services/userServices";
 import { AppointmentsDialog } from "@/components/patient/appointments/AppointmentsDialog";
+import { Button } from "@/components/ui/button";
+import generateAppointmentPDF from "@/components/patient/appointments/generateAppointmentPdf";
 
 export function PatientAppointmentClient({
   userDetailsId,
@@ -59,6 +61,17 @@ export function PatientAppointmentClient({
 
   return (
     <>
+      <div className="flex justify-end">
+        <Button
+          variant={"outline"}
+          className="border-[#84012A] text-[#84012A] hover:text-[#84012A]"
+          onClick={() =>
+            generateAppointmentPDF({ appointmentData: userAppointment })
+          }
+        >
+          Print
+        </Button>
+      </div>
       {userAppointment.length > 0 ? (
         <div className="space-y-4">
           <DataTable
