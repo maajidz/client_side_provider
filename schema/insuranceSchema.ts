@@ -5,6 +5,6 @@ export const insuranceFormSchema = z.object({
   subscriberNumber: z.string().min(1, "Required"),
   groupNameOrNumber: z.string().min(1, "Required"),
   idNumber: z.string().min(2, "Required."),
-  // frontDocumentImage: z.instanceof(File),
-  // backDocumentImage: z.instanceof(File),
+  frontDocumentImage: z.instanceof(File),
+  backDocumentImage: z.instanceof(File),
 });

@@ -69,8 +69,8 @@ function InsuranceTable({
                     <Ellipsis />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuSeparator />
                     <DropdownMenuItem
+                      className="cursor-pointer"
                       onClick={() => {
                         setIsDialogOpen(true);
                         setSelectedInsurance(insuranceData);
@@ -79,13 +79,18 @@ function InsuranceTable({
                       Edit
                     </DropdownMenuItem>
                     <DropdownMenuItem
+                      className="cursor-pointer"
                       onClick={() => setIsOpenNotesDialog(true)}
                     >
                       Add/View Notes
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                    <DropdownMenuItem>Mark as Inactive</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      Delete
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      Mark as Inactive
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
@@ -110,4 +115,3 @@ function InsuranceTable({
 }
 
 export default InsuranceTable;
-
