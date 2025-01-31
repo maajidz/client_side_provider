@@ -15,7 +15,7 @@ const PatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <PlusIcon />
             Alerts
           </div>

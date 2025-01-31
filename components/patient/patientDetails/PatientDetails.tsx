@@ -15,7 +15,11 @@ const patientDetailsTab = [
     component: PatientDemographics,
   },
   { value: "care_team", label: "Care Team", component: PatientCareTeam },
-  { value: "medical_history", label: "Medical History", component: MedicalHistory },
+  {
+    value: "medical_history",
+    label: "Medical History",
+    component: MedicalHistory,
+  },
   {
     value: "questionnaires",
     label: "Questionnaires",

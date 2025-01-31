@@ -43,6 +43,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 
 function FamilyHistoryDialog({
   userDetailsId,
@@ -173,7 +174,7 @@ function FamilyHistoryDialog({
                 control={form.control}
                 name="relationship"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel className="w-fit">Relationship</FormLabel>
                     <FormControl>
                       <Select
@@ -202,7 +203,7 @@ function FamilyHistoryDialog({
                 name="deceased"
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2">
-                    <FormLabel className="mt-1">Deceased</FormLabel>
+                    <FormLabel className="mt-2">Deceased</FormLabel>
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -216,7 +217,7 @@ function FamilyHistoryDialog({
                 control={form.control}
                 name="age"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>Age</FormLabel>
                     <FormControl>
                       <Input
@@ -286,7 +287,7 @@ function FamilyHistoryDialog({
                 control={form.control}
                 name="comments"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>Comments</FormLabel>
                     <FormControl>
                       <Textarea {...field} />

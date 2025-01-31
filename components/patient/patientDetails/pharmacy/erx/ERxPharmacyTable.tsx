@@ -89,7 +89,7 @@ function ERxPharmacyTable({ userDetailsId }: ERxPharmacyClientProps) {
 
   return (
     <>
-      <Table>
+      <Table className="border rounded-lg">
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>

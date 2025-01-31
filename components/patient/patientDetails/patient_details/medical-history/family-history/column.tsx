@@ -27,7 +27,7 @@ export const columns = (): ColumnDef<FamilyHistoryResponseInterface>[] => [
           {activeProblems.map((problem) => (
             <span
               key={problem.id}
-              className="px-2 py-1 bg-[#ffe7e7] text-sm rounded-md m-1 inline-block"
+              className="px-2 py-1 bg-[#ffe7e7] text-sm rounded-md m-1 inline-block text-[#84012A]"
             >
               {problem.name}
             </span>

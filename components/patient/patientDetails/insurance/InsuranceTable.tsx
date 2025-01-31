@@ -29,12 +29,11 @@ function InsuranceTable({
   setIsDialogOpen,
   setSelectedInsurance,
 }: InsuranceTableProps) {
-  // Notes Dialog
   const [isOpenNotesDialog, setIsOpenNotesDialog] = useState(false);
 
   return (
     <>
-      <Table>
+      <Table className="border rounded-lg">
         <TableHeader>
           <TableRow>
             <TableHead>Type</TableHead>

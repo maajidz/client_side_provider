@@ -24,6 +24,7 @@ import { CreatePastMedicalHistoryType } from "@/services/pastMedicalHistoryInter
 import { createPastMedicalHistory } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from '@/components/formStyles.module.css';
 
 interface PastMedicalHistoryDialogProps {
   isOpen: boolean;
@@ -101,7 +102,7 @@ function PastMedicalHistoryDialog({
                 control={form.control}
                 name="notes"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel className="w-fit">Note</FormLabel>
                     <FormControl>
                       <Textarea {...field} />
@@ -114,7 +115,7 @@ function PastMedicalHistoryDialog({
                 control={form.control}
                 name="glp_refill_note_practice"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>GLP Refill Note Practice - PMH</FormLabel>
                     <FormControl>
                       <Textarea {...field} />

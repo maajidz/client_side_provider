@@ -61,7 +61,7 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
   }
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 p-5">
       <div className="flex justify-end">
         <InsuranceDialog
           isOpen={isDialogOpen}

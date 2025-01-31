@@ -51,23 +51,25 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             </div>
           </div>
           <div className={`${styles.infoBox}  bg-[#ECF5FF]`}>
-            <PatientLabelDetails
-              label="Allergies:"
-              value={`${
-                response?.allergies && response.allergies.length > 0
-                  ? response.allergies
-                      .map((allergy) => allergy.Allergen)
-                      .join(", ")
-                  : "N/A"
-              }`}
-            />
+            <div className="flex  items-center gap-3">
+              <div className={styles.labelText}>Allergies:</div>
+              {response.allergies.map((allergy, index) => (
+                <div
+                  className={`${styles.valueText} text-[#fb6e52]`}
+                  key={allergy.id}
+                >
+                  {index === 0 ? "" : ","}
+                  {allergy.Allergen}
+                </div>
+              ))}
+            </div>
           </div>
           <div className={`${styles.infoBox}  bg-[#FFFFEA]`}>
             <div className="flex flex-col gap-3">
               <div className="flex flex-row gap-5">
                 <PatientLabelDetails
                   label="Weight:"
-                  value={`${response?.vitals[0].weightLbs}lbs ${response?.vitals[0].weightOzs}ozs`}
+                  value={`${response?.vitals[0]?.weightLbs}lbs ${response?.vitals[0]?.weightOzs}ozs`}
                 />
                 <PatientLabelDetails
                   label="BMI:"
@@ -84,7 +86,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             <PatientLabelDetails label="Wallet:" value={response?.wallet} />
           </div>
         </div>
-      ) }
+      )}
     </div>
   );
 };
