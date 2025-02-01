@@ -66,7 +66,7 @@ const PastPrescriptionsDialog = ({
         <div className="flex flex-col gap-4">
           {/* Patient Details Section */}
           <RxPatientDetailsSection userDetailsId={userDetailsId} />
-          <ScrollArea>
+          <ScrollArea className="h-[12.5rem] min-h-10">
             {/* Search & Add Rx Section */}
             <div className="flex flex-col p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">
