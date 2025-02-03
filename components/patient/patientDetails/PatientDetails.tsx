@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
-import PatientDemographics from "./patient_details/PatientDemographics";
+import PatientDemographics from "./patient_details/PatientDemographics/PatientDemographics";
 import PatientCareTeam from "./patient_details/PrimaryCareTeam/PatientCareTeam";
 import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 import InsuranceInformation from "./insurance/InsuranceInformation";
