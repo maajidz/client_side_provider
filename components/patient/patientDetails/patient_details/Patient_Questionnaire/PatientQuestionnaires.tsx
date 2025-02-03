@@ -6,6 +6,7 @@ import { QuestionnaireInterface } from "@/types/formInterface";
 import React, { useCallback, useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
+import styles from "./questionnaire.module.css";
 
 const PatientQuestionnaires = ({
   userDetailsId,
@@ -14,7 +15,7 @@ const PatientQuestionnaires = ({
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const limit = 15;
+  const limit = 5;
   const [resultList, setResultList] = useState<QuestionnaireInterface>();
   const [totalPages, setTotalPages] = useState<number>(1);
   const [type, setType] = useState<string>("onBoarding");
@@ -76,17 +77,16 @@ const PatientQuestionnaires = ({
           </CustomTabsTrigger>
         ))}
       </TabsList>
-      <div className="flex-1 p-4 rounded-lg border border-gray-300">
+      <div className={styles.infoContainer}>
         {patientQuestionnaireTab.map((tab) => (
           <TabsContent value={tab.value} key={tab.value}>
             {loading && <LoadingButton />}
             <ScrollArea className="h-[calc(80vh-220px)] md:h-[calc(80dvh-200px)]">
-              <div className="flex flex-col p-5">
-                <div>{tab.label}</div>
+              <div className={styles.detailsContainer}>
                 {resultList?.data?.map((result) => (
                   <div key={result.id} className="flex flex-col">
-                    <div className="text-sm">{result.questionText}</div>
-                    <div className="text-lg">{result.answerText}</div>
+                    <div className={styles.detailsLabel}>Q. {result.questionText}</div>
+                    <div className={styles.detailsValue}>{result.answerText}</div>
                   </div>
                 ))}
               </div>
