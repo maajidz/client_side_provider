@@ -23,5 +23,13 @@ export interface ImplantDeviceResponse {
   total: number
   page: string
   limit: string
-  devices: ImplantedDevices[]
+  devices: Device[]
+}
+
+export interface Device {
+  id: string
+  UDI: string
+  providerId: string
+  created_at: string
+  updated_at: string
 }

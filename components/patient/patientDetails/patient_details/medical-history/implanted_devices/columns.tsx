@@ -1,7 +1,7 @@
-import { ImplantedDevices } from "@/types/implantedDevices";
+import { Device } from "@/types/implantedDevices";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns = (): ColumnDef<ImplantedDevices>[] => [
+export const columns = (): ColumnDef<Device>[] => [
   {
     accessorKey: "UDI",
     header: "UDI",
