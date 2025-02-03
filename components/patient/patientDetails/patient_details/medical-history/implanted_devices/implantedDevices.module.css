@@ -1,0 +1,23 @@
+.infoContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.labelContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.labelText{
+    font-weight: 400;
+    font-size:  0.825rem;
+    color: #666;
+}
+
+.valueText {
+    font-weight: 500;
+    font-size: 1rem;
+}

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import ImplantedDevicesDialog from "./ImplantedDevicesDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ImplantedDevicesClient from "./ImplantedDevicesClient";
 
 const ImplantedDevices = ({userDetailsId}: {userDetailsId: string}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,9 +27,9 @@ const ImplantedDevices = ({userDetailsId}: {userDetailsId: string}) => {
         <div>
             
         </div>
-        {/* <ProceduresSurgeriesAndHospitalizationClient
+        <ImplantedDevicesClient
           userDetailsId={userDetailsId}
-        /> */}
+        />
       </ScrollArea>
     </div>
   );

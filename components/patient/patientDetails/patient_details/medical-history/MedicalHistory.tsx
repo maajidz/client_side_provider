@@ -15,7 +15,7 @@ interface MedicalHistoryProps {
 function MedicalHistory({ userDetailsId }: MedicalHistoryProps) {
   return (
     <ScrollArea className={cn("h-[calc(80dvh-52px)]")}>
-      <div className="mb-5">
+      <div className="pb-5">
         <ProceduresSurgeriesAndHospitalization userDetailsId={userDetailsId} />
         <PastMedicalHistory userDetailsId={userDetailsId} />
         <FamilyHistory userDetailsId={userDetailsId} />
