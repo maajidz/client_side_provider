@@ -2,25 +2,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import styles from "./face_Sheet.module.css";
 import { fetchUserInfo } from "@/services/userServices";
 import { PatientDetails } from "@/types/userInterface";
-import { getInjection } from "@/services/injectionsServices";
-import { InjectionsResponse } from "@/types/injectionsInterface";
 import { SupplementInterface } from "@/types/supplementsInterface";
-import {
-  getPastMedicalHistory,
-  getSupplements,
-} from "@/services/chartDetailsServices";
+import { getSupplements } from "@/services/chartDetailsServices";
 import LoadingButton from "@/components/LoadingButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
+import { Button } from "@/components/ui/button";
 
 const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [userData, setUserData] = useState<PatientDetails>();
-  const [injectionsData, setInjectionsData] = useState<InjectionsResponse>();
   const [supplementData, setSupplementData] = useState<SupplementInterface[]>();
-  const [medicalHistory, setMedicalHistory] = useState<
-    PastMedicalHistoryInterface[]
-  >([]);
 
   const fetchUserData = useCallback(async () => {
     try {
@@ -33,25 +24,6 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
     } catch (error) {
       setLoading(false);
       console.log("Error", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [userDetailsId]);
-
-  const fetchInjectionsData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await getInjection({
-        page: 1,
-        limit: 3,
-        userDetailsId: userDetailsId,
-      });
-
-      if (response) {
-        setInjectionsData(response);
-      }
-    } catch (err) {
-      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -75,35 +47,10 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
     }
   }, [userDetailsId]);
 
-  const fetchPastMedicalHistory = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const response = await getPastMedicalHistory({
-        userDetailsId: userDetailsId,
-      });
-
-      if (response) {
-        setMedicalHistory(response.items);
-      }
-    } catch (error) {
-      console.log("Error", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [userDetailsId]);
-
   useEffect(() => {
     fetchUserData();
-    fetchInjectionsData();
     fetchSupplements();
-    fetchPastMedicalHistory();
-  }, [
-    fetchUserData,
-    fetchInjectionsData,
-    fetchSupplements,
-    fetchPastMedicalHistory,
-  ]);
+  }, [fetchUserData, fetchSupplements]);
 
   if (loading) {
     return <LoadingButton />;
@@ -115,21 +62,32 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
         <div className={styles.infoContent}>
           <div className={styles.infoContainer}>
             <div className={styles.infoLabel}>Allergies</div>
-            {userData?.allergies.map((allergies, index) => (
-              <div
-                className={`${styles.infoTextLabel} text-[#fb6e52]`}
-                key={allergies.id}
-              >
-                {index === 0 ? "" : ","}
-                {allergies.Allergen}
-              </div>
-            ))}
-
-            <div></div>
+            {userData?.allergies ? (
+              userData?.allergies.map((allergies, index) => (
+                <div
+                  className={`${styles.infoTextLabel} text-[#fb6e52]`}
+                  key={allergies.id}
+                >
+                  {index === 0 ? "" : ","}
+                  {allergies.Allergen}
+                </div>
+              ))
+            ) : (
+              <NoDataRecorded />
+            )}
           </div>
           <div className={styles.infoContainer}>
             <div className={styles.infoLabel}>Diagnoses</div>
-            <div></div>
+            {userData?.diagnoses ? (
+              userData?.diagnoses.map((diagnosis, index) => (
+                <div className={`${styles.infoTextLabel}`} key={diagnosis.id}>
+                  {index === 0 ? "" : ","}
+                  {diagnosis.diagnosis_name}[{diagnosis.ICD_Code}]
+                </div>
+              ))
+            ) : (
+              <NoDataRecorded />
+            )}
           </div>
           <div className={styles.infoContainer}>
             <div className={styles.infoLabel}>Medications</div>
@@ -137,33 +95,106 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
           </div>
           <div className={styles.infoContainer}>
             <div className={styles.infoLabel}>History</div>
-            <div>
-              <div className={`${styles.infoTextLabel} underline`}>
-                Past Medical History
+            <ScrollArea className="h-[12.5rem] min-h-10">
+              <div>
+                <div className={`${styles.infoTextLabel} underline`}>
+                  Past Medical History
+                </div>
+                <div className="flex flex-col gap-3">
+                  {userData?.medicalHistory ? (
+                    userData?.medicalHistory?.map((medicalHistory) => (
+                      <div key={medicalHistory.id}>
+                        <div>
+                          Medical History Recorded on{" "}
+                          {new Date(
+                            medicalHistory.updatedAt
+                          ).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "2-digit",
+                            year: "numeric",
+                          })}{" "}
+                        </div>
+                        <FaceSheetLabels
+                          label="GLP Refill Note:"
+                          value={medicalHistory.glp_refill_note_practice}
+                        />
+                        <FaceSheetLabels
+                          label="Notes:"
+                          value={medicalHistory.notes}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <NoDataRecorded />
+                  )}
+                </div>
               </div>
-              <div className="flex flex-col gap-3">
-                {medicalHistory?.map((medicalHistory) => (
-                  <div key={medicalHistory.id}>
-                    <div>
-                      Medical History Recorded on{" "}
-                      {new Date(medicalHistory.updatedAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "numeric",
-                      })}{" "}
-                    </div>
-                    <FaceSheetLabels
-                      label="GLP Refill Note:"
-                      value={medicalHistory.glp_refill_note_practice}
-                    />
-                    <FaceSheetLabels
-                      label="Notes:"
-                      value={medicalHistory.notes}
-                    />
-                  </div>
-                ))}
+              <div>
+                <div className={`${styles.infoTextLabel} underline`}>
+                  Family History
+                </div>
+                <div className="flex flex-col gap-3">
+                  {userData?.familyHistory ? (
+                    userData?.familyHistory?.map((family) => (
+                      <div key={family.id}>
+                        <div>
+                          Family History Recorded on{" "}
+                          {new Date(family.updatedAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "2-digit",
+                              year: "numeric",
+                            }
+                          )}{" "}
+                        </div>
+                        <FaceSheetLabels
+                          label="Relationship/Deceased:"
+                          value={family.relationship}
+                        />
+                        <FaceSheetLabels
+                          label="Age:"
+                          value={family?.age.toString()}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <NoDataRecorded />
+                  )}
+                </div>
               </div>
-            </div>
+              <div>
+                <div className={`${styles.infoTextLabel} underline`}>
+                  Social History
+                </div>
+                <div className="flex flex-col gap-3">
+                  {userData?.socialHistories ? (
+                    userData?.socialHistories?.map((socialHistory) => (
+                      <div key={socialHistory.id}>
+                        <div>
+                          Social History Recorded on{" "}
+                          {new Date(socialHistory.updatedAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "2-digit",
+                              year: "numeric",
+                            }
+                          )}{" "}
+                        </div>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: socialHistory.content,
+                          }}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <NoDataRecorded />
+                  )}
+                </div>
+              </div>
+            </ScrollArea>
           </div>
           <div className={styles.infoContainer}>
             <div className={styles.infoLabel}>Supplements</div>
@@ -187,26 +218,30 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
           <div className={styles.infoContainer}>
             <div className={styles.infoLabel}>Recent Vitals</div>
             <div className="flex flex-col gap-3">
-              {userData?.vitals.map((vitals) => (
-                <div key={vitals.id}>
-                  <FaceSheetLabels
-                    label="Weight:"
-                    value={`${vitals.weightLbs} lbs ${vitals.weightOzs} ozs`}
-                  />
-                  <FaceSheetLabels
-                    label="Height:"
-                    value={`${vitals.heightFeets} ' ${vitals.heightInches}`}
-                  />
-                  <FaceSheetLabels label="BMI:" value={`${vitals.BMI}`} />
-                </div>
-              ))}
+              {userData?.vitals ? (
+                userData?.vitals.map((vitals) => (
+                  <div key={vitals.id}>
+                    <FaceSheetLabels
+                      label="Weight:"
+                      value={`${vitals.weightLbs} lbs ${vitals.weightOzs} ozs`}
+                    />
+                    <FaceSheetLabels
+                      label="Height:"
+                      value={`${vitals.heightFeets} ' ${vitals.heightInches}`}
+                    />
+                    <FaceSheetLabels label="BMI:" value={`${vitals.BMI}`} />
+                  </div>
+                ))
+              ) : (
+                <NoDataRecorded />
+              )}
             </div>
           </div>
           <div className={styles.infoContainer}>
             <div className={styles.infoLabel}>Injections</div>
-            {injectionsData?.data ? (
+            {userData?.injections ? (
               <div className="flex flex-col gap-3">
-                {injectionsData.data.map((injections) => (
+                {userData?.injections.map((injections) => (
                   <div key={injections.id}>
                     <FaceSheetLabels
                       label="Injection Name:"
@@ -244,6 +279,78 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
+            <div className={styles.infoLabel}>Latest Labs</div>
+            {userData?.labResults ? (
+              <div className="flex flex-col gap-3">
+                {userData?.labResults.map((labs) => (
+                  <div key={labs.id}>
+                    <FaceSheetLabels
+                      label="Status:"
+                      value={labs?.status ? labs.status : "N/A"}
+                    />
+                    <FaceSheetLabels
+                      label="Tags:"
+                      value={labs?.tags ? labs.tags : "N/A"}
+                    />
+                    {labs.files.map((image) => (
+                      <Button
+                        key={image}
+                        variant={"link"}
+                        onClick={() => {
+                          window.open(image, "_blank");
+                        }}
+                      >
+                        {image.split("/")[4]}
+                      </Button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <NoDataRecorded />
+            )}
+          </div>
+          <div className={styles.infoContainer}>
+            <div className={styles.infoLabel}>Implanted Devices</div>
+            {userData?.implantedDevices ? (
+              userData.implantedDevices.map((implantedDevices) => (
+                <div key={implantedDevices.id}>
+                  <FaceSheetLabels
+                    label="UDI:"
+                    value={
+                      implantedDevices?.UDI ? implantedDevices?.UDI : "N/A"
+                    }
+                  />
+                </div>
+              ))
+            ) : (
+              <NoDataRecorded />
+            )}
+          </div>
+          <div className={styles.infoContainer}>
+            <div className={styles.infoLabel}>Vaccines</div>
+            {userData?.vaccines ? (
+              <div className="flex flex-col gap-3">
+                {userData?.vaccines.map((vaccine) => (
+                  <div key={vaccine.id}>
+                    <FaceSheetLabels
+                      label="Vaccine Name:"
+                      value={
+                        vaccine?.vaccine_name ? vaccine.vaccine_name : "N/A"
+                      }
+                    />
+                    <FaceSheetLabels
+                      label="status:"
+                      value={vaccine?.status ? vaccine?.status : "N/A"}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <NoDataRecorded />
+            )}
+          </div>
+          <div className={styles.infoContainer}>
             <div className={styles.infoLabel}>Past Visits</div>
             <div></div>
           </div>
@@ -271,6 +378,38 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             ) : (
               <NoDataRecorded />
             )}
+          </div>
+          <div className={styles.infoContainer}>
+            <div className={styles.infoLabel}>Documents</div>
+            <ScrollArea className="h-[12.5rem] min-h-10">
+              {userData?.documents ? (
+                userData.documents.map((docs) => (
+                  <div key={docs.id}>
+                    <FaceSheetLabels
+                      label="Document Type:"
+                      value={docs?.document_type ? docs?.document_type : "N/A"}
+                    />
+                    <FaceSheetLabels
+                      label="Notes:"
+                      value={docs?.notes ? docs?.notes : "N/A"}
+                    />{" "}
+                    {docs.documents.map((image) => (
+                      <Button
+                        key={image}
+                        variant={"link"}
+                        onClick={() => {
+                          window.open(image, "_blank");
+                        }}
+                      >
+                        {image.split("/")[4]}
+                      </Button>
+                    ))}
+                  </div>
+                ))
+              ) : (
+                <NoDataRecorded />
+              )}
+            </ScrollArea>
           </div>
         </div>
       </ScrollArea>

@@ -1,5 +1,10 @@
+import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
 import { AllergenResponseInterfae } from "./allergyInterface";
+import { PastDiagnosesInterface } from "./chartsInterface";
 import { VitalsInterface } from "./vitalsInterface";
+import { Family } from "./familyHistoryInterface";
+import { SocialHistoryInterface } from "./socialHistoryInterface";
+import { Device } from "./implantedDevices";
 
 export interface CreateUser {
   user: CreateUserDataInterface;
@@ -44,6 +49,17 @@ export interface PatientDetails {
   allergies: AllergenResponseInterfae[]
   vitals: VitalsInterface[]
   wallet: any
+  diagnoses: PastDiagnosesInterface[]
+  medicationPrescriptions: any[]
+  medicalHistory: PastMedicalHistoryInterface[]
+  familyHistory: Family[]
+  socialHistories: SocialHistoryInterface[]
+  implantedDevices: Device[]
+  documents: Document[]
+  vaccines: Vaccine[]
+  injections: Injection[]
+  labResults: LabResult[]
+  imageResults: ImageResult[]
 }
 
 
@@ -230,4 +246,78 @@ export interface PrimaryCarePhysician {
   userDetailsID: string;
   createdAt: string;
   updatedAt: string;
+}
+
+
+export interface Document {
+  id: string
+  document_type: string
+  notes: any
+  provderId?: string
+  date: string
+  file_for_review: boolean
+  documents: string[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Vaccine {
+  id: string
+  vaccine_name: string
+  providerId: string
+  status: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Injection {
+  id: string
+  injection_name: string
+  providerId: string
+  dosage_unit: string
+  dosage_quantity: number
+  frequency: string
+  period_number: number
+  period_unit: string
+  parental_route: string
+  site: string
+  lot_number: number
+  expiration_date: string
+  administered_date: string
+  administered_time: string
+  note_to_nurse: string
+  comments: string
+  status: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface LabResult {
+  id: string
+  reviewerId: string
+  dateTime: string
+  tags: string
+  files: string[]
+  status: string
+  uploadedBy: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ImageResult {
+  id: string
+  reviewerId: string
+  dateTime: string
+  status: string
+  createdAt: string
+  updatedAt: string
+  testResults: TestResult[]
+}
+
+export interface TestResult {
+  id: string
+  interpretation: string
+  documents: any
+  createdAt: string
+  updatedAt: string
 }
