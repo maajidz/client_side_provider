@@ -1,9 +1,35 @@
-import React from 'react'
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import DiagnosesClient from "./client";
+import { useState } from "react";
+import { PlusIcon } from "lucide-react";
+import AddDiagnosesDialog from "./AddDiagnosesDialog";
 
-const PatientDiagnoses = ({userDetailsId}: {userDetailsId: string}) => {
+const PatientDiagnoses = ({ userDetailsId }: { userDetailsId: string }) => {
+  // Dialog State
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
-    <div>PatientDiagnoses {userDetailsId}</div>
-  )
-}
+    <>
+      <div className="flex justify-end">
+        <DefaultButton onClick={() => setIsDialogOpen(true)}>
+          <div className="flex items-center gap-2">
+            <PlusIcon />
+            Diagnoses
+          </div>
+        </DefaultButton>
+      </div>
+      <div className="space-y-4">
+        <DiagnosesClient userDetailsId={userDetailsId} />
 
-export default PatientDiagnoses
+        {/* Add Diagnoses */}
+        <AddDiagnosesDialog
+          isOpen={isDialogOpen}
+          userDetailsId={userDetailsId}
+          onClose={() => setIsDialogOpen(false)}
+        />
+      </div>
+    </>
+  );
+};
+
+export default PatientDiagnoses;

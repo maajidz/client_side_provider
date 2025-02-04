@@ -129,11 +129,11 @@ const RxPatientDetailsSection = ({
           <span className="font-semibold">Address:</span> [Provider Address]
         </div>
         <div>
-          <span className="font-semibold">Phone No:</span> [Provider Phone No]
+          <span className="font-semibold">Phone No:</span>{" "}
+          {patientDetails?.user.phoneNumber}
         </div>
-        <div>
-          <span className="font-semibold">Fax:</span> [Provider Fax]
-        </div>
+        <span className="font-semibold">NIP: </span> {providerDetails.nip}
+        <div></div>
       </div>
     </div>
   );

@@ -19,8 +19,6 @@ import { RootState } from "@/store/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { z } from "zod";
-import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import { getRecallsData } from "@/services/chartDetailsServices";
 import { status } from "@/constants/data";
@@ -32,6 +30,9 @@ import {
 } from "@/types/recallsInterface";
 import RecallsDialog from "@/components/charts/Encounters/Details/Recalls/RecallsDialog";
 import { filterRecallsSchema } from "@/schema/recallFormSchema";
+import { columns } from "./columns";
+import ViewRecallDialog from "./ViewRecallsDialog";
+import { z } from "zod";
 
 const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -40,7 +41,10 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const [page, setPage] = useState<number>(1);
   const limit = 8;
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState({
+    edit: false,
+    view: false,
+  });
   const [editData, setEditData] = useState<RecallsEditData | null>(null);
   const { toast } = useToast();
 
@@ -98,10 +102,7 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
     <>
       <div className="">
         <Form {...form}>
-          <form
-            onChange={form.handleSubmit(onSubmit)}
-            className="flex gap-5"
-          >
+          <form onChange={form.handleSubmit(onSubmit)} className="flex gap-5">
             <FormField
               control={form.control}
               name="type"
@@ -188,9 +189,17 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
             userDetailsId={userDetailsId}
             recallsData={editData}
             onClose={() => {
-              setIsDialogOpen(false);
+              setIsDialogOpen((prev) => ({ ...prev, edit: false }));
             }}
-            isOpen={isDialogOpen}
+            isOpen={isDialogOpen.edit}
+          />
+
+          {/* View Dialog */}
+          <ViewRecallDialog
+            userDetailsId={userDetailsId}
+            isOpen={isDialogOpen.view}
+            selectedRecallData={editData}
+            onSetIsDialogOpen={setIsDialogOpen}
           />
         </div>
       </div>

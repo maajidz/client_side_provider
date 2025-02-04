@@ -141,8 +141,8 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
             </div>
           </div>
           <DialogFooter>
-            <div className="flex justify-between w-full">
-              <Button variant={"ghost"} onClick={handleAddRow}>
+            <div className="flex justify-between gap-2 w-full">
+              <Button variant={"ghost"} onClick={handleAddRow} className='w-full'>
                 {" "}
                 Add Row
               </Button>

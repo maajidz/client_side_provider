@@ -39,7 +39,7 @@ export const columns = ({
   showToast,
   fetchPrescriptionsList,
 }: {
-  setEditData: (data: PrescriptionDataInterface | null) => void;
+  setEditData: (data: PrescriptionDataInterface | undefined) => void;
   setIsDialogOpen: (isOpen: boolean) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
@@ -74,7 +74,11 @@ export const columns = ({
   {
     accessorKey: "fromDate",
     header: "From Date",
-    cell: () => <div className="cursor-pointer"></div>,
+    cell: ({ row }) => (
+      <div className="cursor-pointer">
+        {new Date(row.original.createdAt).toDateString()}
+      </div>
+    ),
   },
   {
     accessorKey: "toDate",
@@ -124,4 +128,3 @@ export const columns = ({
     ),
   },
 ];
-

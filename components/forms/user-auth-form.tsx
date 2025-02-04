@@ -64,7 +64,7 @@ export default function UserAuthForm() {
         const checkUserDetails = await checkProviderExistsOrNot({ Authid: response.providerId })
         if (checkUserDetails?.providerDetails.id) {
           router.push('/dashboard')
-          dispatch(setLoginData({providerId: checkUserDetails.providerDetails.id, firstName: checkUserDetails.firstName, lastName: checkUserDetails.lastName, email: checkUserDetails.email, roleName: checkUserDetails.providerDetails.roleName}))
+          dispatch(setLoginData({providerId: checkUserDetails.providerDetails.id, firstName: checkUserDetails.firstName, lastName: checkUserDetails.lastName, email: checkUserDetails.email, roleName: checkUserDetails.providerDetails.roleName, nip: checkUserDetails.providerDetails.nip, phoneNumber: checkUserDetails.phoneNumber }))
         } else{
           router.push('/dashboard/provider/profile')
         }

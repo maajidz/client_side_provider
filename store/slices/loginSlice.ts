@@ -8,7 +8,9 @@ interface LoginState {
   firstName: string;
   lastName: string;
   email: string;
-  roleName: string
+  roleName: string;
+  nip: string;
+  phoneNumber: string;
 }
 
 const initialState: LoginState = {
@@ -19,6 +21,8 @@ const initialState: LoginState = {
   lastName: "",
   email: "",
   roleName: "",
+  nip: '',
+  phoneNumber: ""
 };
 
 const loginSlice = createSlice({

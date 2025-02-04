@@ -17,7 +17,6 @@ import {
   LabOrdersInterface,
   LabsDataResponse,
   LabsRequestData,
-  PastDiagnosesInterface,
   PatientPhysicalStats,
   SOAPInterface,
   TestResponse,
@@ -28,7 +27,8 @@ import {
   UserEncounterInterface,
   TransferResponseData,
   ImageOrdersResponseInterface,
-  // ImagesOrdersDataInterface,
+  DiagnosesResponseInterface,
+  PastDiagnosesInterface,
 } from "@/types/chartsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";
 
@@ -99,7 +99,7 @@ export const getUserEncounterDetails = async ({
       "Content-Type": "application/json",
     },
   });
-  
+
   const data: UserEncounterInterface = await response.data;
   return data.response;
 };
@@ -224,6 +224,27 @@ export const fetchDiagnoses = async ({ chartId }: { chartId: string }) => {
   return data;
 };
 
+export const fetchDiagnosesForUser = async ({
+  userDetailsId,
+  page,
+  limit,
+}: {
+  userDetailsId: string;
+  page: number;
+  limit: number;
+}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/diagnosis/patient/${userDetailsId}?page=${page}&limit=${limit}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: DiagnosesResponseInterface = await response.data;
+  return data;
+};
+
 export const updateDiagnoses = async ({
   diagnosisId,
   requestData,
@@ -257,7 +278,7 @@ export const deleteDiagnoses = async ({
     },
   });
   console.log(response.data);
-  const data: PastDiagnosesInterface[] = await response.data;
+  const data: DiagnosesResponseInterface = await response.data;
   return data;
 };
 
@@ -382,7 +403,7 @@ export const updateFollowUp = async ({
     data: requestData,
   });
   console.log(response.data);
-  const data: PastDiagnosesInterface[] = await response.data;
+  const data: DiagnosesResponseInterface = await response.data;
   return data;
 };
 
@@ -399,7 +420,7 @@ export const deleteFollowUp = async ({
     },
   });
   console.log(response.data);
-  const data: PastDiagnosesInterface[] = await response.data;
+  const data: DiagnosesResponseInterface = await response.data;
   return data;
 };
 
@@ -626,6 +647,6 @@ export const deleteTransfer = async ({ id }: { id: string }) => {
     },
   });
   console.log(response.data);
-  const data: PastDiagnosesInterface[] = await response.data;
+  const data: DiagnosesResponseInterface = await response.data;
   return data;
 };

@@ -8,6 +8,7 @@ import { showToast } from "@/utils/utils";
 import { columns } from "./column";
 import { useEffect, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
+import EditPrescription from "./EditPrescription";
 
 const ViewPatientMedications = ({
   userDetailsId,
@@ -24,11 +25,8 @@ const ViewPatientMedications = ({
   const [totalPages, setTotalPages] = useState(1);
 
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [editData, setEditData] = useState<PrescriptionDataInterface | null>(null);
+  const [editData, setEditData] = useState<PrescriptionDataInterface>();
   const { toast } = useToast();
-
-  console.log(isDialogOpen);
-  console.log(editData);
 
   const fetchPrescriptionsList = useCallback(
     async (userDetailsId: string) => {
@@ -85,7 +83,11 @@ const ViewPatientMedications = ({
             onPageChange={(newPage: number) => setPage(newPage)}
           />
         )}
-        
+        <EditPrescription
+          isOpen={isDialogOpen}
+          selectedPrescription={editData}
+          onSetIsOpen={setIsDialogOpen}
+        />
       </div>
     </>
   );

@@ -155,6 +155,34 @@ export interface PastDiagnosesInterface {
   chart: DiagnosesChart;
 }
 
+export interface ChartInterface {
+	id: string;
+	subjective: string;
+	objective: string;
+	assessment: string;
+	plan: string;
+	additionalText?: string;
+	createdAt: string;
+	updatedAt: string;
+}
+
+// * For Diagnoses in patient details
+export interface DiagnosesInterface {
+	id: string;
+	diagnosis_name: string;
+	ICD_Code: string;
+	notes: string;
+	providerId: string;
+	createdAt: string;
+	updatedAt: string;
+	chart: ChartInterface;
+}
+
+export interface DiagnosesResponseInterface {
+	diagnoses: DiagnosesInterface[];
+	totalCount: number;
+}
+
 export interface DiagnosesChart {
   id: string;
   subjective: string;
@@ -413,7 +441,7 @@ export interface TransferResponseData {
   createdAt: string;
   updatedAt: string;
   relatedEncounter: RelatedEncounter;
-  diagnoses: PastDiagnosesInterface[];
+  diagnoses: DiagnosesInterface[];
 }
 
 export interface RelatedEncounter {

@@ -8,11 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import {
-  deleteRecalls
-} from "@/services/chartDetailsServices";
+import { deleteRecalls } from "@/services/chartDetailsServices";
 import { RecallsData } from "@/types/recallsInterface";
+import { Ellipsis } from "lucide-react";
 
 const handleRecallsDelete = async (
   recallsId: string,
@@ -44,7 +42,7 @@ export const columns = ({
   fetchRecalls,
 }: {
   setEditData: (data: RecallsData | null) => void;
-  setIsDialogOpen: (isOpen: boolean) => void;
+  setIsDialogOpen: ({ edit, view }: { edit: boolean; view: boolean }) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchRecalls: () => void;
@@ -101,14 +99,22 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <DotsVerticalIcon />
+            <Ellipsis />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
                 setEditData(row.original);
-                setIsDialogOpen(true);
+                setIsDialogOpen({ edit: false, view: true });
+              }}
+            >
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                setEditData(row.original);
+                setIsDialogOpen({ edit: true, view: false });
               }}
             >
               Edit

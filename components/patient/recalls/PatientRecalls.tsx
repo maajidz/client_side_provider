@@ -1,11 +1,12 @@
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import RecallsDialog from "@/components/charts/Encounters/Details/Recalls/RecallsDialog";
+import ViewRecalls from "./ViewRecalls";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
-import ViewRecalls from "./ViewRecalls";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
   return (
     <>
       <div className="flex justify-end">
@@ -14,7 +15,7 @@ const PatientRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <PlusIcon />
             Recalls
           </div>
