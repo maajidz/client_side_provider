@@ -278,7 +278,7 @@ export const deleteDiagnoses = async ({
     },
   });
   console.log(response.data);
-  const data: DiagnosesResponseInterface = await response.data;
+  const data: PastDiagnosesInterface[] = await response.data;
   return data;
 };
 
@@ -403,7 +403,7 @@ export const updateFollowUp = async ({
     data: requestData,
   });
   console.log(response.data);
-  const data: DiagnosesResponseInterface = await response.data;
+  const data: PastDiagnosesInterface[] = await response.data;
   return data;
 };
 
@@ -420,7 +420,7 @@ export const deleteFollowUp = async ({
     },
   });
   console.log(response.data);
-  const data: DiagnosesResponseInterface = await response.data;
+  const data: PastDiagnosesInterface[] = await response.data;
   return data;
 };
 
@@ -647,6 +647,6 @@ export const deleteTransfer = async ({ id }: { id: string }) => {
     },
   });
   console.log(response.data);
-  const data: DiagnosesResponseInterface = await response.data;
+  const data: PastDiagnosesInterface[] = await response.data;
   return data;
 };

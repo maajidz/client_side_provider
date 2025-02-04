@@ -441,7 +441,7 @@ export interface TransferResponseData {
   createdAt: string;
   updatedAt: string;
   relatedEncounter: RelatedEncounter;
-  diagnoses: DiagnosesInterface[];
+  diagnoses: PastDiagnosesInterface[];
 }
 
 export interface RelatedEncounter {
