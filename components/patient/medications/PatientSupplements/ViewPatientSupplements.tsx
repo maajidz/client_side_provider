@@ -54,7 +54,7 @@ const ViewPatientSupplements = ({
 
   return (
     <>
-      <div className="py-5">
+      <div className="space-y-3 py-5">
         {resultList && (
           <DataTable
             searchKey="id"

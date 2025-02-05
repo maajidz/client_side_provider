@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -274,37 +275,41 @@ function FamilyHistoryDialog({
                         ))}
                       </div>
 
-                      {/* Input for custom problems */}
-                      <div className="flex gap-2 mt-3">
-                        <Input
-                          placeholder="Add custom problem"
-                          value={customProblem}
-                          onChange={(e) => setCustomProblem(e.target.value)}
-                        />
-                        <Button type="button" onClick={addCustomProblem}>
-                          Add
-                        </Button>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="comments"
-                  render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
-                      <FormLabel>Comments</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <SubmitButton label="Save" />
-              </div>
-            </ScrollArea>
+                    {/* Input for custom problems */}
+                    <div className="flex gap-2 mt-3">
+                      <Input
+                        placeholder="Add custom problem"
+                        value={customProblem}
+                        onChange={(e) => setCustomProblem(e.target.value)}
+                      />
+                      <Button type="button" onClick={addCustomProblem}>
+                        Add
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="comments"
+                render={({ field }) => (
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel>Comments</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => onClose}>Cancel</Button>
+                  <SubmitButton label="Save" />
+                </div>
+              </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>

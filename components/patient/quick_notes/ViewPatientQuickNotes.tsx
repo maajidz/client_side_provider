@@ -6,6 +6,7 @@ import { showToast } from "@/utils/utils";
 import { columns } from "./columns";
 import QuickNotesDialog from "./QuickNotesDialog";
 import { useState } from "react";
+import PageContainer from "@/components/layout/page-container";
 
 interface ViewPatientNotesProps {
   userDetailsId: string;
@@ -45,37 +46,39 @@ const ViewPatientQuickNotes = ({
   }
 
   return (
-    <div className="py-5">
-      {data && (
-        <DataTable
-          searchKey="id"
-          columns={columns({
-            setIsDialogOpen,
-            setEditData,
-            setLoading,
-            showToast: () =>
-              showToast({
-                toast,
-                type: "success",
-                message: "Deleted Successfully",
-              }),
-            fetchQuickNotes: fetchQuickNotes,
-          })}
-          data={data}
-          pageNo={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: number) => setPage(newPage)}
-        />
-      )}
+    <PageContainer scrollable={true}>
+      <div className="space-y-3">
+        {data && (
+          <DataTable
+            searchKey="id"
+            columns={columns({
+              setIsDialogOpen,
+              setEditData,
+              setLoading,
+              showToast: () =>
+                showToast({
+                  toast,
+                  type: "success",
+                  message: "Deleted Successfully",
+                }),
+              fetchQuickNotes: fetchQuickNotes,
+            })}
+            data={data}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
+        )}
 
-      <QuickNotesDialog
-        userDetailsId={userDetailsId}
-        quickNotesData={editData}
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        onFetchQuickNotes={fetchQuickNotes}
-      />
-    </div>
+        <QuickNotesDialog
+          userDetailsId={userDetailsId}
+          quickNotesData={editData}
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          onFetchQuickNotes={fetchQuickNotes}
+        />
+      </div>
+    </PageContainer>
   );
 };
 

@@ -2,7 +2,6 @@ import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -306,7 +305,7 @@ export default function AddDiagnosesDialog({
                 </Button>
                 <SubmitButton label="Save" disabled={loading} />
               </div>
-            </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>

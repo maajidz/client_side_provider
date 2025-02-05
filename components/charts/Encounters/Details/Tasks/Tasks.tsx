@@ -4,19 +4,56 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { getTasks } from "@/services/chartDetailsServices";
+import { UserEncounterData } from "@/types/chartsInterface";
+import { TasksResponseDataInterface } from "@/types/tasksInterface";
 import TasksDialog from "./TasksDialog";
 import TasksList from "./TasksList";
-import { UserEncounterData } from "@/types/chartsInterface";
-import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { TasksResponseDataInterface } from "@/types/tasksInterface";
+import { useCallback, useEffect, useState } from "react";
 
 const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
     null
   );
+
+  const [tasksData, setTasksData] = useState<TasksResponseDataInterface[]>();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const fetchTasks = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      if (patientDetails?.providerID) {
+        const response = await getTasks({
+          providerId: patientDetails?.providerID,
+          page: 1,
+          limit: 10,
+        });
+
+        if (response) {
+          setTasksData(response.data);
+        }
+      } else {
+        throw new Error("Missing provider ID");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setError("Something went wrong");
+      } else {
+        setError("Something went wrong. Unknown error occurred.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [patientDetails?.providerID]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -34,16 +71,23 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
               <PlusCircle />
             </Button>
             <TasksDialog
+              isOpen={isDialogOpen}
               userDetailsId={patientDetails.userDetails.id}
               tasksData={editData}
               onClose={() => {
                 setIsDialogOpen(false);
               }}
-              isOpen={isDialogOpen}
+              onFetchTasks={fetchTasks}
             />
           </div>
           <AccordionContent className="sm:max-w-4xl">
-            <TasksList patientDetails={patientDetails} />
+            <TasksList
+              error={error}
+              isLoading={loading}
+              patientDetails={patientDetails}
+              tasksData={tasksData}
+              onFetchTasks={fetchTasks}
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

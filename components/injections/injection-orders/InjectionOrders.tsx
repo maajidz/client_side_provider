@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -18,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -202,156 +204,110 @@ function InjectionOrders() {
           <LoadingButton />
         ) : (
           <Form {...form}>
-            <form
-              className="flex flex-col gap-3 p-3"
-              onSubmit={form.handleSubmit(onSubmit)}
-            >
-              <FormField
-                control={form.control}
-                name="userDetailsId"
-                render={({ field }) => (
-                  <FormItem className="flex justify-center items-center">
-                    <FormLabel className="w-full">Patient</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          placeholder="Search Patient "
-                          value={searchTerm}
-                          className="w-56"
-                          onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setVisibleSearchList(true);
-                          }}
-                        />
-                        {searchTerm && visibleSearchList && (
-                          <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                            {filteredPatients.length > 0 ? (
-                              filteredPatients.map((patient) => (
-                                <div
-                                  key={patient.id}
-                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                  onClick={() => {
-                                    field.onChange(patient.id);
-                                    setSearchTerm(
-                                      `${patient.user.firstName} ${patient.user.lastName}`
-                                    );
-                                    setVisibleSearchList(false);
-                                  }}
-                                >
-                                  {`${patient.user.firstName} ${patient.user.lastName}`}
+            <ScrollArea className="h-[30rem] min-h-[30rem] p-1">
+              <form
+                className="flex flex-col gap-3 p-3"
+                onSubmit={form.handleSubmit(onSubmit)}
+              >
+                <FormField
+                  control={form.control}
+                  name="userDetailsId"
+                  render={({ field }) => (
+                    <FormItem className="flex justify-center items-center">
+                      <FormLabel className="w-full">Patient</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder="Search Patient "
+                            value={searchTerm}
+                            className="w-56"
+                            onChange={(e) => {
+                              setSearchTerm(e.target.value);
+                              setVisibleSearchList(true);
+                            }}
+                          />
+                          {searchTerm && visibleSearchList && (
+                            <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                              {filteredPatients.length > 0 ? (
+                                filteredPatients.map((patient) => (
+                                  <div
+                                    key={patient.id}
+                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                    onClick={() => {
+                                      field.onChange(patient.id);
+                                      setSearchTerm(
+                                        `${patient.user.firstName} ${patient.user.lastName}`
+                                      );
+                                      setVisibleSearchList(false);
+                                    }}
+                                  >
+                                    {`${patient.user.firstName} ${patient.user.lastName}`}
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="px-4 py-2 text-gray-500">
+                                  No results found
                                 </div>
-                              ))
-                            ) : (
-                              <div className="px-4 py-2 text-gray-500">
-                                No results found
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
-                )}
-              />
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="injection_name"
-                render={({ field }) => (
-                  <FormItem className="flex justify-center items-center">
-                    <FormLabel className="w-full">Injection</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Enter injection to add"
-                        className="border rounded-md p-2 w-full text-gray-800"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="providerId"
-                render={({ field }) => (
-                  <FormItem className="flex items-center">
-                    <FormLabel className="w-full">Ordered By</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Ordered by" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {providersList
-                            .filter(
-                              (
-                                provider
-                              ): provider is typeof provider & {
-                                providerDetails: { id: string };
-                              } => Boolean(provider?.providerDetails?.id)
-                            )
-                            .map((provider) => (
-                              <SelectItem
-                                key={provider.id}
-                                value={provider.providerDetails.id}
-                                className="cursor-pointer"
-                              >
-                                {provider.firstName} {provider.lastName}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex items-center gap-4">
                 <FormField
                   control={form.control}
-                  name="dosage.dosage_quantity"
+                  name="injection_name"
                   render={({ field }) => (
-                    <FormItem className="flex items-center gap-4 mb-1.5">
-                      <FormLabel className="">Dosage</FormLabel>
+                    <FormItem className="flex justify-center items-center">
+                      <FormLabel className="w-full">Injection</FormLabel>
                       <FormControl>
                         <Input
-                          type="number"
-                          min={1}
-                          placeholder="Enter Quantity"
-                          className="flex items-center border rounded-md ml-28"
-                          onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber)
-                          }
+                          {...field}
+                          placeholder="Enter injection to add"
+                          className="border rounded-md p-2 w-full text-gray-800"
                         />
                       </FormControl>
                       <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
-                  name="dosage.dosage_unit"
+                  name="providerId"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex items-center">
+                      <FormLabel className="w-full">Ordered By</FormLabel>
                       <FormControl>
                         <Select
                           value={field.value}
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Unit" />
+                            <SelectValue placeholder="Select Ordered by" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="mg">mg</SelectItem>
-                            <SelectItem value="unit2">Unit 2</SelectItem>
-                            <SelectItem value="unit3">Unit 3</SelectItem>
+                            {providersList
+                              .filter(
+                                (
+                                  provider
+                                ): provider is typeof provider & {
+                                  providerDetails: { id: string };
+                                } => Boolean(provider?.providerDetails?.id)
+                              )
+                              .map((provider) => (
+                                <SelectItem
+                                  key={provider.id}
+                                  value={provider.providerDetails.id}
+                                  className="cursor-pointer"
+                                >
+                                  {provider.firstName} {provider.lastName}
+                                </SelectItem>
+                              ))}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -359,80 +315,79 @@ function InjectionOrders() {
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <FormField
-                control={form.control}
-                name="frequency"
-                render={({ field }) => (
-                  <FormItem className="flex items-center">
-                    <FormLabel className="w-full">Frequency</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Frequency" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="frequency1">
-                            Frequency 1
-                          </SelectItem>
-                          <SelectItem value="frequency2">
-                            Frequency 2
-                          </SelectItem>
-                          <SelectItem value="frequency3">
-                            Frequency 3
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
-                )}
-              />
+                <div className="flex items-center gap-4">
+                  <FormField
+                    control={form.control}
+                    name="dosage.dosage_quantity"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-4 mb-1.5">
+                        <FormLabel className="">Dosage</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={1}
+                            placeholder="Enter Quantity"
+                            className="flex items-center border rounded-md ml-28"
+                            onChange={(e) =>
+                              field.onChange(e.target.valueAsNumber)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage className="text-red-500" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="dosage.dosage_unit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Unit" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="mg">mg</SelectItem>
+                              <SelectItem value="unit2">Unit 2</SelectItem>
+                              <SelectItem value="unit3">Unit 3</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage className="text-red-500" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-              <div className="flex items-center gap-4">
                 <FormField
                   control={form.control}
-                  name="period.period_number"
+                  name="frequency"
                   render={({ field }) => (
-                    <FormItem className="flex items-center gap-4 mb-1.5">
-                      <FormLabel className="">Period</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min={1}
-                          placeholder="Enter Quantity"
-                          className="flex items-center border rounded-md ml-28"
-                          onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber)
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage className="text-red-500" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="period.period_unit"
-                  render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex items-center">
+                      <FormLabel className="w-full">Frequency</FormLabel>
                       <FormControl>
                         <Select
                           value={field.value}
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Unit" />
+                            <SelectValue placeholder="Select Frequency" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Days">Day(s)</SelectItem>
-                            <SelectItem value="Weeks">Week(s)</SelectItem>
-                            <SelectItem value="months">Month(s)</SelectItem>
-                            <SelectItem value="years">Year(s)</SelectItem>
+                            <SelectItem value="frequency1">
+                              Frequency 1
+                            </SelectItem>
+                            <SelectItem value="frequency2">
+                              Frequency 2
+                            </SelectItem>
+                            <SelectItem value="frequency3">
+                              Frequency 3
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -440,82 +395,132 @@ function InjectionOrders() {
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <FormField
-                control={form.control}
-                name="parental_route"
-                render={({ field }) => (
-                  <FormItem className="flex items-center">
-                    <FormLabel className="w-full">Parental Route</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Parental Route" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="parentalRoute1">
-                            Parental Route 1
-                          </SelectItem>
-                          <SelectItem value="parentalRoute2">
-                            Parental Route 2
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
-                )}
-              />
+                <div className="flex items-center gap-4">
+                  <FormField
+                    control={form.control}
+                    name="period.period_number"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-4 mb-1.5">
+                        <FormLabel className="">Period</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={1}
+                            placeholder="Enter Quantity"
+                            className="flex items-center border rounded-md ml-28"
+                            onChange={(e) =>
+                              field.onChange(e.target.valueAsNumber)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage className="text-red-500" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="period.period_unit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Unit" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Days">Day(s)</SelectItem>
+                              <SelectItem value="Weeks">Week(s)</SelectItem>
+                              <SelectItem value="months">Month(s)</SelectItem>
+                              <SelectItem value="years">Year(s)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage className="text-red-500" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-              <FormField
-                control={form.control}
-                name="note_to_nurse"
-                render={({ field }) => (
-                  <FormItem className="flex items-center">
-                    <FormLabel className="w-full">Note to Nurse</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className="border rounded-md p-2 w-full text-gray-800"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="parental_route"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center">
+                      <FormLabel className="w-full">Parental Route</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Parental Route" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="parentalRoute1">
+                              Parental Route 1
+                            </SelectItem>
+                            <SelectItem value="parentalRoute2">
+                              Parental Route 2
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="comments"
-                render={({ field }) => (
-                  <FormItem className="flex items-center">
-                    <FormLabel className="w-full">Comments</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className="border rounded-md p-2 w-full text-gray-800"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="note_to_nurse"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center">
+                      <FormLabel className="w-full">Note to Nurse</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          className="border rounded-md p-2 w-full text-gray-800"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
 
-              <div className="flex flex-row-reverse gap-2">
-                <SubmitButton label="Save" disabled={loading.post} />
-                <Button
-                  variant="outline"
-                  className="bg-slate-200 hover:bg-slate-100"
-                  onClick={() => handleIsDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
+                <FormField
+                  control={form.control}
+                  name="comments"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center">
+                      <FormLabel className="w-full">Comments</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          className="border rounded-md p-2 w-full text-gray-800"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                <DialogFooter>
+                  <div className="flex justify-end gap-2 w-fit">
+                    <Button
+                      variant="outline"
+                      onClick={() => handleIsDialogOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <SubmitButton label="Save" disabled={loading.post} />
+                  </div>
+                </DialogFooter>
+              </form>
+            </ScrollArea>
           </Form>
         )}
       </DialogContent>

@@ -1,12 +1,14 @@
-import React, { useState, useCallback, useEffect } from "react";
+import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
+import LoadingButton from "@/components/LoadingButton";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormField,
@@ -23,50 +25,44 @@ import {
   SelectValue,
   SelectContent,
 } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useToast } from "@/components/ui/use-toast";
+import { categoryOptions, priority, reminderOptions } from "@/constants/data";
 import { tasksSchema } from "@/schema/tasksSchema";
+import { updateTask } from "@/services/chartDetailsServices";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
 import {
-  CreateTaskType,
   TasksResponseDataInterface,
   UpdateTaskType,
 } from "@/types/tasksInterface";
-import { createTask, updateTask } from "@/services/chartDetailsServices";
-import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { FetchProviderList } from "@/types/providerDetailsInterface";
-import { categoryOptions, priority, reminderOptions } from "@/constants/data";
-import { fetchProviderListDetails } from "@/services/registerServices";
-import { useToast } from "@/components/ui/use-toast";
 import { showToast } from "@/utils/utils";
-import { UserData } from "@/types/userInterface";
-import { fetchUserDataResponse } from "@/services/userServices";
-import LoadingButton from "../LoadingButton";
-import SubmitButton from "../custom_buttons/SubmitButton";
-import { ScrollArea } from "../ui/scroll-area";
-import formStyles from "@/components/formStyles.module.css";
-import { Button } from "../ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useCallback, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { z } from "zod";
 
-const TasksDialog = ({
+const EditPatientTaskDialog = ({
   tasksData,
-  onClose,
+  userDetailsId,
   isOpen,
+  onClose,
+  onFetchTasks,
 }: {
   tasksData?: TasksResponseDataInterface | null;
-  onClose: () => void;
+  userDetailsId: string;
   isOpen: boolean;
+  onClose: () => void;
+  onFetchTasks: (page: number, userDetailsId: string) => Promise<void>;
 }) => {
-  const [patients, setPatients] = useState<UserData[]>([]);
-  const [showPatientSpecific, setShowPatientSpecific] =
-    useState<boolean>(false);
   const [showDueDate, setShowDueDate] = useState(false);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
-  const { toast } = useToast();
   const [loading, setLoading] = useState<boolean>(false);
+  const { toast } = useToast();
 
   const providerDetails = useSelector((state: RootState) => state.login);
 
@@ -83,25 +79,6 @@ const TasksDialog = ({
       userDetailsId: "",
     },
   });
-
-  const fetchPatientList = useCallback(async () => {
-    if (!searchTerm) return;
-    setLoading(true);
-    try {
-      const response = await fetchUserDataResponse({
-        firstName: searchTerm,
-        lastName: searchTerm,
-      });
-      if (response) {
-        setPatients(response.data || []);
-      }
-    } catch (e) {
-      console.log("Error", e);
-      showToast({ toast, type: "error", message: "Failed to fetch patient" });
-    } finally {
-      setLoading(false);
-    }
-  }, [searchTerm, toast]);
 
   const fetchOwnersList = useCallback(async () => {
     setLoading(true);
@@ -126,8 +103,7 @@ const TasksDialog = ({
 
   useEffect(() => {
     fetchOwnersList();
-    fetchPatientList();
-  }, [fetchOwnersList, fetchPatientList]);
+  }, [fetchOwnersList]);
 
   useEffect(() => {
     if (tasksData) {
@@ -136,7 +112,7 @@ const TasksDialog = ({
         task: tasksData.notes || "",
         owner: tasksData?.assignerProvider?.id || "",
         priority: tasksData.priority || "low",
-        sendReminder: tasksData.reminder || [],
+        sendReminder: tasksData?.reminder || [],
         comments: tasksData.description || "",
         userDetailsId: tasksData.userDetailsId,
       });
@@ -147,7 +123,7 @@ const TasksDialog = ({
         form.setValue("dueDate", formattedDueDate);
         setShowDueDate(!!tasksData.dueDate);
       }
-      setShowPatientSpecific(!!tasksData.userDetailsId);
+
       setSelectedOwner(
         ownersList.find((owner) => owner.id === tasksData.assignerProvider?.id)
       );
@@ -156,29 +132,24 @@ const TasksDialog = ({
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     setLoading(true);
+
     try {
-      const requestData: CreateTaskType | UpdateTaskType = {
+      const requestData: UpdateTaskType = {
         category: values.category,
         description: values.comments ?? "",
         priority: values.priority,
         status: "PENDING",
         notes: values.task,
         dueDate: `${values.dueDate}`,
+        reminder: values.sendReminder,
         assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
         assignerProviderId: providerDetails.providerId,
         assignedByAdmin: true,
         userDetailsId: values?.userDetailsId ?? "",
-        reminder: values?.sendReminder,
       };
-      if (!tasksData) {
-        await createTask({ requestBody: requestData });
-        showToast({
-          toast,
-          type: "success",
-          message: "Task created successfully",
-        });
-      } else {
+      if (tasksData) {
         await updateTask({ requestData, id: tasksData.id });
+
         showToast({
           toast,
           type: "success",
@@ -190,20 +161,15 @@ const TasksDialog = ({
       showToast({
         toast,
         type: "error",
-        message: "Task creation failed",
+        message: "Task update failed",
       });
     } finally {
       setLoading(false);
       form.reset();
       onClose();
+      await onFetchTasks(1, userDetailsId);
     }
   };
-
-  const filteredPatients = patients.filter((patient) =>
-    `${patient.user.firstName} ${patient.user.lastName}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
 
   if (loading) {
     return <LoadingButton />;
@@ -213,7 +179,7 @@ const TasksDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{tasksData ? "Edit Task" : "Add Task"}</DialogTitle>
+          <DialogTitle>Edit Patient Task</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -324,74 +290,11 @@ const TasksDialog = ({
 
                   <div className="flex items-center space-x-3">
                     <Checkbox
-                      id="isPatientSpecific"
-                      onCheckedChange={() =>
-                        setShowPatientSpecific(!showPatientSpecific)
-                      }
-                    />
-                    <label
-                      htmlFor="isPatientSpecific"
-                      className="text-sm font-medium"
-                    >
-                      Is patient specific
-                    </label>
-                  </div>
-
-                  {showPatientSpecific && (
-                    <>
-                      <FormField
-                        control={form.control}
-                        name="userDetailsId"
-                        render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
-                            <FormControl>
-                              <div className="relative">
-                                <Input
-                                  placeholder="Search Patient "
-                                  value={searchTerm}
-                                  onChange={(e) => {
-                                    setSearchTerm(e.target.value);
-                                    setVisibleSearchList(true);
-                                  }}
-                                />
-                                {searchTerm && visibleSearchList && (
-                                  <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                                    {filteredPatients.length > 0 ? (
-                                      filteredPatients.map((patient) => (
-                                        <div
-                                          key={patient.id}
-                                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                          onClick={() => {
-                                            field.onChange(patient.id);
-                                            setSearchTerm(
-                                              `${patient.user.firstName} ${patient.user.lastName}`
-                                            );
-                                            setVisibleSearchList(false);
-                                          }}
-                                        >
-                                          {`${patient.user.firstName} ${patient.user.lastName}`}
-                                        </div>
-                                      ))
-                                    ) : (
-                                      <div className="px-4 py-2 text-gray-500">
-                                        No results found
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </>
-                  )}
-
-                  <div className="flex items-center space-x-3">
-                    <Checkbox
                       id="assignDueDate"
-                      onCheckedChange={() => setShowDueDate(!showDueDate)}
+                      checked={showDueDate}
+                      onCheckedChange={(checked) =>
+                        setShowDueDate(Boolean(checked))
+                      }
                     />
                     <label
                       htmlFor="assignDueDate"
@@ -402,66 +305,81 @@ const TasksDialog = ({
                   </div>
 
                   {showDueDate && (
-                    <>
-                      <div className="space-y-4 border-t pt-4">
-                        <h4 className="text-lg font-semibold">
-                          Date and Reminder Settings
-                        </h4>
-                        <FormField
-                          control={form.control}
-                          name="dueDate"
-                          render={({ field }) => (
-                            <FormItem className={formStyles.formItem}>
-                              <FormLabel>From Date:</FormLabel>
-                              <FormControl>
-                                <Input type="date" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="sendReminder"
-                          render={({ field }) => (
-                            <FormItem className={formStyles.formItem}>
+                    <div className="space-y-4 border-t pt-4">
+                      <h4 className="text-lg font-semibold">
+                        Date and Reminder Settings
+                      </h4>
+
+                      {/* Due Date Field */}
+                      <FormField
+                        control={form.control}
+                        name="dueDate"
+                        render={({ field }) => (
+                          <FormItem className="flex gap-2 items-center">
+                            <FormLabel>From Date:</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Reminder Selection */}
+                      <FormField
+                        control={form.control}
+                        name="sendReminder"
+                        render={({ field }) => {
+                          const selectedValues: string[] = field.value || [];
+
+                          return (
+                            <FormItem>
                               <FormLabel>Send Reminder Mail</FormLabel>
-                              {reminderOptions.map((option) => (
-                                <div
-                                  key={option}
-                                  className="flex items-center space-x-3"
-                                >
-                                  <Checkbox
-                                    id={option}
-                                    checked={field.value?.includes(option)}
-                                    onCheckedChange={(checked) => {
-                                      return checked
-                                        ? field.onChange([
-                                            ...(field.value || []),
-                                            option,
-                                          ])
-                                        : field.onChange(
-                                            field.value?.filter(
-                                              (value) => value !== option
-                                            )
-                                          );
-                                    }}
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue
+                                    placeholder={
+                                      selectedValues.length > 0
+                                        ? selectedValues.join(", ")
+                                        : "Select Reminder Day"
+                                    }
                                   />
-                                  <label
-                                    htmlFor={option}
-                                    className="text-sm font-medium"
-                                  >
-                                    {option}
-                                  </label>
-                                </div>
-                              ))}
+                                </SelectTrigger>
+                                <SelectContent className="p-2">
+                                  {reminderOptions.map((option) => {
+                                    const isSelected =
+                                      selectedValues.includes(option);
+
+                                    return (
+                                      <div
+                                        key={option}
+                                        className="flex items-center gap-2 p-2 cursor-pointer"
+                                        onClick={() => {
+                                          // Toggle selection
+                                          const updatedValues = isSelected
+                                            ? selectedValues.filter(
+                                                (val) => val !== option
+                                              )
+                                            : [...selectedValues, option];
+
+                                          field.onChange(updatedValues);
+                                        }}
+                                      >
+                                        <Checkbox checked={isSelected} />
+                                        {option}
+                                      </div>
+                                    );
+                                  })}
+                                </SelectContent>
+                              </Select>
                               <FormMessage />
                             </FormItem>
-                          )}
-                        />
-                      </div>
-                    </>
+                          );
+                        }}
+                      />
+                    </div>
                   )}
+
                   <FormField
                     control={form.control}
                     name="comments"
@@ -478,10 +396,18 @@ const TasksDialog = ({
                 </div>
               </ScrollArea>
               <div className="flex gap-3 justify-between w-full">
-                <Button type="button" variant="secondary" onClick={onClose} className="w-full">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={onClose}
+                  className="w-full"
+                >
                   Cancel
                 </Button>
-                <SubmitButton label={tasksData ? "Update" : "Create"} />
+                <SubmitButton
+                  label={"Update"}
+                  onClick={() => console.log(form.getValues())}
+                />
               </div>
             </div>
           </form>
@@ -491,4 +417,5 @@ const TasksDialog = ({
   );
 };
 
-export default TasksDialog;
+export default EditPatientTaskDialog;
+

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -297,16 +298,17 @@ function VaccineOrders() {
               )}
             />
 
-            <div className="flex flex-row-reverse gap-2">
-              <SubmitButton label="Save" disabled={loading.post} />
-              <Button
-                variant="outline"
-                className="bg-slate-200 hover:bg-slate-100"
-                onClick={() => handleIsDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-            </div>
+            <DialogFooter>
+              <div className="flex justify-end gap-2 w-fit">
+                <Button
+                  variant="outline"
+                  onClick={() => handleIsDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <SubmitButton label="Save" disabled={loading.post} />
+              </div>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>

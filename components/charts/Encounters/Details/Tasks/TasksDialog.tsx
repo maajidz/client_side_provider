@@ -46,15 +46,17 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import formStyles from "@/components/formStyles.module.css";
 
 function TasksDialog({
+  isOpen,
   userDetailsId,
   tasksData,
   onClose,
-  isOpen,
+  onFetchTasks,
 }: {
+  isOpen: boolean;
   userDetailsId: string;
   tasksData?: TasksResponseDataInterface | null;
   onClose: () => void;
-  isOpen: boolean;
+  onFetchTasks: () => Promise<void>;
 }) {
   const [showDueDate, setShowDueDate] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -130,7 +132,7 @@ function TasksDialog({
       status: "PENDING",
       notes: values.task,
       dueDate: `${values.dueDate}`,
-      sendReminder: values.sendReminder,
+      reminder: values.sendReminder,
       assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
       assignerProviderId: providerDetails.providerId,
       assignedByAdmin: true,
@@ -166,6 +168,7 @@ function TasksDialog({
       onClose();
       setLoading(false);
       setShowDueDate(false);
+      await onFetchTasks();
       form.reset();
     }
   };

@@ -1,5 +1,5 @@
 "use client";
-import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
+// import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import ViewPatientTasks from "./ViewPatientTasks";
@@ -7,6 +7,8 @@ import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  console.log(isDialogOpen);
+
   return (
     <>
       <div className="flex justify-end mb-3">
@@ -18,13 +20,14 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             Tasks
         </DefaultButton>
-        <TasksDialog
+        {/* <TasksDialog
           userDetailsId={userDetailsId}
           onClose={() => {
             setIsDialogOpen(false);
           }}
           isOpen={isDialogOpen}
-        />
+          onFetchTasks={() => {}}
+        /> */}
       </div>
       <ViewPatientTasks userDetailsId={userDetailsId} />
     </>
@@ -32,3 +35,4 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
 };
 
 export default PatientTasks;
+// add => ghost plus. blue-600

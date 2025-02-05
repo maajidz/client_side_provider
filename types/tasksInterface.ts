@@ -18,7 +18,7 @@ export interface CreateTaskType {
   category: string;
   description?: string;
   status?: string;
-  reminders?: string[];
+  reminder?: string[];
   notes?: string;
   priority?: "low" | "medium" | "high";
   dueDate?: string;

@@ -93,7 +93,7 @@ const Allergies = ({
         <AccordionItem value="allergies">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Allergies</AccordionTrigger>
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={() => setIsDialogOpen(true)}>
               <PlusCircle />
             </Button>
             <AllergiesDialog
@@ -116,7 +116,10 @@ const Allergies = ({
                       {allergy?.Allergen}
                     </div>
                     <div className="flex">
-                      <Button variant="ghost">
+                      <Button
+                        variant="ghost"
+                        onClick={() => setIsEditDialogOpen(true)}
+                      >
                         <Edit2 color="#84012A" />
                       </Button>
                       <EditAllergy

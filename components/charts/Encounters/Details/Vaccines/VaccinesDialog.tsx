@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -237,17 +238,18 @@ function VaccinesDialog({
                   </FormItem>
                 )}
               />
-              <div className="flex flex-row-reverse gap-4">
-                <SubmitButton label="Save" disabled={loading} />
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="bg-slate-200 hover:bg-slate-100"
-                  onClick={() => onClose()}
-                >
-                  Cancel
-                </Button>
-              </div>
+              <DialogFooter>
+                <div className="flex justify-end gap-2 w-fit">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onClose()}
+                  >
+                    Cancel
+                  </Button>
+                  <SubmitButton label="Save" disabled={loading} />
+                </div>
+              </DialogFooter>
             </div>
           </form>
         </Form>

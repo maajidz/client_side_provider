@@ -225,8 +225,8 @@ const FollowUpDialog = ({ patientDetails, encounterId }: { patientDetails: UserE
                     <div className='flex justify-between w-full'>
                         <Button variant={'ghost'} onClick={handleAddRow} className="text-blue-500 underline"> More</Button>
                         <div className='flex gap-3'>
-                            <SubmitButton label='Save Changes' onClick={handleSubmit} />
                             <Button variant={'outline'} > Cancel</Button>
+                            <SubmitButton label='Save Changes' onClick={handleSubmit} />
                         </div>
                     </div>
                 </DialogFooter>

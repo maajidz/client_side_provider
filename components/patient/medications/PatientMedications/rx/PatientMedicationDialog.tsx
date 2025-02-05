@@ -559,7 +559,7 @@ const PatientMedicationDialog = ({
                   )}
                 />
               </div>
-              <div className="flex gap-3">
+              <div className="flex justify-end gap-2">
                 <SubmitButton label="Save" />
                 <Button
                   variant={"outline"}

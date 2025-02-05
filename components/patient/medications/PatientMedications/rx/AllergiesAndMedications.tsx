@@ -130,11 +130,11 @@ function AllergiesAndMedications({
                 className="flex gap-2 border p-2 rounded-lg capitalize"
               >
                 <p>{allergy.Allergen}</p>
-                {" - "}
+                {" / "}
                 <p>{allergy.type}</p>
-                {" - "}
+                {" / "}
                 <p>{allergy.serverity}</p>
-                {" - "}
+                {" / "}
                 <p>{allergy.status}</p>
               </div>
             ))
