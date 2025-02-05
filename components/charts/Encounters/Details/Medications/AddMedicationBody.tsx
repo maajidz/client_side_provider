@@ -108,7 +108,7 @@ const AddMedicationBody = ({ userDetailsId }: AddMedicationBodyProps) => {
   };
 
   return (
-    <div className="p-6">
+    <div className="space-y-3 py-5">
       <div className="flex gap-4 mb-4">
         <Select
           onValueChange={(value) => handleFilterChange("strength", value)}

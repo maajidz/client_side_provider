@@ -168,7 +168,7 @@ const TasksDialog = ({
         assignerProviderId: providerDetails.providerId,
         assignedByAdmin: true,
         userDetailsId: values?.userDetailsId ?? "",
-        reminders: values?.sendReminder,
+        reminder: values?.sendReminder,
       };
       if (!tasksData) {
         await createTask({ requestBody: requestData });

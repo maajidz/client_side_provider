@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -224,7 +225,9 @@ function FamilyHistoryDialog({
                         placeholder="Enter age"
                         type="number"
                         {...field}
-                        value={field.value !== undefined ? Number(field.value) : ""}
+                        value={
+                          field.value !== undefined ? Number(field.value) : ""
+                        }
                         onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
@@ -296,7 +299,12 @@ function FamilyHistoryDialog({
                   </FormItem>
                 )}
               />
-              <SubmitButton label="Save" />
+              <DialogFooter>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => onClose}>Cancel</Button>
+                  <SubmitButton label="Save" />
+                </div>
+              </DialogFooter>
             </div>
           </form>
         </Form>

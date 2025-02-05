@@ -2,7 +2,6 @@ import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -91,7 +90,7 @@ export default function AddDiagnosesDialog({
         diagnosis_name: diagnosis.diagnosis_name,
         ICD_Code: diagnosis.ICD_Code,
         notes: diagnosis.notes,
-        chartId: ''
+        chartId: "",
       })
     );
 
@@ -285,8 +284,7 @@ export default function AddDiagnosesDialog({
               >
                 Add More
               </Button>
-            </div>
-            <DialogFooter>
+
               <div className="flex justify-end gap-2">
                 <Button
                   variant="outline"
@@ -299,12 +297,10 @@ export default function AddDiagnosesDialog({
                 </Button>
                 <SubmitButton label="Save" disabled={loading} />
               </div>
-            </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
   );
 }
-
-

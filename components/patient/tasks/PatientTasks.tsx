@@ -37,8 +37,4 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
 };
 
 export default PatientTasks;
-//  recalls quick notes supplements add medication medic quick rx
-// save on the right
 // add => ghost plus. blue-600
-// quickrx increase ScrollArea
-// Allergies medications slashes

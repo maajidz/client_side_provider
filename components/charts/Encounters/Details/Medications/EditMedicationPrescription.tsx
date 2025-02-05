@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -47,7 +48,7 @@ const formatDate = (dateString: string) => {
   const day = String(date.getDate()).padStart(2, "0");
   const year = date.getFullYear();
 
-  return `${year}-${month}-${day}`;;
+  return `${year}-${month}-${day}`;
 };
 
 function EditMedicationPrescription({
@@ -219,17 +220,19 @@ function EditMedicationPrescription({
                   </FormItem>
                 )}
               />
-              <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => handleModalOpen(false)}
-                  className="bg-gray-100 text-gray-600"
-                >
-                  Cancel
-                </Button>
-                <SubmitButton label="Save" disabled={loading} />
-              </div>
+              <DialogFooter>
+                <div className="flex justify-end gap-2 w-fit">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleModalOpen(false)}
+                    className="bg-gray-100 text-gray-600"
+                  >
+                    Cancel
+                  </Button>
+                  <SubmitButton label="Save" disabled={loading} />
+                </div>
+              </DialogFooter>
             </div>
           </form>
         </Form>
@@ -239,5 +242,4 @@ function EditMedicationPrescription({
 }
 
 export default EditMedicationPrescription;
-
 

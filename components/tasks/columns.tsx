@@ -21,7 +21,7 @@ const handleTasksDelete = async (
 ) => {
   setLoading(true);
   try {
-    await deleteTask({ id: taskId });k
+    await deleteTask({ id: taskId });
     showToast({
       type: "success",
       message: "Task deleted successfully",

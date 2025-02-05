@@ -26,8 +26,8 @@ const PastPrescriptionsDialog = ({
   userDetailsId,
   onClose,
 }: PastPrescriptionsDialogProps) => {
-  const [loading,] = useState<boolean>(false);
-  const [response,] = useState<FetchPrescription>();
+  const [loading] = useState<boolean>(false);
+  const [response] = useState<FetchPrescription>();
 
   useEffect(() => {
     const fetchAndSetResponse = async () => {
@@ -63,10 +63,10 @@ const PastPrescriptionsDialog = ({
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-4">
-          {/* Patient Details Section */}
-          <RxPatientDetailsSection userDetailsId={userDetailsId} />
-          <ScrollArea className="h-[12.5rem] min-h-10">
+        <ScrollArea className="h-[30rem] min-h-30 p-3">
+          <div className="flex flex-col gap-4">
+            {/* Patient Details Section */}
+            <RxPatientDetailsSection userDetailsId={userDetailsId} />
             {/* Search & Add Rx Section */}
             <div className="flex flex-col p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">
@@ -120,15 +120,14 @@ const PastPrescriptionsDialog = ({
                 )}
               </div>
             </div>
-          </ScrollArea>
-        </div>
-        <DialogFooter>
-          <SubmitButton label="Save Changes" />
-        </DialogFooter>
+          </div>
+          <DialogFooter>
+            <SubmitButton label="Save Changes" />
+          </DialogFooter>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
 };
 
 export default PastPrescriptionsDialog;
-

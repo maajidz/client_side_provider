@@ -308,24 +308,25 @@ function AllergiesDialog({
             </table>
 
             <div className="flex justify-between">
-              <Button
-                type="button"
-                variant={"ghost"}
-                onClick={() =>
-                  append({
-                    type: "",
-                    Allergen: "",
-                    serverity: "Severe",
-                    observedOn: "",
-                    status: "Active",
-                    reactions: "",
-                  })
-                }
-                className="text-blue-400"
-              >
-                Add More
-              </Button>
-
+              <div className="w-full">
+                <Button
+                  type="button"
+                  variant={"ghost"}
+                  onClick={() =>
+                    append({
+                      type: "",
+                      Allergen: "",
+                      serverity: "Severe",
+                      observedOn: "",
+                      status: "Active",
+                      reactions: "",
+                    })
+                  }
+                  className="text-blue-400"
+                >
+                  Add More
+                </Button>
+              </div>
               <SubmitButton label="Save" />
             </div>
           </form>

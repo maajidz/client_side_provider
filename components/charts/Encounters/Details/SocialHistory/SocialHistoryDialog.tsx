@@ -3,6 +3,7 @@ import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -201,18 +202,20 @@ function SocialHistoryDialog({
                   </FormItem>
                 )}
               />
-              <div className="flex flex-row-reverse gap-2">
-                <SubmitButton label="Save" disabled={loading} />
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    form.reset();
-                    onClose();
-                  }}
-                >
-                  Cancel
-                </Button>
-              </div>
+              <DialogFooter>
+                <div className="flex justify-end gap-2 w-fit">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      form.reset();
+                      onClose();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <SubmitButton label="Save" disabled={loading} />
+                </div>
+              </DialogFooter>
             </div>
           </form>
         </Form>

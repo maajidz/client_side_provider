@@ -57,12 +57,12 @@ const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col p-2 gap-4">
-          {/* Patient Details Section */}
-          <RxPatientDetailsSection
-            userDetailsId={patientDetails.userDetails.id}
-          />
-          <ScrollArea className="h-[12.5rem] min-h-10">
+        <ScrollArea className="h-[30rem] min-h-30 p-3">
+          <div className="flex flex-col p-2 gap-4">
+            {/* Patient Details Section */}
+            <RxPatientDetailsSection
+              userDetailsId={patientDetails.userDetails.id}
+            />
             {/* Search & Add Rx Section */}
             <div className="flex flex-col p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">
@@ -116,11 +116,11 @@ const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                 )}
               </div>
             </div>
-          </ScrollArea>
-        </div>
-        <DialogFooter>
-          <SubmitButton label="Save Changes" />
-        </DialogFooter>
+          </div>
+          <DialogFooter>
+            <SubmitButton label="Save Changes" />
+          </DialogFooter>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

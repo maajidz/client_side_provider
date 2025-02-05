@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -196,17 +197,19 @@ const MedicationDetailsDialog = ({
                   </FormItem>
                 )}
               />
-              <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onClose}
-                  className="bg-gray-100 text-gray-600"
-                >
-                  Cancel
-                </Button>
-                <SubmitButton label="Save" />
-              </div>
+              <DialogFooter>
+                <div className="flex justify-end gap-2 w-fit">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onClose()}
+                    className="bg-gray-100 text-gray-600"
+                  >
+                    Cancel
+                  </Button>
+                  <SubmitButton label="Save" disabled={loading} />
+                </div>
+              </DialogFooter>
             </div>
           </form>
         </Form>

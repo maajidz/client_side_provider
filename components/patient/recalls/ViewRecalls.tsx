@@ -162,7 +162,7 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
         </Form>
 
         {/* Results Table */}
-        <div className="py-5">
+        <div className="space-y-3 py-5">
           {resultList?.data && (
             <DataTable
               searchKey="id"
