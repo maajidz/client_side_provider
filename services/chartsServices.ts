@@ -260,7 +260,7 @@ export const updateDiagnoses = async ({
     },
     data: requestData,
   });
-  console.log(response.data);
+  
   const data: PastDiagnosesInterface[] = await response.data;
   return data;
 };

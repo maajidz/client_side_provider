@@ -56,8 +56,8 @@ function InsuranceTable({
               <TableCell
                 className={`cursor-pointer capitalize ${
                   insuranceData.status === "active"
-                    ? "text-[#067647]"
-                    : "text-[#B42318]"
+                    ? "text-green-500"
+                    : "text-red-500"
                 }`}
               >
                 {insuranceData.status}

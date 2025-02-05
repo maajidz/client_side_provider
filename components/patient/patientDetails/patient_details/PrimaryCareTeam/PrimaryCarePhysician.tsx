@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import styles from "./patient_care_team.module.css";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { searchProviders } from "@/services/registerServices";
 import LoadingButton from "@/components/LoadingButton";
 import { PatientCareTeamInterface } from "@/types/userInterface";
+import styles from "./patient_care_team.module.css";
+import { Trash2Icon } from "lucide-react";
 
 const PrimaryCarePhysician = ({
   careTeam,
@@ -56,31 +58,30 @@ const PrimaryCarePhysician = ({
     setProviders([]);
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className={styles.infoBox}>
       <div className={styles.infoBoxLabel}>Primary Care Physician</div>
       {/* {selectedPrimaryCarePhysician ? <div>Edit </div> :  */}
       <div>
-        <div>
-          <Input
-            value={searchPrimaryCarePhysician}
-            onChange={(e) => {
-              setSearchPrimaryCarePhysician(e.target.value);
-              setSelectedPrimaryCarePhysician(null);
-            }}
-            placeholder="Search providers..."
-          />
+        <Input
+          value={searchPrimaryCarePhysician}
+          onChange={(e) => {
+            setSearchPrimaryCarePhysician(e.target.value);
+            setSelectedPrimaryCarePhysician(null);
+          }}
+          placeholder="Search providers..."
+        />
+      </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center mt-2">
+          <LoadingButton />
         </div>
+      )}
+
+      {!loading && searchPrimaryCarePhysician && (
         <div className="relative w-full">
-          {loading && (
-            <p className="absolute bg-white p-2 rounded shadow-lg">
-              Loading...
-            </p>
-          )}
           {!selectedPrimaryCarePhysician && providers.length > 0 ? (
             <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg z-10">
               {providers.map((user) => (
@@ -96,19 +97,21 @@ const PrimaryCarePhysician = ({
               ))}
             </div>
           ) : (
-            !selectedPrimaryCarePhysician &&
-            !loading &&
-            searchPrimaryCarePhysician && (
+            // No Results Found
+            !selectedPrimaryCarePhysician && (
               <p className="absolute bg-white p-2 rounded shadow-lg">
                 No results found.
               </p>
             )
           )}
         </div>
-      </div>
-      {/* } */}
+      )}
+
       <div className={styles.physicianDetailsBox}>
-        <PhysicianData label="Name of Physician" value={careTeam?.primaryCarePhysician.NameOfPhysician || ''} />
+        <PhysicianData
+          label="Name of Physician"
+          value={careTeam?.primaryCarePhysician.NameOfPhysician || ""}
+        />
       </div>
     </div>
   );
@@ -118,9 +121,14 @@ export default PrimaryCarePhysician;
 
 const PhysicianData = ({ label, value }: { label: string; value: string }) => {
   return (
-    <div className="">
+    <div>
       <div className={styles.labelText}>{label}</div>
-      <div className={styles.valueText}>{value}</div>
+      <div className={`${styles.valueText} flex items-center justify-between gap-2`}>
+        {value}
+        <Button variant="ghost">
+          <Trash2Icon color="#84012A" />
+        </Button>
+      </div>
     </div>
   );
 };

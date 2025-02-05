@@ -50,10 +50,6 @@ const ReferringPhysicianSelect = () => {
     setProviders([]);
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className={styles.infoBox}>
       <div className={styles.infoBoxLabel}>Referring Physician</div>
@@ -67,10 +63,15 @@ const ReferringPhysicianSelect = () => {
           placeholder="Search providers..."
         />
       </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center mt-2">
+          <LoadingButton />
+        </div>
+      )}
+
       <div className="relative w-full">
-        {loading && (
-          <p className="absolute bg-white p-2 rounded shadow-lg">Loading...</p>
-        )}
         {!selectedReferringPhysician && providers.length > 0 ? (
           <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg z-10">
             {providers.map((user) => (

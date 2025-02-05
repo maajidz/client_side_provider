@@ -127,11 +127,14 @@ function AllergiesAndMedications({
             allergies.map((allergy) => (
               <div
                 key={allergy.id}
-                className="flex justify-between border p-2 rounded-lg"
+                className="flex gap-2 border p-2 rounded-lg capitalize"
               >
-                <div>{allergy.Allergen}</div>
+                <p>{allergy.Allergen}</p>
+                {" - "}
                 <p>{allergy.type}</p>
+                {" - "}
                 <p>{allergy.serverity}</p>
+                {" - "}
                 <p>{allergy.status}</p>
               </div>
             ))

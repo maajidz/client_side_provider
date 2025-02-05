@@ -22,6 +22,7 @@ export interface CreateTaskType {
   notes?: string;
   priority?: "low" | "medium" | "high";
   dueDate?: string;
+  sendReminder?: string[];
   assignedProviderId: string;
   assignerProviderId: string;
   assignedByAdmin: boolean;

@@ -74,9 +74,18 @@ export const columns = ({
     cell: () => <div className="cursor-pointer"></div>,
   },
   {
-    accessorKey: "",
+    accessorKey: "status",
     header: "Status",
-    cell: () => <div className="cursor-pointer"></div>,
+    cell: ({ row }) => {
+      const statusColor =
+        row.original.status === "active" ? "text-green-500" : "text-red-500";
+
+      return (
+        <div className={`cursor-pointer capitalize ${statusColor}`}>
+          {row.original.status}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "id",
@@ -91,7 +100,7 @@ export const columns = ({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                setEditData(row.original)
+                setEditData(row.original);
                 setIsDialogOpen(true);
               }}
             >
@@ -115,4 +124,3 @@ export const columns = ({
     ),
   },
 ];
-

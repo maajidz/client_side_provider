@@ -188,52 +188,52 @@ function InsuranceDialog({
               : "Update Insurance Data"}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-6 p-6 rounded-lg">
-          {/* Action Buttons */}
-          <div className="flex gap-2 justify-end">
-            <>
-              <Button
-                variant="outline"
-                onClick={() => handleIsDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="text-white border-[rgba(132,1,42,1)] bg-[rgba(132,1,42,1)] h-6 p-4 hover:bg-[#84012A]"
-                disabled={loading}
-                onClick={toggleEdit}
-              >
-                Save
-              </Button>
-            </>
-          </div>
-
-          {/* Form Fields */}
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col gap-4">
-              <Label
-                htmlFor="insuranceType"
-                className="text-[#344054] font-medium text-sm"
-              >
-                Insurance Type
-              </Label>
-              <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
-                {isInsured.map((insurance, index) => (
-                  <div key={index} className="w-96">
-                    <RadioButton
-                      label={insurance.isInsured}
-                      name={insurance.isInsured}
-                      value={insurance.isInsured}
-                      selectedValue={selectedIsInsured}
-                      onChange={handleInsuranceTypeChange}
-                    />
-                  </div>
-                ))}
-              </div>
+        <ScrollArea className="h-[30rem] min-h-[30rem]">
+          <div className="flex flex-col gap-6 p-6 rounded-lg">
+            {/* Action Buttons */}
+            <div className="flex gap-2 justify-end">
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => handleIsDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="text-white border-[rgba(132,1,42,1)] bg-[rgba(132,1,42,1)] h-6 p-4 hover:bg-[#84012A]"
+                  disabled={loading}
+                  onClick={toggleEdit}
+                >
+                  Save
+                </Button>
+              </>
             </div>
-            <hr />
-            <div>
-              <ScrollArea className="h-[12.5rem] min-h-10">
+
+            {/* Form Fields */}
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-4">
+                <Label
+                  htmlFor="insuranceType"
+                  className="text-[#344054] font-medium text-sm"
+                >
+                  Insurance Type
+                </Label>
+                <div className="flex flex-col items-start gap-2 md:flex-row">
+                  {isInsured.map((insurance, index) => (
+                    <div key={index} className="w-96">
+                      <RadioButton
+                        label={insurance.isInsured}
+                        name={insurance.isInsured}
+                        value={insurance.isInsured}
+                        selectedValue={selectedIsInsured}
+                        onChange={handleInsuranceTypeChange}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <hr />
+              <div>
                 <FormProvider {...methods}>
                   <form onSubmit={methods.handleSubmit(toggleEdit)}>
                     <div className="flex flex-col gap-6">
@@ -405,10 +405,10 @@ function InsuranceDialog({
                     </div>
                   </form>
                 </FormProvider>
-              </ScrollArea>
+              </div>
             </div>
           </div>
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

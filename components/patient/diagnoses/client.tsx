@@ -91,6 +91,7 @@ function DiagnosesClient({ userDetailsId }: DiagnosesClientProps) {
       <EditDiagnosisDialog
         diagnosisData={editData}
         isOpen={isDialogOpen}
+        onFetchDiagnosesData={fetchDiagnoses}
         onClose={() => setIsDialogOpen(false)}
       />
     </>
@@ -98,5 +99,3 @@ function DiagnosesClient({ userDetailsId }: DiagnosesClientProps) {
 }
 
 export default DiagnosesClient;
-
-// 

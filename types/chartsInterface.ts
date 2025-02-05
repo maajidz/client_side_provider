@@ -136,13 +136,15 @@ export interface CreateDiagnosesRequestBody {
   diagnosis_name: string;
   ICD_Code: string;
   notes: string;
+  status?: "active" | "inactive";
   chartId: string;
 }
 
 export interface UpdateDiagnosesRequestBody {
-  diagnosis_name: string;
-  ICD_Code: string;
-  notes: string;
+  diagnosis_name?: string;
+  ICD_Code?: string;
+  notes?: string;
+  status?: "active" | "inactive";
 }
 
 export interface PastDiagnosesInterface {
@@ -172,6 +174,7 @@ export interface DiagnosesInterface {
 	diagnosis_name: string;
 	ICD_Code: string;
 	notes: string;
+  status: string;
 	providerId: string;
 	createdAt: string;
 	updatedAt: string;
