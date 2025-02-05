@@ -53,7 +53,7 @@ function FamilyHistoryClient({ userDetailsId }: FamilyHistoryClientProps) {
   return (
     <CustomDataTable
       columns={columns()}
-      data={data}
+      data={data || []}
       pageNo={page}
       totalPages={totalPages}
       onPageChange={(newPage) => setPage(newPage)}
