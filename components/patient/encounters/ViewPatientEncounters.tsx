@@ -4,10 +4,12 @@ import { EncounterInterface } from "@/types/encounterInterface";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import LoadingButton from "@/components/LoadingButton";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsContent } from "@/components/ui/tabs";
 import AllEncountersTab from "./AllEncountersTab";
 import ChartNotes from "@/components/charts/Encounters/Preview/ChartNotes";
+import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 const ViewPatientEncounters = ({
   userDetailsId,
@@ -19,6 +21,45 @@ const ViewPatientEncounters = ({
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  const patientEncountersTab = [
+    {
+      value: "lastvisit",
+      label: "Last visit",
+      component: AllEncountersTab,
+    },
+    {
+      value: "unsigned",
+      label: "Unsigned",
+      component: AllEncountersTab,
+    },
+    {
+      value: "cosigned",
+      label: "To Be Cosigned",
+      component: AllEncountersTab,
+    },
+    {
+      value: "6months",
+      label: "Past 6 Months",
+      component: AllEncountersTab,
+    },
+    { value: "1year", label: "Past 1 year", component: AllEncountersTab },
+    {
+      value: "all",
+      label: "All",
+      component: AllEncountersTab,
+    },
+    {
+      value: "phoneCalls",
+      label: "Phone calls",
+      component: AllEncountersTab,
+    },
+    {
+      value: "pastReports",
+      label: "Past Reports",
+      component: AllEncountersTab,
+    },
+  ];
 
   const fetchEncounterList = useCallback(
     async (page: number) => {
@@ -56,40 +97,34 @@ const ViewPatientEncounters = ({
 
   return (
     <>
-      <Tabs defaultValue="lastvisit" className="flex gap-5">
-        <TabsList className="flex flex-col gap-2 h-full">
-          <TabsTrigger value="lastvisit">Last visit</TabsTrigger>
-          <TabsTrigger value="unsigned">Unsigned</TabsTrigger>
-          <TabsTrigger value="cosigned">To Be Cosigned</TabsTrigger>
-          <TabsTrigger value="6months">Past 6 Months</TabsTrigger>
-          <TabsTrigger value="1year">Past 1 year</TabsTrigger>
-          <TabsTrigger value="all">All</TabsTrigger>
-          <Separator className="bg-black w-full text-black border border-black" />
-          <TabsTrigger value="phoneCalls">Phone calls</TabsTrigger>
-          <TabsTrigger value="pastReports">Past Reports</TabsTrigger>
-     
+      <Tabs defaultValue="lastvisit" className="flex flex-row gap-5">
+        <TabsList className="flex flex-col h-full w-56 justify-start items-start p-3 gap-3 overflow-hidden">
+          {patientEncountersTab.map((tab) => (
+            <CustomTabsTrigger value={tab.value} key={tab.value}>
+              {tab.label}
+            </CustomTabsTrigger>
+          ))}
         </TabsList>
-        <TabsContent value="lastvisit">
-          {chartList && chartList.response && chartList.response[0].chart && (
-            <ChartNotes patientChart={chartList.response[0].chart} />
-          )}
-        </TabsContent>
-        <TabsContent value="unsigned">Unsigned</TabsContent>
-        <TabsContent value="cosigned">To Be Cosigned</TabsContent>
-        <TabsContent value="6months">Past 6 Months</TabsContent>
-        <TabsContent value="1year">Past 1 year</TabsContent>
-        <TabsContent value="all">
-          {chartList && (
-            <AllEncountersTab
-              chartList={chartList}
-              page={page}
-              totalPages={totalPages}
-              setPage={setPage}
-            />
-          )}
-        </TabsContent>
-        <TabsContent value="phoneCalls">Phone calls</TabsContent>
-        <TabsContent value="pastReports">Past Reports</TabsContent>
+        {patientEncountersTab.map(({ value, component: Component }) => (
+          <TabsContent value={value} key={value} className="w-full">
+            <ScrollArea className={cn("h-[calc(80dvh-52px)]")}>
+              {value === "lastvisit"
+                ? chartList &&
+                  chartList.response &&
+                  chartList.response[0].chart && (
+                    <ChartNotes patientChart={chartList.response[0].chart} />
+                  )
+                : chartList && (
+                    <Component
+                      chartList={chartList}
+                      page={page}
+                      totalPages={totalPages}
+                      setPage={setPage}
+                    />
+                  )}
+            </ScrollArea>
+          </TabsContent>
+        ))}
       </Tabs>
     </>
   );

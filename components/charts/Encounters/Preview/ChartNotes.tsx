@@ -1,11 +1,12 @@
-import PageContainer from "@/components/layout/page-container";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 import { UserChart } from "@/types/chartsInterface";
 import React from "react";
 
 const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
   return (
-    <PageContainer scrollable={true}>
-      <div className="flex flex-col gap-5">
+    <ScrollArea className={cn("h-[calc(80dvh-52px)]")}>
+      <div className="flex flex-col gap-5 p-5">
         Chart Notes
         <div className="flex flex-col gap-3 border-b">
           <ChartLabel label="Subjective" />
@@ -42,7 +43,7 @@ const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
           </div>
         </div>
       </div>
-    </PageContainer>
+    </ScrollArea>
   );
 };
 

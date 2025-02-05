@@ -45,6 +45,7 @@ import { createEncounterRequest } from "@/services/chartsServices";
 import { fetchUserDataResponse } from "@/services/userServices";
 import LoadingButton from "../LoadingButton";
 import SubmitButton from "../custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 
 const CreateEncounterDialog = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -143,148 +144,152 @@ const CreateEncounterDialog = () => {
         <DialogHeader>
           <DialogTitle>New Encounter</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-6">
-          <div className="flex gap-2 items-center">
-            <label htmlFor="patient-search" className="font-semibold">
-              Patient:
-            </label>
-            <Input
-              id="patient-search"
-              type="text"
-              placeholder="Search by name or ID..."
-              value={patient}
-              onChange={(e) => {
-                setPatient(e.target.value);
-                setIsOpen(!isOpen);
-              }}
-            />
-          </div>
-          {isOpen && (
-            <div>
-              <div className="mt-4">
-                {patient && selectedPatient ? (
-                  <div className="flex flex-col gap-2">
-                    <p className="font-semibold">Matching Patients:</p>
-                    <ul className="border rounded p-2">
-                      {userResponse
-                        ?.filter((userData) => {
-                          const searchTerms = patient.toLowerCase().split(" ");
-                          return searchTerms.every(
-                            (term) =>
-                              userData?.user?.firstName
-                                ?.toLowerCase()
-                                .includes(term) ||
-                              userData?.user?.lastName
-                                ?.toLowerCase()
-                                .includes(term) ||
-                              userData?.id?.toLowerCase().includes(term)
-                          );
-                        })
-                        .map((userData) => (
-                          <li
-                            key={userData.id}
-                            className="cursor-pointer hover:bg-gray-100 p-2 rounded"
-                            onClick={() => {
-                              setSeletedPatient(userData);
-                              setPatient(
-                                `${userData.user.firstName} ${userData.user.lastName}`
-                              );
-                              setIsOpen(!isOpen);
-                              setShowEncounterForm(!showEncounterForm);
-                            }}
-                          >
-                            {userData.user.firstName} {userData.user.lastName}{" "}
-                            (ID: {userData.id})
-                          </li>
-                        ))}
-                    </ul>
+        <div>
+          <div className={formStyles.formBody}>
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="patient-search">Patient:</Label>
+              <Input
+                id="patient-search"
+                type="text"
+                placeholder="Search by name or ID..."
+                value={patient}
+                onChange={(e) => {
+                  setPatient(e.target.value);
+                  setIsOpen(!isOpen);
+                }}
+              />
+            </div>
+            {isOpen && (
+              <div>
+                <div className="mt-4">
+                  {patient && selectedPatient ? (
+                    <div className="flex flex-col gap-2">
+                      <p className="font-semibold">Matching Patients:</p>
+                      <ul className="border rounded p-2">
+                        {userResponse
+                          ?.filter((userData) => {
+                            const searchTerms = patient
+                              .toLowerCase()
+                              .split(" ");
+                            return searchTerms.every(
+                              (term) =>
+                                userData?.user?.firstName
+                                  ?.toLowerCase()
+                                  .includes(term) ||
+                                userData?.user?.lastName
+                                  ?.toLowerCase()
+                                  .includes(term) ||
+                                userData?.id?.toLowerCase().includes(term)
+                            );
+                          })
+                          .map((userData) => (
+                            <li
+                              key={userData.id}
+                              className="cursor-pointer hover:bg-gray-100 p-2 rounded"
+                              onClick={() => {
+                                setSeletedPatient(userData);
+                                setPatient(
+                                  `${userData.user.firstName} ${userData.user.lastName}`
+                                );
+                                setIsOpen(!isOpen);
+                                setShowEncounterForm(!showEncounterForm);
+                              }}
+                            >
+                              {userData.user.firstName} {userData.user.lastName}{" "}
+                              (ID: {userData.id})
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">No matching patients found.</p>
+                  )}
+                </div>
+                {selectedPatient && (
+                  <div className="mt-4 p-4 border rounded bg-gray-50">
+                    <h4 className="font-semibold">Selected Patient Details:</h4>
+                    <p>
+                      <strong>Name:</strong> {selectedPatient.user.firstName}{" "}
+                      {selectedPatient.user.lastName}
+                    </p>
+                    <p>
+                      <strong>ID:</strong> {selectedPatient.id}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {selectedPatient.user.email}
+                    </p>
                   </div>
-                ) : (
-                  <p className="text-gray-500">No matching patients found.</p>
                 )}
               </div>
-              {selectedPatient && (
-                <div className="mt-4 p-4 border rounded bg-gray-50">
-                  <h4 className="font-semibold">Selected Patient Details:</h4>
-                  <p>
-                    <strong>Name:</strong> {selectedPatient.user.firstName}{" "}
-                    {selectedPatient.user.lastName}
-                  </p>
-                  <p>
-                    <strong>ID:</strong> {selectedPatient.id}
-                  </p>
-                  <p>
-                    <strong>Email:</strong> {selectedPatient.user.email}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+            )}
+          </div>
           {showEncounterForm && (
             <div>
-              <div className="flex flex-row gap-2 items-center">
-                <Label className="w-40">Encounter with:</Label>
-                <Input
-                  placeholder="Provider Name"
-                  value={`${providerDetails.firstName} ${providerDetails.lastName}`}
-                />
+              <div className={formStyles.formBody}>
+                <div className="flex flex-col gap-3">
+                  <Label>Encounter with:</Label>
+                  <Input
+                    placeholder="Provider Name"
+                    value={`${providerDetails.firstName} ${providerDetails.lastName}`}
+                  />
+                </div>
               </div>
               <Form {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
-                  <FormField
-                    control={methods.control}
-                    name="date"
-                    render={({ field }) => (
-                      <FormItem className="flex gap-2 items-center ">
-                        <FormLabel className="w-28">Date:</FormLabel>
-                        <FormControl>
-                          <div className="flex flex-row md:gap-2 items-center">
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-[280px] justify-start text-left font-normal",
-                                    !field.value && "text-muted-foreground"
-                                  )}
-                                >
-                                  <CalendarIcon />
-                                  {field.value
-                                    ? format(new Date(field.value), "PPP")
-                                    : format(new Date(), "PPP")}
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0">
-                                <Calendar
-                                  mode="single"
-                                  selected={
-                                    field.value
-                                      ? new Date(field.value)
-                                      : new Date()
-                                  }
-                                  onSelect={(date) =>
-                                    field.onChange(
-                                      date ? date.toISOString() : undefined
-                                    )
-                                  }
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
-                          </div>
-                        </FormControl>
-                        <FormMessage className="text-[10px]" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={methods.control}
-                    name="vist_type"
-                    render={({ field }) => (
-                      <FormItem className="flex gap-2 items-center ">
-                        <FormLabel className="w-28">Encounter Mode:</FormLabel>
-                        <FormControl>
-                          <div className="flex flex-col gap-2 items-start justify-start ">
+                  <div className={formStyles.formBody}>
+                    <FormField
+                      control={methods.control}
+                      name="date"
+                      render={({ field }) => (
+                        <FormItem className={formStyles.formItem}>
+                          <FormLabel>Date:</FormLabel>
+                          <FormControl>
+                            <div className="flex flex-row md:gap-2 items-center">
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-[280px] justify-start text-left font-normal",
+                                      !field.value && "text-muted-foreground"
+                                    )}
+                                  >
+                                    <CalendarIcon />
+                                    {field.value
+                                      ? format(new Date(field.value), "PPP")
+                                      : format(new Date(), "PPP")}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0">
+                                  <Calendar
+                                    mode="single"
+                                    selected={
+                                      field.value
+                                        ? new Date(field.value)
+                                        : new Date()
+                                    }
+                                    onSelect={(date) =>
+                                      field.onChange(
+                                        date ? date.toISOString() : undefined
+                                      )
+                                    }
+                                    initialFocus
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-[10px]" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={methods.control}
+                      name="vist_type"
+                      render={({ field }) => (
+                        <FormItem className={formStyles.formItem}>
+                          <FormLabel>Encounter Mode:</FormLabel>
+                          <FormControl>
                             <Select
                               value={field.value}
                               onValueChange={(value: string) => {
@@ -303,44 +308,44 @@ const CreateEncounterDialog = () => {
                                 </SelectItem>
                               </SelectContent>
                             </Select>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={methods.control}
-                    name="encounterMode"
-                    render={({ field }) => (
-                      <FormItem className="flex gap-2 items-center ">
-                        <FormLabel className="w-28">Encounter Mode:</FormLabel>
-                        <FormControl>
-                          <div className="flex flex-col gap-2 items-start justify-start ">
-                            <RadioButton
-                              label="In Person"
-                              name="encounterMode"
-                              value="in_person"
-                              selectedValue={field.value.toString()}
-                              onChange={() => field.onChange("in_person")}
-                            />
-                            <div className="flex items-start justify-start">
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={methods.control}
+                      name="encounterMode"
+                      render={({ field }) => (
+                        <FormItem className={formStyles.formItem}>
+                          <FormLabel>Encounter Mode:</FormLabel>
+                          <FormControl>
+                            <div className="flex gap-3 w-full">
                               <RadioButton
-                                label="Phone Call"
+                                label="In Person"
                                 name="encounterMode"
-                                value="phone_call"
+                                value="in_person"
                                 selectedValue={field.value.toString()}
-                                onChange={() => field.onChange("phone_call")}
+                                onChange={() => field.onChange("in_person")}
                               />
+                              <div className={formStyles.formItem}>
+                                <RadioButton
+                                  label="Phone Call"
+                                  name="encounterMode"
+                                  value="phone_call"
+                                  selectedValue={field.value.toString()}
+                                  onChange={() => field.onChange("phone_call")}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex justify-center mt-3">
-                    <SubmitButton label="Create" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex justify-center mt-3">
+                      <SubmitButton label="Create" />
+                    </div>
                   </div>
                 </form>
               </Form>
