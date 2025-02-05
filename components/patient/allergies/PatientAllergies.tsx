@@ -17,7 +17,6 @@ const PatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
         >
             <PlusIcon />
             Allergy
-          </div>
         </DefaultButton>
         <AllergiesDialog
           userDetailsId={userDetailsId}

@@ -310,6 +310,7 @@ function FamilyHistoryDialog({
                 </div>
               </DialogFooter>
             </div>
+            </ScrollArea>
           </form>
         </Form>
       </DialogContent>
