@@ -31,6 +31,8 @@ import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
 import { Switch } from "@/components/ui/switch";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
+import { ScrollArea } from "@/components/ui/scroll-area";
 // import { createPrescriptions } from "@/services/chartsServices";
 // import { showToast } from "@/utils/utils";
 // import { useToast } from "@/hooks/use-toast";
@@ -130,444 +132,485 @@ const PatientMedicationDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-4xl">
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle>Add Prescription for {userDetailsId}</DialogTitle>
+          <DialogTitle>Add Prescription</DialogTitle>
         </DialogHeader>
         {showPrescriptionForm ? (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="flex flex-row">
-                {drugName ? (
-                  drugName
-                ) : (
-                  <Input
-                    value={drugName}
-                    onChange={(e) => setDrugName(e.target.value)}
-                    placeholder="Enter drug name"
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <ScrollArea className="h-[30rem]">
+                <div className={formStyles.formBody}>
+                  <div className="flex flex-row gap-2">
+                    <div>Dispense as Written</div>
+                    <Switch
+                      checked={dispenseAsWritten}
+                      onCheckedChange={(value) => setDispenseAsWritten(value)}
+                    />
+                  </div>
+                  {drugName ? (
+                    drugName
+                  ) : (
+                    <Input
+                      value={drugName}
+                      onChange={(e) => setDrugName(e.target.value)}
+                      placeholder="Enter drug name"
+                    />
+                  )}
+                  <div className={formStyles.formItem}>
+                    <div className="font-semibold">Diagnosis</div>
+                    <div className="flex w-full gap-3">
+                      <FormField
+                        control={form.control}
+                        name="primary_diagnosis"
+                        render={({ field }) => (
+                          <FormItem className={`${formStyles.formItem} w-full`}>
+                            <FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger className="mt-0">
+                                  <SelectValue
+                                    placeholder="Select"
+                                    className="w-full"
+                                  />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="diagnosis1">
+                                    Diagnosis 1
+                                  </SelectItem>
+                                  <SelectItem value="diagnosis2">
+                                    Diagnosis 2
+                                  </SelectItem>
+                                  <SelectItem value="diagnosis3">
+                                    Diagnosis 3
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="secondary_diagnosis"
+                        render={({ field }) => (
+                          <FormItem className={`${formStyles.formItem} w-full`}>
+                            <FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger className="mt-0">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="diagnosis1">
+                                    Diagnosis 1
+                                  </SelectItem>
+                                  <SelectItem value="diagnosis2">
+                                    Diagnosis 2
+                                  </SelectItem>
+                                  <SelectItem value="diagnosis3">
+                                    Diagnosis 3
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className={`${formStyles.formItem} bg-[#c5c4c4] p-3 rounded-md`}
+                  >
+                    <div className="font-semibold">Dosage: </div>
+                    <div className="flex w-full gap-3">
+                      <FormField
+                        control={form.control}
+                        name="dosage_quantity"
+                        render={({ field }) => (
+                          <FormItem className={formStyles.formItem}>
+                            <FormLabel>Qty</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder="Enter quantity"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(e.target.valueAsNumber || "")
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="dosage_unit"
+                        render={({ field }) => (
+                          <FormItem className={formStyles.formItem}>
+                            <FormLabel>Unit</FormLabel>
+                            <FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger className="mt-0">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="mg">mg</SelectItem>
+                                  <SelectItem value="ml">ml</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="route"
+                        render={({ field }) => (
+                          <FormItem className={formStyles.formItem}>
+                            <FormLabel>Route</FormLabel>
+                            <FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger className="mt-0">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="route1">
+                                    Route 1
+                                  </SelectItem>
+                                  <SelectItem value="route2">
+                                    Route 2
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="frequency"
+                        render={({ field }) => (
+                          <FormItem className={formStyles.formItem}>
+                            <FormLabel>Frequency</FormLabel>
+                            <FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger className="mt-0">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="frequency1">
+                                    Frequency 1
+                                  </SelectItem>
+                                  <SelectItem value="frequency2">
+                                    Frequency 2
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="when"
+                        render={({ field }) => (
+                          <FormItem className={formStyles.formItem}>
+                            <FormLabel>When</FormLabel>
+                            <FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger className="mt-0">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="frequency1">
+                                    Frequency 1
+                                  </SelectItem>
+                                  <SelectItem value="frequency2">
+                                    Frequency 2
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="duration_quantity"
+                        render={({ field }) => (
+                          <FormItem className={formStyles.formItem}>
+                            <FormLabel>Duration</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Duration" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="duration_unit"
+                        render={({ field }) => (
+                          <FormItem className={formStyles.formItem}>
+                            <FormLabel>Duration Unit</FormLabel>
+                            <FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger className="mt-0">
+                                  <SelectValue placeholder="duration type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="days">Days</SelectItem>
+                                  <SelectItem value="weeks">Weeks</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="directions"
+                    render={({ field }) => (
+                      <FormItem className={formStyles.formItem}>
+                        <FormLabel>Directions</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Directions" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                )}
-                <Switch
-                  checked={dispenseAsWritten}
-                  onCheckedChange={(value) => setDispenseAsWritten(value)}
-                />
-              </div>
-              <div className="flex gap-3 items-center w-full">
-                <div>Diagnosis</div>
-                <FormField
-                  control={form.control}
-                  name="primary_diagnosis"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="mt-0">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="diagnosis1">
-                              Diagnosis 1
-                            </SelectItem>
-                            <SelectItem value="diagnosis2">
-                              Diagnosis 2
-                            </SelectItem>
-                            <SelectItem value="diagnosis3">
-                              Diagnosis 3
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="secondary_diagnosis"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="mt-0">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="diagnosis1">
-                              Diagnosis 1
-                            </SelectItem>
-                            <SelectItem value="diagnosis2">
-                              Diagnosis 2
-                            </SelectItem>
-                            <SelectItem value="diagnosis3">
-                              Diagnosis 3
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex gap-3 items-center">
-                <div>Dosage: </div>
-                <FormField
-                  control={form.control}
-                  name="dosage_quantity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Qty</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Enter quantity"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber || "")
-                          }
+                  <div className="flex w-full gap-3">
+                    <div className={`${formStyles.formItem} w-full`}>
+                      <div className="font-semibold">Dispense</div>
+                      <div className="flex gap-3 w-full">
+                        <FormField
+                          control={form.control}
+                          name="dispense_quantity"
+                          render={({ field }) => (
+                            <FormItem
+                              className={`${formStyles.formItem} w-full`}
+                            >
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="Quantity"
+                                  {...field}
+                                  className="w-28"
+                                  onChange={(e) =>
+                                    field.onChange(e.target.valueAsNumber || "")
+                                  }
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="dosage_unit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Unit</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="mt-0">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="mg">mg</SelectItem>
-                            <SelectItem value="ml">ml</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="route"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Route</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="mt-0">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="route1">Route 1</SelectItem>
-                            <SelectItem value="route2">Route 2</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="frequency"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Frequency</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="mt-0">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="frequency1">
-                              Frequency 1
-                            </SelectItem>
-                            <SelectItem value="frequency2">
-                              Frequency 2
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="when"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>When</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="mt-0">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="frequency1">
-                              Frequency 1
-                            </SelectItem>
-                            <SelectItem value="frequency2">
-                              Frequency 2
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="duration_quantity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Duration</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Duration" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="duration_unit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Duration Unit</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="mt-0">
-                            <SelectValue placeholder="duration type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="days">Days</SelectItem>
-                            <SelectItem value="weeks">Weeks</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="directions"
-                render={({ field }) => (
-                  <FormItem className="flex gap-3 items-center">
-                    <FormLabel>Directions</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Duration" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex gap-3 items-center">
-                <div>Dispense</div>
-                <FormField
-                  control={form.control}
-                  name="dispense_quantity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Quantity"
-                          {...field}
-                          className="w-28"
-                          onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber || "")
-                          }
+                        <FormField
+                          control={form.control}
+                          name="dispense_unit"
+                          render={({ field }) => (
+                            <FormItem
+                              className={`${formStyles.formItem} w-full`}
+                            >
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <SelectTrigger className="mt-0">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="gram">Gram</SelectItem>
+                                    <SelectItem value="lts">Lts</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="dispense_unit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="mt-0">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="gram">Gram</SelectItem>
-                            <SelectItem value="lts">Lts</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="days_of_supply"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
-                      <FormLabel className="w-fit">Days Supply</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder=""
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber || "")
-                          }
+                      </div>
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="days_of_supply"
+                      render={({ field }) => (
+                        <FormItem className={`${formStyles.formItem} w-full`}>
+                          <FormLabel className="w-fit">Days Supply</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder=""
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(e.target.valueAsNumber || "")
+                              }
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="earliest_fill_date"
+                      render={({ field }) => (
+                        <FormItem className={`${formStyles.formItem} w-full`}>
+                          <FormLabel className="w-fit">
+                            Earliest Fill Date
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="flex gap-3 w-full">
+                    <div className={`${formStyles.formItem} w-full`}>
+                      <div>Prior Auth</div>
+                      <div className="flex gap-3 w-full">
+                        <FormField
+                          control={form.control}
+                          name="prior_auth"
+                          render={({ field }) => (
+                            <FormItem
+                              className={`${formStyles.formItem} w-full`}
+                            >
+                              <FormControl>
+                                <Input placeholder="Prior Auth" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="earliest_fill_date"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-3 items-center">
-                      <FormLabel className="w-fit">
-                        Earliest Fill Date
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex gap-3">
-                <FormField
-                  control={form.control}
-                  name="prior_auth"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-3 items-center">
-                      <FormLabel>Prior Auth</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Prior Auth" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="prior_auth_decision"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-3 items-center">
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="mt-0">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="option1">option 1</SelectItem>
-                            <SelectItem value="option2">option 2</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="additional_refills"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-3 items-center">
-                      <FormLabel>Additional Refills</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder=""
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber || "")
-                          }
+                        <FormField
+                          control={form.control}
+                          name="prior_auth_decision"
+                          render={({ field }) => (
+                            <FormItem
+                              className={`${formStyles.formItem} w-full`}
+                            >
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <SelectTrigger className="mt-0">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="option1">
+                                      option 1
+                                    </SelectItem>
+                                    <SelectItem value="option2">
+                                      option 2
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex gap-3 items-center">
-                <FormField
-                  control={form.control}
-                  name="internal_comments"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-3 items-center">
-                      <FormLabel>Internal Comments</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="Note_to_Pharmacy"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-3 items-center">
-                      <FormLabel>Note to Pharmacy</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex justify-end gap-2">
-                <SubmitButton label="Save" />
-                <Button
-                  variant={"outline"}
-                  onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
-                >
-                  Cancel
-                </Button>
-              </div>
+                      </div>
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="additional_refills"
+                      render={({ field }) => (
+                        <FormItem className={`${formStyles.formItem} w-full`}>
+                          <FormLabel>Additional Refills</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder=""
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(e.target.valueAsNumber || "")
+                              }
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="flex gap-3 items-center w-full">
+                    <FormField
+                      control={form.control}
+                      name="internal_comments"
+                      render={({ field }) => (
+                        <FormItem className={`${formStyles.formItem} w-full`}>
+                          <FormLabel>Internal Comments</FormLabel>
+                          <FormControl>
+                            <Textarea {...field} className="w-full" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="Note_to_Pharmacy"
+                      render={({ field }) => (
+                        <FormItem className={`${formStyles.formItem} w-full`}>
+                          <FormLabel>Note to Pharmacy</FormLabel>
+                          <FormControl>
+                            <Textarea {...field} className="w-full" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="flex justify-end gap-2">
+                      <Button
+                        variant={"outline"}
+                        className="w-full"
+                        onClick={() =>
+                          setShowPrescriptionForm(!showPrescriptionForm)
+                        }
+                      >
+                        Cancel
+                      </Button>
+                    <SubmitButton label="Save" />
+                  </div>
+                </div>
+              </ScrollArea>
             </form>
           </Form>
         ) : (
