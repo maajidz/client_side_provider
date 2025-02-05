@@ -32,7 +32,7 @@ import { categoryOptions, priority, status } from "@/constants/data";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
 import AddTaskComment from "./AddTaskComment";
-import TasksDialog from "@/components/tasks/TasksDialog";
+import EditPatientTaskDialog from "./EditPatientTaskDialog";
 
 const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -42,7 +42,8 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const limit = 5;
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [isCommentDialogOpen, setIsCommentDialogOpen] = useState<boolean>(false);
+  const [isCommentDialogOpen, setIsCommentDialogOpen] =
+    useState<boolean>(false);
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
     null
   );
@@ -236,12 +237,14 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             isOpen={isCommentDialogOpen}
           />
 
-          <TasksDialog
+          <EditPatientTaskDialog
             tasksData={editData}
+            userDetailsId={userDetailsId}
+            isOpen={isDialogOpen}
             onClose={() => {
               setIsDialogOpen(false);
             }}
-            isOpen={isDialogOpen}
+            onFetchTasks={fetchTasksList}
           />
         </div>
       </div>

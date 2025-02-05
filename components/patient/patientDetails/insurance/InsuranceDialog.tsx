@@ -1,3 +1,4 @@
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import RadioButton from "@/components/custom_buttons/radio_button/RadioButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -199,13 +200,12 @@ function InsuranceDialog({
                 >
                   Cancel
                 </Button>
-                <Button
-                  className="text-white border-[rgba(132,1,42,1)] bg-[rgba(132,1,42,1)] h-6 p-4 hover:bg-[#84012A]"
+                <DefaultButton
                   disabled={loading}
                   onClick={toggleEdit}
                 >
                   Save
-                </Button>
+                </DefaultButton>
               </>
             </div>
 

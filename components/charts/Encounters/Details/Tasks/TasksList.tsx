@@ -2,56 +2,32 @@ import LoadingButton from "@/components/LoadingButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { deleteTask, getTasks } from "@/services/chartDetailsServices";
+import { deleteTask } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { TasksResponseDataInterface } from "@/types/tasksInterface";
 import { showToast } from "@/utils/utils";
-import { Trash2Icon } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
 import EditTask from "./EditTask";
+import { Trash2Icon } from "lucide-react";
+import { useState } from "react";
 
 interface TasksListProps {
+  error: string;
+  isLoading: boolean;
   patientDetails: UserEncounterData;
+  tasksData: TasksResponseDataInterface[] | undefined;
+  onFetchTasks: () => Promise<void>;
 }
 
-function TasksList({ patientDetails }: TasksListProps) {
-  const [tasksData, setTasksData] = useState<TasksResponseDataInterface[]>();
-  const [error, setError] = useState("");
+function TasksList({
+  error,
+  isLoading,
+  patientDetails,
+  tasksData,
+  onFetchTasks,
+}: TasksListProps) {
   const [loading, setLoading] = useState(false);
 
   const { toast } = useToast();
-
-  const fetchTasks = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      if (patientDetails?.providerID) {
-        const response = await getTasks({
-          providerId: patientDetails?.providerID,
-          page: 1,
-          limit: 10,
-        });
-
-        if (response) {
-          setTasksData(response.data);
-        }
-      } else {
-        throw new Error("Missing provider ID");
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        setError("Something went wrong");
-      } else {
-        setError("Something went wrong. Unknown error occurred.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [patientDetails?.providerID]);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
 
   async function handleDeleteTask(taskId: string) {
     setLoading(true);
@@ -74,11 +50,11 @@ function TasksList({ patientDetails }: TasksListProps) {
         });
     } finally {
       setLoading(false);
-      fetchTasks();
+      await onFetchTasks();
     }
   }
 
-  if (loading) return <LoadingButton />;
+  if (isLoading) return <LoadingButton />;
 
   if (error)
     return <div className="flex items-center justify-center">{error}</div>;

@@ -16,11 +16,12 @@ import generateTasksPDF from "../patient/tasks/generateTasksPDF";
 const handleTasksDelete = async (
   taskId: string,
   setLoading: (loading: boolean) => void,
-  showToast: (args: { type: string; message: string }) => void
+  showToast: (args: { type: string; message: string }) => void,
+  fetchTasks: () => void
 ) => {
   setLoading(true);
   try {
-    await deleteTask({ id: taskId });
+    await deleteTask({ id: taskId });k
     showToast({
       type: "success",
       message: "Task deleted successfully",
@@ -30,6 +31,7 @@ const handleTasksDelete = async (
     showToast({ type: "error", message: "Failed to delete task" });
   } finally {
     setLoading(false);
+    fetchTasks();
   }
 };
 
@@ -183,8 +185,12 @@ export const columns = ({
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                handleTasksDelete(row.original.id, setLoading, showToast);
-                fetchTasksList();
+                handleTasksDelete(
+                  row.original.id,
+                  setLoading,
+                  showToast,
+                  fetchTasksList
+                );
               }}
             >
               Delete
