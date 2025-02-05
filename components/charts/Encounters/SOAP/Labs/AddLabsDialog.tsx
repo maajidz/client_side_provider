@@ -171,10 +171,8 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
                     setShowNewLab(!showNewLab);
                   }}
                 >
-                  <div className="flex gap-1 items-center">
                     <PlusIcon />
                     <div>New Lab</div>
-                  </div>
                 </DefaultButton>
               )}
             </div>

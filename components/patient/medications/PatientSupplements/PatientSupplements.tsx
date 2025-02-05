@@ -14,10 +14,8 @@ const PatientSupplements = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-          <div className="flex gap-2">
             <PlusIcon />
             Supplements
-          </div>
         </DefaultButton>
         <SupplementsDialog
           userDetailsId={userDetailsId}

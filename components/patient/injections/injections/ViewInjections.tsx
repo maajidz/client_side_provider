@@ -79,10 +79,8 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-          <div className="flex gap-2">
             <PlusIcon />
             Injections
-          </div>
         </DefaultButton>
         <InjectionsDialog
           userDetailsId={userDetailsId}

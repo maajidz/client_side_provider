@@ -122,12 +122,10 @@ export const CalendarBody = () => {
         <Heading title={`Calendar`} description="" />
         <div>
           <DefaultButton onClick={handleClick}>
-            <div className="flex flex-row items-center gap-2">
-              <PlusIcon />
-              <div className="hidden md:block lg:blocl">
+              <PlusIcon size={24}/>
+              <div className="hidden md:block lg:block">
                 Update my availability
               </div>
-            </div>
           </DefaultButton>
         </div>
       </div>

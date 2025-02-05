@@ -179,10 +179,8 @@ function VaccineOrders() {
     <Dialog open={isDialogOpen} onOpenChange={handleIsDialogOpen}>
       <DialogTrigger asChild>
         <DefaultButton>
-          <div className="flex gap-1 items-center">
             <PlusIcon />
             <div>Vaccine Order</div>
-          </div>
         </DefaultButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[540px]">

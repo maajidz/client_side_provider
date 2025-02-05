@@ -32,10 +32,8 @@ const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
                 )
               }
             >
-              <div className="flex items-center gap-3">
                 <PlusIcon />
                 {activeTab === "labResults" ? "Lab Results" : "Lab Orders"}
-              </div>
             </DefaultButton>
           </div>
           <TabsContent value="labResults">

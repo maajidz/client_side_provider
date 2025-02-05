@@ -35,10 +35,8 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-          <div className="flex gap-2 items-center">
             <PlusIcon />
             New Appointment
-          </div>
         </DefaultButton>
 
         <AppointmentsDialog

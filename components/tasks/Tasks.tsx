@@ -24,9 +24,7 @@ const Tasks = () => {
               setIsDialogOpen(true);
             }}
           >
-            <div className="flex gap-2">
-              <PlusIcon /> Add Task
-            </div>
+            <PlusIcon /> Add Task
           </DefaultButton>
           <TasksDialog
             tasksData={editData}

@@ -22,20 +22,16 @@ const PatientMedication = ({
             setIsMedicationsDialogOpen(true);
           }}
         >
-          <div className="flex items-center gap-2">
             <PlusIcon />
             Medications
-          </div>
         </DefaultButton>
         <DefaultButton
           onClick={() => {
             onSetQuickRxVisible(true);
           }}
         >
-          <div className="flex items-center gap-2">
             <PlusIcon />
             Prescriptions
-          </div>
         </DefaultButton>
         <AddMedicationDialog
           userDetailsId={userDetailsId}

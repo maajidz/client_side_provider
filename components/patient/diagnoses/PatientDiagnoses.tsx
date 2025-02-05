@@ -12,10 +12,8 @@ const PatientDiagnoses = ({ userDetailsId }: { userDetailsId: string }) => {
     <>
       <div className="flex justify-end">
         <DefaultButton onClick={() => setIsDialogOpen(true)}>
-          <div className="flex items-center gap-2">
             <PlusIcon />
             Diagnoses
-          </div>
         </DefaultButton>
       </div>
       <div className="space-y-4">

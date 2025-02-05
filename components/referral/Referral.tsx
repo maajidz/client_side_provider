@@ -34,10 +34,8 @@ const Referral = () => {
                   setIsReferralOutDialogOpen(true);
                 }}
               >
-                <div className="flex items-center gap-3">
-                  <PlusIcon />
-                  Referral Out
-                </div>
+                <PlusIcon />
+                Referral Out
               </DefaultButton>
             ) : (
               <DefaultButton
@@ -45,10 +43,8 @@ const Referral = () => {
                   setIsReferralInDialogOpen(true);
                 }}
               >
-                <div className="flex items-center gap-3">
-                  <PlusIcon />
-                  Referral In
-                </div>
+                <PlusIcon />
+                Referral In
               </DefaultButton>
             )}
             <ReferralOutDialog

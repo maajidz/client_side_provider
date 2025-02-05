@@ -63,10 +63,8 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-          <div className="flex items-center gap-2">
             <PlusIcon />
             Note
-          </div>
         </DefaultButton>
         <QuickNotesDialog
           userDetailsId={userDetailsId}

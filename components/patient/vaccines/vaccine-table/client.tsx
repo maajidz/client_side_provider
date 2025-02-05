@@ -73,10 +73,8 @@ const HistoricalVaccinesClient = ({
             setIsVaccinesDialogOpen(true);
           }}
         >
-          <div className="flex gap-2">
             <PlusIcon />
             Vaccines
-          </div>
         </DefaultButton>
         <VaccinesDialog
           userDetailsId={userDetailsId}

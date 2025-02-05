@@ -15,10 +15,8 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-          <div className="flex gap-2 items-center">
             <PlusIcon />
             Tasks
-          </div>
         </DefaultButton>
         <TasksDialog
           userDetailsId={userDetailsId}

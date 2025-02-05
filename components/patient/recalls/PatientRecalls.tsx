@@ -15,10 +15,8 @@ const PatientRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-          <div className="flex items-center gap-2">
             <PlusIcon />
             Recalls
-          </div>
         </DefaultButton>
         <RecallsDialog
           userDetailsId={userDetailsId}

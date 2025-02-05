@@ -34,12 +34,10 @@ function Images() {
                 )
               }
             >
-              <div className="flex items-center gap-3">
                 <PlusIcon />
                 {activeTab === "imageResults"
                   ? "Image Results"
                   : "Image Orders"}
-              </div>
             </DefaultButton>
           </div>
           <TabsContent value="imageResults">

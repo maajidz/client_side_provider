@@ -15,10 +15,8 @@ const PatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-          <div className="flex gap-2">
             <PlusIcon />
             Alerts
-          </div>
         </DefaultButton>
         <AllergiesDialog
           userDetailsId={userDetailsId}
