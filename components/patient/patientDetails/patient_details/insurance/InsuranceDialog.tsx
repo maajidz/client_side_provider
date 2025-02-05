@@ -188,7 +188,7 @@ function InsuranceDialog({
               : "Update Insurance Data"}
           </DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[30rem] min-h-[30rem]">
+        <ScrollArea className="max-h-[30rem] h-auto">
           <div className="flex flex-col gap-6 p-6 rounded-lg">
             {/* Action Buttons */}
             <div className="flex gap-2 justify-end">

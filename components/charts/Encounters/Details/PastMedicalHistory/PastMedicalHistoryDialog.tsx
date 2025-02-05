@@ -24,12 +24,13 @@ import { CreatePastMedicalHistoryType } from "@/services/pastMedicalHistoryInter
 import { createPastMedicalHistory } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
-import formStyles from '@/components/formStyles.module.css';
+import formStyles from "@/components/formStyles.module.css";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PastMedicalHistoryDialogProps {
   isOpen: boolean;
   userDetailsId: string;
-  onClose: () => void,
+  onClose: () => void;
 }
 
 function PastMedicalHistoryDialog({
@@ -97,35 +98,37 @@ function PastMedicalHistoryDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
-                    <FormLabel className="w-fit">Note</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="glp_refill_note_practice"
-                render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
-                    <FormLabel>GLP Refill Note Practice - PMH</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <SubmitButton label="Save" />
-            </div>
+            <ScrollArea className="max-h-[30rem] h-auto">
+              <div className={formStyles.formBody}>
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel className="w-fit">Note</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="glp_refill_note_practice"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel>GLP Refill Note Practice - PMH</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <SubmitButton label="Save" />
+              </div>
+            </ScrollArea>
           </form>
         </Form>
       </DialogContent>

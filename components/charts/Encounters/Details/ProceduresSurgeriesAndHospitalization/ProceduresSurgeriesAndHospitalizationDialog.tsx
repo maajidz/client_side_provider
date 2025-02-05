@@ -36,6 +36,7 @@ import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import formStyles from '@/components/formStyles.module.css';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ProceduresSurgeriesAndHospitalizationDialog = ({
   userDetailsId,
@@ -148,7 +149,8 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-5">
+          <ScrollArea className="max-h-[30rem] h-auto">
+            <div className={formStyles.formBody}>
               <FormField
                 control={form.control}
                 name="type"
@@ -233,6 +235,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
               />
               <SubmitButton label="Save" />
             </div>
+          </ScrollArea>
           </form>
         </Form>
       </DialogContent>

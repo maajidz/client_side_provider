@@ -37,6 +37,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import formStyles from '@/components/formStyles.module.css';
 
 interface PharmacyDialogInterface {
   isOpen: boolean;
@@ -182,8 +183,8 @@ function PharmacyDialog({
         <DialogHeader>
           <DialogTitle>Add Pharmacy</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[30rem] min-h-[30rem]">
-          <div className="p-8">
+        <ScrollArea className="max-h-[30rem] h-auto">
+          <div className={formStyles.formBody}>
             {/* Search Form */}
             <Form {...form}>
               <form

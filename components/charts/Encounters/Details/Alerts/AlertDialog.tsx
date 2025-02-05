@@ -37,6 +37,8 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertTypeInterface } from "@/types/alertInterface";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const AlertDialog = ({
   userDetailsId,
@@ -141,54 +143,56 @@ const AlertDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="alertName"
-                render={({ field }) => (
-                  <FormItem className="flex">
-                    <FormLabel className="w-fit">Alert Name</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={(value) => {
-                          field.onChange(value); 
-                        }}
-                        value={field.value}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Choose Alert from Master List" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {alertTypeData?.data.map((typeData) => (
-                            <SelectItem key={typeData.id} value={typeData.id}>
-                              {typeData.alertName}
-                            </SelectItem>
-                          ))}
-                          {/* <SelectItem value="provider1">Provider 1</SelectItem>
+            <ScrollArea className="max-h-[30rem] h-auto">
+              <div className={formStyles.formBody}>
+                <FormField
+                  control={form.control}
+                  name="alertName"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel>Alert Name</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                          }}
+                          value={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Choose Alert from Master List" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {alertTypeData?.data.map((typeData) => (
+                              <SelectItem key={typeData.id} value={typeData.id}>
+                                {typeData.alertName}
+                              </SelectItem>
+                            ))}
+                            {/* <SelectItem value="provider1">Provider 1</SelectItem>
                           <SelectItem value="provider2">Provider 2</SelectItem>
                           <SelectItem value="provider3">Provider 3</SelectItem> */}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="alertDescription"
-                render={({ field }) => (
-                  <FormItem className="flex">
-                    <FormLabel>Alert Description</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <SubmitButton label="Save" />
-            </div>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="alertDescription"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel>Alert Description</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <SubmitButton label="Save" />
+              </div>
+            </ScrollArea>
           </form>
         </Form>
       </DialogContent>

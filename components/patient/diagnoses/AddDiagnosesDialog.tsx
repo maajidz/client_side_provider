@@ -35,6 +35,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import React from "react";
 import { useSelector } from "react-redux";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AddDiagnosesDialogProps {
   isOpen: boolean;
@@ -91,7 +92,7 @@ export default function AddDiagnosesDialog({
         diagnosis_name: diagnosis.diagnosis_name,
         ICD_Code: diagnosis.ICD_Code,
         notes: diagnosis.notes,
-        chartId: ''
+        chartId: "",
       })
     );
 
@@ -131,161 +132,167 @@ export default function AddDiagnosesDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="text-left font-semibold border-b">
-                  <th className="px-3 py-2">Diagnosis</th>
-                  <th className="px-3 py-2">ICD Code</th>
-                  <th className="px-3 py-2">From Date</th>
-                  <th className="px-3 py-2">To Date</th>
-                  <th className="px-3 py-2">Status</th>
-                  <th className="px-3 py-2">Notes</th>
-                </tr>
-              </thead>
-              <tbody className="space-y-2">
-                {fields.map((field, index) => (
-                  <tr key={field.id} className="space-x-4">
-                    <td className="p-2">
-                      <FormField
-                        control={form.control}
-                        name={`diagnoses.${index}.diagnosis_name`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <Input
-                              {...field}
-                              placeholder="Search by name or code"
-                              value={field.value}
-                            />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </td>
+            <ScrollArea className="max-h-[30rem] h-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="text-left font-semibold border-b">
+                    <th className="px-3 py-2">Diagnosis</th>
+                    <th className="px-3 py-2">ICD Code</th>
+                    <th className="px-3 py-2">From Date</th>
+                    <th className="px-3 py-2">To Date</th>
+                    <th className="px-3 py-2">Status</th>
+                    <th className="px-3 py-2">Notes</th>
+                  </tr>
+                </thead>
+                <tbody className="space-y-2">
+                  {fields.map((field, index) => (
+                    <tr key={field.id} className="space-x-4">
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`diagnoses.${index}.diagnosis_name`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <Input
+                                {...field}
+                                placeholder="Search by name or code"
+                                value={field.value}
+                              />
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </td>
 
-                    <td className="p-2">
-                      <FormField
-                        control={form.control}
-                        name={`diagnoses.${index}.ICD_Code`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input {...field} value={field.value} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </td>
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`diagnoses.${index}.ICD_Code`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input {...field} value={field.value} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </td>
 
-                    <td className="p-2">
-                      <FormField
-                        control={form.control}
-                        name={`diagnoses.${index}.fromDate`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <Input {...field} type="date" value={field.value} />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </td>
-
-                    <td className="p-2">
-                      <FormField
-                        control={form.control}
-                        name={`diagnoses.${index}.toDate`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`diagnoses.${index}.fromDate`}
+                          render={({ field }) => (
+                            <FormItem>
                               <Input
                                 {...field}
                                 type="date"
                                 value={field.value}
                               />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </td>
-
-                    <td className="p-2">
-                      <FormField
-                        control={form.control}
-                        name={`diagnoses.${index}.status`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select status" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="active">Active</SelectItem>
-                                <SelectItem value="inactive">
-                                  Inactive
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </td>
-
-                    <td className="p-2">
-                      <FormField
-                        control={form.control}
-                        name={`diagnoses.${index}.notes`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input {...field} value={field.value} />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </td>
-
-                    {fields.length > 1 && (
-                      <td className="p-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          onClick={() => remove(index)}
-                        >
-                          <Trash2Icon />
-                        </Button>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
 
-            <div className="flex justify-between">
-              <Button
-                type="button"
-                variant={"ghost"}
-                onClick={() =>
-                  append({
-                    diagnosis_name: "",
-                    ICD_Code: "1",
-                    fromDate: "",
-                    toDate: "",
-                    status: "active",
-                    notes: "",
-                  })
-                }
-                className="text-blue-400"
-              >
-                Add More
-              </Button>
-            </div>
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`diagnoses.${index}.toDate`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  type="date"
+                                  value={field.value}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`diagnoses.${index}.status`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select status" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="active">Active</SelectItem>
+                                  <SelectItem value="inactive">
+                                    Inactive
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`diagnoses.${index}.notes`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input {...field} value={field.value} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+
+                      {fields.length > 1 && (
+                        <td className="p-2">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => remove(index)}
+                          >
+                            <Trash2Icon />
+                          </Button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="flex justify-between">
+                <Button
+                  type="button"
+                  variant={"ghost"}
+                  onClick={() =>
+                    append({
+                      diagnosis_name: "",
+                      ICD_Code: "1",
+                      fromDate: "",
+                      toDate: "",
+                      status: "active",
+                      notes: "",
+                    })
+                  }
+                  className="text-blue-400"
+                >
+                  Add More
+                </Button>
+              </div>
+            </ScrollArea>
             <DialogFooter>
               <div className="flex justify-end gap-2">
                 <Button
@@ -306,5 +313,3 @@ export default function AddDiagnosesDialog({
     </Dialog>
   );
 }
-
-

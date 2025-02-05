@@ -36,6 +36,8 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Button } from "@/components/ui/button";
+import formStyles from "@/components/formStyles.module.css";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Load Editor dynamically to prevent SSR issues
 const Editor = dynamic(
@@ -154,66 +156,70 @@ function SocialHistoryDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div className="flex flex-col gap-2 border rounded-lg p-2">
-                        <Editor
-                          editorState={editorState}
-                          wrapperClassName="demo-wrapper"
-                          editorClassName="demo-editor"
-                          onEditorStateChange={(newState) => {
-                            setEditorState(newState);
-                            field.onChange(
-                              draftToHtml(
-                                convertToRaw(newState.getCurrentContent())
-                              )
-                            );
-                          }}
-                          toolbar={{
-                            options: ["inline", "list", "textAlign", "link"],
-                            inline: {
-                              options: [
-                                "bold",
-                                "italic",
-                                "underline",
-                                "strikethrough",
-                              ],
-                            },
-                            list: {
-                              options: ["unordered", "ordered"],
-                            },
-                            textAlign: {
-                              options: ["left", "center", "right"],
-                            },
-                            link: {
-                              options: ["link"],
-                            },
-                          }}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex flex-row-reverse gap-2">
-                <SubmitButton label="Save" disabled={loading} />
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    form.reset();
-                    onClose();
-                  }}
-                >
-                  Cancel
-                </Button>
+            <ScrollArea className="max-h-[30rem] h-auto">
+              <div className={formStyles.formBody}>
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="flex flex-col gap-2 border rounded-lg p-2">
+                          <Editor
+                            editorState={editorState}
+                            wrapperClassName="demo-wrapper"
+                            editorClassName="demo-editor"
+                            onEditorStateChange={(newState) => {
+                              setEditorState(newState);
+                              field.onChange(
+                                draftToHtml(
+                                  convertToRaw(newState.getCurrentContent())
+                                )
+                              );
+                            }}
+                            toolbar={{
+                              options: ["inline", "list", "textAlign", "link"],
+                              inline: {
+                                options: [
+                                  "bold",
+                                  "italic",
+                                  "underline",
+                                  "strikethrough",
+                                ],
+                              },
+                              list: {
+                                options: ["unordered", "ordered"],
+                              },
+                              textAlign: {
+                                options: ["left", "center", "right"],
+                              },
+                              link: {
+                                options: ["link"],
+                              },
+                            }}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex flex-row gap-2">
+                  <div className="w-full">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        form.reset();
+                        onClose();
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                  <SubmitButton label="Save" disabled={loading} />
+                </div>
               </div>
-            </div>
+            </ScrollArea>
           </form>
         </Form>
       </DialogContent>

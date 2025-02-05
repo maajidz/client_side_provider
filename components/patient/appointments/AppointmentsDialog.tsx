@@ -218,29 +218,31 @@ export function AppointmentsDialog({
             ${userData?.user.lastName}`}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-3 w-full">
-          <div className="flex flex-col gap-2 px-3">
-            <FormLabels
-              label="Email"
-              value={
-                appointmentsData
-                  ? appointmentsData.patientEmail
-                  : userData?.user?.email
-              }
-            />
-            <FormLabels
-              label="Phone Number"
-              value={
-                appointmentsData
-                  ? appointmentsData.patientPhoneNumber
-                  : userData?.user?.phoneNumber
-              }
-            />
-          </div>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
-              <ScrollArea className="h-96">
-                <div className="flex flex-col gap-3 p-3">
+        <ScrollArea className="max-h-[30rem] h-auto">
+          <div className={formStyles.formBody}>
+            <div className="flex flex-col gap-2 px-3">
+              <FormLabels
+                label="Email"
+                value={
+                  appointmentsData
+                    ? appointmentsData.patientEmail
+                    : userData?.user?.email
+                }
+              />
+              <FormLabels
+                label="Phone Number"
+                value={
+                  appointmentsData
+                    ? appointmentsData.patientPhoneNumber
+                    : userData?.user?.phoneNumber
+                }
+              />
+            </div>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+              >
+                <div className={formStyles.formBody}>
                   {appointmentsData ? (
                     <FormLabels
                       label="Provider:"
@@ -407,21 +409,23 @@ export function AppointmentsDialog({
                     )}
                   />
                 </div>
-              </ScrollArea>
-              <div className="flex gap-3 justify-between w-full">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={onClose}
-                  className="w-full"
-                >
-                  Cancel
-                </Button>
-                <SubmitButton label={appointmentsData ? "Update" : "Create"} />
-              </div>
-            </form>
-          </Form>
-        </div>
+                <div className="flex gap-3 justify-between w-full">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={onClose}
+                    className="w-full"
+                  >
+                    Cancel
+                  </Button>
+                  <SubmitButton
+                    label={appointmentsData ? "Update" : "Create"}
+                  />
+                </div>
+              </form>
+            </Form>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

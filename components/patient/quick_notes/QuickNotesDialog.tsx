@@ -27,6 +27,8 @@ import {
   createQuickNote,
   updateQuickNotes,
 } from "@/services/quickNotesServices";
+import formStyles from "@/components/formStyles.module.css";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const QuickNotesDialog = ({
   userDetailsId,
@@ -115,24 +117,25 @@ const QuickNotesDialog = ({
             {quickNotesData ? "Update Quick Notes" : "Add Quick Notes"}
           </DialogTitle>
         </DialogHeader>
-        {userDetailsId}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem className="flex">
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <SubmitButton label="Save" />
-            </div>
+            <ScrollArea className="max-h-[30rem] h-auto">
+              <div className={formStyles.formBody}>
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <SubmitButton label="Save" />
+              </div>
+            </ScrollArea>
           </form>
         </Form>
       </DialogContent>

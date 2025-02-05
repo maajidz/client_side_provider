@@ -35,6 +35,7 @@ import styles from "@/components/patient/patientDetails/patient_details/medical-
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ImplantedDevicesDialog = ({
   userDetailsId,
@@ -256,7 +257,8 @@ const ImplantedDevicesDialog = ({
         ) : (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-col gap-5">
+              <ScrollArea className="max-h-[30rem] h-auto">
+              <div className={formStyles.formBody}>
                 <FormField
                   control={form.control}
                   name="udi"
@@ -272,6 +274,7 @@ const ImplantedDevicesDialog = ({
                 />
                 <SubmitButton label="Verify" />
               </div>
+              </ScrollArea>
             </form>
           </Form>
         )}
