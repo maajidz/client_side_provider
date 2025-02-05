@@ -1,3 +1,4 @@
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import RadioButton from "@/components/custom_buttons/radio_button/RadioButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -169,8 +170,7 @@ function InsuranceDialog({
   return (
     <Dialog open={isOpen} onOpenChange={handleIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button
-          className="flex items-center bg-[#84012A] hover:bg-[#84012A]"
+        <DefaultButton
           onClick={() => {
             setSelectedInsurance(undefined);
             setIsOpen(true);
@@ -178,7 +178,7 @@ function InsuranceDialog({
         >
           <PlusIcon />
           Insurance
-        </Button>
+        </DefaultButton>
       </DialogTrigger>
       <DialogContent className="flex flex-col gap-8 p-6 max-w-[880px] max-h-[828px] w-full rounded-2xl overflow-x-hidden">
         <DialogHeader>
@@ -195,22 +195,19 @@ function InsuranceDialog({
               <>
                 <Button
                   variant="outline"
+                  className="h-11"
                   onClick={() => handleIsDialogOpen(false)}
                 >
                   Cancel
                 </Button>
-                <Button
-                  className="text-white border-[rgba(132,1,42,1)] bg-[rgba(132,1,42,1)] h-6 p-4 hover:bg-[#84012A]"
-                  disabled={loading}
-                  onClick={toggleEdit}
-                >
+                <DefaultButton onClick={toggleEdit} disabled={loading}>
                   Save
-                </Button>
+                </DefaultButton>
               </>
             </div>
 
             {/* Form Fields */}
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-4">
                 <Label
                   htmlFor="insuranceType"
@@ -236,7 +233,7 @@ function InsuranceDialog({
               <div>
                 <FormProvider {...methods}>
                   <form onSubmit={methods.handleSubmit(toggleEdit)}>
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-5">
                       <Label className="text-[rgba(132,1,42,1)] font-semibold text-base">
                         Enter Details
                       </Label>
