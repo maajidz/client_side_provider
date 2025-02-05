@@ -1,28 +1,33 @@
-import InjectionOrders from "@/components/injections/injection-orders/InjectionOrders";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import React from "react";
-import ViewInjectionOrders from "./InjectionOrders/ViewInjectionOrders";
 import ViewInjections from "./injections/ViewInjections";
+import PatientInjectionOrders from "./InjectionOrders/PatientInjectionOrders";
+import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 
 const PatientInjections = ({ userDetailsId }: { userDetailsId: string }) => {
+  const patientInjectionsTab = [
+    { value: "injections", label: "Injections", component: ViewInjections },
+    {
+      value: "injection_orders",
+      label: "Injection Orders",
+      component: PatientInjectionOrders,
+    },
+  ];
   return (
     <>
-      <Tabs defaultValue="injections" className="w-full">
-        <TabsList>
-          <TabsTrigger value="injections">Injections</TabsTrigger>
-          <TabsTrigger value="injection_orders">Injection Orders</TabsTrigger>
+      <Tabs defaultValue="injections" className="">
+        <TabsList className="flex gap-3 w-full">
+          {patientInjectionsTab.map((tab) => (
+            <CustomTabsTrigger value={tab.value} key={tab.value}>
+              {tab.label}
+            </CustomTabsTrigger>
+          ))}
         </TabsList>
-        <TabsContent value="injections">
-          <ViewInjections userDetailsId={userDetailsId} />
-        </TabsContent>
-        <TabsContent value="injection_orders" className="w-full">
-          <>
-            <div className="flex justify-end">
-              <InjectionOrders />
-            </div>
-            <ViewInjectionOrders userDetailsId={userDetailsId} />
-          </>
-        </TabsContent>
+        {patientInjectionsTab.map(({ value, component: Component }) => (
+          <TabsContent value={value} key={value}>
+            {Component ? <Component userDetailsId={userDetailsId} /> : value}
+          </TabsContent>
+        ))}
       </Tabs>
     </>
   );

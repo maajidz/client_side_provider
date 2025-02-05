@@ -27,6 +27,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
+import formStyles from "@/components/formStyles.module.css";
 
 interface VitalsDialogProps {
   isOpen: boolean;
@@ -143,7 +144,7 @@ function VitalDialog({
                 control={form.control}
                 name="dateTime"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel className="w-fit">Date</FormLabel>
                     <FormControl>
                       <Input
@@ -159,89 +160,93 @@ function VitalDialog({
               />
 
               {/* Weight */}
-              <div className="flex flex-row items-center gap-4">
-                <FormField
-                  control={form.control}
-                  name="weightLbs"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
-                      <FormLabel>Weight</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          onChange={(event) =>
-                            field.onChange(event.target.valueAsNumber)
-                          }
-                        />
-                      </FormControl>
-                      <span>lbs</span>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="weightOzs"
-                  render={({ field }) => (
-                    <FormItem className="flex mt-2 gap-2 items-center">
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          onChange={(event) =>
-                            field.onChange(event.target.valueAsNumber)
-                          }
-                        />
-                      </FormControl>
-                      <span>ozs</span>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <div className={formStyles.formItem}>
+                <div>Weight</div>
+                <div className="flex gap-3 w-full items-end">
+                  <FormField
+                    control={form.control}
+                    name="weightLbs"
+                    render={({ field }) => (
+                      <FormItem className={`${formStyles.formItem} w-full`}>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            onChange={(event) =>
+                              field.onChange(event.target.valueAsNumber)
+                            }
+                          />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <span>lbs</span>
+                  <FormField
+                    control={form.control}
+                    name="weightOzs"
+                    render={({ field }) => (
+                      <FormItem className={`${formStyles.formItem} w-full`}>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            onChange={(event) =>
+                              field.onChange(event.target.valueAsNumber)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <span>ozs</span>
+                </div>
               </div>
 
-              {/* Height */}
-              <div className="flex flex-row items-center gap-4">
-                <FormField
-                  control={form.control}
-                  name="heightFeets"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
-                      <FormLabel>Height</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          onChange={(event) =>
-                            field.onChange(event.target.valueAsNumber)
-                          }
-                        />
-                      </FormControl>
-                      <span>feet</span>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="heightInches"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center mt-2">
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          onChange={(event) =>
-                            field.onChange(event.target.valueAsNumber)
-                          }
-                        />
-                      </FormControl>
-                      <span>inches</span>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <div className={formStyles.formItem}>
+                <div>Height</div>
+                <div className="flex gap-3 w-full items-end">
+                  <FormField
+                    control={form.control}
+                    name="heightFeets"
+                    render={({ field }) => (
+                      <FormItem className={`${formStyles.formItem} w-full`}>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            onChange={(event) =>
+                              field.onChange(event.target.valueAsNumber)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <span>feet</span>
+                  <FormField
+                    control={form.control}
+                    name="heightInches"
+                    render={({ field }) => (
+                      <FormItem className={`${formStyles.formItem} w-full`}>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            onChange={(event) =>
+                              field.onChange(event.target.valueAsNumber)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <span>inches</span>
+                </div>
               </div>
 
               {/* BMI */}
@@ -249,7 +254,7 @@ function VitalDialog({
                 control={form.control}
                 name="BMI"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>BMI</FormLabel>
                     <FormControl>
                       <Input
@@ -267,35 +272,34 @@ function VitalDialog({
               />
 
               {/* Starting Weight */}
-              <div className="flex gap-12">
+              <div className="flex gap-3 w-full items-end">
                 <FormField
                   control={form.control}
                   name="startingWeight"
                   render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
+                    <FormItem className={`${formStyles.formItem} w-full`}>
                       <FormLabel>Starting Weight</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           type="number"
-                          className="w-fit"
                           onChange={(event) =>
                             field.onChange(event.target.valueAsNumber)
                           }
                         />
                       </FormControl>
-                      <span>lbs</span>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <span>lbs</span>
 
                 {/* Goal Weight */}
                 <FormField
                   control={form.control}
                   name="goalWeight"
                   render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
+                    <FormItem className={`${formStyles.formItem} w-full`}>
                       <FormLabel>Goal Weight</FormLabel>
                       <FormControl>
                         <Input
@@ -304,14 +308,13 @@ function VitalDialog({
                           onChange={(event) =>
                             field.onChange(event.target.valueAsNumber)
                           }
-                          className="w-fit"
                         />
                       </FormControl>
-                      <span>lbs</span>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <span>lbs</span>
               </div>
               <DialogFooter>
                 <div className="flex justify-end gap-2 w-fit">

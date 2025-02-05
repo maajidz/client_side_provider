@@ -38,6 +38,7 @@ import { PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import formStyles from "@/components/formStyles.module.css";
 
 function VaccineOrders() {
   // Data State
@@ -180,8 +181,8 @@ function VaccineOrders() {
     <Dialog open={isDialogOpen} onOpenChange={handleIsDialogOpen}>
       <DialogTrigger asChild>
         <DefaultButton>
-            <PlusIcon />
-            <div>Vaccine Order</div>
+          <PlusIcon />
+          <div>Vaccine Order</div>
         </DefaultButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[540px]">
@@ -189,126 +190,127 @@ function VaccineOrders() {
           <DialogTitle>Add Vaccine Order</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form
-            className="flex flex-col justify-center gap-5 p-4"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
-            <FormField
-              control={form.control}
-              name="userDetailsId"
-              render={({ field }) => (
-                <FormItem className="flex justify-center items-center">
-                  <FormLabel className="w-full">Patient</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="Search Patient "
-                        value={searchTerm}
-                        className="w-56"
-                        onChange={(e) => {
-                          setSearchTerm(e.target.value);
-                          setVisibleSearchList(true);
-                        }}
-                      />
-                      {searchTerm && visibleSearchList && (
-                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                          {filteredPatients.length > 0 ? (
-                            filteredPatients.map((patient) => (
-                              <div
-                                key={patient.id}
-                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                onClick={() => {
-                                  field.onChange(patient.id);
-                                  setSearchTerm(
-                                    `${patient.user.firstName} ${patient.user.lastName}`
-                                  );
-                                  setVisibleSearchList(false);
-                                }}
-                              >
-                                {`${patient.user.firstName} ${patient.user.lastName}`}
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className={formStyles.formBody}>
+              <FormField
+                control={form.control}
+                name="userDetailsId"
+                render={({ field }) => (
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel >Patient</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder="Search Patient "
+                          value={searchTerm}
+                          onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setVisibleSearchList(true);
+                          }}
+                        />
+                        {searchTerm && visibleSearchList && (
+                          <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                            {filteredPatients.length > 0 ? (
+                              filteredPatients.map((patient) => (
+                                <div
+                                  key={patient.id}
+                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                  onClick={() => {
+                                    field.onChange(patient.id);
+                                    setSearchTerm(
+                                      `${patient.user.firstName} ${patient.user.lastName}`
+                                    );
+                                    setVisibleSearchList(false);
+                                  }}
+                                >
+                                  {`${patient.user.firstName} ${patient.user.lastName}`}
+                                </div>
+                              ))
+                            ) : (
+                              <div className="px-4 py-2 text-gray-500">
+                                No results found
                               </div>
-                            ))
-                          ) : (
-                            <div className="px-4 py-2 text-gray-500">
-                              No results found
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="vaccine_name"
-              render={({ field }) => (
-                <FormItem className="flex justify-center items-center">
-                  <FormLabel className="w-full">Vaccine</FormLabel>
-                  <FormControl>
-                    <Input
-                      value={field.value}
-                      placeholder="Search by vaccine name"
-                      className="border rounded-md p-2 w-full text-gray-800"
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="vaccine_name"
+                render={({ field }) => (
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel className="w-full">Vaccine</FormLabel>
+                    <FormControl>
+                      <Input
+                        value={field.value}
+                        placeholder="Search by vaccine name"
+                        className="border rounded-md p-2 w-full text-gray-800"
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="providerId"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormLabel className="w-full">Ordered By</FormLabel>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Ordered by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {providersList
-                          .filter(
-                            (
-                              provider
-                            ): provider is typeof provider & {
-                              providerDetails: { id: string };
-                            } => Boolean(provider?.providerDetails?.id)
-                          )
-                          .map((provider) => (
-                            <SelectItem
-                              key={provider.id}
-                              value={provider.providerDetails.id}
-                              className="cursor-pointer"
-                            >
-                              {provider.firstName} {provider.lastName}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="providerId"
+                render={({ field }) => (
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel className="w-full">Ordered By</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Ordered by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {providersList
+                            .filter(
+                              (
+                                provider
+                              ): provider is typeof provider & {
+                                providerDetails: { id: string };
+                              } => Boolean(provider?.providerDetails?.id)
+                            )
+                            .map((provider) => (
+                              <SelectItem
+                                key={provider.id}
+                                value={provider.providerDetails.id}
+                                className="cursor-pointer"
+                              >
+                                {provider.firstName} {provider.lastName}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-            <DialogFooter>
-              <div className="flex justify-end gap-2 w-fit">
-                <Button
-                  variant="outline"
-                  onClick={() => handleIsDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <SubmitButton label="Save" disabled={loading.post} />
-              </div>
-            </DialogFooter>
+              <DialogFooter>
+                <div className="flex justify-end gap-2 w-fit">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleIsDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <SubmitButton label="Save" disabled={loading.post} />
+                </div>
+              </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>
