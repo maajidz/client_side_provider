@@ -8,9 +8,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { QuickNotesInterface } from "@/types/quickNotesInterface";
 import { deleteQuickNote } from "@/services/quickNotesServices";
+import { QuickNotesInterface } from "@/types/quickNotesInterface";
+import generateQuickNotesPDF from "./generateQuickNotesPDF";
+import { Ellipsis } from "lucide-react";
 
 const handleDeleteQuickNote = async (
   id: string,
@@ -79,10 +80,17 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <DotsVerticalIcon />
+            <Ellipsis />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() =>
+                generateQuickNotesPDF({ quickNotesData: row.original })
+              }
+            >
+              Print
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 setEditData({

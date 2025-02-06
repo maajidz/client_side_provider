@@ -196,7 +196,7 @@ export const updatePatientPhysicalStatus = async ({
 export const createDiagnoses = async ({
   requestData,
 }: {
-  requestData: CreateDiagnosesRequestBody[];
+  requestData: CreateDiagnosesRequestBody;
 }) => {
   const response = await ApiFetch({
     method: "POST",
