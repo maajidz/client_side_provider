@@ -113,11 +113,11 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
     href: `/dashboard/provider/patient/${userDetailsId}/appointments`,
     label: "Appointments",
   },
-  // {
-  //   title: "Messages",
-  //   href: `/dashboard/provider/patient/${userDetailsId}/messages`,
-  //   label: "Messages",
-  // },
+  {
+    title: "Messages",
+    href: `/dashboard/provider/patient/${userDetailsId}/messages`,
+    label: "Messages",
+  },
   {
     title: "Tasks",
     href: `/dashboard/provider/patient/${userDetailsId}/tasks`,
