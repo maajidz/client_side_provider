@@ -133,11 +133,17 @@ export interface PatientPhysicalStats {
 }
 
 export interface CreateDiagnosesRequestBody {
-  diagnosis_name: string;
-  ICD_Code: string;
-  notes: string;
-  status?: "active" | "inactive";
-  chartId: string;
+  userDetailsId: string;
+  providerId: string;
+  diagnoses: {
+    diagnosis_name: string;
+    ICD_Code: string;
+    chartId: string;
+    notes?: string;
+    status?: "active" | "inactive";
+    fromDate?: string;
+    toDate?: string;
+  }[];
 }
 
 export interface UpdateDiagnosesRequestBody {
@@ -145,6 +151,8 @@ export interface UpdateDiagnosesRequestBody {
   ICD_Code?: string;
   notes?: string;
   status?: "active" | "inactive";
+  fromDate?: string;
+  toDate?: string;
 }
 
 export interface PastDiagnosesInterface {
@@ -158,32 +166,34 @@ export interface PastDiagnosesInterface {
 }
 
 export interface ChartInterface {
-	id: string;
-	subjective: string;
-	objective: string;
-	assessment: string;
-	plan: string;
-	additionalText?: string;
-	createdAt: string;
-	updatedAt: string;
+  id: string;
+  subjective: string;
+  objective: string;
+  assessment: string;
+  plan: string;
+  additionalText?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // * For Diagnoses in patient details
 export interface DiagnosesInterface {
-	id: string;
-	diagnosis_name: string;
-	ICD_Code: string;
-	notes: string;
+  id: string;
+  diagnosis_name: string;
+  ICD_Code: string;
+  notes: string;
   status: string;
-	providerId: string;
-	createdAt: string;
-	updatedAt: string;
-	chart: ChartInterface;
+  providerId: string;
+  fromDate?: string;
+  toDate?: string;
+  createdAt: string;
+  updatedAt: string;
+  chart: ChartInterface;
 }
 
 export interface DiagnosesResponseInterface {
-	diagnoses: DiagnosesInterface[];
-	totalCount: number;
+  diagnoses: DiagnosesInterface[];
+  totalCount: number;
 }
 
 export interface DiagnosesChart {

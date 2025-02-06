@@ -5,6 +5,7 @@ import { VitalsInterface } from "./vitalsInterface";
 import { Family } from "./familyHistoryInterface";
 import { SocialHistoryInterface } from "./socialHistoryInterface";
 import { Device } from "./implantedDevices";
+import { EncounterResponse } from "./encounterInterface";
 
 export interface CreateUser {
   user: CreateUserDataInterface;
@@ -60,6 +61,7 @@ export interface PatientDetails {
   injections: Injection[]
   labResults: LabResult[]
   imageResults: ImageResult[]
+  encounter: EncounterResponse[]
 }
 
 

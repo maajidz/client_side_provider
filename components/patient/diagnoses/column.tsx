@@ -60,18 +60,22 @@ export const columns = ({
     ),
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "fromDate",
     header: "From Date",
     cell: ({ row }) => (
       <div className="cursor-pointer">
-        {new Date(row.getValue("createdAt")).toDateString()}
+        {new Date(row.getValue("fromDate")).toDateString()}
       </div>
     ),
   },
   {
-    accessorKey: "",
+    accessorKey: "toDate",
     header: "To Date",
-    cell: () => <div className="cursor-pointer"></div>,
+    cell: ({ row }) => (
+      <div className="cursor-pointer">
+        {new Date(row.getValue("toDate")).toDateString()}
+      </div>
+    ),
   },
   {
     accessorKey: "status",

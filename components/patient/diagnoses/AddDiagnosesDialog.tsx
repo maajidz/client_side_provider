@@ -1,4 +1,6 @@
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -32,28 +35,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
-import React from "react";
 import { useSelector } from "react-redux";
-import GhostButton from "@/components/custom_buttons/GhostButton";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { z } from "zod";
 
 interface AddDiagnosesDialogProps {
   isOpen: boolean;
+  chartId: string;
   userDetailsId: string;
   onClose: () => void;
 }
 
 export default function AddDiagnosesDialog({
   isOpen,
+  chartId,
   userDetailsId,
   onClose,
 }: AddDiagnosesDialogProps) {
   // Provider Details
   const providerDetails = useSelector((state: RootState) => state.login);
-
-  console.log(providerDetails);
-  console.log(userDetailsId);
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -86,16 +85,15 @@ export default function AddDiagnosesDialog({
   // POST Diagnosis Data
   const onSubmit = async (values: z.infer<typeof addDiagnosesSchema>) => {
     setLoading(true);
-    console.log(values);
 
-    const requestData: CreateDiagnosesRequestBody[] = values.diagnoses.map(
-      (diagnosis) => ({
-        diagnosis_name: diagnosis.diagnosis_name,
-        ICD_Code: diagnosis.ICD_Code,
-        notes: diagnosis.notes,
-        chartId: "",
-      })
-    );
+    const requestData: CreateDiagnosesRequestBody = {
+      userDetailsId,
+      providerId: providerDetails.providerId,
+      diagnoses: values.diagnoses.map((diagnosis) => ({
+        ...diagnosis,
+        chartId,
+      })),
+    };
 
     try {
       await createDiagnoses({ requestData });
@@ -121,6 +119,7 @@ export default function AddDiagnosesDialog({
       }
     } finally {
       setLoading(false);
+      onClose();
       form.reset();
     }
   };
@@ -132,7 +131,10 @@ export default function AddDiagnosesDialog({
           <DialogTitle>Add Diagnoses</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className={formStyles.formBody}
+          >
             <ScrollArea className="max-h-[30rem] h-auto">
               <table className="w-full border-collapse">
                 <thead>
@@ -153,7 +155,7 @@ export default function AddDiagnosesDialog({
                           control={form.control}
                           name={`diagnoses.${index}.diagnosis_name`}
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className={formStyles.formItem}>
                               <Input
                                 {...field}
                                 placeholder="Search by name or code"
@@ -170,7 +172,7 @@ export default function AddDiagnosesDialog({
                           control={form.control}
                           name={`diagnoses.${index}.ICD_Code`}
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className={formStyles.formItem}>
                               <FormControl>
                                 <Input {...field} value={field.value} />
                               </FormControl>
@@ -185,7 +187,7 @@ export default function AddDiagnosesDialog({
                           control={form.control}
                           name={`diagnoses.${index}.fromDate`}
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className={formStyles.formItem}>
                               <Input
                                 {...field}
                                 type="date"
@@ -202,7 +204,7 @@ export default function AddDiagnosesDialog({
                           control={form.control}
                           name={`diagnoses.${index}.toDate`}
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className={formStyles.formItem}>
                               <FormControl>
                                 <Input
                                   {...field}
@@ -221,7 +223,7 @@ export default function AddDiagnosesDialog({
                           control={form.control}
                           name={`diagnoses.${index}.status`}
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className={formStyles.formItem}>
                               <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
@@ -249,7 +251,7 @@ export default function AddDiagnosesDialog({
                           control={form.control}
                           name={`diagnoses.${index}.notes`}
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className={formStyles.formItem}>
                               <FormControl>
                                 <Input {...field} value={field.value} />
                               </FormControl>

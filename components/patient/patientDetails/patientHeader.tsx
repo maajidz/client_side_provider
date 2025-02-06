@@ -1,16 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import styles from "./patient.module.css";
 import { PatientDetails } from "@/types/userInterface";
 import { fetchUserInfo } from "@/services/userServices";
+import { setChartId } from "@/store/slices/userSlice";
+import { calculateAge } from "@/utils/utils";
+import styles from "./patient.module.css";
 import LoadingButton from "../../LoadingButton";
 import PatientLabelDetails from "./patientLabelDetails";
-import { calculateAge } from "@/utils/utils";
+import { useDispatch } from "react-redux";
 
 const PatientHeader = ({ userId }: { userId: string }) => {
   const [response, setResponse] = useState<PatientDetails>();
   const [loading, setLoading] = useState(false);
   const [age, setAge] = useState<number>();
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchAndSetResponse = async () => {
@@ -20,11 +24,24 @@ const PatientHeader = ({ userId }: { userId: string }) => {
         setResponse(userData.userDetails);
         setLoading(false);
         setAge(calculateAge(userData.userDetails.dob));
+
+        const encounter = userData.userDetails.encounter.pop();
+        
+        let latestChartId = "";
+        if (encounter) {
+          latestChartId = encounter.chart?.id || "";
+        }
+
+        dispatch(
+          setChartId({
+            chartId: latestChartId,
+          })
+        );
       }
     };
 
     fetchAndSetResponse();
-  }, [userId, age]);
+  }, [userId, age, dispatch]);
 
   if (loading) {
     return (

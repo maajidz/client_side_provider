@@ -1,19 +1,20 @@
 // store/store.ts
-import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
-import { PersistPartial } from 'redux-persist/es/persistReducer';
-import storage from 'redux-persist/lib/storage';
-import { combineReducers } from 'redux';
-import loginReducer from './slices/loginSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { combineReducers } from "redux";
+import loginReducer from "./slices/loginSlice";
+import userReducer from "./slices/userSlice";
 
 const rootReducer = combineReducers({
-  login: loginReducer
+  login: loginReducer,
+  user: userReducer,
 });
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
-  whitelist: ['login'],
+  whitelist: ["login", 'user'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -26,7 +27,7 @@ const store = configureStore({
         ignoredActions: [
           "persist/PERSIST",
           "persist/REHYDRATE",
-          "persist/FLUSH"
+          "persist/FLUSH",
         ],
       },
     }),

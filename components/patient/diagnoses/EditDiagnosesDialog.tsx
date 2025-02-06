@@ -46,6 +46,15 @@ interface EditDiagnosisDialogProps {
   onClose: () => void;
 }
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${year}-${month}-${day}`;
+};
+
 export default function EditDiagnosisDialog({
   isOpen,
   diagnosisData,
@@ -62,10 +71,12 @@ export default function EditDiagnosisDialog({
   const form = useForm({
     resolver: zodResolver(editDiagnosisSchema),
     defaultValues: {
-      // ! These fields need confirmation
-      fromDate:
-        diagnosisData?.createdAt ?? new Date().toISOString().split("T")[0],
-      toDate: new Date().toISOString().split("T")[0],
+      fromDate: diagnosisData?.fromDate
+        ? formatDate(diagnosisData?.fromDate)
+        : new Date().toISOString().split("T")[0],
+      toDate: diagnosisData?.toDate
+        ? formatDate(diagnosisData?.toDate)
+        : new Date().toISOString().split("T")[0],
       status: (diagnosisData?.status as "active" | "inactive") ?? "active",
       notes: diagnosisData?.notes || "",
     },
@@ -81,6 +92,8 @@ export default function EditDiagnosisDialog({
       ICD_Code: diagnosisData?.ICD_Code,
       notes: values.notes,
       status: values.status,
+      fromDate: values.fromDate,
+      toDate: values.toDate,
     };
 
     try {
@@ -115,9 +128,12 @@ export default function EditDiagnosisDialog({
   useEffect(() => {
     if (diagnosisData) {
       form.reset({
-        fromDate:
-          diagnosisData?.createdAt ?? new Date().toISOString().split("T")[0],
-        toDate: new Date().toISOString().split("T")[0],
+        fromDate: diagnosisData?.fromDate
+          ? formatDate(diagnosisData?.fromDate)
+          : new Date().toISOString().split("T")[0],
+        toDate: diagnosisData?.toDate
+          ? formatDate(diagnosisData?.toDate)
+          : new Date().toISOString().split("T")[0],
         status: (diagnosisData?.status as "active" | "inactive") ?? "active",
         notes: diagnosisData?.notes ?? "",
       });
