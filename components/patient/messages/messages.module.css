@@ -1,0 +1,54 @@
+.senderMessageBody {
+  display: flex;
+  background-color: #ffe7e7;
+  text-align: start;
+  align-self: flex-end;
+  margin-left: auto;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #84012a4d;
+  width: fit-content;
+}
+
+.recieverMessageBody {
+  display: flex;
+  background-color: #f9fafb;
+  text-align: start;
+  align-self: flex-start;
+  margin-right: auto;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #d0d5dd;
+  width: fit-content;
+}
+
+.messageBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  color: #444444;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.25rem;
+}
+
+.senderTimeStamp {
+    display: flex;
+    align-self: flex-end;
+    margin-left: auto;
+    font-weight: 400;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: #84012A;
+    text-align: end;
+}
+
+.recieverTimeStamp {
+    font-weight: 400;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: #444444;
+}
+
