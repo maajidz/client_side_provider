@@ -119,6 +119,7 @@ export const columns = ({
             >
               Edit
             </DropdownMenuItem>
+            <DropdownMenuItem>Mark as Completed</DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 handleRecallsDelete(

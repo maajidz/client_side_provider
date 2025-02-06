@@ -1,5 +1,6 @@
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,12 +40,16 @@ import { UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import formStyles from "@/components/formStyles.module.css";
 
 function InjectionOrders() {
+  // To toggle patient input
+  const params = useParams();
+  const { userDetailsId } = params;
+
   // Data State
   const [patientData, setPatientData] = useState<UserData[]>([]);
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
@@ -179,9 +184,12 @@ function InjectionOrders() {
 
   // Effects
   useEffect(() => {
-    fetchUserData();
+    if (!userDetailsId) {
+      fetchUserData();
+    }
+
     fetchProvidersData();
-  }, [fetchUserData, fetchProvidersData]);
+  }, [fetchUserData, fetchProvidersData, userDetailsId]);
 
   const filteredPatients = patientData.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
@@ -208,7 +216,7 @@ function InjectionOrders() {
             <ScrollArea className="h-[30rem]">
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className={formStyles.formBody}>
-                  <FormField
+                  {!userDetailsId && <FormField
                     control={form.control}
                     name="userDetailsId"
                     render={({ field }) => (
@@ -254,7 +262,7 @@ function InjectionOrders() {
                         <FormMessage className="text-red-500" />
                       </FormItem>
                     )}
-                  />
+                  />}
                   <FormField
                     control={form.control}
                     name="injection_name"

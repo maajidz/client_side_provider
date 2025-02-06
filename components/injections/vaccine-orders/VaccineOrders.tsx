@@ -1,5 +1,6 @@
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -35,12 +36,16 @@ import { UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import formStyles from "@/components/formStyles.module.css";
 
 function VaccineOrders() {
+  // To toggle patient input
+  const params = useParams();
+  const { userDetailsId } = params;
+
   // Data State
   const [patientData, setPatientData] = useState<UserData[]>([]);
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
@@ -167,9 +172,12 @@ function VaccineOrders() {
 
   // Effects
   useEffect(() => {
-    fetchUserData();
+    if (userDetailsId) {
+      fetchUserData();
+    }
+
     fetchProvidersData();
-  }, [fetchUserData, fetchProvidersData]);
+  }, [fetchUserData, fetchProvidersData, userDetailsId]);
 
   const filteredPatients = patientData.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
@@ -192,12 +200,12 @@ function VaccineOrders() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className={formStyles.formBody}>
-              <FormField
+              {!userDetailsId && <FormField
                 control={form.control}
                 name="userDetailsId"
                 render={({ field }) => (
                   <FormItem className={formStyles.formItem}>
-                    <FormLabel >Patient</FormLabel>
+                    <FormLabel>Patient</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
@@ -238,7 +246,7 @@ function VaccineOrders() {
                     <FormMessage className="text-red-500" />
                   </FormItem>
                 )}
-              />
+              />}
 
               <FormField
                 control={form.control}
