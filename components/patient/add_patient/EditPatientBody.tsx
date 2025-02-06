@@ -60,20 +60,20 @@ const EditPatientBody = ({
       state: patientDetails.location || "",
       gender: patientDetails.gender || "",
       email: patientDetails.user.email || "",
-      category: "",
-      blood_group: "",
-      language: "",
-      race: "",
-      ethnicity: "",
-      smoking_status: "",
-      martial_status: "",
-      employment_status: "",
-      sexual_orientation: "",
-      emergency_contact_name: "",
-      emergency_contact_number: "",
-      preferred_communication: "",
-      source: "",
-      specific_source: "",
+      // category: "",
+      // blood_group: "",
+      // language: "",
+      // race: "",
+      // ethnicity: "",
+      // smoking_status: "",
+      // martial_status: "",
+      // employment_status: "",
+      // sexual_orientation: "",
+      // emergency_contact_name: "",
+      // emergency_contact_number: "",
+      // preferred_communication: "",
+      // source: "",
+      // specific_source: "",
     },
   });
 
@@ -526,7 +526,7 @@ const EditPatientBody = ({
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
+                {/* <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
                   <div className="font-medium text-[#84012A]">
                     Additional Information
                   </div>
@@ -960,7 +960,7 @@ const EditPatientBody = ({
                       )}
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </form>

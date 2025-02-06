@@ -10,11 +10,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import styles from "./patient.module.css";
 import BasicInformation from "./BasicInformation";
 import ContactDetails from "./ContactDetails";
-import PHRRegistration from "./PHRRegistration";
-import PatientId from "./PatientId";
-import EmergencyContact from "./EmergencyContact";
-import PatientPreferences from "./PatientPreferences";
-import AdditionalInformation from "./AdditionalInformation";
+// import PHRRegistration from "./PHRRegistration";
+// import PatientId from "./PatientId";
+// import EmergencyContact from "./EmergencyContact";
+// import PatientPreferences from "./PatientPreferences";
+// import AdditionalInformation from "./AdditionalInformation";
 
 const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<PatientDetails>();
@@ -56,11 +56,11 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
                 <div className={styles.infoContainer}>
                   <BasicInformation patientDetails={response} />
                   <ContactDetails patientDetails={response} />
-                  <PHRRegistration patientDetails={response} />
+                  {/* <PHRRegistration patientDetails={response} />
                   <PatientId patientDetails={response} />
                   <EmergencyContact patientDetails={response} />
                   <PatientPreferences patientDetails={response} />
-                  <AdditionalInformation patientDetails={response} />
+                  <AdditionalInformation patientDetails={response} /> */}
                 </div>
               </ScrollArea>
             </div>
