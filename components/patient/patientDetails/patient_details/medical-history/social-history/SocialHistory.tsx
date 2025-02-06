@@ -1,10 +1,10 @@
 import SocialHistoryDialog from "@/components/charts/Encounters/Details/SocialHistory/SocialHistoryDialog";
-import { Button } from "@/components/ui/button";
-import { useCallback, useEffect, useState } from "react";
+import GhostButton from "@/components/custom_buttons/GhostButton";
+import LoadingButton from "@/components/LoadingButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SocialHistoryInterface } from "@/types/socialHistoryInterface";
 import { getSocialHistory } from "@/services/socialHistoryServices";
-import LoadingButton from "@/components/LoadingButton";
+import { useCallback, useEffect, useState } from "react";
 
 interface SocialHistoryProps {
   userDetailsId: string;
@@ -47,13 +47,7 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
     <div className="flex flex-col gap-2 mb-3">
       <div className="flex justify-between items-center p-4 text-lg font-semibold rounded-md bg-[#f0f0f0]">
         <span>Social History</span>
-        <Button
-          variant="ghost"
-          className="text-blue-500 hover:text-blue-500 hover:bg-[#f0f0f0]"
-          onClick={() => setIsOpen(true)}
-        >
-          Add
-        </Button>
+        <GhostButton label="Add" onClick={() => setIsOpen(true)} />
         <SocialHistoryDialog
           userDetailsId={userDetailsId}
           isOpen={isOpen}

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import GhostButton from '@/components/custom_buttons/GhostButton';
 import { Checkbox } from '@/components/ui/checkbox'
+import React, { useState } from 'react'
 
 const MUBody = () => {
     const [isReferralChecked, setIsReferralChecked] = useState(false);
@@ -18,7 +18,7 @@ const MUBody = () => {
                 </div>
                 <div className='border p-4 bg-[#e5e2e2] text-center'>
                     No Clinical Quality Measures configured for Fahd Kazi. Choose the required CQMs from <br />
-                    <Button variant={"ghost"} className='text-blue-800 underline font-semibold text-lg'>Settings</Button>
+                    <GhostButton label='Settings' />
                 </div>
             </div>
             <div className="flex flex-col gap-3 mt-4">

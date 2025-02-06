@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import { MedicationResultInterface } from "@/types/medicationInterface";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -33,19 +33,16 @@ export const columns = (
   {
     id: "action",
     accessorKey: "action",
-    header: "Action",
+    header: "",
     cell: ({ row }) => {
       const rowData = row.original;
 
       return (
-        <Button
-          variant="default"
+        <GhostButton
+          label="+ Add"
           onClick={() => handleSelectedMedication(rowData)}
-        >
-          Add
-        </Button>
+        />
       );
     },
   },
 ];
-

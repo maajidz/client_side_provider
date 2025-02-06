@@ -1,10 +1,10 @@
 "use client";
 
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import ProceduresSurgeriesAndHospitalizationDialog from "@/components/charts/Encounters/Details/ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalizationDialog";
-import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import ProceduresSurgeriesAndHospitalizationClient from "./client";
 import { useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProceduresSurgeriesAndHospitalizationProps {
   userDetailsId: string;
@@ -20,13 +20,7 @@ function ProceduresSurgeriesAndHospitalization({
     <div className="flex flex-col gap-2">
       <div className="flex justify-between items-center p-4 text-lg font-semibold rounded-md bg-[#f0f0f0]">
         <span>Procedures, Surgeries and Hospitalization</span>
-        <Button
-          variant="ghost"
-          className="text-blue-500 hover:text-blue-500 hover:bg-[#f0f0f0]"
-          onClick={() => setIsOpen(true)}
-        >
-          Add
-        </Button>
+        <GhostButton label="Add" onClick={() => setIsOpen(true)} />
         <ProceduresSurgeriesAndHospitalizationDialog
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}

@@ -1,3 +1,4 @@
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -401,9 +402,7 @@ const ReferralInDialog = ({
                       <div>Diagnoses</div>
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="ghost" className="text-blue-400">
-                            Choose
-                          </Button>
+                          <GhostButton label="Choose" />
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                           <DialogHeader>

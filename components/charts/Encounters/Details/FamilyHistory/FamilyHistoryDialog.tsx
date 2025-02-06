@@ -1,3 +1,4 @@
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -282,9 +283,7 @@ function FamilyHistoryDialog({
                         value={customProblem}
                         onChange={(e) => setCustomProblem(e.target.value)}
                       />
-                      <Button type="button" onClick={addCustomProblem}>
-                        Add
-                      </Button>
+                      <GhostButton label="Add" onClick={addCustomProblem} />
                     </div>
                     <FormMessage />
                   </FormItem>

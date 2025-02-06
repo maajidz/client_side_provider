@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { PharmacyInterface } from "@/types/pharmacyInterface";
+import GhostButton from "@/components/custom_buttons/GhostButton";
 
 export const columns = (
   handleAdd: (row: PharmacyInterface) => void
@@ -45,15 +45,11 @@ export const columns = (
   {
     id: "action",
     accessorKey: "action",
-    header: "Action",
+    header: "",
     cell: ({ row }) => {
       const rowData = row.original;
 
-      return (
-        <Button variant="default" onClick={() => handleAdd(rowData)}>
-          Add
-        </Button>
-      );
+      return <GhostButton label="+ Add" onClick={() => handleAdd(rowData)} />;
     },
   },
 ];

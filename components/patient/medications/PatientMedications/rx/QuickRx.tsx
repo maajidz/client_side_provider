@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import { Separator } from "@/components/ui/separator";
 import AllergiesAndMedications from "./AllergiesAndMedications";
 import PastPrescriptionsDialog from "./PastPrescriptionsDialog";
@@ -23,20 +23,14 @@ function QuickRx({ userDetailsId }: QuickRxProps) {
     <div className="flex flex-col justify-end">
       <div className="flex border-b pb-3">
         <div className="flex flex-row-reverse items-center gap-2 w-full bg-[#f4f4f5]">
-          <Button
-            variant="ghost"
-            className="text-blue-500 bg-[#f4f4f5] hover:bg-white-200 hover:text-blue-500 hover:underline"
+          <GhostButton
+            label="Past Rx"
             onClick={() => setIsPastPrescriptionsDialogOpen(true)}
-          >
-            Past Rx
-          </Button>
-          <Button
-            variant="ghost"
-            className="text-blue-500 bg-[#f4f4f5] hover:bg-white-200 hover:text-blue-500 hover:underline"
+          />
+          <GhostButton
+            label="Add Rx"
             onClick={() => setIsPrescriptionsDialogOpen(true)}
-          >
-            Add Rx
-          </Button>
+          />
           <Separator orientation="vertical" />
         </div>
       </div>
@@ -63,4 +57,3 @@ function QuickRx({ userDetailsId }: QuickRxProps) {
 }
 
 export default QuickRx;
-

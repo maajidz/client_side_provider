@@ -1,5 +1,5 @@
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import PastMedicalHistoryDialog from "@/components/charts/Encounters/Details/PastMedicalHistory/PastMedicalHistoryDialog";
-import { Button } from "@/components/ui/button";
 import React, { useCallback, useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
@@ -46,13 +46,7 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
     <div className="flex flex-col gap-2">
       <div className="flex justify-between items-center p-4 text-lg font-semibold rounded-md bg-[#f0f0f0]">
         <span>Past Medical History</span>
-        <Button
-          variant="ghost"
-          className="text-blue-500 hover:text-blue-500 hover:bg-[#f0f0f0]"
-          onClick={() => setIsOpen(true)}
-        >
-          Add
-        </Button>
+        <GhostButton label="Add" onClick={() => setIsOpen(true)} />
         <PastMedicalHistoryDialog
           userDetailsId={userDetailsId}
           isOpen={isOpen}

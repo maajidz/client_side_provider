@@ -35,6 +35,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import React from "react";
 import { useSelector } from "react-redux";
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AddDiagnosesDialogProps {
@@ -273,40 +274,37 @@ export default function AddDiagnosesDialog({
                 </tbody>
               </table>
 
-              <div className="flex justify-between">
-                <Button
-                  type="button"
-                  variant={"ghost"}
-                  onClick={() =>
-                    append({
-                      diagnosis_name: "",
-                      ICD_Code: "1",
-                      fromDate: "",
-                      toDate: "",
-                      status: "active",
-                      notes: "",
-                    })
-                  }
-                  className="text-blue-400"
-                >
-                  Add More
-                </Button>
-              </div>
+              <DialogFooter className="flex flex-between">
+                <div className="w-full">
+                  <GhostButton
+                    label="Add More"
+                    onClick={() =>
+                      append({
+                        diagnosis_name: "",
+                        ICD_Code: "1",
+                        fromDate: "",
+                        toDate: "",
+                        status: "active",
+                        notes: "",
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      onClose();
+                      form.reset();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <SubmitButton label="Save" disabled={loading} />
+                </div>
+              </DialogFooter>
             </ScrollArea>
-            <DialogFooter>
-              <div className="flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    onClose();
-                    form.reset();
-                  }}
-                >
-                  Cancel
-                </Button>
-                <SubmitButton label="Save" disabled={loading} />
-              </div>
-            </DialogFooter>
           </form>
         </Form>
       </DialogContent>

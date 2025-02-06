@@ -1,3 +1,4 @@
+import GhostButton from '@/components/custom_buttons/GhostButton';
 import React, { useState } from 'react'
 import {
     Dialog,
@@ -106,7 +107,7 @@ const FollowUpDialog = ({ patientDetails, encounterId }: { patientDetails: UserE
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} >
             <DialogTrigger asChild>
-                <Button variant="ghost" className='text-blue-500 underline'>Add Follow up</Button>
+                <GhostButton label='Add Follow up' />
             </DialogTrigger>
             <DialogContent className="sm:max-w-4xl">
                 <DialogHeader>

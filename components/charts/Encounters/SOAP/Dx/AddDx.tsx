@@ -1,3 +1,4 @@
+import GhostButton from '@/components/custom_buttons/GhostButton'
 import React, { useState } from 'react'
 import {
     Dialog,
@@ -86,9 +87,7 @@ const AddDx = ({ patientDetails, encounterId }: { patientDetails: UserEncounterD
     return (
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
-          <Button variant="ghost" className="text-blue-500 underline">
-            Add Dx
-          </Button>
+          <GhostButton label='Add Dx' />
         </DialogTrigger>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>

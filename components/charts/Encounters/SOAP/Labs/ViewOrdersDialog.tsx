@@ -1,3 +1,4 @@
+import GhostButton from '@/components/custom_buttons/GhostButton'
 import React, { useState } from 'react'
 import {
     Dialog,
@@ -5,8 +6,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/dialog";
 import { LabOrdersDataInterface } from '@/types/chartsInterface'
 import { getLabOrdersData } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
@@ -47,7 +47,7 @@ const ViewOrdersDialog = ({  userDetailsId }: { userDetailsId: string }) => {
     return (
         <Dialog open={open} onOpenChange={handleDialogOpenChange}>
             <DialogTrigger asChild>
-                <Button variant="ghost" className='text-blue-500 underline' onClick={fetchAndSetResponse}>View Orders</Button>
+                <GhostButton label='View Orders' onClick={fetchAndSetResponse} />
             </DialogTrigger>
             <DialogContent className="sm:max-w-xl">
                 <DialogHeader>

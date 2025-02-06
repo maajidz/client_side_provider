@@ -1,3 +1,4 @@
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
 import { Input } from "@/components/ui/input";
@@ -49,9 +50,7 @@ const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="text-blue-500 underline">
-          Past Rx
-        </Button>
+        <GhostButton label="Past Rx" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>

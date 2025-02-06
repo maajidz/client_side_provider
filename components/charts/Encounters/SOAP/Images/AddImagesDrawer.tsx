@@ -1,10 +1,10 @@
+import GhostButton from '@/components/custom_buttons/GhostButton'
 import React, { useEffect, useState } from 'react'
 import {
     Drawer,
     DrawerContent,
     DrawerTrigger,
 } from "@/components/ui/drawer"
-import { Button } from '@/components/ui/button'
 import {
     Select,
     SelectContent,
@@ -108,7 +108,7 @@ const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button variant="ghost" className='text-blue-500 underline' onClick={fetchAndSetResponse}>Search & Add</Button>
+                <GhostButton label='Search & Add' onClick={fetchAndSetResponse} />
             </DrawerTrigger>
             <DrawerContent>
                 {loadingImages || loadingTests ? (

@@ -1,3 +1,4 @@
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
@@ -195,9 +196,7 @@ const AddRx = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="text-blue-500 underline">
-          Add Rx
-        </Button>
+        <GhostButton label="Add Rx" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>

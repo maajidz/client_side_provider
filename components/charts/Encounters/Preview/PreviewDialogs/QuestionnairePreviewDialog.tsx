@@ -1,3 +1,4 @@
+import GhostButton from "@/components/custom_buttons/GhostButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -85,13 +86,7 @@ function QuestionnairePreviewDialog() {
     <>
       <Dialog open={isModalOpen} onOpenChange={handleIsModalOpen}>
         <DialogTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            className="text-blue-500 underline hover:text-blue-500 hover:bg-transparent"
-          >
-            Add Now
-          </Button>
+          <GhostButton label="Add Now" />
         </DialogTrigger>
         <DialogContent className="max-w-lg">
           <DialogHeader className=" p-4 rounded-t-lg">

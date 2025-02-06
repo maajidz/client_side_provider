@@ -1,3 +1,4 @@
+import GhostButton from '@/components/custom_buttons/GhostButton'
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import {
@@ -8,14 +9,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Button } from '@/components/ui/button'
 import SubmitButton from '@/components/custom_buttons/SubmitButton'
 
 const MapDx = () => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="ghost" className='text-blue-500 underline'>Map Dx</Button>
+                <GhostButton label='Map Dx' />
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
