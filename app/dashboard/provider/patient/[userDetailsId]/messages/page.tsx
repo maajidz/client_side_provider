@@ -1,6 +1,6 @@
 "use client";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import PageContainer from "@/components/layout/page-container";
+// import PageContainer from "@/components/layout/page-container";
 import PatientMessages from "@/components/patient/messages/PatientMessages";
 import { Heading } from "@/components/ui/heading";
 import { useParams } from "next/navigation";
@@ -17,13 +17,15 @@ function Page() {
     return <div>Error: User details ID not found</div>;
   }
   return (
-    <PageContainer scrollable={true}>
-      <div className="space-y-4">
-        <Breadcrumbs items={breadcrumbItems} />
-        <Heading title="Messages" description="" />
-      </div>
-      <PatientMessages userDetailsId={userDetailsId} />
-    </PageContainer>
+    <>
+      {/* <PageContainer scrollable={true}> */}
+        <div className="space-y-4">
+          <Breadcrumbs items={breadcrumbItems} />
+          <Heading title="Messages" description="" />
+        </div>
+        <PatientMessages userDetailsId={userDetailsId} />
+      {/* </PageContainer> */}
+    </>
   );
 }
 
