@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { PatientDetails } from "@/types/userInterface";
 import { fetchUserEssentials } from "@/services/userServices";
-import { setChartId } from "@/store/slices/userSlice";
+import { setUserId } from "@/store/slices/userSlice";
 import { calculateAge } from "@/utils/utils";
 import styles from "./patient.module.css";
 import LoadingButton from "../../LoadingButton";
@@ -33,8 +33,12 @@ const PatientHeader = ({ userId }: { userId: string }) => {
         }
 
         dispatch(
-          setChartId({
+          setUserId({
             chartId: latestChartId,
+            email: userData.user.email ?? "",
+            firstName: userData.user.firstName ?? "",
+            lastName: userData.user.lastName ?? "",
+            phoneNumber: ""
           })
         );
       }

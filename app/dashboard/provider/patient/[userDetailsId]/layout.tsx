@@ -6,6 +6,7 @@ import Header from "@/components/layout/header";
 import PatientSidebar from "@/components/patient/patientSidebar";
 import { Toaster } from "@/components/ui/toaster";
 import PatientHeader from "@/components/patient/patientDetails/patientHeader";
+import { useRouter } from "next/navigation";
 
 export default function PatientDashboardLayout({
   children,
@@ -13,8 +14,10 @@ export default function PatientDashboardLayout({
   children: React.ReactNode;
 }) {
   const { userDetailsId } = useParams();
+  const router = useRouter();
   if (!userDetailsId || Array.isArray(userDetailsId)) {
-    return <div>Error: User details ID not found</div>;
+    router.push("/dashboard");
+    return null;
   }
 
   return (

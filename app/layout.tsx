@@ -30,14 +30,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-          <ReduxProvider>
-            <div>
-              <div className="absoute top-3">
-                <Toaster />
-              </div>
-              {children}
-            </div>
-          </ReduxProvider>
+        <ReduxProvider>
+          <Toaster />
+          <div>{children}</div>
+        </ReduxProvider>
       </body>
     </html>
   );
