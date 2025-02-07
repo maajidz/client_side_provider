@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import { PatientDetails } from "@/types/userInterface";
-import { fetchUserInfo } from "@/services/userServices";
+import { fetchUserEssentials } from "@/services/userServices";
 import { setChartId } from "@/store/slices/userSlice";
 import { calculateAge } from "@/utils/utils";
 import styles from "./patient.module.css";
@@ -19,13 +19,13 @@ const PatientHeader = ({ userId }: { userId: string }) => {
   const fetchAndSetResponse = useCallback(async () => {
     setLoading(true);
     try {
-      const userData = await fetchUserInfo({ userDetailsId: userId });
+      const userData = await fetchUserEssentials({ userDetailsId: userId });
       if (userData) {
-        setResponse(userData.userDetails);
+        setResponse(userData);
         setLoading(false);
-        setAge(calculateAge(userData.userDetails.dob));
+        setAge(calculateAge(userData.dob));
 
-        const encounter = userData.userDetails.encounter.pop();
+        const encounter = userData.encounter.pop();
 
         let latestChartId = "";
         if (encounter) {

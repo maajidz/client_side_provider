@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./face_Sheet.module.css";
-import { fetchUserInfo } from "@/services/userServices";
-import { PatientDetails } from "@/types/userInterface";
+import { fetchUserEssentialsDashboard } from "@/services/userServices";
+import { PatientDashboardInterface } from "@/types/userInterface";
 import { SupplementInterface } from "@/types/supplementsInterface";
 import { getSupplements } from "@/services/chartDetailsServices";
 import LoadingButton from "@/components/LoadingButton";
@@ -11,15 +11,17 @@ import Link from "next/link";
 
 const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [userData, setUserData] = useState<PatientDetails>();
+  const [userData, setUserData] = useState<PatientDashboardInterface>();
   const [supplementData, setSupplementData] = useState<SupplementInterface[]>();
 
   const fetchUserData = useCallback(async () => {
     try {
       setLoading(true);
-      const userData = await fetchUserInfo({ userDetailsId: userDetailsId });
+      const userData = await fetchUserEssentialsDashboard({
+        userDetailsId: userDetailsId,
+      });
       if (userData) {
-        setUserData(userData.userDetails);
+        setUserData(userData);
         setLoading(false);
       }
     } catch (error) {
@@ -62,7 +64,11 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
       <ScrollArea className="h-[65dvh]">
         <div className={styles.infoContent}>
           <div className={styles.infoContainer}>
-            <TitleLinks title="Allergies" href="allergies" userDetailsId={userDetailsId} />
+            <TitleLinks
+              title="Allergies"
+              href="allergies"
+              userDetailsId={userDetailsId}
+            />
             {userData?.allergies ? (
               userData?.allergies.map((allergies, index) => (
                 <div
@@ -78,164 +84,225 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <TitleLinks title="Diagnoses" href="diagnoses" userDetailsId={userDetailsId} />
-            {userData?.diagnoses ? (
-              userData?.diagnoses.map((diagnosis, index) => (
-                <div className={`${styles.infoTextLabel}`} key={diagnosis.id}>
-                  {index === 0 ? "" : ","}
-                  {diagnosis.diagnosis_name}[{diagnosis.ICD_Code}]
-                </div>
-              ))
-            ) : (
-              <NoDataRecorded />
-            )}
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks title="Medications" href="medications" userDetailsId={userDetailsId} />
-            {userData?.medicationPrescriptions ? (
-              userData?.medicationPrescriptions.map(
-                (medicationPrescriptions) => (
-                  <div
-                    className={`${styles.infoTextLabel}`}
-                    key={medicationPrescriptions.id}
-                  >
-                    {medicationPrescriptions.Allergen}
-                  </div>
-                )
-              )
-            ) : (
-              <NoDataRecorded />
-            )}
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks title="History" href="patientDetails" userDetailsId={userDetailsId} />
-            <ScrollArea className="h-[12.5rem] min-h-10">
-              <div>
-                <div className={`${styles.infoTextLabel} underline`}>
-                  Past Medical History
-                </div>
-                <div className="flex flex-col gap-3">
-                  {userData?.medicalHistory ? (
-                    userData?.medicalHistory?.map((medicalHistory) => (
-                      <div key={medicalHistory.id}>
-                        <div>
-                          Medical History Recorded on{" "}
-                          {new Date(
-                            medicalHistory.updatedAt
-                          ).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "2-digit",
-                            year: "numeric",
-                          })}{" "}
-                        </div>
-                        <FaceSheetLabels
-                          label="GLP Refill Note:"
-                          value={medicalHistory.glp_refill_note_practice}
-                        />
-                        <FaceSheetLabels
-                          label="Notes:"
-                          value={medicalHistory.notes}
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <NoDataRecorded />
-                  )}
-                </div>
-              </div>
-              <div>
-                <div className={`${styles.infoTextLabel} underline`}>
-                  Family History
-                </div>
-                <div className="flex flex-col gap-3">
-                  {userData?.familyHistory ? (
-                    userData?.familyHistory?.map((family) => (
-                      <div key={family.id}>
-                        <div>
-                          Family History Recorded on{" "}
-                          {new Date(family.updatedAt).toLocaleDateString(
-                            "en-US",
-                            {
-                              month: "short",
-                              day: "2-digit",
-                              year: "numeric",
-                            }
-                          )}{" "}
-                        </div>
-                        <FaceSheetLabels
-                          label="Relationship/Deceased:"
-                          value={family.relationship}
-                        />
-                        <FaceSheetLabels
-                          label="Age:"
-                          value={family?.age.toString()}
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <NoDataRecorded />
-                  )}
-                </div>
-              </div>
-              <div>
-                <div className={`${styles.infoTextLabel} underline`}>
-                  Social History
-                </div>
-                <div className="flex flex-col gap-3">
-                  {userData?.socialHistories ? (
-                    userData?.socialHistories?.map((socialHistory) => (
-                      <div key={socialHistory.id}>
-                        <div>
-                          Social History Recorded on{" "}
-                          {new Date(socialHistory.updatedAt).toLocaleDateString(
-                            "en-US",
-                            {
-                              month: "short",
-                              day: "2-digit",
-                              year: "numeric",
-                            }
-                          )}{" "}
-                        </div>
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: socialHistory.content,
-                          }}
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <NoDataRecorded />
-                  )}
-                </div>
-              </div>
-            </ScrollArea>
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks title="Supplements" href="medications" userDetailsId={userDetailsId} />
-            <div>
-              {supplementData ? (
-                <div>
-                  {supplementData.map((injections) => (
-                    <div key={injections.id}>
-                      <FaceSheetLabels
-                        label="Address:"
-                        value={injections ? injections?.manufacturer : "N/A"}
-                      />
+            <TitleLinks
+              title="Diagnoses"
+              href="diagnoses"
+              userDetailsId={userDetailsId}
+            />
+            <div className={styles.subContainer}>
+              {userData?.diagnoses ? (
+                userData?.diagnoses.map((diagnosis) => (
+                  <div key={diagnosis.id} className={styles.dataContainer}>
+                    <div className={`${styles.infoTextLabel}`}>
+                      {diagnosis.diagnosis_name}[{diagnosis.ICD_Code}]{" "}
                     </div>
-                  ))}
-                </div>
+                    <div className={styles.infoSub}>
+                      {new Date(diagnosis.createdAt).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "2-digit",
+                          year: "numeric",
+                        }
+                      )}
+                    </div>
+                  </div>
+                ))
               ) : (
                 <NoDataRecorded />
               )}
             </div>
           </div>
           <div className={styles.infoContainer}>
-            <TitleLinks title="Recent Vitals" href="vitals" userDetailsId={userDetailsId} />
-            <div className={styles.infoLabel}></div>
-            <div className="flex flex-col gap-3">
+            <TitleLinks
+              title="Medications"
+              href="medications"
+              userDetailsId={userDetailsId}
+            />
+            <div className={styles.subContainer}>
+              {userData?.medicationPrescriptions ? (
+                userData?.medicationPrescriptions.map((medications) => (
+                  <div key={medications.id} className={styles.dataContainer}>
+                    <div className={`${styles.infoTextLabel}`}>
+                      {medications.medicationName.productName} [
+                      {medications.medicationName.tradeName}] {""}
+                      {medications.medicationName.strength}{" "}
+                      {medications.medicationName.doseForm}
+                    </div>
+                    <div className={styles.infoSub}>
+                      {medications.medicationName.route},{""}
+                      {medications.directions}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <NoDataRecorded />
+              )}
+            </div>
+          </div>
+          <div className={styles.infoContainer}>
+            <TitleLinks
+              title="History"
+              href="patientDetails"
+              userDetailsId={userDetailsId}
+            />
+            <ScrollArea className="h-[12.5rem] min-h-10">
+              <div className={styles.section}>
+                <div className={styles.subContainer}>
+                  <div className={`${styles.sectionLabel} text-[#FF9504]`}>
+                    Past Medical History
+                  </div>
+                  <div className={styles.subContainer}>
+                    {userData?.medicalHistory ? (
+                      userData?.medicalHistory?.map((medicalHistory) => (
+                        <div key={medicalHistory.id}>
+                          <div
+                            className={`${styles.sectionLabel} text-[#444444]`}
+                          >
+                            Medical History Recorded on{" "}
+                            {new Date(
+                              medicalHistory.updatedAt
+                            ).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "2-digit",
+                              year: "numeric",
+                            })}{" "}
+                          </div>
+                          <FaceSheetLabels
+                            label="GLP Refill Note:"
+                            value={medicalHistory.glp_refill_note_practice}
+                          />
+                          <FaceSheetLabels
+                            label="Notes:"
+                            value={medicalHistory.notes}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <NoDataRecorded />
+                    )}
+                  </div>
+                </div>
+                <div className={styles.subContainer}>
+                  <div className={`${styles.sectionLabel} text-[#FF9504]`}>
+                    Family History
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    {userData?.familyHistory ? (
+                      userData?.familyHistory?.map((family) => (
+                        <div key={family.id}>
+                          <div
+                            className={`${styles.sectionLabel} text-[#444444]`}
+                          >
+                            Family History Recorded on{" "}
+                            {new Date(family.updatedAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "2-digit",
+                                year: "numeric",
+                              }
+                            )}{" "}
+                          </div>
+                          <FaceSheetLabels
+                            label="Relationship/Deceased:"
+                            value={family.relationship}
+                          />
+                          <FaceSheetLabels
+                            label="Age:"
+                            value={family?.age.toString()}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <NoDataRecorded />
+                    )}
+                  </div>
+                </div>
+                <div className={styles.subContainer}>
+                  <div className={`${styles.sectionLabel} text-[#FF9504]`}>
+                    Social History
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    {userData?.socialHistories ? (
+                      userData?.socialHistories?.map((socialHistory) => (
+                        <div key={socialHistory.id}>
+                          <div
+                            className={`${styles.sectionLabel} text-[#444444]`}
+                          >
+                            Social History Recorded on{" "}
+                            {new Date(
+                              socialHistory.updatedAt
+                            ).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "2-digit",
+                              year: "numeric",
+                            })}{" "}
+                          </div>
+                          <div
+                            className={styles.infoTextLabel}
+                            dangerouslySetInnerHTML={{
+                              __html: socialHistory.content,
+                            }}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <NoDataRecorded />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </ScrollArea>
+          </div>
+          <div className={styles.infoContainer}>
+            <TitleLinks
+              title="Supplements"
+              href="medications"
+              userDetailsId={userDetailsId}
+            />
+            <div className={styles.subContainer}>
+              {supplementData ? (
+                supplementData.map((supplement) => (
+                  <div key={supplement.id} className={styles.dataContainer}>
+                    <div className={`${styles.infoTextLabel}`}>
+                      {supplement.supplement} {""}
+                      {supplement.manufacturer} {""}
+                      {supplement.dosage} {""}
+                      {supplement.unit}{" "}
+                    </div>
+                    <div className={styles.infoSub}>
+                      {supplement.frequency}, {""}
+                      {supplement.intake_type}
+                      {""}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <NoDataRecorded />
+              )}
+            </div>
+          </div>
+          <div className={styles.infoContainer}>
+            <TitleLinks
+              title="Recent Vitals"
+              href="vitals"
+              userDetailsId={userDetailsId}
+            />
+            <div className={styles.section}>
               {userData?.vitals ? (
                 userData?.vitals.map((vitals) => (
-                  <div key={vitals.id}>
+                  <div
+                    key={vitals.id}
+                    className={`${styles.subContainer} bg-[#F5F5F5] p-2 rounded`}
+                  >
+                    <div className={styles.infoSub}>
+                      {new Date(vitals.dateTime).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
+                    </div>
                     <FaceSheetLabels
                       label="Weight:"
                       value={`${vitals.weightLbs} lbs ${vitals.weightOzs} ozs`}
@@ -253,12 +320,18 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             </div>
           </div>
           <div className={styles.infoContainer}>
-            <TitleLinks title="Injections" href="injections" userDetailsId={userDetailsId} />
-            <div className={styles.infoLabel}></div>
+            <TitleLinks
+              title="Injections"
+              href="injections"
+              userDetailsId={userDetailsId}
+            />
             {userData?.injections ? (
               <div className="flex flex-col gap-3">
                 {userData?.injections.map((injections) => (
-                  <div key={injections.id}>
+                  <div
+                    key={injections.id}
+                    className={`${styles.subContainer} bg-[#F5F5F5] p-2 rounded`}
+                  >
                     <FaceSheetLabels
                       label="Injection Name:"
                       value={
@@ -279,7 +352,15 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                       label="Administrated On:"
                       value={
                         injections?.administered_date
-                          ? `${injections.administered_date} ${injections.administered_time} ${injections.frequency}`
+                          ? `
+                      ${new Date(
+                        injections?.administered_date
+                      ).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
+                     ${injections.administered_time} ${injections.frequency}`
                           : "N/A"
                       }
                     />
@@ -295,41 +376,49 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <TitleLinks title="Latest Labs" href="lab_records" userDetailsId={userDetailsId} />
-            <div className={styles.infoLabel}></div>
-            {userData?.labResults ? (
-              <div className="flex flex-col gap-3">
-                {userData?.labResults.map((labs) => (
-                  <div key={labs.id}>
-                    <FaceSheetLabels
-                      label="Status:"
-                      value={labs?.status ? labs.status : "N/A"}
-                    />
-                    <FaceSheetLabels
-                      label="Tags:"
-                      value={labs?.tags ? labs.tags : "N/A"}
-                    />
-                    {labs.files.map((image) => (
-                      <Button
-                        key={image}
-                        variant={"link"}
-                        onClick={() => {
-                          window.open(image, "_blank");
-                        }}
-                      >
-                        {image.split("/")[4]}
-                      </Button>
-                    ))}
+            <TitleLinks
+              title="Latest Labs"
+              href="lab_records"
+              userDetailsId={userDetailsId}
+            />
+            <div className={styles.subContainer}>
+              {userData?.labResults ? (
+                userData?.labResults.map((labs) => (
+                  <div key={labs.id} className={styles.dataContainer}>
+                    <div className={`${styles.infoTextLabel}`}>
+                      {labs.files.map((image) => (
+                        <Button
+                          className="p-0"
+                          key={image}
+                          variant={"link"}
+                          onClick={() => {
+                            window.open(image, "_blank");
+                          }}
+                        >
+                          {image.split("/")[4]}
+                        </Button>
+                      ))}
+                    </div>
+                    <div className={styles.infoSub}>
+                      {new Date(labs.dateTime).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
+                    </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <NoDataRecorded />
-            )}
+                ))
+              ) : (
+                <NoDataRecorded />
+              )}
+            </div>
           </div>
           <div className={styles.infoContainer}>
-            <TitleLinks title="Implanted Devices" href="patientDetails" userDetailsId={userDetailsId} />
-            <div className={styles.infoLabel}></div>
+            <TitleLinks
+              title="Implanted Devices"
+              href="patientDetails"
+              userDetailsId={userDetailsId}
+            />
             {userData?.implantedDevices ? (
               userData.implantedDevices.map((implantedDevices) => (
                 <div key={implantedDevices.id}>
@@ -346,37 +435,66 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <TitleLinks title="Vaccines" href="vaccines" userDetailsId={userDetailsId} />
-            <div className={styles.infoLabel}></div>
-            {userData?.vaccines ? (
-              <div className="flex flex-col gap-3">
-                {userData?.vaccines.map((vaccine) => (
-                  <div key={vaccine.id}>
-                    <FaceSheetLabels
-                      label="Vaccine Name:"
-                      value={
-                        vaccine?.vaccine_name ? vaccine.vaccine_name : "N/A"
-                      }
-                    />
-                    <FaceSheetLabels
-                      label="status:"
-                      value={vaccine?.status ? vaccine?.status : "N/A"}
-                    />
+            <TitleLinks
+              title="Vaccines"
+              href="vaccines"
+              userDetailsId={userDetailsId}
+            />
+            <div className={styles.subContainer}>
+              {userData?.vaccines ? (
+                userData?.vaccines.map((vaccine) => (
+                  <div key={vaccine.id} className={styles.dataContainer}>
+                    <div className={`${styles.infoTextLabel}`}>
+                      {vaccine.vaccine_name}
+                    </div>
+                    <div className={styles.infoSub}>
+                      {new Date(vaccine.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
+                    </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <NoDataRecorded />
-            )}
+                ))
+              ) : (
+                <NoDataRecorded />
+              )}
+            </div>
           </div>
           <div className={styles.infoContainer}>
-            <TitleLinks title="Past Visits" href="encounters" userDetailsId={userDetailsId} />
-            <div className={styles.infoLabel}></div>
-            <div></div>
+            <TitleLinks
+              title="Past Visits"
+              href="encounters"
+              userDetailsId={userDetailsId}
+            />
+            <div className={styles.subContainer}>
+              {userData?.encounter ? (
+                userData?.encounter.map((visit) => (
+                  <div key={visit.id} className={styles.dataContainer}>
+                    <div className={`${styles.infoTextLabel}`}>
+                      {visit.providerID} {""}
+                      {""} {visit.mode}
+                    </div>
+                    <div className={styles.infoSub}>
+                      {new Date(visit.date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <NoDataRecorded />
+              )}
+            </div>
           </div>
           <div className={styles.infoContainer}>
-            <TitleLinks title="Contact Details" href="patientDetails" userDetailsId={userDetailsId} />
-            <div className={styles.infoLabel}></div>
+            <TitleLinks
+              title="Contact Details"
+              href="patientDetails"
+              userDetailsId={userDetailsId}
+            />
             {userData ? (
               <div>
                 <FaceSheetLabels
@@ -385,13 +503,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 />
                 <FaceSheetLabels
                   label="Email:"
-                  value={userData?.user.email ? userData?.user.email : "N/A"}
+                  value={userData?.user?.email ? userData?.user?.email : "N/A"}
                 />
                 <FaceSheetLabels
                   label="Phone:"
                   value={
-                    userData?.user.phoneNumber
-                      ? userData?.user.phoneNumber
+                    userData?.user?.phoneNumber
+                      ? userData?.user?.phoneNumber
                       : "N/A"
                   }
                 />
@@ -401,36 +519,43 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <TitleLinks title="Documents" href="documents" userDetailsId={userDetailsId} />
-            <div className={styles.infoLabel}></div>
+            <TitleLinks
+              title="Documents"
+              href="documents"
+              userDetailsId={userDetailsId}
+            />
             <ScrollArea className="h-[12.5rem] min-h-10">
-              {userData?.documents ? (
-                userData.documents.map((docs) => (
-                  <div key={docs.id}>
-                    <FaceSheetLabels
-                      label="Document Type:"
-                      value={docs?.document_type ? docs?.document_type : "N/A"}
-                    />
-                    <FaceSheetLabels
-                      label="Notes:"
-                      value={docs?.notes ? docs?.notes : "N/A"}
-                    />{" "}
-                    {docs.documents.map((image) => (
-                      <Button
-                        key={image}
-                        variant={"link"}
-                        onClick={() => {
-                          window.open(image, "_blank");
-                        }}
-                      >
-                        {image.split("/")[4]}
-                      </Button>
-                    ))}
-                  </div>
-                ))
-              ) : (
-                <NoDataRecorded />
-              )}
+              <div className={styles.subContainer}>
+                {userData?.documents ? (
+                  userData?.documents.map((doc) => (
+                    <div key={doc.id} className={styles.dataContainer}>
+                      <div className={`${styles.infoTextLabel}`}>
+                        {doc.documents.map((image) => (
+                          <Button
+                            key={image}
+                            className="p-0"
+                            variant={"link"}
+                            onClick={() => {
+                              window.open(image, "_blank");
+                            }}
+                          >
+                            {image.split("/")[4]}
+                          </Button>
+                        ))}
+                      </div>
+                      <div className={styles.infoSub}>
+                        {new Date(doc.date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "2-digit",
+                          year: "numeric",
+                        })}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <NoDataRecorded />
+                )}
+              </div>
             </ScrollArea>
           </div>
         </div>
@@ -449,7 +574,7 @@ const FaceSheetLabels = ({
   value: string;
 }) => {
   return (
-    <div className="flex flex-row gap-3">
+    <div className="flex flex-row gap-3 items-baseline">
       <div className={styles.infoText}>{label}</div>
       <div className={styles.infoTextLabel}>{value}</div>
     </div>
@@ -460,7 +585,15 @@ const NoDataRecorded = () => {
   return <div className={styles.infoText}>No Data Recorded</div>;
 };
 
-const TitleLinks = ({ title, href, userDetailsId }: { title: string, href: string, userDetailsId: string }) => {
+const TitleLinks = ({
+  title,
+  href,
+  userDetailsId,
+}: {
+  title: string;
+  href: string;
+  userDetailsId: string;
+}) => {
   return (
     <Link href={`/dashboard/provider/patient/${userDetailsId}/${href}`}>
       <div className={styles.infoLabel}>{title}</div>

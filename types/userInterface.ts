@@ -6,6 +6,7 @@ import { Family } from "./familyHistoryInterface";
 import { SocialHistoryInterface } from "./socialHistoryInterface";
 import { Device } from "./implantedDevices";
 import { EncounterResponse } from "./encounterInterface";
+import { MedicationResultInterface } from "./medicationInterface";
 
 export interface CreateUser {
   user: CreateUserDataInterface;
@@ -32,38 +33,53 @@ export interface UserDataInterface extends CreateUserDataInterface {
 }
 
 export interface PatientDetailsInterface {
-  userDetails: PatientDetails
+  userDetails: PatientDetails;
 }
 
 export interface PatientDetails {
-  id: string
-  dob: string
-  height: number
-  heightType: string
-  weight: number
-  weightType: string
-  location: string
-  gender: string
-  createdAt: string
-  updatedAt: string
-  user: User
-  allergies: AllergenResponseInterfae[]
-  vitals: VitalsInterface[]
-  wallet: any
-  diagnoses: PastDiagnosesInterface[]
-  medicationPrescriptions: any[]
-  medicalHistory: PastMedicalHistoryInterface[]
-  familyHistory: Family[]
-  socialHistories: SocialHistoryInterface[]
-  implantedDevices: Device[]
-  documents: Document[]
-  vaccines: Vaccine[]
-  injections: Injection[]
-  labResults: LabResult[]
-  imageResults: ImageResult[]
-  encounter: EncounterResponse[]
+  id: string;
+  dob: string;
+  height: number;
+  heightType: string;
+  weight: number;
+  weightType: string;
+  location: string;
+  gender: string;
+  createdAt: string;
+  updatedAt: string;
+  user: User;
+  allergies: AllergenResponseInterfae[];
+  vitals: VitalsInterface[];
+  wallet: any;
+  encounter: EncounterResponse[];
 }
 
+export interface PatientDashboardInterface extends PatientDetails  {
+  id: string
+  diagnoses: PastDiagnosesInterface[];
+  medicationPrescriptions: MedicationPrescription[];
+  medicalHistory: PastMedicalHistoryInterface[];
+  familyHistory: Family[];
+  socialHistories: SocialHistoryInterface[];
+  implantedDevices: Device[];
+  documents: Document[];
+  vaccines: Vaccine[];
+  injections: Injection[];
+  labResults: LabResult[];
+  imageResults: ImageResult[];
+}
+
+export interface MedicationPrescription {
+  id: string
+  directions: string
+  fromDate: string
+  toDate: string
+  status: string
+  providerId: string
+  createdAt: string
+  updatedAt: string
+  medicationName: MedicationResultInterface
+}
 
 export interface CreateUserDetails {
   dob: string;
@@ -122,7 +138,7 @@ export interface UserAppointmentInterface {
   timeOfAppointment: string;
   timeZone: string;
   status: string;
-  userDetails: PatientDetails
+  userDetails: PatientDetails;
   providerId: string;
   createdAt: string;
   updatedAt: string;
@@ -206,7 +222,6 @@ export interface PatientMedication {
   updatedAt: string;
 }
 
-
 //Create Patient Interface
 
 export interface UserFormInterface {
@@ -224,7 +239,6 @@ export interface UserForm {
   additionalTexts: string;
   images: any[];
 }
-
 
 //Patient Care Team Interface
 export interface PatientCareTeamInterface {
@@ -250,76 +264,75 @@ export interface PrimaryCarePhysician {
   updatedAt: string;
 }
 
-
 export interface Document {
-  id: string
-  document_type: string
-  notes: any
-  provderId?: string
-  date: string
-  file_for_review: boolean
-  documents: string[]
-  createdAt: string
-  updatedAt: string
+  id: string;
+  document_type: string;
+  notes: any;
+  provderId?: string;
+  date: string;
+  file_for_review: boolean;
+  documents: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Vaccine {
-  id: string
-  vaccine_name: string
-  providerId: string
-  status: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  vaccine_name: string;
+  providerId: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Injection {
-  id: string
-  injection_name: string
-  providerId: string
-  dosage_unit: string
-  dosage_quantity: number
-  frequency: string
-  period_number: number
-  period_unit: string
-  parental_route: string
-  site: string
-  lot_number: number
-  expiration_date: string
-  administered_date: string
-  administered_time: string
-  note_to_nurse: string
-  comments: string
-  status: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  injection_name: string;
+  providerId: string;
+  dosage_unit: string;
+  dosage_quantity: number;
+  frequency: string;
+  period_number: number;
+  period_unit: string;
+  parental_route: string;
+  site: string;
+  lot_number: number;
+  expiration_date: string;
+  administered_date: string;
+  administered_time: string;
+  note_to_nurse: string;
+  comments: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface LabResult {
-  id: string
-  reviewerId: string
-  dateTime: string
-  tags: string
-  files: string[]
-  status: string
-  uploadedBy: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  reviewerId: string;
+  dateTime: string;
+  tags: string;
+  files: string[];
+  status: string;
+  uploadedBy: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ImageResult {
-  id: string
-  reviewerId: string
-  dateTime: string
-  status: string
-  createdAt: string
-  updatedAt: string
-  testResults: TestResult[]
+  id: string;
+  reviewerId: string;
+  dateTime: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  testResults: TestResult[];
 }
 
 export interface TestResult {
-  id: string
-  interpretation: string
-  documents: any
-  createdAt: string
-  updatedAt: string
+  id: string;
+  interpretation: string;
+  documents: any;
+  createdAt: string;
+  updatedAt: string;
 }
