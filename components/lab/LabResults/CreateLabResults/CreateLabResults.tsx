@@ -47,6 +47,7 @@ import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 
 const CreateLabResults = () => {
   const form = useForm<z.infer<typeof createLabResultsSchema>>({
@@ -565,12 +566,12 @@ export function DropdownMenuCheckboxesField({
   };
 
   return (
-    <FormItem>
+    <FormItem className={formStyles.formItem}>
       <FormLabel>Tests</FormLabel>
       <FormControl>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline"  className="overflow-hidden">
               {selectedTests.length > 0
                 ? `${selectedTests.join(", ")}`
                 : "Select tests"}

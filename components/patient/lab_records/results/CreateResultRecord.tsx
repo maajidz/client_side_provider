@@ -47,6 +47,8 @@ import { showToast } from "@/utils/utils";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState, useCallback, useEffect } from "react";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
+import PageContainer from "@/components/layout/page-container";
 
 const CreateResultRecord = () => {
   // Patients State
@@ -255,7 +257,7 @@ const CreateResultRecord = () => {
           type: "success",
           message: "Lab Result saved successfully!",
         });
-        router.replace("/dashboard/provider/labs");
+        router.replace(`/dashboard/provider/patient/${userDetailsId}/lab_records`);
       }
     } catch (e) {
       console.log("Error", e);
@@ -273,321 +275,323 @@ const CreateResultRecord = () => {
 
   return (
     <>
-      <div>
-        <div className="flex justify-between">
-          Add Lab Results
-          <div className="flex gap-3">
-            <Button
-              variant={"outline"}
-              className="border border-[#84012A] text-[#84012A]"
-              onClick={() => {
-                form.reset();
-                router.replace("/dashboard/provider/labs");
-              }}
-            >
-              Cancel
-            </Button>
+      <PageContainer scrollable={true}>
+        <div>
+          <div className="flex justify-between">
+            Add Lab Results
+            <div className="flex gap-3">
+              <Button
+                variant={"outline"}
+                className="border border-[#84012A] text-[#84012A]"
+                onClick={() => {
+                  form.reset();
+                  router.replace(`/dashboard/provider/patient/${userDetailsId}/lab_records`);
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
-        </div>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
-          >
-            <div className="flex gap-7">
-              {!patient && (
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className={`${formStyles.formBody} w-[30rem]`}
+            >
+              <div>
+                {!patient && (
+                  <FormField
+                    control={form.control}
+                    name="patient"
+                    render={({ field }) => (
+                      <FormItem className={formStyles.formItem}>
+                        <FormLabel>Patient</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              placeholder="Search Patient "
+                              value={searchTerm}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                setSearchTerm(value);
+                                setVisibleSearchList(true);
+
+                                if (!value) {
+                                  field.onChange("");
+                                }
+                              }}
+                            />
+                            {searchTerm && visibleSearchList && (
+                              <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                                {filteredPatients.length > 0 ? (
+                                  filteredPatients.map((patient) => (
+                                    <div
+                                      key={patient.id}
+                                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                      onClick={() => {
+                                        field.onChange(patient.id);
+                                        setSearchTerm(
+                                          `${patient.user.firstName} ${patient.user.lastName}`
+                                        );
+                                        setVisibleSearchList(false);
+                                      }}
+                                    >
+                                      {`${patient.user.firstName} ${patient.user.lastName}`}
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="px-4 py-2 text-gray-500">
+                                    No results found
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
                 <FormField
                   control={form.control}
-                  name="patient"
+                  name="reviewer"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Patient</FormLabel>
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel className="">Reviewer:</FormLabel>
                       <FormControl>
-                        <div className="relative">
-                          <Input
-                            placeholder="Search Patient "
-                            value={searchTerm}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              setSearchTerm(value);
-                              setVisibleSearchList(true);
-
-                              if (!value) {
-                                field.onChange("");
-                              }
+                        <div className="flex flex-col gap-2 items-start justify-start ">
+                          <Select
+                            value={field.value}
+                            onValueChange={(value: string) => {
+                              field.onChange(value);
                             }}
-                          />
-                          {searchTerm && visibleSearchList && (
-                            <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                              {filteredPatients.length > 0 ? (
-                                filteredPatients.map((patient) => (
-                                  <div
-                                    key={patient.id}
-                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                    onClick={() => {
-                                      field.onChange(patient.id);
-                                      setSearchTerm(
-                                        `${patient.user.firstName} ${patient.user.lastName}`
-                                      );
-                                      setVisibleSearchList(false);
-                                    }}
-                                  >
-                                    {`${patient.user.firstName} ${patient.user.lastName}`}
-                                  </div>
-                                ))
-                              ) : (
-                                <div className="px-4 py-2 text-gray-500">
-                                  No results found
-                                </div>
-                              )}
-                            </div>
-                          )}
+                          >
+                            <SelectTrigger >
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {providerListData.data.map((providerList) => {
+                                const providerId =
+                                  providerList.providerDetails?.id ??
+                                  providerList.id;
+                                return (
+                                  <SelectItem
+                                    key={providerList.id}
+                                    value={providerId}
+                                  >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
+                                );
+                              })}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
-
+              </div>
               <FormField
                 control={form.control}
-                name="reviewer"
+                name="dateTime"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="">Reviewer:</FormLabel>
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel>Date and Time</FormLabel>
                     <FormControl>
-                      <div className="flex flex-col gap-2 items-start justify-start ">
-                        <Select
-                          value={field.value}
-                          onValueChange={(value: string) => {
-                            field.onChange(value);
-                          }}
-                        >
-                          <SelectTrigger className="w-64">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {providerListData.data.map((providerList) => {
-                              const providerId =
-                                providerList.providerDetails?.id ??
-                                providerList.id;
-                              return (
-                                <SelectItem
-                                  key={providerList.id}
-                                  value={providerId}
-                                >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <Input
+                        type="datetime-local"
+                        {...field}
+                        placeholder="Select date and time"
+                        className="w-fit"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-            <FormField
-              control={form.control}
-              name="dateTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date and Time</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="datetime-local"
-                      {...field}
-                      placeholder="Select date and time"
-                      className="w-fit"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="labId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Lab Name</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value}
-                      onValueChange={(value: string) => {
-                        field.onChange(value);
-                        setSelectedLab(value);
-                      }}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select a lab" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {labResponse &&
-                          labResponse.data &&
-                          labResponse.data.length > 0 &&
-                          labResponse.data.map((lab) => (
-                            <SelectItem key={lab.id} value={lab.id}>
-                              {lab.name}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <TestsField
-              form={form}
-              selectedTests={selectedTests}
-              setSelectedTests={setSelectedTests}
-              tests={labTestResponse}
-            />
-            {selectedTests.length > 0 && (
-              <div className="test-groups">
-                {selectedTests.map((test, index) => (
-                  <div key={index}>
-                    <h3 className="text-lg font-semibold">{`Test Results for ${test}`}</h3>
-                    {testGroupFields.map((group, groupIndex) => (
-                      <div
-                        key={`${group.id}-${groupIndex}`}
-                        className="border border-gray-300 rounded-lg p-4 mb-4"
+              <FormField
+                control={form.control}
+                name="labId"
+                render={({ field }) => (
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel>Lab Name</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value: string) => {
+                          field.onChange(value);
+                          setSelectedLab(value);
+                        }}
                       >
-                        <FormField
-                          control={form.control}
-                          name={`testResults.${groupIndex}.name`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Name</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Parameter Name"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        <SelectTrigger >
+                          <SelectValue placeholder="Select a lab" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {labResponse &&
+                            labResponse.data &&
+                            labResponse.data.length > 0 &&
+                            labResponse.data.map((lab) => (
+                              <SelectItem key={lab.id} value={lab.id}>
+                                {lab.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <TestsField
+                form={form}
+                selectedTests={selectedTests}
+                setSelectedTests={setSelectedTests}
+                tests={labTestResponse}
+              />
+              {selectedTests.length > 0 && (
+                <div className="test-groups">
+                  {selectedTests.map((test, index) => (
+                    <div key={index}>
+                      <h3 className="text-lg font-semibold">{`Test Results for ${test}`}</h3>
+                      {testGroupFields.map((group, groupIndex) => (
+                        <div
+                          key={`${group.id}-${groupIndex}`}
+                          className="border border-gray-300 rounded-lg p-4 mb-4"
+                        >
+                          <FormField
+                            control={form.control}
+                            name={`testResults.${groupIndex}.name`}
+                            render={({ field }) => (
+                              <FormItem className={formStyles.formItem}>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Parameter Name"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                        <FormField
-                          control={form.control}
-                          name={`testResults.${groupIndex}.result`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Result</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Result" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                          <FormField
+                            control={form.control}
+                            name={`testResults.${groupIndex}.result`}
+                            render={({ field }) => (
+                              <FormItem className={formStyles.formItem}>
+                                <FormLabel>Result</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Result" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                        <FormField
-                          control={form.control}
-                          name={`testResults.${groupIndex}.unit`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Unit</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Unit" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                          <FormField
+                            control={form.control}
+                            name={`testResults.${groupIndex}.unit`}
+                            render={({ field }) => (
+                              <FormItem className={formStyles.formItem}>
+                                <FormLabel>Unit</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Unit" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                        <FormField
-                          control={form.control}
-                          name={`testResults.${groupIndex}.referenceMin`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Min</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  placeholder="Min"
-                                  {...field}
-                                  onChange={(e) => {
-                                    const value = e.target.value;
-                                    field.onChange(
-                                      value ? parseFloat(value) : undefined
-                                    );
-                                  }}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                          <FormField
+                            control={form.control}
+                            name={`testResults.${groupIndex}.referenceMin`}
+                            render={({ field }) => (
+                              <FormItem className={formStyles.formItem}>
+                                <FormLabel>Min</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    placeholder="Min"
+                                    {...field}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      field.onChange(
+                                        value ? parseFloat(value) : undefined
+                                      );
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                        <FormField
-                          control={form.control}
-                          name={`testResults.${groupIndex}.referenceMax`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Max</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  placeholder="Max"
-                                  {...field}
-                                  onChange={(e) => {
-                                    const value = e.target.value;
-                                    field.onChange(
-                                      value ? parseFloat(value) : undefined
-                                    );
-                                  }}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                          <FormField
+                            control={form.control}
+                            name={`testResults.${groupIndex}.referenceMax`}
+                            render={({ field }) => (
+                              <FormItem className={formStyles.formItem}>
+                                <FormLabel>Max</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    placeholder="Max"
+                                    {...field}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      field.onChange(
+                                        value ? parseFloat(value) : undefined
+                                      );
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                        <FormField
-                          control={form.control}
-                          name={`testResults.${groupIndex}.interpretation`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Interpretation</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Interpretation"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <FormField
-              control={form.control}
-              name="tags"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tags</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter tags" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                          <FormField
+                            control={form.control}
+                            name={`testResults.${groupIndex}.interpretation`}
+                            render={({ field }) => (
+                              <FormItem className={formStyles.formItem}>
+                                <FormLabel>Interpretation</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Interpretation"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               )}
-            />
-            <SubmitButton label="Submit" />
-          </form>
-        </Form>
-      </div>
+
+              <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel>Tags</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter tags" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <SubmitButton label="Submit" />
+            </form>
+          </Form>
+        </div>
+      </PageContainer>
     </>
   );
 };
@@ -618,12 +622,12 @@ export function DropdownMenuCheckboxesField({
   };
 
   return (
-    <FormItem>
+    <FormItem className={formStyles.formItem}>
       <FormLabel>Tests</FormLabel>
       <FormControl>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline" >
               {selectedTests.length > 0
                 ? `${selectedTests.join(", ")}`
                 : "Select tests"}
@@ -677,4 +681,3 @@ function TestsField({
     />
   );
 }
-

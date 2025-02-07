@@ -28,37 +28,37 @@ const ViewPatientEncounters = ({
       label: "Last visit",
       component: AllEncountersTab,
     },
-    {
-      value: "unsigned",
-      label: "Unsigned",
-      component: AllEncountersTab,
-    },
-    {
-      value: "cosigned",
-      label: "To Be Cosigned",
-      component: AllEncountersTab,
-    },
-    {
-      value: "6months",
-      label: "Past 6 Months",
-      component: AllEncountersTab,
-    },
-    { value: "1year", label: "Past 1 year", component: AllEncountersTab },
+    // {
+    //   value: "unsigned",
+    //   label: "Unsigned",
+    //   component: AllEncountersTab,
+    // },
+    // {
+    //   value: "cosigned",
+    //   label: "To Be Cosigned",
+    //   component: AllEncountersTab,
+    // },
+    // {
+    //   value: "6months",
+    //   label: "Past 6 Months",
+    //   component: AllEncountersTab,
+    // },
+    // { value: "1year", label: "Past 1 year", component: AllEncountersTab },
     {
       value: "all",
       label: "All",
       component: AllEncountersTab,
     },
-    {
-      value: "phoneCalls",
-      label: "Phone calls",
-      component: AllEncountersTab,
-    },
-    {
-      value: "pastReports",
-      label: "Past Reports",
-      component: AllEncountersTab,
-    },
+    // {
+    //   value: "phoneCalls",
+    //   label: "Phone calls",
+    //   component: AllEncountersTab,
+    // },
+    // {
+    //   value: "pastReports",
+    //   label: "Past Reports",
+    //   component: AllEncountersTab,
+    // },
   ];
 
   const fetchEncounterList = useCallback(

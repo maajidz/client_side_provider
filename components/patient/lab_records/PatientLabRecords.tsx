@@ -1,15 +1,29 @@
 import PageContainer from "@/components/layout/page-container";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import OrderRecords from "./orders/OrderRecords";
 import ResultRecords from "./results/ResultRecords";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 
 const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
   const [activeTab, setActiveTab] = useState<string>("labResults");
   const router = useRouter();
+
+  const patientLabsTab = [
+    {
+      value: "labResults",
+      label: "Lab Results",
+      component: ResultRecords,
+    },
+    {
+      value: "labOrders",
+      label: "Lab Orders",
+      component: OrderRecords,
+    },
+  ];
 
   return (
     <PageContainer scrollable={true}>
@@ -19,9 +33,12 @@ const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
           onValueChange={(value) => setActiveTab(value)}
         >
           <div className="flex flex-row justify-between gap-10">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="labResults">Lab Results</TabsTrigger>
-              <TabsTrigger value="labOrders">Lab Orders</TabsTrigger>
+            <TabsList className="flex gap-3 w-full">
+              {patientLabsTab.map((tab) => (
+                <CustomTabsTrigger value={tab.value} key={tab.value}>
+                  {tab.label}
+                </CustomTabsTrigger>
+              ))}
             </TabsList>
             <DefaultButton
               onClick={() =>
@@ -32,16 +49,15 @@ const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
                 )
               }
             >
-                <PlusIcon />
-                {activeTab === "labResults" ? "Lab Results" : "Lab Orders"}
+              <PlusIcon />
+              {activeTab === "labResults" ? "Lab Results" : "Lab Orders"}
             </DefaultButton>
           </div>
-          <TabsContent value="labResults">
-            <ResultRecords userDetailsId={userDetailsId} />
-          </TabsContent>
-          <TabsContent value="labOrders">
-            <OrderRecords userDetailsId={userDetailsId} />
-          </TabsContent>
+          {patientLabsTab.map(({ value, component: Component }) => (
+            <TabsContent value={value} key={value}>
+              {Component ? <Component userDetailsId={userDetailsId} /> : value}
+            </TabsContent>
+          ))}
         </Tabs>
       </div>
     </PageContainer>

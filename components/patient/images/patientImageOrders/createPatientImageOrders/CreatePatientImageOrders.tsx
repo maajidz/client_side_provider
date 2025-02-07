@@ -20,13 +20,14 @@ import LoadingButton from "@/components/LoadingButton";
 import { Separator } from "@/components/ui/separator";
 import AddImagesDrawer from "@/components/charts/Encounters/SOAP/Images/AddImagesDrawer";
 import PastImageOrders from "@/components/charts/Encounters/SOAP/Images/PastImageOrders";
+import formStyles from "@/components/formStyles.module.css";
 
 const CreatePatientImageOrders = ({
   userDetailsId,
 }: {
   userDetailsId: string;
 }) => {
-  const today = new Date().toISOString().split("T")[0]; 
+  const today = new Date().toISOString().split("T")[0];
   const form = useForm<z.infer<typeof createLabResultsSchema>>({
     resolver: zodResolver(createLabResultsSchema),
     defaultValues: {
@@ -82,16 +83,13 @@ const CreatePatientImageOrders = ({
           </div>
         </div>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
-          >
-            <div className="flex flex-col gap-7">
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className={formStyles.formBody}>
               <FormField
                 control={form.control}
                 name="dateTime"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>Ordered Data</FormLabel>
                     <FormControl>
                       <Input

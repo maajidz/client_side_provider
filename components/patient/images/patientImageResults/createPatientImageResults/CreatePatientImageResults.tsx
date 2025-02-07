@@ -28,6 +28,7 @@ import { RootState } from "@/store/store";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 
 const CreatePatientImageResults = ({
   userDetailsId,
@@ -125,7 +126,7 @@ const CreatePatientImageResults = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
+            className={`${formStyles.formBody} w-[30rem]`}
           >
             {imageTestResponse?.data && (
               <TestsField
@@ -156,7 +157,7 @@ const CreatePatientImageResults = ({
                     control={form.control}
                     name={`testResults.${index}.interpretation`}
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className={formStyles.formBody}>
                         <FormLabel>Interpretation</FormLabel>
                         <FormControl>
                           <Input

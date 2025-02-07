@@ -25,6 +25,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 
 const CreateOrderRecord = () => {
   const [patient, setPatient] = useState<PatientDetails>();
@@ -102,13 +103,15 @@ const CreateOrderRecord = () => {
       <div>
         <div className="flex justify-between">
           Add Lab Orders
-          <div className="flex gap-3">
+          <div className="flex gap-3 ">
             <Button
               variant={"outline"}
               className="border border-[#84012A] text-[#84012A]"
               onClick={() => {
                 form.reset();
-                router.replace("/dashboard/provider/labs");
+                router.replace(
+                  `/dashboard/provider/patient/${userDetailsId}/lab_records`
+                );
               }}
             >
               Cancel
@@ -116,16 +119,13 @@ const CreateOrderRecord = () => {
           </div>
         </div>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
-          >
-            <div className="flex items-center gap-7">
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className={`${formStyles.formBody} w-[30rem]`}>
               <FormField
                 control={form.control}
                 name="dateTime"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>Ordered Data</FormLabel>
                     <FormControl>
                       <Input
@@ -139,8 +139,8 @@ const CreateOrderRecord = () => {
                   </FormItem>
                 )}
               />
+              <SubmitButton label="Submit" />
             </div>
-            <SubmitButton label="Submit" />
           </form>
         </Form>
         {userDetailsId && (
