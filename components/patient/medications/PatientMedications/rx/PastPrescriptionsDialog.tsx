@@ -54,7 +54,7 @@ const PastPrescriptionsDialog = ({
         onClose();
       }
     }
-  }, [chartId]);
+  }, [chartId, onClose]);
 
   useEffect(() => {
     fetchAndSetResponse();
