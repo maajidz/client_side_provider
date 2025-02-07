@@ -14,7 +14,7 @@ export const createInsurance = async ({
     url: "/provider/insurance",
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
     data: requestData,
   });
@@ -51,7 +51,7 @@ export const updateInsurance = async ({
     url: `/provider/insurance/${id}`,
     method: "PATCH",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
     data: requestData,
   });

@@ -1,7 +1,7 @@
 import { CustomDataTable } from "@/components/custom_buttons/table/CustomDataTable";
 import LoadingButton from "@/components/LoadingButton";
 import { fetchPatientImplantedDevice } from "@/services/implantedDevices";
-import { ImplantedDevices } from "@/types/implantedDevices";
+import { Device } from "@/types/implantedDevices";
 import React, { useCallback, useEffect, useState } from "react";
 import { columns } from "./columns";
 
@@ -10,7 +10,7 @@ const ImplantedDevicesClient = ({
 }: {
   userDetailsId: string;
 }) => {
-  const [data, setData] = useState<ImplantedDevices[]>([]);
+  const [data, setData] = useState<Device[]>([]);
   const [loading, setLoading] = useState(false);
 
   const itemsPerPage = 5;
@@ -26,11 +26,7 @@ const ImplantedDevicesClient = ({
       });
 
       if (response) {
-        setData(
-          response.organizedData.map(
-            (data) => data.device_type
-          )
-        );
+        setData(response.organizedData);
         setTotalPages(Math.ceil(response.total / itemsPerPage));
       }
     } catch (e) {
