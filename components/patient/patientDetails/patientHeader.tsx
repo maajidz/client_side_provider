@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { PatientDetails } from "@/types/userInterface";
 import { fetchUserInfo } from "@/services/userServices";
 import { setChartId } from "@/store/slices/userSlice";
@@ -16,8 +16,8 @@ const PatientHeader = ({ userId }: { userId: string }) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchAndSetResponse = async () => {
+  const fetchAndSetResponse = useCallback(() => {
+    async () => {
       setLoading(true);
       const userData = await fetchUserInfo({ userDetailsId: userId });
       if (userData) {
@@ -26,7 +26,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
         setAge(calculateAge(userData.userDetails.dob));
 
         const encounter = userData.userDetails.encounter.pop();
-        
+
         let latestChartId = "";
         if (encounter) {
           latestChartId = encounter.chart?.id || "";
@@ -39,9 +39,11 @@ const PatientHeader = ({ userId }: { userId: string }) => {
         );
       }
     };
+  }, [userId, age]);
 
+  useEffect(() => {
     fetchAndSetResponse();
-  }, [userId, age, dispatch]);
+  }, [fetchAndSetResponse]);
 
   if (loading) {
     return (
@@ -55,7 +57,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
     <div className="flex flex-row w-full items-center">
       {response && (
         <div className={styles.infoContainer}>
-          <div className={`${styles.infoBox}   bg-[#EDF9F3]`}>
+          <div className={`${styles.infoBox} bg-[#EDF9F3]`}>
             {`${response?.user?.firstName} ${response?.user?.lastName}`}
             <div className="flex flex-row gap-3 items-center">
               <div>

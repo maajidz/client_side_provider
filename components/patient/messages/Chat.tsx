@@ -8,8 +8,8 @@ import { formatSentAt } from "@/utils/dateUtils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "lucide-react";
 import { fetchMessages } from "@/services/messageService";
-// import { ScrollArea } from "@/components/ui/scroll-area";
-// import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 export default function ChatPage({
   userId,
@@ -147,10 +147,9 @@ export default function ChatPage({
   };
 
   return (
-    <div className="flex flex-col p-4 gap-2">
-      <div 
-      className="flex flex-col"
-      // className={`${cn("h-[calc(55dvh-52px)] rounded-md p-4")}`}
+    <div className="flex flex-col p-4 gap-2 h-full">
+      <ScrollArea 
+      className={`${cn("h-[calc(55vh)] rounded-md p-4")}`}
       >
       <button
         onClick={() => setPage((prev) => prev + 1)}
@@ -200,9 +199,9 @@ export default function ChatPage({
             </div>
           ))}
         </div>
-      </div>
+      </ScrollArea>
 
-      <div className="flex">
+      <div className="flex align-baseline">
         <input
           type="text"
           value={input}

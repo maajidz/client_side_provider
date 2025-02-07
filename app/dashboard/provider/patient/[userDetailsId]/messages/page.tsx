@@ -1,6 +1,6 @@
 "use client";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-// import PageContainer from "@/components/layout/page-container";
+import PageContainer from "@/components/layout/page-container";
 import PatientMessages from "@/components/patient/messages/PatientMessages";
 import { Heading } from "@/components/ui/heading";
 import { useParams } from "next/navigation";
@@ -18,13 +18,13 @@ function Page() {
   }
   return (
     <>
-      {/* <PageContainer scrollable={true}> */}
+      <PageContainer scrollable={true}>
         <div className="space-y-4">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading title="Messages" description="" />
         </div>
         <PatientMessages userDetailsId={userDetailsId} />
-      {/* </PageContainer> */}
+      </PageContainer>
     </>
   );
 }

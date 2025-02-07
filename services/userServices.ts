@@ -64,19 +64,14 @@ export const fetchUserInfo = async ({
 }: {
   userDetailsId: string;
 }) => {
-  try {
-    const response = await ApiFetch({
-      method: "get",
-      url: `/provider/patients/${userDetailsId}`,
-    });
+  const response = await ApiFetch({
+    method: "get",
+    url: `/provider/patients/${userDetailsId}`,
+  });
 
-    const data: PatientDetailsInterface = await response.data;
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.log("Error fetching response", error);
-    return null;
-  }
+  const data: PatientDetailsInterface = await response.data;
+  console.log(data);
+  return data;
 };
 
 export const fetchUserAppointments = async ({
