@@ -17,13 +17,13 @@ import { fetchProviderAppointments } from "@/services/providerAppointments";
 import { ProviderAppointmentsInterface } from "@/types/appointments";
 import { DateRange } from "react-day-picker";
 import { addDays, format } from "date-fns";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 import {
   Popover,
   PopoverContent,
@@ -122,10 +122,10 @@ export const CalendarBody = () => {
         <Heading title={`Calendar`} description="" />
         <div>
           <DefaultButton onClick={handleClick}>
-              <PlusIcon size={24}/>
-              <div className="hidden md:block lg:block">
-                Update my availability
-              </div>
+            <PlusIcon size={24} />
+            <div className="hidden md:block lg:block">
+              Update my availability
+            </div>
           </DefaultButton>
         </div>
       </div>
@@ -139,7 +139,7 @@ export const CalendarBody = () => {
             <div className={cn("grid gap-2")}>
               <Popover open={customRange} onOpenChange={setCustomRange}>
                 <PopoverTrigger asChild>
-                  <div>
+                  {/* <div>
                     <Select
                       onValueChange={(value) => {
                         if (value === "custom") {
@@ -168,7 +168,7 @@ export const CalendarBody = () => {
                         <SelectItem value="custom">Custom</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div> */}
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
@@ -181,9 +181,6 @@ export const CalendarBody = () => {
                 </PopoverContent>
               </Popover>
             </div>
-            {providerAppointment?.data.map((data) => (
-              <div key={data.id}>{data.patientName}</div>
-            ))}
             {providerAppointment && (
               <ListViewBody appointments={providerAppointment.data} />
             )}
