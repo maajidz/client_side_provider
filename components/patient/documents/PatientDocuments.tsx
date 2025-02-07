@@ -1,60 +1,67 @@
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsContent } from "@/components/ui/tabs";
 import ViewPatientDocuments from "./ViewPatientDocuments";
-import { Separator } from "@/components/ui/separator";
 import PageContainer from "@/components/layout/page-container";
+import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 
 const PatientDocuments = ({ userDetailsId }: { userDetailsId: string }) => {
+  const patientDocumentsTab = [
+    // {
+    //   value: "lastvisit",
+    //   label: "Since Last Visit",
+    //   component: ViewPatientDocuments,
+    // },
+    // {
+    //   value: "unsigned",
+    //   label: "Unsigned",
+    //   component: ViewPatientDocuments,
+    // },
+    // {
+    //   value: "6months",
+    //   label: "Past 6 Months",
+    //   component: ViewPatientDocuments,
+    // },
+    // {
+    //   value: "1year",
+    //   label: "Past 1 Year",
+    //   component: ViewPatientDocuments,
+    // },
+    {
+      value: "all",
+      label: "All",
+      component: ViewPatientDocuments,
+    },
+    // {
+    //   value: "images",
+    //   label: "Images",
+    //   component: ViewPatientDocuments,
+    // },
+    // {
+    //   value: "patient",
+    //   label: "Shared by Patient",
+    //   component: ViewPatientDocuments,
+    // },
+  ];
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-col gap-3 rounded-lg">
-        <Tabs defaultValue="all" className="flex gap-4">
-          <TabsList className="flex flex-col gap-4 h-full p-2 rounded-lg border">
-            <TabsTrigger value="lastvisit" className="hover:bg-white">
-              Since Last Visit
-            </TabsTrigger>
-            <TabsTrigger value="unsigned" className="hover:bg-white">
-              Unsigned
-            </TabsTrigger>
-            <TabsTrigger value="6months" className="hover:bg-white">
-              Past 6 Months
-            </TabsTrigger>
-            <TabsTrigger value="1year" className="hover:bg-white">
-              Past 1 Year
-            </TabsTrigger>
-            <TabsTrigger value="all" className=" hover:bg-white">
-              All
-            </TabsTrigger>
-            <Separator className="bg-black w-full text-black border border-black" />
-            <TabsTrigger value="images" className="hover:bg-white">
-              Images
-            </TabsTrigger>
-            <TabsTrigger value="patient" className="hover:bg-white">
-              Shared by Patient
-            </TabsTrigger>
+        <Tabs defaultValue="all" className="flex flex-row gap-5">
+          <TabsList className="flex flex-col h-full w-56 justify-start items-start p-3 gap-3 overflow-hidden">
+            {patientDocumentsTab.map((tab) => (
+              <CustomTabsTrigger value={tab.value} key={tab.value}>
+                {tab.label}
+              </CustomTabsTrigger>
+            ))}
           </TabsList>
-
           <div className="flex-1 p-4 rounded-lg border border-gray-300">
-            <TabsContent value="lastvisit">
-              <p>Content for Since Last Visit</p>
-            </TabsContent>
-            <TabsContent value="unsigned">
-              <p>Content for Unsigned</p>
-            </TabsContent>
-            <TabsContent value="6months">
-              <p>Content for Past 6 Months</p>
-            </TabsContent>
-            <TabsContent value="1year">
-              <p>Content for Past 1 Year</p>
-            </TabsContent>
-            <TabsContent value="all">
-              <ViewPatientDocuments userDetailsId={userDetailsId} />
-            </TabsContent>
-            <TabsContent value="images">
-              <p>Content for Images</p>
-            </TabsContent>
-            <TabsContent value="patient">
-              <p>Content for Shared by Patient</p>
-            </TabsContent>
+            {patientDocumentsTab.map(({ value, component: Component }) => (
+              <TabsContent value={value} key={value}>
+                {Component ? (
+                  <Component userDetailsId={userDetailsId} />
+                ) : (
+                  value
+                )}
+              </TabsContent>
+            ))}
           </div>
         </Tabs>
       </div>

@@ -37,6 +37,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
+import formStyles from "@/components/formStyles.module.css";
 
 function UploadDocumentDialog({
   userDetailsId,
@@ -154,7 +155,7 @@ function UploadDocumentDialog({
     <Dialog open={open} onOpenChange={onFileSelected}>
       <DialogTrigger asChild>
         <div>
-          <DefaultButton  onClick={handleButtonClick}>Import</DefaultButton>
+          <DefaultButton onClick={handleButtonClick}>Import</DefaultButton>
           <Input
             type="file"
             ref={fileInputRef}
@@ -164,132 +165,133 @@ function UploadDocumentDialog({
           />
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[30rem]">
         <DialogHeader>
           <DialogTitle>Upload Document</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
-            className="flex flex-col gap-3"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             {/* Documents */}
-            <FormField
-              control={form.control}
-              name="file"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Documents</FormLabel>
-                  <FormControl>
-                    <>
-                      <ul className="text-sm mt-2">
-                        {images.map((file, index) => (
-                          <li
-                            key={`${file} ${index}`}
-                            className="font-semibold"
-                          >
-                            {file.name}
-                          </li>
-                        ))}
-                      </ul>
-                      <Input
-                        type="file"
-                        className="min-h-[90px] w-full"
-                        multiple
-                        onChange={handleFileInput}
-                      />
-                    </>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex flex-col justify-center gap-6">
-              {/* Document Type */}
+            <div className={formStyles.formBody}>
               <FormField
                 control={form.control}
-                name="document_type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Document Type</FormLabel>
+                name="file"
+                render={() => (
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel>Documents</FormLabel>
                     <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Document Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="labResults">
-                            Lab Results
-                          </SelectItem>
-                          <SelectItem value="imageResults">
-                            Image Results
-                          </SelectItem>
-                          <SelectItem value="other">Other Documents</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <>
+                        <ul className="text-sm mt-2">
+                          {images.map((file, index) => (
+                            <li
+                              key={`${file} ${index}`}
+                              className="font-semibold"
+                            >
+                              {file.name}
+                            </li>
+                          ))}
+                        </ul>
+                        <Input
+                          type="file"
+                          className="min-h-[90px] w-full"
+                          multiple
+                          onChange={handleFileInput}
+                        />
+                      </>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              <div className="flex flex-col gap-5">
+                {/* Document Type */}
+                <FormField
+                  control={form.control}
+                  name="document_type"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel>Document Type</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Document Type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="labResults">
+                              Lab Results
+                            </SelectItem>
+                            <SelectItem value="imageResults">
+                              Image Results
+                            </SelectItem>
+                            <SelectItem value="other">
+                              Other Documents
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Date */}
-              <FormField
-                control={form.control}
-                name="date"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Date</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="date"
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* For Review Checkbox */}
-              <FormField
-                control={form.control}
-                name="file_for_review"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center gap-2 space-y-0">
-                    <FormLabel className="text-sm font-medium">
-                      File for Review
-                    </FormLabel>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={(checked) => field.onChange(checked)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                {/* Date */}
+                <FormField
+                  control={form.control}
+                  name="date"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel>Date</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="date"
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="file_for_review"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                      <FormLabel className="text-sm font-medium">
+                        File for Review
+                      </FormLabel>
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={(checked) => field.onChange(checked)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <DialogFooter className="flex flex-row-reverse gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="bg-slate-200 hover:bg-slate-100"
+                  onClick={() => {
+                    onFileSelected(false);
+                    setImages([]);
+                    form.reset();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <SubmitButton label="Upload" disabled={loading} />
+              </DialogFooter>
             </div>
-            <DialogFooter className="flex flex-row-reverse gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                className="bg-slate-200 hover:bg-slate-100"
-                onClick={() => {
-                  onFileSelected(false);
-                  setImages([]);
-                  form.reset();
-                }}
-              >
-                Cancel
-              </Button>
-              <SubmitButton label="Upload" disabled={loading} />
-            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
