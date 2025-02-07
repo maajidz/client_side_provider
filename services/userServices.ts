@@ -87,7 +87,7 @@ export const fetchUserAppointments = async ({
   try {
     const response = await ApiFetch({
       method: "get",
-      url: `/provider/appointments/patient/${userDetailsId}?q=AL`,
+      url: `/provider/appointments/patient/${userDetailsId}?q=ALL`,
     });
     console.log(response.data);
     const data: UserAppointmentInterface[] = await response.data;

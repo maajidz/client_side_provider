@@ -1,13 +1,13 @@
-import Referral from '@/components/referral/Referral'
-import React from 'react'
+import Referral from "@/components/referral/Referral";
+import React from "react";
 
-const PatientReferrals = ({userDetailsId}: {userDetailsId: string}) => {
+const PatientReferrals = ({ userDetailsId }: { userDetailsId: string }) => {
+  console.log(userDetailsId)
   return (
     <>
-    {userDetailsId}
-    <Referral />
+      <Referral  />
     </>
-  )
-}
+  );
+};
 
-export default PatientReferrals
+export default PatientReferrals;

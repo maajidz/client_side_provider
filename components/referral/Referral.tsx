@@ -1,6 +1,6 @@
 "use client";
 import PageContainer from "@/components/layout/page-container";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import React, { useState } from "react";
 import { PlusIcon } from "lucide-react";
 import ReferralOutDialog from "./ReferralOut/ReferralOutDialog";
@@ -8,6 +8,7 @@ import ReferralInDialog from "./Referraln/ReferralInDialog";
 import ViewReferralOut from "./ReferralOut/ViewReferralOut";
 import ViewReferralIn from "./Referraln/ViewReferralIn";
 import DefaultButton from "../custom_buttons/buttons/DefaultButton";
+import CustomTabsTrigger from "../custom_buttons/buttons/CustomTabsTrigger";
 
 const Referral = () => {
   const [activeTab, setActiveTab] = useState<string>("referralOut");
@@ -15,6 +16,15 @@ const Referral = () => {
     useState<boolean>(false);
   const [isReferralInDialogOpen, setIsReferralInDialogOpen] =
     useState<boolean>(false);
+
+  const patientReferralTab = [
+    {
+      value: "referralOut",
+      label: "Referral Out",
+      component: ViewReferralOut,
+    },
+    { value: "referralIn", label: "Referral In", component: ViewReferralIn },
+  ];
 
   return (
     <PageContainer scrollable={true}>
@@ -25,8 +35,11 @@ const Referral = () => {
         >
           <div className="flex flex-row justify-between gap-10">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="referralOut">Referral Out</TabsTrigger>
-              <TabsTrigger value="referralIn">Referral In</TabsTrigger>
+              {patientReferralTab.map((tab) => (
+                <CustomTabsTrigger value={tab.value} key={tab.value}>
+                  {tab.label}
+                </CustomTabsTrigger>
+              ))}
             </TabsList>
             {activeTab === "referralOut" ? (
               <DefaultButton
@@ -60,12 +73,11 @@ const Referral = () => {
               isOpen={isReferralInDialogOpen}
             />
           </div>
-          <TabsContent value="referralOut">
-            <ViewReferralOut />
-          </TabsContent>
-          <TabsContent value="referralIn">
-            <ViewReferralIn />
-          </TabsContent>
+          {patientReferralTab.map(({ value, component: Component }) => (
+            <TabsContent value={value} key={value}>
+              {Component ? <Component /> : value}
+            </TabsContent>
+          ))}
         </Tabs>
       </div>
     </PageContainer>
