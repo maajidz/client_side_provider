@@ -26,7 +26,7 @@ const ImplantedDevicesClient = ({
       });
 
       if (response) {
-        setData(response.devices);
+        setData(response.organizedData);
         setTotalPages(Math.ceil(response.total / itemsPerPage));
       }
     } catch (e) {

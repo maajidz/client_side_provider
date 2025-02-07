@@ -100,8 +100,7 @@ function InsuranceDialog({
       subscriberNumber: formValues.subscriberNumber,
       idNumber: formValues.idNumber,
       status: "inactive",
-      frontDocumentImage: formValues.frontDocumentImage,
-      backDocumentImage: formValues.backDocumentImage,
+      images: [frontImageFile, backImageFile],
       userDetailsID: userDetailsId,
     };
     try {
