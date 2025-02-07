@@ -8,8 +8,8 @@ import { formatSentAt } from "@/utils/dateUtils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "lucide-react";
 import { fetchMessages } from "@/services/messageService";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
+// import { ScrollArea } from "@/components/ui/scroll-area";
+// import { cn } from "@/lib/utils";
 
 export default function ChatPage({
   userId,
