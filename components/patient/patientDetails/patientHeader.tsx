@@ -43,7 +43,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
     } finally {
       setLoading(false);
     }
-  }, [userId, age]);
+  }, [userId, age, dispatch]);
 
   useEffect(() => {
     fetchAndSetResponse();
