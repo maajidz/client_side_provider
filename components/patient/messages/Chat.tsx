@@ -8,8 +8,12 @@ import { formatSentAt } from "@/utils/dateUtils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "lucide-react";
 import { fetchMessages } from "@/services/messageService";
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
+import { Separator } from "@/components/ui/separator";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
 
 export default function ChatPage({
   userId,
@@ -18,12 +22,13 @@ export default function ChatPage({
   userId: string;
   recipientId: string;
 }) {
+  const userDetails = useSelector((state: RootState) => state.user);
   const socketRef = useRef<Socket | null>(null);
   const [connectionAttempts, setConnectionAttempts] = useState<number>(0);
   const [messages, setMessages] = useState<UserMessagesInterface[]>([]);
   const [input, setInput] = useState("");
   const [page, setPage] = useState(1);
-  const chatEndRef = useRef<HTMLDivElement | null>(null);
+  // const chatEndRef = useRef<HTMLDivElement | null>(null);
   const pageSize = 15;
   const maxRetries = 3;
 
@@ -44,9 +49,9 @@ export default function ChatPage({
     [userId, recipientId, pageSize]
   );
 
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  // useEffect(() => {
+  //   chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [messages]);
 
   useEffect(() => {
     fetchUserMessages(page);
@@ -113,9 +118,7 @@ export default function ChatPage({
     };
   }, [connectSocket]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSendMessage = () => {
     if (input.trim()) {
       const message: Message = {
         id: uuidv4(),
@@ -147,17 +150,21 @@ export default function ChatPage({
   };
 
   return (
-    <div className="flex flex-col p-4 gap-2 h-full">
-      <ScrollArea 
-      className={`${cn("h-[calc(55vh)] rounded-md p-4")}`}
-      >
-      <button
-        onClick={() => setPage((prev) => prev + 1)}
-        className="p-2 mb-2 bg-gray-300 rounded"
-      >
-        Load More Messages
-      </button>
+    <div className="flex flex-col p-4 gap-8 h-full ">
+      <div className={`flex justify-between`}>
+        <div className="text-[#84012A] font-semibold text-base capitalize">
+          {userDetails.firstName} {userDetails.lastName}
+        </div>
+      </div>
+      <Separator />
+      <ScrollArea className="h-[30vh]">
         <div className="flex flex-col flex-1 gap-6">
+          <button
+            onClick={() => setPage((prev) => prev + 1)}
+            className="p-2 mb-2 bg-gray-300 rounded"
+          >
+            Load More Messages
+          </button>
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -195,21 +202,19 @@ export default function ChatPage({
                   </div>
                 </div>
               </div>
-              <div ref={chatEndRef} />
+              {/* <div ref={chatEndRef} /> */}
             </div>
           ))}
         </div>
       </ScrollArea>
-
-      <div className="flex align-baseline">
-        <input
-          type="text"
+      <div className={messageStyles.sendButtonContainer}>
+        <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
-          className="flex-1 p-2 border rounded-l-lg"
+          className="resize-none"
         />
-        <button onClick={handleSendMessage}>Send</button>
+        <DefaultButton onClick={() => handleSendMessage()}>Send</DefaultButton>
       </div>
     </div>
   );
