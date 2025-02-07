@@ -150,7 +150,7 @@ export default function ChatPage({
   };
 
   return (
-    <div className="flex flex-col p-4 gap-8 h-full ">
+    <div className="flex flex-col gap-8 h-full ">
       <div className={`flex justify-between`}>
         <div className="text-[#84012A] font-semibold text-base capitalize">
           {userDetails.firstName} {userDetails.lastName}

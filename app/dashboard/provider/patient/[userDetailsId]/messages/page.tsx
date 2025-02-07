@@ -17,11 +17,13 @@ function Page() {
   }
   return (
     <>
-        <div className="flex flex-1 p-4 gap-4 flex-col">
+      <div className="flex flex-1 flex-col p-4 gap-4">
+        <div className="flex flex-1 gap-4 flex-col">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading title="Messages" description="" />
         </div>
         <PatientMessages userDetailsId={userDetailsId} />
+      </div>
     </>
   );
 }
