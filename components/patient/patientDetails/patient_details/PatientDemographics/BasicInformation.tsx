@@ -25,13 +25,13 @@ const BasicInformation = ({
           <div>
             <div className={styles.labelText}>First Name</div>
             <div className={styles.valueText}>
-              {patientDetails?.user?.firstName}
+              {patientDetails?.user?.firstName ? patientDetails?.user?.firstName: 'N/A'}
             </div>
           </div>
           <div>
             <div className={styles.labelText}>Last Name</div>
             <div className={styles.valueText}>
-              {patientDetails?.user?.lastName}
+              {patientDetails?.user?.lastName? patientDetails?.user?.lastName : 'N/A'}
             </div>
           </div>
           <div className="flex flex-col">
@@ -47,7 +47,7 @@ const BasicInformation = ({
           </div>
           <div>
             <div className={styles.labelText}>Birth Sex</div>
-            <div className={styles.valueText}>{patientDetails?.gender}</div>
+            <div className={styles.valueText}>{patientDetails?.gender ? patientDetails?.gender : 'N/A'}</div>
           </div>
         </div>
       </div>

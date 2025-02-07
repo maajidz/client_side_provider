@@ -14,17 +14,17 @@ const ContactDetails = ({
         <div className="flex flex-col gap-6">
           <div>
             <div className={styles.labelText}>Address</div>
-            <div className={styles.valueText}>{patientDetails?.location}</div>
+            <div className={styles.valueText}>{patientDetails?.location ? patientDetails?.location: 'N/A'}</div>
           </div>
           <div>
             <div className={styles.labelText}>Cell Phone</div>
             <div className={styles.valueText}>
-              {patientDetails?.user?.phoneNumber}
+              {patientDetails?.user?.phoneNumber ? patientDetails?.user?.phoneNumber: 'N/A'}
             </div>
           </div>
           <div>
             <div className={styles.labelText}>Email</div>
-            <div className={styles.valueText}>{patientDetails?.user?.email}</div>
+            <div className={styles.valueText}>{patientDetails?.user?.email ? patientDetails?.user?.email: 'N/A'}</div>
           </div>
         </div>
       </div>

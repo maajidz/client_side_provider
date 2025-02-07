@@ -2,6 +2,8 @@ import ApiFetch from "@/config/api";
 import {
   CreateUser,
   PatientCareTeamInterface,
+  PatientDashboardInterface,
+  PatientDetails,
   PatientDetailsInterface,
   PatientMedicationInterface,
   PaymentInterface,
@@ -70,6 +72,36 @@ export const fetchUserInfo = async ({
   });
 
   const data: PatientDetailsInterface = await response.data;
+  console.log(data);
+  return data;
+};
+
+export const fetchUserEssentials = async ({
+  userDetailsId,
+}: {
+  userDetailsId: string;
+}) => {
+  const response = await ApiFetch({
+    method: "get",
+    url: `/provider/patients/essentials/${userDetailsId}`,
+  });
+
+  const data: PatientDetails = await response.data;
+  console.log(data);
+  return data;
+};
+
+export const fetchUserEssentialsDashboard = async ({
+  userDetailsId,
+}: {
+  userDetailsId: string;
+}) => {
+  const response = await ApiFetch({
+    method: "get",
+    url: `/provider/patients/dashbaord/${userDetailsId}`,
+  });
+
+  const data: PatientDashboardInterface = await response.data;
   console.log(data);
   return data;
 };
