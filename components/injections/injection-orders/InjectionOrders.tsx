@@ -49,6 +49,7 @@ function InjectionOrders() {
   // To toggle patient input
   const params = useParams();
   const { userDetailsId } = params;
+  const userDetailsIdString = Array.isArray(userDetailsId) ? userDetailsId[0] : userDetailsId;
 
   // Data State
   const [patientData, setPatientData] = useState<UserData[]>([]);
@@ -141,12 +142,20 @@ function InjectionOrders() {
     }
   }, [toast]);
 
+  useEffect(() => {
+    if (userDetailsIdString) {
+      form.setValue("userDetailsId", userDetailsIdString);
+    }
+  }, [userDetailsIdString, form]);
+
+
   // POST Injection
   const onSubmit = async (formData: z.infer<typeof addInjectionSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
 
     const finalData: CreateInjectionType = {
       ...formData,
+      userDetailsId: userDetailsIdString ?? formData?.userDetailsId ?? '',
       dosage_quantity: formData.dosage.dosage_quantity,
       dosage_unit: formData.dosage.dosage_unit,
       period_number: formData.period.period_number,
@@ -225,7 +234,7 @@ function InjectionOrders() {
                         <FormControl>
                           <div className="relative">
                             <Input
-                              placeholder="Search Patient "
+                              placeholder="Search Patient"
                               value={searchTerm}
                               onChange={(e) => {
                                 setSearchTerm(e.target.value);

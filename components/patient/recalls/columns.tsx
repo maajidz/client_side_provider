@@ -93,6 +93,20 @@ export const columns = ({
     ),
   },
   {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const statusColor =
+        row.original.status === "active" ? "text-green-500" : "text-red-500";
+
+      return (
+        <div className={`cursor-pointer capitalize ${statusColor}`}>
+          {row.original.status}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "id",
     header: "",
     cell: ({ row }) => (

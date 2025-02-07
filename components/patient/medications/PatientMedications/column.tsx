@@ -76,19 +76,31 @@ export const columns = ({
     header: "From Date",
     cell: ({ row }) => (
       <div className="cursor-pointer">
-        {new Date(row.original.createdAt).toDateString()}
+        {new Date(row.original.fromDate).toDateString()}
       </div>
     ),
   },
   {
     accessorKey: "toDate",
     header: "To Date",
-    cell: () => <div className="cursor-pointer"></div>,
+    cell: ({ row }) => (
+      <div className="cursor-pointer">
+        {new Date(row.original.toDate).toDateString()}
+      </div>
+    ),
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: () => <div className="cursor-pointer"></div>,
+    cell: ({ row }) => (
+      <div
+        className={`cursor-pointer capitalize ${
+          row.original.status === "active" ? "text-green-500" : "text-red-500"
+        }`}
+      >
+        {row.original.status}
+      </div>
+    ),
   },
   {
     accessorKey: "id",

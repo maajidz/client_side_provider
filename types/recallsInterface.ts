@@ -35,6 +35,7 @@ export interface RecallsData {
     due_date_value: number
     due_date_unit: string
     auto_reminders: boolean
+    status: string;
     createdAt: string
     updatedAt: string
 }

@@ -84,8 +84,10 @@ const ViewPatientMedications = ({
           />
         )}
         <EditPrescription
+          userDetailsId={userDetailsId}
           isOpen={isDialogOpen}
           selectedPrescription={editData}
+          onFetchPrescriptionsList={fetchPrescriptionsList}
           onSetIsOpen={setIsDialogOpen}
         />
       </div>

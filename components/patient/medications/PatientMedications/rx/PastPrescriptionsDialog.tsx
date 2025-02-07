@@ -1,6 +1,7 @@
 import SubmitButton from "@/components/custom_buttons/SubmitButton";
 import RxPatientDetailsSection from "@/components/charts/Encounters/SOAP/Prescription/RxPatientDetailsSection";
 import LoadingButton from "@/components/LoadingButton";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,10 +11,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { RootState } from "@/store/store";
 import { FetchPrescription } from "@/types/chartsInterface";
 // import { getPrescriptionsData } from "@/services/chartsServices";
-import { useEffect, useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { getPrescriptionsData } from "@/services/chartsServices";
 
 interface PastPrescriptionsDialogProps {
   isDialogOpen: boolean;
@@ -26,32 +29,36 @@ const PastPrescriptionsDialog = ({
   userDetailsId,
   onClose,
 }: PastPrescriptionsDialogProps) => {
-  const [loading] = useState<boolean>(false);
-  const [response] = useState<FetchPrescription>();
+  // Data State
+  const [response, setResponse] = useState<FetchPrescription>();
+
+  // Loading State
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // Chart State
+  const chartId = useSelector((state: RootState) => state.user.chartId);
+
+  const fetchAndSetResponse = useCallback(async () => {
+    setLoading(true);
+
+    if (chartId) {
+      try {
+        const data = await getPrescriptionsData({ chartId });
+        if (data) {
+          setResponse(data);
+        }
+      } catch (e) {
+        console.log("Error", e);
+      } finally {
+        setLoading(false);
+        onClose();
+      }
+    }
+  }, [chartId]);
 
   useEffect(() => {
-    const fetchAndSetResponse = async () => {
-      // ! Needs chart ID
-      // if (patientDetails.chart?.id) {
-      //   setLoading(true);
-      //   try {
-      //     const data = await getPrescriptionsData({
-      //       chartId: patientDetails.chart.id,
-      //     });
-      //     if (data) {
-      //       setResponse(data);
-      //     }
-      //   } catch (e) {
-      //     console.log("Error", e);
-      //     setLoading(false);
-      //   } finally {
-      //     setLoading(false);
-      //     onClose();
-      //   }
-      // }
-    };
     fetchAndSetResponse();
-  }, []);
+  }, [fetchAndSetResponse]);
 
   if (loading) {
     return <LoadingButton />;

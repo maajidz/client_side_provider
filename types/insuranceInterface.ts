@@ -22,6 +22,8 @@ export interface CreateInsuranceInterface {
   userDetailsID: string;
 }
 
+export type UpdateInsuranceType = CreateInsuranceInterface;
+
 export type IsInsuredType =  {
   isInsured: string;
 }

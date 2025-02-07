@@ -45,6 +45,10 @@ function VaccineOrders() {
   // To toggle patient input
   const params = useParams();
   const { userDetailsId } = params;
+  const userDetailsIdString = Array.isArray(userDetailsId)
+    ? userDetailsId[0]
+    : userDetailsId;
+
 
   // Data State
   const [patientData, setPatientData] = useState<UserData[]>([]);
@@ -141,8 +145,13 @@ function VaccineOrders() {
   const onSubmit = async (formData: z.infer<typeof addVaccineSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
 
+    const requestData = {
+      ...formData,
+      userDetailsId: userDetailsIdString ?? formData?.userDetailsId ?? "",
+    };
+
     try {
-      await createVaccineOrder({ requestData: formData });
+      await createVaccineOrder({ requestData });
 
       showToast({
         toast,
