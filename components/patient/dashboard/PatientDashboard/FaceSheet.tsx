@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./face_Sheet.module.css";
 import { fetchUserEssentialsDashboard } from "@/services/userServices";
 import { PatientDashboardInterface } from "@/types/userInterface";
@@ -14,7 +14,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
   const [userData, setUserData] = useState<PatientDashboardInterface>();
   const [supplementData, setSupplementData] = useState<SupplementInterface[]>();
 
-  const fetchUserData = useCallback(async () => {
+  const fetchUserData = async () => {
     try {
       setLoading(true);
       const userData = await fetchUserEssentialsDashboard({
@@ -25,14 +25,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
         setLoading(false);
       }
     } catch (error) {
-      setLoading(false);
       console.log("Error", error);
     } finally {
       setLoading(false);
     }
-  }, [userDetailsId]);
+  };
 
-  const fetchSupplements = useCallback(async () => {
+  const fetchSupplements = async () => {
     setLoading(true);
 
     try {
@@ -48,12 +47,12 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
     } finally {
       setLoading(false);
     }
-  }, [userDetailsId]);
+  };
 
   useEffect(() => {
     fetchUserData();
     fetchSupplements();
-  }, [fetchUserData, fetchSupplements]);
+  });
 
   if (loading) {
     return <LoadingButton />;
@@ -69,7 +68,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               href="allergies"
               userDetailsId={userDetailsId}
             />
-            {userData?.allergies ? (
+            {userData?.allergies && userData.allergies.length > 0 ? (
               userData?.allergies.map((allergies, index) => (
                 <div
                   className={`${styles.infoTextLabel} text-[#fb6e52]`}
