@@ -147,8 +147,10 @@ export default function ChatPage({
   };
 
   return (
-    <div className="flex flex-col p-4 gap-2">
-      <ScrollArea className={`${cn("h-[calc(55dvh-52px)] rounded-md p-4")}`}>
+    <div className="flex flex-col p-4 gap-2 h-full">
+      <ScrollArea 
+      className={`${cn("h-[calc(55vh)] rounded-md p-4")}`}
+      >
       <button
         onClick={() => setPage((prev) => prev + 1)}
         className="p-2 mb-2 bg-gray-300 rounded"
@@ -199,7 +201,7 @@ export default function ChatPage({
         </div>
       </ScrollArea>
 
-      <div className="flex">
+      <div className="flex align-baseline">
         <input
           type="text"
           value={input}

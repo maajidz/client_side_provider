@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { PatientDetails } from "@/types/userInterface";
-import { fetchUserInfo } from "@/services/userServices";
+import { fetchUserEssentials } from "@/services/userServices";
 import { setChartId } from "@/store/slices/userSlice";
 import { calculateAge } from "@/utils/utils";
 import styles from "./patient.module.css";
@@ -16,17 +16,17 @@ const PatientHeader = ({ userId }: { userId: string }) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchAndSetResponse = async () => {
-      setLoading(true);
-      const userData = await fetchUserInfo({ userDetailsId: userId });
+  const fetchAndSetResponse = useCallback(async () => {
+    setLoading(true);
+    try {
+      const userData = await fetchUserEssentials({ userDetailsId: userId });
       if (userData) {
-        setResponse(userData.userDetails);
+        setResponse(userData);
         setLoading(false);
-        setAge(calculateAge(userData.userDetails.dob));
+        setAge(calculateAge(userData.dob));
 
-        const encounter = userData.userDetails.encounter.pop();
-        
+        const encounter = userData.encounter.pop();
+
         let latestChartId = "";
         if (encounter) {
           latestChartId = encounter.chart?.id || "";
@@ -38,10 +38,16 @@ const PatientHeader = ({ userId }: { userId: string }) => {
           })
         );
       }
-    };
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [userId, dispatch]);
 
+  useEffect(() => {
     fetchAndSetResponse();
-  }, [userId, age, dispatch]);
+  }, [fetchAndSetResponse]);
 
   if (loading) {
     return (
@@ -53,57 +59,74 @@ const PatientHeader = ({ userId }: { userId: string }) => {
 
   return (
     <div className="flex flex-row w-full items-center">
-      {response && (
-        <div className={styles.infoContainer}>
-          <div className={`${styles.infoBox}   bg-[#EDF9F3]`}>
-            {`${response?.user?.firstName} ${response?.user?.lastName}`}
-            <div className="flex flex-row gap-3 items-center">
-              <div>
-                {response?.gender}/{age}
-              </div>
+      <div className={styles.infoContainer}>
+        <div className={`${styles.infoBox} bg-[#EDF9F3]`}>
+          {response &&
+          response.user &&
+          (response.user.firstName || response.user.lastName)
+            ? `${response?.user?.firstName} ${response?.user?.lastName}`
+            : "N/A"}
+          <div className="flex flex-row gap-3 items-center">
+            <div>
+              {response && (response.gender || age)
+                ? `${response?.gender}/${age}`
+                : "N/A"}
+            </div>
+            <PatientLabelDetails
+              label="ID:"
+              value={`${userId.slice(0, 15)}...`}
+            />
+          </div>
+        </div>
+        <div className={`${styles.infoBox}  bg-[#ECF5FF]`}>
+          <div className="flex  items-center gap-3">
+            <div className={styles.labelText}>Allergies:</div>
+            {response && response.allergies
+              ? response.allergies.map((allergy, index) => (
+                  <div
+                    className={`${styles.valueText} text-[#fb6e52]`}
+                    key={allergy.id}
+                  >
+                    {index === 0 ? "" : ","}
+                    {allergy.Allergen}
+                  </div>
+                ))
+              : "N/A"}
+          </div>
+        </div>
+        <div className={`${styles.infoBox}  bg-[#FFFFEA]`}>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-row gap-5">
               <PatientLabelDetails
-                label="ID:"
-                value={`${userId.slice(0, 15)}...`}
+                label="Weight:"
+                value={
+                  response && response.vitals
+                    ? `${response?.vitals[0]?.weightLbs}lbs ${response?.vitals[0]?.weightOzs}ozs`
+                    : "N/A"
+                }
+              />
+              <PatientLabelDetails
+                label="BMI:"
+                value={
+                  response && response.vitals[0].BMI
+                    ? `${response?.vitals[0]?.BMI}`
+                    : "N/A"
+                }
               />
             </div>
-          </div>
-          <div className={`${styles.infoBox}  bg-[#ECF5FF]`}>
-            <div className="flex  items-center gap-3">
-              <div className={styles.labelText}>Allergies:</div>
-              {response.allergies.map((allergy, index) => (
-                <div
-                  className={`${styles.valueText} text-[#fb6e52]`}
-                  key={allergy.id}
-                >
-                  {index === 0 ? "" : ","}
-                  {allergy.Allergen}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className={`${styles.infoBox}  bg-[#FFFFEA]`}>
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-row gap-5">
-                <PatientLabelDetails
-                  label="Weight:"
-                  value={`${response?.vitals[0]?.weightLbs}lbs ${response?.vitals[0]?.weightOzs}ozs`}
-                />
-                <PatientLabelDetails
-                  label="BMI:"
-                  value={`${response?.vitals[0]?.BMI}`}
-                />
-              </div>
-              {/* <PatientLabelDetails
+            {/* <PatientLabelDetails
               label="Height:"
               value={`${response?.vitals[0]?.heightFeets} fts ${response?.vitals[0]?.heightInches} inches`}
             /> */}
-            </div>
-          </div>
-          <div className={`${styles.infoBox}  bg-[#FFF2FF]`}>
-            <PatientLabelDetails label="Wallet:" value={response?.wallet} />
           </div>
         </div>
-      )}
+        <div className={`${styles.infoBox}  bg-[#FFF2FF]`}>
+          <PatientLabelDetails
+            label="Wallet:"
+            value={response && response?.wallet ? response.wallet : "N/A"}
+          />
+        </div>
+      </div>
     </div>
   );
 };

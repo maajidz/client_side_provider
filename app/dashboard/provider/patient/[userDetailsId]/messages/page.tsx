@@ -17,13 +17,15 @@ function Page() {
     return <div>Error: User details ID not found</div>;
   }
   return (
-    <PageContainer scrollable={true}>
-      <div className="space-y-4">
-        <Breadcrumbs items={breadcrumbItems} />
-        <Heading title="Messages" description="" />
-      </div>
-      <PatientMessages userDetailsId={userDetailsId} />
-    </PageContainer>
+    <>
+      <PageContainer scrollable={true}>
+        <div className="space-y-4">
+          <Breadcrumbs items={breadcrumbItems} />
+          <Heading title="Messages" description="" />
+        </div>
+        <PatientMessages userDetailsId={userDetailsId} />
+      </PageContainer>
+    </>
   );
 }
 

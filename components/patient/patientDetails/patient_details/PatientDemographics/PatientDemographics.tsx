@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import LoadingButton from "../../../../LoadingButton";
 import { PatientDetails } from "@/types/userInterface";
-import { fetchUserInfo } from "@/services/userServices";
+import { fetchUserEssentials } from "@/services/userServices";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import EditPatientBody from "../../../add_patient/EditPatientBody";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -22,10 +22,18 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
   const [loading, setLoading] = useState(false);
 
   const fetchAndSetResponse = useCallback(async () => {
-    setLoading(true);
-    const userData = await fetchUserInfo({ userDetailsId: userDetailsId });
-    if (userData) {
-      setResponse(userData?.userDetails);
+    try {
+      setLoading(true);
+      const userData = await fetchUserEssentials({
+        userDetailsId: userDetailsId,
+      });
+      if (userData) {
+        setResponse(userData);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
       setLoading(false);
     }
   }, [userDetailsId]);
@@ -36,7 +44,7 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-    {loading &&  <LoadingButton /> }
+      {loading && <LoadingButton />}
       {response && (
         <div className="flex flex-col gap-2 p-4">
           {editPatient ? (
