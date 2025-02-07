@@ -7,6 +7,7 @@ import { getSupplements } from "@/services/chartDetailsServices";
 import LoadingButton from "@/components/LoadingButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -61,7 +62,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
       <ScrollArea className="h-[65dvh]">
         <div className={styles.infoContent}>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Allergies</div>
+            <TitleLinks title="Allergies" href="allergies" userDetailsId={userDetailsId} />
             {userData?.allergies ? (
               userData?.allergies.map((allergies, index) => (
                 <div
@@ -77,7 +78,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Diagnoses</div>
+            <TitleLinks title="Diagnoses" href="diagnoses" userDetailsId={userDetailsId} />
             {userData?.diagnoses ? (
               userData?.diagnoses.map((diagnosis, index) => (
                 <div className={`${styles.infoTextLabel}`} key={diagnosis.id}>
@@ -90,11 +91,24 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Medications</div>
-            <div></div>
+            <TitleLinks title="Medications" href="medications" userDetailsId={userDetailsId} />
+            {userData?.medicationPrescriptions ? (
+              userData?.medicationPrescriptions.map(
+                (medicationPrescriptions) => (
+                  <div
+                    className={`${styles.infoTextLabel}`}
+                    key={medicationPrescriptions.id}
+                  >
+                    {medicationPrescriptions.Allergen}
+                  </div>
+                )
+              )
+            ) : (
+              <NoDataRecorded />
+            )}
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>History</div>
+            <TitleLinks title="History" href="patientDetails" userDetailsId={userDetailsId} />
             <ScrollArea className="h-[12.5rem] min-h-10">
               <div>
                 <div className={`${styles.infoTextLabel} underline`}>
@@ -197,7 +211,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             </ScrollArea>
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Supplements</div>
+            <TitleLinks title="Supplements" href="medications" userDetailsId={userDetailsId} />
             <div>
               {supplementData ? (
                 <div>
@@ -216,7 +230,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             </div>
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Recent Vitals</div>
+            <TitleLinks title="Recent Vitals" href="vitals" userDetailsId={userDetailsId} />
+            <div className={styles.infoLabel}></div>
             <div className="flex flex-col gap-3">
               {userData?.vitals ? (
                 userData?.vitals.map((vitals) => (
@@ -238,7 +253,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             </div>
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Injections</div>
+            <TitleLinks title="Injections" href="injections" userDetailsId={userDetailsId} />
+            <div className={styles.infoLabel}></div>
             {userData?.injections ? (
               <div className="flex flex-col gap-3">
                 {userData?.injections.map((injections) => (
@@ -279,7 +295,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Latest Labs</div>
+            <TitleLinks title="Latest Labs" href="lab_records" userDetailsId={userDetailsId} />
+            <div className={styles.infoLabel}></div>
             {userData?.labResults ? (
               <div className="flex flex-col gap-3">
                 {userData?.labResults.map((labs) => (
@@ -311,7 +328,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Implanted Devices</div>
+            <TitleLinks title="Implanted Devices" href="patientDetails" userDetailsId={userDetailsId} />
+            <div className={styles.infoLabel}></div>
             {userData?.implantedDevices ? (
               userData.implantedDevices.map((implantedDevices) => (
                 <div key={implantedDevices.id}>
@@ -328,7 +346,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Vaccines</div>
+            <TitleLinks title="Vaccines" href="vaccines" userDetailsId={userDetailsId} />
+            <div className={styles.infoLabel}></div>
             {userData?.vaccines ? (
               <div className="flex flex-col gap-3">
                 {userData?.vaccines.map((vaccine) => (
@@ -351,11 +370,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Past Visits</div>
+            <TitleLinks title="Past Visits" href="encounters" userDetailsId={userDetailsId} />
+            <div className={styles.infoLabel}></div>
             <div></div>
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Contact Details</div>
+            <TitleLinks title="Contact Details" href="patientDetails" userDetailsId={userDetailsId} />
+            <div className={styles.infoLabel}></div>
             {userData ? (
               <div>
                 <FaceSheetLabels
@@ -380,7 +401,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           </div>
           <div className={styles.infoContainer}>
-            <div className={styles.infoLabel}>Documents</div>
+            <TitleLinks title="Documents" href="documents" userDetailsId={userDetailsId} />
+            <div className={styles.infoLabel}></div>
             <ScrollArea className="h-[12.5rem] min-h-10">
               {userData?.documents ? (
                 userData.documents.map((docs) => (
@@ -436,4 +458,12 @@ const FaceSheetLabels = ({
 
 const NoDataRecorded = () => {
   return <div className={styles.infoText}>No Data Recorded</div>;
+};
+
+const TitleLinks = ({ title, href, userDetailsId }: { title: string, href: string, userDetailsId: string }) => {
+  return (
+    <Link href={`/dashboard/provider/patient/${userDetailsId}/${href}`}>
+      <div className={styles.infoLabel}>{title}</div>
+    </Link>
+  );
 };

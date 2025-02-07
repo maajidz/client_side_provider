@@ -5,8 +5,8 @@ import FaceSheet from "./PatientDashboard/FaceSheet";
 // import FlowSheet from "@/components/charts/Encounters/Preview/FlowSheet";
 // import TreatmentPlan from "./PatientDashboard/TreatmentPlan";
 // import HealthScreening from "./PatientDashboard/HealthScreening";
-import TimeLine from "./PatientDashboard/TimeLine";
-import TagCloud from "./PatientDashboard/TagCloud";
+// import TimeLine from "./PatientDashboard/TimeLine";
+// import TagCloud from "./PatientDashboard/TagCloud";
 
 const patientDashboardTab = [
   {
@@ -29,8 +29,8 @@ const patientDashboardTab = [
   //   label: "Health Screening",
   //   component: HealthScreening,
   // },
-  { value: "timeline", label: "Timeline", component: TimeLine },
-  { value: "tag_cloud", label: "Tag Cloud", component: TagCloud },
+  // { value: "timeline", label: "Timeline", component: TimeLine },
+  // { value: "tag_cloud", label: "Tag Cloud", component: TagCloud },
 ];
 
 const PatientDashboard = ({ userDetailsId }: { userDetailsId: string }) => {
