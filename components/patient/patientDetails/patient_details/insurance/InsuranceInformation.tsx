@@ -38,9 +38,11 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
 
       if (userInsurance) {
         setInsuranceData(userInsurance);
+      } else {
+        throw new Error("Error fetching insurance data");
       }
     } catch (error) {
-      console.error("Error fetching insurance data:", error);
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -71,17 +73,17 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
           selectedInsurance={selectedInsurance}
           setSelectedInsurance={setSelectedInsurance}
           setSelectedIsInsured={setSelectedIsInsured}
+          onFetchInsuranceData={fetchInsuranceData}
         />
       </div>
       <InsuranceTable
         insuranceData={insuranceData}
         setIsDialogOpen={setIsDialogOpen}
         setSelectedInsurance={setSelectedInsurance}
+        onFetchInsuranceData={fetchInsuranceData}
       />
     </div>
   );
 };
 
 export default InsuranceInformation;
-
-
