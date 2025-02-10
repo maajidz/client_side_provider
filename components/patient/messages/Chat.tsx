@@ -15,6 +15,7 @@ import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import LoadingButton from "@/components/LoadingButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 
 export default function ChatPage({
   userId,
@@ -181,13 +182,10 @@ export default function ChatPage({
               <LoadingButton />
             </div>
           )}
-          
-          <button
-            onClick={() => setPage((prev) => prev + 1)}
-            className="p-2 mb-2 bg-gray-300 rounded"
-          >
-            Load More Messages
-          </button>
+            <GhostButton onClick={() => setPage((prev) => prev + 1)}>
+              {" "}
+              Load More Messages
+            </GhostButton>
           {messages.map((msg) => (
             <div
               key={msg.id}
