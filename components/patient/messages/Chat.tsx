@@ -28,7 +28,7 @@ export default function ChatPage({
   const [messages, setMessages] = useState<UserMessagesInterface[]>([]);
   const [input, setInput] = useState("");
   const [page, setPage] = useState(1);
-  // const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
   const pageSize = 15;
   const maxRetries = 3;
 
@@ -49,9 +49,13 @@ export default function ChatPage({
     [userId, recipientId, pageSize]
   );
 
-  // useEffect(() => {
-  //   chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  // }, [messages]);
+  useEffect(() => {
+    endOfMessagesRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end", 
+      inline: "nearest",
+    });
+  }, [messages]);
 
   useEffect(() => {
     fetchUserMessages(page);
@@ -205,6 +209,7 @@ export default function ChatPage({
               {/* <div ref={chatEndRef} /> */}
             </div>
           ))}
+          <div ref={endOfMessagesRef} />
         </div>
       </ScrollArea>
       <div className={messageStyles.sendButtonContainer}>
