@@ -18,7 +18,7 @@ import { deleteFollowUp, getFollowUpData, updateFollowUp } from '@/services/char
 import LoadingButton from '@/components/LoadingButton'
 import { useToast } from "@/components/ui/use-toast";
 import { showToast } from '@/utils/utils'
-import GhostButton from '@/components/custom_buttons/GhostButton'
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 
 const ViewFollowUps = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -115,7 +115,7 @@ const ViewFollowUps = ({ patientDetails }: { patientDetails: UserEncounterData }
     return (
       <Dialog>
         <DialogTrigger asChild>
-          <GhostButton label='View Follow-ups' onClick={fetchAndSetResponse} />
+          <GhostButton onClick={fetchAndSetResponse}>View Follow-ups</GhostButton>
         </DialogTrigger>
         <DialogContent className="sm:max-w-5xl">
           <DialogHeader>

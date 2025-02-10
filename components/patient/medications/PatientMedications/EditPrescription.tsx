@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -193,7 +193,3 @@ function EditPrescription({
 }
 
 export default EditPrescription;
-
-
-
-

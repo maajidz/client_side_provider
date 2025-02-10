@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -30,6 +29,7 @@ import {
   SelectValue,
   SelectContent,
 } from "@/components/ui/select";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 
 const questionnaireOptions = [
   "HIPAA Notice and Consent for PHI",
@@ -86,7 +86,7 @@ function QuestionnairePreviewDialog() {
     <>
       <Dialog open={isModalOpen} onOpenChange={handleIsModalOpen}>
         <DialogTrigger asChild>
-          <GhostButton label="Add Now" />
+          <GhostButton>Add Now</GhostButton>
         </DialogTrigger>
         <DialogContent className="max-w-lg">
           <DialogHeader className=" p-4 rounded-t-lg">

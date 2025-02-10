@@ -1,4 +1,4 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
@@ -152,7 +152,9 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <GhostButton label="Add Labs" onClick={() => fetchAndSetResponse(1)} />
+        <GhostButton onClick={() => fetchAndSetResponse(1)}>
+          Add Labs
+        </GhostButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
@@ -166,8 +168,8 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
                     setShowNewLab(!showNewLab);
                   }}
                 >
-                    <PlusIcon />
-                    <div>New Lab</div>
+                  <PlusIcon />
+                  <div>New Lab</div>
                 </DefaultButton>
               )}
             </div>
@@ -242,8 +244,8 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
                             </Select>
                           }
                         />
-                        <DefaultButton  onClick={handleLabOrder}>
-                            Order Lab
+                        <DefaultButton onClick={handleLabOrder}>
+                          Order Lab
                         </DefaultButton>
                       </div>
                     </DialogContent>

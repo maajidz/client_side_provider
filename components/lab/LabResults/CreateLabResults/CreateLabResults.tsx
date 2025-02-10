@@ -46,7 +46,7 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 
 const CreateLabResults = () => {
@@ -571,7 +571,7 @@ export function DropdownMenuCheckboxesField({
       <FormControl>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline"  className="overflow-hidden">
+            <Button variant="outline" className="overflow-hidden">
               {selectedTests.length > 0
                 ? `${selectedTests.join(", ")}`
                 : "Select tests"}

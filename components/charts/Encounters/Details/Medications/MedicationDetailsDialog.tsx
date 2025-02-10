@@ -38,7 +38,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 interface MedicationDetailsDialogProps {
   isOpen: boolean;

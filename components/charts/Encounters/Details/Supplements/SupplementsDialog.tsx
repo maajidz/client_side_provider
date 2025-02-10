@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
 import { z } from "zod";
 import {

@@ -29,7 +29,7 @@ import { Edit2Icon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 interface PastMedicalHistoryDialogProps {
   patientDetails: UserEncounterData;
@@ -64,7 +64,7 @@ function EditPastMedicalHistory({
     const requestData: UpdatePastMedicalHistoryType = {
       notes: values.notes,
       glp_refill_note_practice: values.glp_refill_note_practice,
-      userDetailsId: patientDetails.userDetails.id
+      userDetailsId: patientDetails.userDetails.id,
     };
 
     setLoading(true);

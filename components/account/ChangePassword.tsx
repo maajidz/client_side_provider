@@ -1,6 +1,6 @@
 "use client";
 
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import {
   Form,
   FormControl,
@@ -284,4 +284,3 @@ function ChangePassword() {
 }
 
 export default ChangePassword;
-

@@ -1,4 +1,4 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
@@ -40,7 +40,7 @@ import LoadingButton from "@/components/LoadingButton";
 import { Switch } from "@/components/ui/switch";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 const AddRx = ({
   patientDetails,
@@ -196,7 +196,7 @@ const AddRx = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <GhostButton label="Add Rx" />
+        <GhostButton>Add Rx </GhostButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>

@@ -26,16 +26,13 @@ import LoadingButton from "@/components/LoadingButton";
 import { Textarea } from "@/components/ui/textarea";
 import { alertSchema } from "@/schema/alertSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  createAlert,
-  getAlertTypeData,
-} from "@/services/chartDetailsServices";
+import { createAlert, getAlertTypeData } from "@/services/chartDetailsServices";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useToast } from "@/hooks/use-toast";
 import { AlertTypeInterface } from "@/types/alertInterface";
 import { showToast } from "@/utils/utils";
-import SubmitButton from "../custom_buttons/SubmitButton";
+import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 
 const MessagesDialog = ({
   onClose,
@@ -52,7 +49,7 @@ const MessagesDialog = ({
   const form = useForm<z.infer<typeof alertSchema>>({
     resolver: zodResolver(alertSchema),
     defaultValues: {
-      alertName:  "",
+      alertName: "",
       alertDescription: "",
     },
   });
@@ -73,19 +70,19 @@ const MessagesDialog = ({
 
   useEffect(() => {
     fetchAlertTypeData();
-  }, [ form, fetchAlertTypeData]);
+  }, [form, fetchAlertTypeData]);
 
   const onSubmit = async (values: z.infer<typeof alertSchema>) => {
     console.log("Form Values:", values);
     setLoading(true);
     try {
-        const requestData = {
-          alertTypeId: values.alertName,
-          alertDescription: values.alertDescription,
-          userDetailsId: "",
-          providerId: providerDetails.providerId,
-        };
-        await createAlert({ requestData: requestData });
+      const requestData = {
+        alertTypeId: values.alertName,
+        alertDescription: values.alertDescription,
+        userDetailsId: "",
+        providerId: providerDetails.providerId,
+      };
+      await createAlert({ requestData: requestData });
       showToast({
         toast,
         type: "success",
@@ -123,7 +120,7 @@ const MessagesDialog = ({
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
-                          field.onChange(value); 
+                          field.onChange(value);
                         }}
                         value={field.value}
                       >

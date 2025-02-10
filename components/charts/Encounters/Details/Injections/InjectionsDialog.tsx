@@ -41,7 +41,7 @@ import {
 } from "@/services/injectionsServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 
 const InjectionsDialog = ({

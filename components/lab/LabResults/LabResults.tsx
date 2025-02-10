@@ -30,7 +30,7 @@ import LoadingButton from "@/components/LoadingButton";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 function LabResults() {
   const providerDetails = useSelector((state: RootState) => state.login);

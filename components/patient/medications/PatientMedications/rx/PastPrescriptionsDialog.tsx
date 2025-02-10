@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import RxPatientDetailsSection from "@/components/charts/Encounters/SOAP/Prescription/RxPatientDetailsSection";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";

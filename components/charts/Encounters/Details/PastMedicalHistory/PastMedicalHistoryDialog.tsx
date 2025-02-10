@@ -23,7 +23,7 @@ import { z } from "zod";
 import { CreatePastMedicalHistoryType } from "@/services/pastMedicalHistoryInterface";
 import { createPastMedicalHistory } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 

@@ -1,4 +1,4 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useState } from "react";
 import {
   Dialog,
@@ -49,7 +49,7 @@ const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
-        <GhostButton label="Past Orders" />
+        <GhostButton>Past Orders</GhostButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>

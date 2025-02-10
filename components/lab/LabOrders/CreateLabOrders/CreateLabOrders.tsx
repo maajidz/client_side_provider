@@ -24,7 +24,7 @@ import PastOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/PastOrder
 import ViewOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/ViewOrdersDialog";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 const CreateLabResults = () => {
   const form = useForm<z.infer<typeof createLabResultsSchema>>({
@@ -142,11 +142,11 @@ const CreateLabResults = () => {
                                   key={patient.id}
                                   className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                   onClick={() => {
-                                    field.onChange(patient.id); 
+                                    field.onChange(patient.id);
                                     setSearchTerm(
                                       `${patient.user.firstName} ${patient.user.lastName}`
                                     );
-                                    setVisibleSearchList(false); 
+                                    setVisibleSearchList(false);
                                   }}
                                 >
                                   {`${patient.user.firstName} ${patient.user.lastName}`}

@@ -26,10 +26,10 @@ import {
 } from "@/types/tasksInterface";
 import { updateTask } from "@/services/chartDetailsServices";
 // import { Button } from "@/components/ui/button";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 // import TasksDialog from "@/components/tasks/TasksDialog";
 import { showToast } from "@/utils/utils";
-import formStyles from '@/components/formStyles.module.css'
+import formStyles from "@/components/formStyles.module.css";
 
 function AddTaskComment({
   tasksData,

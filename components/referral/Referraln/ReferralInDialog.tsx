@@ -1,5 +1,5 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
@@ -370,7 +370,9 @@ const ReferralInDialog = ({
                               </SelectTrigger>
                               <SelectContent>
                                 {chartList?.response?.map((chart) => (
-                                  <SelectItem key={chart?.id} value={chart?.id}>{chart?.createdAt.split('T')[0]} {chart?.id}</SelectItem>
+                                  <SelectItem key={chart?.id} value={chart?.id}>
+                                    {chart?.createdAt.split("T")[0]} {chart?.id}
+                                  </SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
@@ -402,7 +404,7 @@ const ReferralInDialog = ({
                       <div>Diagnoses</div>
                       <Dialog>
                         <DialogTrigger asChild>
-                          <GhostButton label="Choose" />
+                          <GhostButton>Choose</GhostButton>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                           <DialogHeader>

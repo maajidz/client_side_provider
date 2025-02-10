@@ -23,7 +23,7 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { US_STATES } from "@/constants/data";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { CreateUser, PatientDetails } from "@/types/userInterface";
 import { createNewPatient } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
@@ -182,7 +182,7 @@ const EditPatientBody = ({
   }
   return (
     <div>
-       <ScrollArea className={cn("h-[calc(80dvh-52px)]")}>
+      <ScrollArea className={cn("h-[calc(80dvh-52px)]")}>
         <Form {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-5 pb-48">

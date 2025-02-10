@@ -4,7 +4,7 @@ import { DocumentsInterface } from "@/types/documentsInterface";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
-import SubmitButton from "../custom_buttons/SubmitButton";
+import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import {
   Select,
   SelectContent,

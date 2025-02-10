@@ -32,7 +32,7 @@ import { showToast } from "@/utils/utils";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 interface EditAllergyProps {
   selectedAllergy?: AllergenResponseInterfae;
@@ -65,7 +65,7 @@ function EditAllergy({
   });
 
   useEffect(() => {
-    if(selectedAllergy){
+    if (selectedAllergy) {
       form.reset({
         type: selectedAllergy.type,
         Allergen: selectedAllergy.Allergen,
@@ -114,9 +114,7 @@ function EditAllergy({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogTrigger asChild>
-      
-      </DialogTrigger>
+      <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>Edit Allergy</DialogTitle>

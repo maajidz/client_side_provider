@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -195,7 +195,7 @@ function VaccinesDialog({
                   <FormItem className={formStyles.formItem}>
                     <FormLabel>From Date:</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} className="w-fit"/>
+                      <Input type="date" {...field} className="w-fit" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

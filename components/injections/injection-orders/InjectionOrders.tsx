@@ -1,5 +1,5 @@
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
@@ -216,53 +216,55 @@ function InjectionOrders() {
             <ScrollArea className="h-[30rem]">
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className={formStyles.formBody}>
-                  {!userDetailsId && <FormField
-                    control={form.control}
-                    name="userDetailsId"
-                    render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
-                        <FormLabel>Patient</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Search Patient "
-                              value={searchTerm}
-                              onChange={(e) => {
-                                setSearchTerm(e.target.value);
-                                setVisibleSearchList(true);
-                              }}
-                            />
-                            {searchTerm && visibleSearchList && (
-                              <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                                {filteredPatients.length > 0 ? (
-                                  filteredPatients.map((patient) => (
-                                    <div
-                                      key={patient.id}
-                                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                      onClick={() => {
-                                        field.onChange(patient.id);
-                                        setSearchTerm(
-                                          `${patient.user.firstName} ${patient.user.lastName}`
-                                        );
-                                        setVisibleSearchList(false);
-                                      }}
-                                    >
-                                      {`${patient.user.firstName} ${patient.user.lastName}`}
+                  {!userDetailsId && (
+                    <FormField
+                      control={form.control}
+                      name="userDetailsId"
+                      render={({ field }) => (
+                        <FormItem className={formStyles.formItem}>
+                          <FormLabel>Patient</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Search Patient "
+                                value={searchTerm}
+                                onChange={(e) => {
+                                  setSearchTerm(e.target.value);
+                                  setVisibleSearchList(true);
+                                }}
+                              />
+                              {searchTerm && visibleSearchList && (
+                                <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                                  {filteredPatients.length > 0 ? (
+                                    filteredPatients.map((patient) => (
+                                      <div
+                                        key={patient.id}
+                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                        onClick={() => {
+                                          field.onChange(patient.id);
+                                          setSearchTerm(
+                                            `${patient.user.firstName} ${patient.user.lastName}`
+                                          );
+                                          setVisibleSearchList(false);
+                                        }}
+                                      >
+                                        {`${patient.user.firstName} ${patient.user.lastName}`}
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="px-4 py-2 text-gray-500">
+                                      No results found
                                     </div>
-                                  ))
-                                ) : (
-                                  <div className="px-4 py-2 text-gray-500">
-                                    No results found
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormMessage className="text-red-500" />
-                      </FormItem>
-                    )}
-                  />}
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  )}
                   <FormField
                     control={form.control}
                     name="injection_name"

@@ -1,5 +1,5 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import {
   Dialog,
@@ -279,7 +279,6 @@ export default function AddDiagnosesDialog({
               <DialogFooter className="flex flex-between">
                 <div className="w-full">
                   <GhostButton
-                    label="Add More"
                     onClick={() =>
                       append({
                         diagnosis_name: "",
@@ -290,7 +289,9 @@ export default function AddDiagnosesDialog({
                         notes: "",
                       })
                     }
-                  />
+                  >
+                    Add More
+                  </GhostButton>
                 </div>
 
                 <div className="flex justify-end gap-2">

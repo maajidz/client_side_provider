@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
@@ -418,4 +418,3 @@ const EditPatientTaskDialog = ({
 };
 
 export default EditPatientTaskDialog;
-

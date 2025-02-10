@@ -46,7 +46,7 @@ import { PatientDetails, UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState, useCallback, useEffect } from "react";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import PageContainer from "@/components/layout/page-container";
 
@@ -257,7 +257,9 @@ const CreateResultRecord = () => {
           type: "success",
           message: "Lab Result saved successfully!",
         });
-        router.replace(`/dashboard/provider/patient/${userDetailsId}/lab_records`);
+        router.replace(
+          `/dashboard/provider/patient/${userDetailsId}/lab_records`
+        );
       }
     } catch (e) {
       console.log("Error", e);
@@ -285,7 +287,9 @@ const CreateResultRecord = () => {
                 className="border border-[#84012A] text-[#84012A]"
                 onClick={() => {
                   form.reset();
-                  router.replace(`/dashboard/provider/patient/${userDetailsId}/lab_records`);
+                  router.replace(
+                    `/dashboard/provider/patient/${userDetailsId}/lab_records`
+                  );
                 }}
               >
                 Cancel
@@ -367,7 +371,7 @@ const CreateResultRecord = () => {
                               field.onChange(value);
                             }}
                           >
-                            <SelectTrigger >
+                            <SelectTrigger>
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
@@ -423,7 +427,7 @@ const CreateResultRecord = () => {
                           setSelectedLab(value);
                         }}
                       >
-                        <SelectTrigger >
+                        <SelectTrigger>
                           <SelectValue placeholder="Select a lab" />
                         </SelectTrigger>
                         <SelectContent>
@@ -627,7 +631,7 @@ export function DropdownMenuCheckboxesField({
       <FormControl>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" >
+            <Button variant="outline">
               {selectedTests.length > 0
                 ? `${selectedTests.join(", ")}`
                 : "Select tests"}

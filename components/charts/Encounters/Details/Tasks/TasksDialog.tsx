@@ -41,7 +41,7 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { categoryOptions, priority, reminderOptions } from "@/constants/data";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import formStyles from "@/components/formStyles.module.css";
 

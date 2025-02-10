@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
 import React, { useState } from "react";
 import {
   Dialog,
@@ -9,13 +8,14 @@ import {
 } from "@/components/ui/dialog";
 import { UserEncounterData } from "@/types/chartsInterface";
 import PastDxBody from "./PastDxBody";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 
 const PastDx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <GhostButton label="Past Dx" />
+        <GhostButton>Past Dx</GhostButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>

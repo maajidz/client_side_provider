@@ -44,7 +44,7 @@ import { useRouter } from "next/navigation";
 import { createEncounterRequest } from "@/services/chartsServices";
 import { fetchUserDataResponse } from "@/services/userServices";
 import LoadingButton from "../LoadingButton";
-import SubmitButton from "../custom_buttons/SubmitButton";
+import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 
 const CreateEncounterDialog = () => {

@@ -23,7 +23,7 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { US_STATES } from "@/constants/data";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { CreateUser } from "@/types/userInterface";
 import { createNewPatient } from "@/services/userServices";
 import { showToast } from "@/utils/utils";

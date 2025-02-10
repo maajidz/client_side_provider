@@ -1,5 +1,5 @@
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -170,9 +170,7 @@ function UploadDocumentDialog({
           <DialogTitle>Upload Document</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             {/* Documents */}
             <div className={formStyles.formBody}>
               <FormField

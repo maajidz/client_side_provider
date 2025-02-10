@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -44,9 +43,10 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 
 function FamilyHistoryDialog({
   userDetailsId,
@@ -276,39 +276,41 @@ function FamilyHistoryDialog({
                         ))}
                       </div>
 
-                    {/* Input for custom problems */}
-                    <div className="flex gap-2 mt-3">
-                      <Input
-                        placeholder="Add custom problem"
-                        value={customProblem}
-                        onChange={(e) => setCustomProblem(e.target.value)}
-                      />
-                      <GhostButton label="Add" onClick={addCustomProblem} />
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="comments"
-                render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
-                    <FormLabel>Comments</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <DialogFooter>
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => onClose}>Cancel</Button>
-                  <SubmitButton label="Save" />
-                </div>
-              </DialogFooter>
-            </div>
+                      {/* Input for custom problems */}
+                      <div className="flex gap-2 mt-3">
+                        <Input
+                          placeholder="Add custom problem"
+                          value={customProblem}
+                          onChange={(e) => setCustomProblem(e.target.value)}
+                        />
+                        <GhostButton onClick={addCustomProblem} >Add</GhostButton>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="comments"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel>Comments</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <DialogFooter>
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={() => onClose}>
+                      Cancel
+                    </Button>
+                    <SubmitButton label="Save" />
+                  </div>
+                </DialogFooter>
+              </div>
             </ScrollArea>
           </form>
         </Form>

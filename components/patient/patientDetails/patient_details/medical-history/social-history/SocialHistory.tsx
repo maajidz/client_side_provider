@@ -1,5 +1,5 @@
 import SocialHistoryDialog from "@/components/charts/Encounters/Details/SocialHistory/SocialHistoryDialog";
-import GhostButton from "@/components/custom_buttons/GhostButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import LoadingButton from "@/components/LoadingButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SocialHistoryInterface } from "@/types/socialHistoryInterface";
@@ -38,7 +38,6 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
     fetchSocialHistory();
   }, [fetchSocialHistory]);
 
-  
   if (loading) {
     return <LoadingButton />;
   }
@@ -47,7 +46,7 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
     <div className="flex flex-col gap-2 mb-3">
       <div className="flex justify-between items-center p-4 text-lg font-semibold rounded-md bg-[#f0f0f0]">
         <span>Social History</span>
-        <GhostButton label="Add" onClick={() => setIsOpen(true)} />
+        <GhostButton onClick={() => setIsOpen(true)}>Add </GhostButton>
         <SocialHistoryDialog
           userDetailsId={userDetailsId}
           isOpen={isOpen}

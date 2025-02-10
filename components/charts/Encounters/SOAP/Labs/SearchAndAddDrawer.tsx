@@ -1,4 +1,4 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useCallback, useEffect, useState } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import {
@@ -111,7 +111,9 @@ const SearchAndAddDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <GhostButton label="Search & Add" onClick={() => fetchAndSetResponse(1)} />
+        <GhostButton onClick={() => fetchAndSetResponse(1)}>
+          Search & Add
+        </GhostButton>
       </DrawerTrigger>
       <DrawerContent>
         {loadingLabs ? (

@@ -43,7 +43,7 @@ import { showToast } from "@/utils/utils";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import LoadingButton from "../LoadingButton";
-import SubmitButton from "../custom_buttons/SubmitButton";
+import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "../ui/scroll-area";
 import formStyles from "@/components/formStyles.module.css";
 import { Button } from "../ui/button";
@@ -478,7 +478,12 @@ const TasksDialog = ({
                 </div>
               </ScrollArea>
               <div className="flex gap-3 justify-between w-full">
-                <Button type="button" variant="secondary" onClick={onClose} className="w-full">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={onClose}
+                  className="w-full"
+                >
                   Cancel
                 </Button>
                 <SubmitButton label={tasksData ? "Update" : "Create"} />

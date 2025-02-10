@@ -33,8 +33,8 @@ import { RootState } from "@/store/store";
 import { useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
 import { AllergeyRequestInterface } from "@/types/allergyInterface";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
-import GhostButton from "@/components/custom_buttons/GhostButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 
 interface AllergiesDialogProps {
   userDetailsId: string;
@@ -311,7 +311,6 @@ function AllergiesDialog({
             <div className="flex justify-between">
               <div className="w-full">
                 <GhostButton
-                  label="Add More"
                   onClick={() =>
                     append({
                       type: "",
@@ -322,7 +321,9 @@ function AllergiesDialog({
                       reactions: "",
                     })
                   }
-                />
+                >
+                  Add More
+                </GhostButton>
               </div>
               <SubmitButton label="Save" />
             </div>

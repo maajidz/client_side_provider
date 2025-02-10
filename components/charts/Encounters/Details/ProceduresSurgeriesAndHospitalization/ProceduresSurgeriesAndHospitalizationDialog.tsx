@@ -34,8 +34,8 @@ import { UpdateProceduresInterface } from "@/types/procedureInterface";
 import { useToast } from "@/components/ui/use-toast";
 import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
-import formStyles from '@/components/formStyles.module.css';
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ProceduresSurgeriesAndHospitalizationDialog = ({
@@ -149,93 +149,93 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-          <ScrollArea className="max-h-[30rem] h-auto">
-            <div className={formStyles.formBody}>
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
-                    <FormLabel className="w-fit">Type</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Choose type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="procedure">Procedure</SelectItem>
-                          <SelectItem value="surgeries">Surgeries</SelectItem>
-                          <SelectItem value="hospitalization">
-                            Hospitalization
-                          </SelectItem>
-                          <SelectItem value="other_events">
-                            Other Events
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
-                    <FormLabel className="w-fit">Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="fromDate"
-                render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
-                    <FormLabel>From Date:</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="toDate"
-                render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
-                    <FormLabel>To Date:</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
-                    <FormLabel>Notes</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <SubmitButton label="Save" />
-            </div>
-          </ScrollArea>
+            <ScrollArea className="max-h-[30rem] h-auto">
+              <div className={formStyles.formBody}>
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel className="w-fit">Type</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Choose type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="procedure">Procedure</SelectItem>
+                            <SelectItem value="surgeries">Surgeries</SelectItem>
+                            <SelectItem value="hospitalization">
+                              Hospitalization
+                            </SelectItem>
+                            <SelectItem value="other_events">
+                              Other Events
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel className="w-fit">Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="fromDate"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel>From Date:</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="toDate"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel>To Date:</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem className={formStyles.formItem}>
+                      <FormLabel>Notes</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <SubmitButton label="Save" />
+              </div>
+            </ScrollArea>
           </form>
         </Form>
       </DialogContent>

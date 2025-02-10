@@ -34,13 +34,16 @@ import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useCallback, useEffect, useState } from "react";
-import { TasksResponseDataInterface, UpdateTaskType } from "@/types/tasksInterface";
-import {  updateTask } from "@/services/chartDetailsServices";
+import {
+  TasksResponseDataInterface,
+  UpdateTaskType,
+} from "@/types/tasksInterface";
+import { updateTask } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -58,7 +61,6 @@ function EditTask({
   patientDetails: UserEncounterData;
   selectedTask: TasksResponseDataInterface;
 }) {
-
   const [showDueDate, setShowDueDate] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -363,4 +365,3 @@ function EditTask({
 }
 
 export default EditTask;
-

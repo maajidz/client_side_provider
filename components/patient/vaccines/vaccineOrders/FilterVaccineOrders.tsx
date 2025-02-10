@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
 import {
   Form,
@@ -76,7 +76,7 @@ function FilterVaccineOrders({
     fetchProvidersData();
   }, [fetchProvidersData]);
 
-  if(loading) return <LoadingButton />;
+  if (loading) return <LoadingButton />;
 
   function onSubmit(values: z.infer<typeof vaccineSearchParams>) {
     onHandleSearch(values);

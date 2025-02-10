@@ -1,4 +1,4 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
@@ -43,7 +43,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 const ReferralOutDialog = ({
   onClose,
@@ -396,7 +396,7 @@ const ReferralOutDialog = ({
                       <div>Diagnoses</div>
                       <Dialog>
                         <DialogTrigger asChild>
-                          <GhostButton label="Choose" />
+                          <GhostButton>Choose</GhostButton>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                           <DialogHeader>

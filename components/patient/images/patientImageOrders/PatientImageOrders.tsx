@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
@@ -55,7 +55,7 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
             providerId: providerDetails.providerId,
             limit: limit,
             page: page,
-            userDetailsId: userDetailsId
+            userDetailsId: userDetailsId,
           });
           if (response) {
             setOrderList(response);
@@ -65,9 +65,8 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
         setLoading(false);
       } catch (e) {
         console.log("Error", e);
-      }
-      finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     },
     [providerDetails, userDetailsId]

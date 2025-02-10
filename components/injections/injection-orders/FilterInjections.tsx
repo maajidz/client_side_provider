@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
 import {
   Form,
@@ -123,7 +123,7 @@ function FilterInjections({
     onHandleSearch(values);
   }
 
-  if(loading) {
+  if (loading) {
     return <LoadingButton />;
   }
 

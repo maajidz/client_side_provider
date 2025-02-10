@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
 import {
   Form,
@@ -33,10 +33,7 @@ export interface FilterVaccinesProps {
   onHandleSearch: (values: z.infer<typeof vaccineSearchParams>) => void;
 }
 
-function FilterVaccines({
-  vaccinesData,
-  onHandleSearch,
-}: FilterVaccinesProps) {
+function FilterVaccines({ vaccinesData, onHandleSearch }: FilterVaccinesProps) {
   // Data State
   const [patientData, setPatientData] = useState<UserData[]>([]);
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
@@ -66,12 +63,12 @@ function FilterVaccines({
         throw new Error();
       }
     } catch (err) {
-        showToast({
-          toast,
-          type: "error",
-          message: "Could not fetch patients",
-        });
-        console.log("Error:", err);
+      showToast({
+        toast,
+        type: "error",
+        message: "Could not fetch patients",
+      });
+      console.log("Error:", err);
     } finally {
       setLoading(false);
     }
@@ -86,12 +83,12 @@ function FilterVaccines({
 
       setProvidersList(response.data);
     } catch (err) {
-        showToast({
-          toast,
-          type: "error",
-          message: "Could not fetch providers",
-        });
-        console.log("Error:", err);
+      showToast({
+        toast,
+        type: "error",
+        message: "Could not fetch providers",
+      });
+      console.log("Error:", err);
     } finally {
       setLoading(false);
     }
@@ -117,7 +114,7 @@ function FilterVaccines({
     onHandleSearch(values);
   }
 
-  if(loading) {
+  if (loading) {
     return <LoadingButton />;
   }
 

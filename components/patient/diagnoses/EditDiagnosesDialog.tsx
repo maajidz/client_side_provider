@@ -23,7 +23,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useToast } from "@/hooks/use-toast";
 import { editDiagnosisSchema } from "@/schema/diagnosesSchema";
 import { updateDiagnoses } from "@/services/chartsServices";

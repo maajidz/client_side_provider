@@ -30,7 +30,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
 import { Switch } from "@/components/ui/switch";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 // import { createPrescriptions } from "@/services/chartsServices";
@@ -598,15 +598,15 @@ const PatientMedicationDialog = ({
                     />
                   </div>
                   <div className="flex justify-end gap-2">
-                      <Button
-                        variant={"outline"}
-                        className="w-full"
-                        onClick={() =>
-                          setShowPrescriptionForm(!showPrescriptionForm)
-                        }
-                      >
-                        Cancel
-                      </Button>
+                    <Button
+                      variant={"outline"}
+                      className="w-full"
+                      onClick={() =>
+                        setShowPrescriptionForm(!showPrescriptionForm)
+                      }
+                    >
+                      Cancel
+                    </Button>
                     <SubmitButton label="Save" />
                   </div>
                 </div>

@@ -35,7 +35,7 @@ import { showToast } from "@/utils/utils";
 import { Edit2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 interface EditSupplementProps {
   selectedSupplement: SupplementInterface;

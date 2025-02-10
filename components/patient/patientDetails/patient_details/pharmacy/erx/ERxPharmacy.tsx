@@ -1,6 +1,6 @@
 "use client";
 
-import GhostButton from "@/components/custom_buttons/GhostButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import PharmacyDialog from "@/components/charts/Encounters/Details/Pharmacy/PharmacyDialog";
 import ERxPharmacyTable from "./ERxPharmacyTable";
 import { useState } from "react";
@@ -17,7 +17,7 @@ function ERxPharmacy({ userDetailsId }: ERxPharmacyProps) {
     <div className="flex flex-col gap-2">
       <div className="flex justify-between items-center p-4 text-lg font-semibold rounded-md bg-[#f0f0f0]">
         <span>eRx Pharmacy</span>
-        <GhostButton label="Add" onClick={() => setIsOpen(true)} />
+        <GhostButton onClick={() => setIsOpen(true)}>Add</GhostButton>
         <PharmacyDialog
           isOpen={isOpen}
           userDetailsId={userDetailsId}

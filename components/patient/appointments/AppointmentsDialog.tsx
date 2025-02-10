@@ -34,7 +34,7 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import {
   PatientDetails,
   UserAppointmentInterface,
@@ -239,9 +239,7 @@ export function AppointmentsDialog({
               />
             </div>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className={formStyles.formBody}>
                   {appointmentsData ? (
                     <FormLabels

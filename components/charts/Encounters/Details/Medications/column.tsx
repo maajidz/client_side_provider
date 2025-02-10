@@ -1,4 +1,4 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import { MedicationResultInterface } from "@/types/medicationInterface";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -38,10 +38,9 @@ export const columns = (
       const rowData = row.original;
 
       return (
-        <GhostButton
-          label="+ Add"
-          onClick={() => handleSelectedMedication(rowData)}
-        />
+        <GhostButton onClick={() => handleSelectedMedication(rowData)}>
+          + Add
+        </GhostButton>
       );
     },
   },

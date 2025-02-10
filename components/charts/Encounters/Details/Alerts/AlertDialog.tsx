@@ -36,7 +36,7 @@ import { RootState } from "@/store/store";
 import { useToast } from "@/hooks/use-toast";
 import { AlertTypeInterface } from "@/types/alertInterface";
 import { showToast } from "@/utils/utils";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 

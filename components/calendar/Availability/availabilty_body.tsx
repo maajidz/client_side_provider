@@ -24,7 +24,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 const AppointmentForm = () => {
   const router = useRouter();

@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
 import React, { useState } from "react";
 import {
   Dialog,
@@ -22,9 +21,10 @@ import {
   updateSOAPChart,
 } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 
 const AddDx = ({
   patientDetails,
@@ -112,7 +112,7 @@ const AddDx = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <GhostButton label="Add Dx" />
+        <GhostButton>Add Dx</GhostButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>

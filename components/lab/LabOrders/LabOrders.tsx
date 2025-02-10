@@ -26,7 +26,7 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 function LabOrders() {
   const providerDetails = useSelector((state: RootState) => state.login);

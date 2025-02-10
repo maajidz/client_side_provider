@@ -181,6 +181,7 @@ export default function ChatPage({
               <LoadingButton />
             </div>
           )}
+          
           <button
             onClick={() => setPage((prev) => prev + 1)}
             className="p-2 mb-2 bg-gray-300 rounded"

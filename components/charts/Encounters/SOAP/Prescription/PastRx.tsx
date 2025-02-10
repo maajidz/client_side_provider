@@ -1,4 +1,4 @@
-import GhostButton from "@/components/custom_buttons/GhostButton";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FetchPrescription, UserEncounterData } from "@/types/chartsInterface";
 import { getPrescriptionsData } from "@/services/chartsServices";
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import RxPatientDetailsSection from "./RxPatientDetailsSection";
 
 const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
@@ -50,7 +50,7 @@ const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <GhostButton label="Past Rx" />
+        <GhostButton>Past Rx </GhostButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>

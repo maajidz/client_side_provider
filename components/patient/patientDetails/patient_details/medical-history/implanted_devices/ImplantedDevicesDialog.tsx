@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/custom_buttons/SubmitButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import {
   Dialog,
   DialogContent,
@@ -258,22 +258,22 @@ const ImplantedDevicesDialog = ({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <ScrollArea className="max-h-[30rem] h-auto">
-              <div className={formStyles.formBody}>
-                <FormField
-                  control={form.control}
-                  name="udi"
-                  render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
-                      <FormLabel className="w-fit">UID</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <SubmitButton label="Verify" />
-              </div>
+                <div className={formStyles.formBody}>
+                  <FormField
+                    control={form.control}
+                    name="udi"
+                    render={({ field }) => (
+                      <FormItem className={formStyles.formItem}>
+                        <FormLabel className="w-fit">UID</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <SubmitButton label="Verify" />
+                </div>
               </ScrollArea>
             </form>
           </Form>
