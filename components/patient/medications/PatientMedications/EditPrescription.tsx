@@ -17,34 +17,129 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { editPrescriptionSchema } from "@/schema/prescriptionSchema";
+import { updateUserPrescription } from "@/services/prescriptionsServices";
 import { PrescriptionDataInterface } from "@/types/prescriptionInterface";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { showToast } from "@/utils/utils";
 
 interface EditPrescriptionProps {
+  userDetailsId: string;
   isOpen: boolean;
   selectedPrescription: PrescriptionDataInterface | undefined;
+  onFetchPrescriptionsList: (userDetailsId: string) => Promise<void>;
   onSetIsOpen: (value: boolean) => void;
 }
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${year}-${month}-${day}`;
+};
+
 function EditPrescription({
+  userDetailsId,
   isOpen,
   selectedPrescription,
+  onFetchPrescriptionsList,
   onSetIsOpen,
 }: EditPrescriptionProps) {
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
+  // Dialog State
+  const { toast } = useToast();
+
   // Form state
-  const form = useForm();
+  const form = useForm<z.infer<typeof editPrescriptionSchema>>({
+    resolver: zodResolver(editPrescriptionSchema),
+    defaultValues: {
+      dispense_as_written: selectedPrescription?.dispense_as_written,
+      internal_comments: selectedPrescription?.internal_comments,
+      status: selectedPrescription?.status,
+      fromDate: selectedPrescription?.fromDate
+        ? formatDate(selectedPrescription?.fromDate)
+        : new Date().toISOString().split("T")[0],
+      toDate: selectedPrescription?.toDate
+        ? formatDate(selectedPrescription?.toDate)
+        : new Date().toISOString().split("T")[0],
+    },
+  });
 
   // Handle dialog state
   const handleIsOpen = (status: boolean) => {
     onSetIsOpen(status);
   };
+
+  // UPDATE Prescription Data
+  const onSubmit = async () => {
+    setLoading(true);
+
+    const formValues = form.getValues();
+
+    try {
+      await updateUserPrescription({
+        id: selectedPrescription?.id ?? "",
+        requestData: formValues,
+      });
+
+      showToast({
+        toast,
+        type: "success",
+        message: "Prescription data updated successfully",
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Prescription data update failed",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "Prescription data update failed. An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+      onSetIsOpen(false);
+      await onFetchPrescriptionsList(userDetailsId);
+      form.reset();
+    }
+  };
+
+  useEffect(() => {
+    if (selectedPrescription) {
+      form.reset({
+        dispense_as_written: selectedPrescription.dispense_as_written,
+        fromDate: selectedPrescription?.fromDate
+          ? formatDate(selectedPrescription?.fromDate)
+          : new Date().toISOString().split("T")[0],
+        toDate: selectedPrescription?.toDate
+          ? formatDate(selectedPrescription?.toDate)
+          : new Date().toISOString().split("T")[0],
+        status:
+          (selectedPrescription?.status as "active" | "inactive") ?? "active",
+        internal_comments: selectedPrescription?.internal_comments ?? "",
+      });
+    }
+  }, [selectedPrescription, form]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleIsOpen}>
@@ -53,7 +148,10 @@ function EditPrescription({
           <DialogTitle>Edit Prescription</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form className="flex flex-col gap-4">
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <div className="flex flex-col gap-4 p-2 text-sm">
               <div className="flex items-center gap-3">
                 <span className="font-medium">Drug:</span>
@@ -92,14 +190,17 @@ function EditPrescription({
                 </div>
                 <FormField
                   control={form.control}
-                  name="dispenseAsWritten"
+                  name="dispense_as_written"
                   render={({ field }) => (
                     <FormItem className="flex items-center gap-3">
                       <FormLabel className="font-medium">
                         Dispense As Written
                       </FormLabel>
                       <FormControl>
-                        <Switch value={field.value} />
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -112,7 +213,7 @@ function EditPrescription({
                   {selectedPrescription?.note_to_Pharmacy ?? ""}
                 </span>
               </div>
-              {/* <div className="flex items-center justify-between w-full">
+              <div className="flex items-center justify-between w-full">
                 <FormField
                   control={form.control}
                   name="fromDate"
@@ -131,11 +232,14 @@ function EditPrescription({
                   name="toDate"
                   render={({ field }) => (
                     <FormItem className="flex gap-2 items-center">
-                      <FormLabel className="font-medium">
-                        To Date
-                      </FormLabel>
+                      <FormLabel className="font-medium">To Date</FormLabel>
                       <FormControl>
-                        <Input {...field} type="date" className="w-fit" />
+                        <Input
+                          type="date"
+                          value={field.value}
+                          onChange={field.onChange}
+                          className="w-fit"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -148,7 +252,7 @@ function EditPrescription({
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="font-medium">Status</FormLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select onValueChange={field.onChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select Status" />
                       </SelectTrigger>
@@ -160,17 +264,17 @@ function EditPrescription({
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
               <FormField
                 control={form.control}
-                name="internalComments"
+                name="internal_comments"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="font-medium">
                       Internal Comments
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} value={field.value ?? ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -181,7 +285,7 @@ function EditPrescription({
                   <Button variant="outline" onClick={() => handleIsOpen(false)}>
                     Cancel
                   </Button>
-                  <SubmitButton label="Save" />
+                  <SubmitButton label="Save" disabled={loading} />
                 </div>
               </DialogFooter>
             </div>

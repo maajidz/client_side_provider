@@ -2,6 +2,7 @@ import ApiFetch from "@/config/api";
 import {
   CreateInsuranceInterface,
   InsuranceResponse,
+  UpdateInsuranceType,
 } from "@/types/insuranceInterface";
 
 export const createInsurance = async ({
@@ -13,7 +14,7 @@ export const createInsurance = async ({
     url: "/provider/insurance",
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
     data: requestData,
   });
@@ -36,5 +37,38 @@ export const getInsuranceData = async ({
   });
 
   const data: InsuranceResponse = await response.data;
+  return data;
+};
+
+export const updateInsurance = async ({
+  requestData,
+  id,
+}: {
+  requestData: UpdateInsuranceType;
+  id: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/provider/insurance/${id}`,
+    method: "PATCH",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    data: requestData,
+  });
+
+  const data = await response.data;
+  return data;
+};
+
+export const deleteInsuranceData = async ({ id }: { id: string }) => {
+  const response = await ApiFetch({
+    url: `/provider/insurance/${id}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.data;
   return data;
 };

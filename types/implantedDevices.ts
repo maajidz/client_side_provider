@@ -20,16 +20,17 @@ export interface CreateImplantedDevices {
 }
 
 export interface ImplantDeviceResponse {
-  total: number
-  page: string
-  limit: string
-  devices: Device[]
+  total: number;
+  page: string;
+  limit: string;
+  organizedData: Device[];
 }
 
 export interface Device {
-  id: string
-  UDI: string
-  providerId: string
-  created_at: string
-  updated_at: string
+  id: string;
+  UDI: string;
+  providerId: string;
+  created_at: string;
+  updated_at: string;
+  device_type: ImplantedDevices;
 }

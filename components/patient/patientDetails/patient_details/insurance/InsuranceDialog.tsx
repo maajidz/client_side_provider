@@ -19,7 +19,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { isInsured } from "@/constants/data";
 import { useToast } from "@/hooks/use-toast";
 import { insuranceFormSchema } from "@/schema/insuranceSchema";
-import { createInsurance } from "@/services/insuranceServices";
+import { createInsurance, updateInsurance } from "@/services/insuranceServices";
 import { InsuranceResponse } from "@/types/insuranceInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,6 +41,7 @@ interface InsuranceDialogProps {
     selectedInsurance: InsuranceResponse | undefined
   ) => void;
   setSelectedIsInsured: (value: string) => void;
+  onFetchInsuranceData: () => Promise<void>;
 }
 
 function InsuranceDialog({
@@ -51,6 +52,7 @@ function InsuranceDialog({
   setIsOpen,
   setSelectedInsurance,
   setSelectedIsInsured,
+  onFetchInsuranceData,
 }: InsuranceDialogProps) {
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -87,7 +89,9 @@ function InsuranceDialog({
 
   // POST/PATCH Insurance State
   const toggleEdit = async () => {
+    setLoading(true);
     const formValues = methods.getValues();
+    console.log(formValues);
 
     const requestData = {
       type: selectedIsInsured,
@@ -95,20 +99,16 @@ function InsuranceDialog({
       groupNameOrNumber: formValues.groupNameOrNumber,
       subscriberNumber: formValues.subscriberNumber,
       idNumber: formValues.idNumber,
-      status: "Inactive",
-      images: [
-        frontImageFile ? [frontImageFile] : [],
-        backImageFile ? [backImageFile] : [],
-      ],
+      status: "inactive",
+      images: [frontImageFile, backImageFile],
       userDetailsID: userDetailsId,
     };
     try {
-      // TODO: Update API Pending
       if (selectedInsurance) {
-        console.log("Insurance data updated.");
+        updateInsurance({ requestData, id: selectedInsurance.id });
       } else {
+        await createInsurance({ requestData });
       }
-      await createInsurance({ requestData });
 
       showToast({
         toast,
@@ -128,7 +128,9 @@ function InsuranceDialog({
         });
     } finally {
       setLoading(false);
+      setIsOpen(false);
       methods.reset();
+      await onFetchInsuranceData();
     }
   };
 
@@ -188,7 +190,7 @@ function InsuranceDialog({
               : "Update Insurance Data"}
           </DialogTitle>
         </DialogHeader>
-        <ScrollArea className="max-h-[30rem] h-auto">
+        <ScrollArea className="h-[30rem] min-h-30 p-3">
           <div className="flex flex-col gap-6 p-6 rounded-lg">
             {/* Action Buttons */}
             <div className="flex gap-2 justify-end">
@@ -301,7 +303,7 @@ function InsuranceDialog({
                         <FormField
                           control={methods.control}
                           name="frontDocumentImage"
-                          render={() => (
+                          render={({ field }) => (
                             <FormItem className="w-full">
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Upload Front Side of Insurance Document
@@ -324,9 +326,15 @@ function InsuranceDialog({
                                         PNG, JPG, or JPEG (max. 800 x400px)
                                       </div>
                                     </div>
-                                    <input
+                                    <Input
                                       type="file"
-                                      onChange={handleFrontFileChange}
+                                      onChange={(event) => {
+                                        const file = event.target.files?.[0];
+                                        if (file) {
+                                          field.onChange(file);
+                                          handleFrontFileChange(event);
+                                        }
+                                      }}
                                       className="hidden"
                                     />
                                   </label>
@@ -337,6 +345,8 @@ function InsuranceDialog({
                                           src={URL.createObjectURL(
                                             frontImageFile as Blob
                                           )}
+                                          width={24}
+                                          height={24}
                                           alt="Front Side of Insurance"
                                           className="w-48 h-24 object-contain rounded-md"
                                         />
@@ -351,7 +361,7 @@ function InsuranceDialog({
                         <FormField
                           control={methods.control}
                           name="backDocumentImage"
-                          render={() => (
+                          render={({ field }) => (
                             <FormItem className="w-full">
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Upload Back Side of Insurance Document
@@ -374,9 +384,15 @@ function InsuranceDialog({
                                         PNG, JPG, or JPEG (max. 800 x400px)
                                       </div>
                                     </div>
-                                    <input
+                                    <Input
                                       type="file"
-                                      onChange={handleBackFileChange}
+                                      onChange={(event) => {
+                                        const file = event.target.files?.[0];
+                                        if (file) {
+                                          field.onChange(file);
+                                          handleBackFileChange(event);
+                                        }
+                                      }}
                                       className="hidden"
                                     />
                                   </label>
@@ -387,7 +403,9 @@ function InsuranceDialog({
                                           src={URL.createObjectURL(
                                             backImageFile as Blob
                                           )}
-                                          alt="BAck Side of Insurance"
+                                          width={24}
+                                          height={24}
+                                          alt="Back Side of Insurance"
                                           className="w-48 h-24 object-contain rounded-md"
                                         />
                                       </div>

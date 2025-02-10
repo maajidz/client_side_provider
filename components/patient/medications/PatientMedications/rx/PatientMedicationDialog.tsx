@@ -33,9 +33,11 @@ import { Switch } from "@/components/ui/switch";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
-// import { createPrescriptions } from "@/services/chartsServices";
-// import { showToast } from "@/utils/utils";
-// import { useToast } from "@/hooks/use-toast";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { createPrescriptions } from "@/services/chartsServices";
+import { showToast } from "@/utils/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const PatientMedicationDialog = ({
   userDetailsId,
@@ -46,13 +48,15 @@ const PatientMedicationDialog = ({
   onClose: () => void;
   isOpen: boolean;
 }) => {
-  // const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [drugName, setDrugName] = useState<string>("");
   const [showPrescriptionForm, setShowPrescriptionForm] =
     useState<boolean>(false);
   const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
-  // const { toast } = useToast();
+  const { toast } = useToast();
+
+  // Chart State
+  const chartId = useSelector((state: RootState) => state.user.chartId);
 
   const form = useForm<z.infer<typeof prescriptionSchema>>({
     resolver: zodResolver(prescriptionSchema),
@@ -82,48 +86,47 @@ const PatientMedicationDialog = ({
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
     setLoading(false);
     console.log(values);
-    // if (patientDetails.chart?.id) {
-    //   const requestData = {
-    //     drug_name: drugName,
-    //     dispense_as_written: dispenseAsWritten,
-    //     primary_diagnosis: values.primary_diagnosis,
-    //     secondary_diagnosis: values.secondary_diagnosis,
-    //     directions: values.directions,
-    //     dispense_quantity: values.dispense_quantity,
-    //     dispense_unit: String(values.dispense_quantity),
-    //     prior_auth: values.prior_auth,
-    //     prior_auth_decision: values.prior_auth_decision,
-    //     internal_comments: values.internal_comments || "",
-    //     days_of_supply: values.days_of_supply ?? 0,
-    //     additional_refills: values.additional_refills,
-    //     Note_to_Pharmacy: values.Note_to_Pharmacy,
-    //     earliest_fill_date: values.earliest_fill_date || "",
-    //     dosages: [
-    //       {
-    //         dosage_quantity: values.dosage_quantity,
-    //         dosage_unit: values.dosage_unit,
-    //         route: values.route,
-    //         frequency: values.frequency,
-    //         when: values.when,
-    //         duration_quantity: values.duration_quantity,
-    //         duration_unit: values.duration_unit,
-    //       },
-    //     ],
-    //     chartId: patientDetails.chart?.id,
-    //   };
-    //   try {
-    //     setLoading(true);
-    //     await createPrescriptions({ requestData: requestData });
-    //     setShowPrescriptionForm(!showPrescriptionForm);
-    //     showToast({ toast, type: "success", message: "Saved!" });
-    //     setIsDialogOpen(false);
-    //   } catch (e) {
-    //     console.log("Error", e);
-    //   } finally {
-    //     setLoading(false);
-    //     setIsDialogOpen(false);
-    //   }
-    // }
+    if (chartId) {
+      const requestData = {
+        drug_name: drugName,
+        dispense_as_written: dispenseAsWritten,
+        primary_diagnosis: values.primary_diagnosis,
+        secondary_diagnosis: values.secondary_diagnosis,
+        directions: values.directions,
+        dispense_quantity: values.dispense_quantity,
+        dispense_unit: String(values.dispense_quantity),
+        prior_auth: values.prior_auth,
+        prior_auth_decision: values.prior_auth_decision,
+        internal_comments: values.internal_comments || "",
+        days_of_supply: values.days_of_supply ?? 0,
+        additional_refills: values.additional_refills,
+        Note_to_Pharmacy: values.Note_to_Pharmacy,
+        earliest_fill_date: values.earliest_fill_date || "",
+        dosages: [
+          {
+            dosage_quantity: values.dosage_quantity,
+            dosage_unit: values.dosage_unit,
+            route: values.route,
+            frequency: values.frequency,
+            when: values.when,
+            duration_quantity: values.duration_quantity,
+            duration_unit: values.duration_unit,
+          },
+        ],
+        chartId,
+      };
+      try {
+        setLoading(true);
+        await createPrescriptions({ requestData: requestData });
+        setShowPrescriptionForm(!showPrescriptionForm);
+        showToast({ toast, type: "success", message: "Saved!" });
+      } catch (e) {
+        console.log("Error", e);
+      } finally {
+        setLoading(false);
+        onClose();
+      }
+    }
   };
 
   if (loading) {
@@ -148,15 +151,12 @@ const PatientMedicationDialog = ({
                       onCheckedChange={(value) => setDispenseAsWritten(value)}
                     />
                   </div>
-                  {drugName ? (
-                    drugName
-                  ) : (
-                    <Input
-                      value={drugName}
-                      onChange={(e) => setDrugName(e.target.value)}
-                      placeholder="Enter drug name"
-                    />
-                  )}
+                  <Input
+                    value={drugName}
+                    onChange={(e) => setDrugName(e.target.value)}
+                    placeholder="Enter drug name"
+                  />
+
                   <div className={formStyles.formItem}>
                     <div className="font-semibold">Diagnosis</div>
                     <div className="flex w-full gap-3">
@@ -240,7 +240,7 @@ const PatientMedicationDialog = ({
                               <Input
                                 type="number"
                                 placeholder="Enter quantity"
-                                {...field}
+                                value={field.value ?? ""}
                                 onChange={(e) =>
                                   field.onChange(e.target.valueAsNumber || "")
                                 }
@@ -425,8 +425,8 @@ const PatientMedicationDialog = ({
                                 <Input
                                   type="number"
                                   placeholder="Quantity"
-                                  {...field}
                                   className="w-28"
+                                  value={field.value ?? ""}
                                   onChange={(e) =>
                                     field.onChange(e.target.valueAsNumber || "")
                                   }
@@ -473,7 +473,7 @@ const PatientMedicationDialog = ({
                             <Input
                               type="number"
                               placeholder=""
-                              {...field}
+                              value={field.value ?? ""}
                               onChange={(e) =>
                                 field.onChange(e.target.valueAsNumber || "")
                               }
@@ -558,7 +558,7 @@ const PatientMedicationDialog = ({
                             <Input
                               type="number"
                               placeholder=""
-                              {...field}
+                              value={field.value ?? ""}
                               onChange={(e) =>
                                 field.onChange(e.target.valueAsNumber || "")
                               }

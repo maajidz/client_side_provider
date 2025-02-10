@@ -1,3 +1,4 @@
+import LoadingButton from "@/components/LoadingButton";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +14,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
+import { deleteInsuranceData } from "@/services/insuranceServices";
 import { InsuranceResponse } from "@/types/insuranceInterface";
+import { showToast } from "@/utils/utils";
 import AddOrViewNotes from "./actions/AddOrViewNotes";
 import { Ellipsis } from "lucide-react";
 import { useState } from "react";
@@ -22,14 +26,55 @@ interface InsuranceTableProps {
   insuranceData: InsuranceResponse | undefined;
   setIsDialogOpen: (status: boolean) => void;
   setSelectedInsurance: (insuranceData: InsuranceResponse | undefined) => void;
+  onFetchInsuranceData: () => Promise<void>;
 }
 
 function InsuranceTable({
   insuranceData,
   setIsDialogOpen,
   setSelectedInsurance,
+  onFetchInsuranceData
 }: InsuranceTableProps) {
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
+  // Dialog State
   const [isOpenNotesDialog, setIsOpenNotesDialog] = useState(false);
+
+  // Toast State
+  const { toast } = useToast();
+
+  // DELETE Insurance Data
+  const handleDeleteInsuranceData = async (id: string) => {
+    setLoading(true);
+
+    try {
+      await deleteInsuranceData({ id });
+
+      showToast({
+        toast,
+        type: "success",
+        message: "Insurance data deleted successfully",
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Failed to delete insurance data",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "Failed to delete insurance data. An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+      await onFetchInsuranceData();
+    }
+  };
 
   return (
     <>
@@ -42,11 +87,12 @@ function InsuranceTable({
             <TableHead>Subscriber Number</TableHead>
             <TableHead>ID Number</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
+        {loading && <LoadingButton />}
         <TableBody>
-          {insuranceData ? ( // Ensure insuranceData exists before rendering
+          {insuranceData ? (
             <TableRow>
               <TableCell>{insuranceData.type}</TableCell>
               <TableCell>{insuranceData.companyName}</TableCell>
@@ -84,7 +130,12 @@ function InsuranceTable({
                       Add/View Notes
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer">
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() =>
+                        handleDeleteInsuranceData(insuranceData.id)
+                      }
+                    >
                       Delete
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer">
