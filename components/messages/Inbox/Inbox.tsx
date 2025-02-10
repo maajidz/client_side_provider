@@ -1,6 +1,8 @@
 import { ConversationInterface } from "@/types/messageInterface";
 import React, { useEffect, useState } from "react";
 import ConversationCard from "../ConversationCard";
+import styles from "../styles.module.css";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Inbox = ({
   conversations,
@@ -9,17 +11,18 @@ const Inbox = ({
 }: {
   conversations: ConversationInterface[];
   onCoversationSelect: (conversation: ConversationInterface) => void;
-  defaultHighlighted: ConversationInterface;
+  defaultHighlighted: ConversationInterface | undefined;
 }) => {
   const [selectedConversation, setSelectedConversation] =
-    useState<ConversationInterface>(defaultHighlighted);
+    useState<ConversationInterface>();
 
-  useEffect(() => {
-    if (defaultHighlighted) {
-      setSelectedConversation(defaultHighlighted);
-      onCoversationSelect(defaultHighlighted);
-    }
-  }, [defaultHighlighted, onCoversationSelect]);
+    useEffect(() => {
+      if (!selectedConversation && defaultHighlighted) {
+        setSelectedConversation(defaultHighlighted);
+        onCoversationSelect(defaultHighlighted);
+      }
+    }, [defaultHighlighted, onCoversationSelect, selectedConversation]);
+    
 
   const handleConversationClick = (consultant: ConversationInterface) => {
     setSelectedConversation(consultant);
@@ -27,23 +30,25 @@ const Inbox = ({
   };
 
   return (
-    <div>
-      {selectedConversation && (
-        <ConversationCard
-          conversation={selectedConversation}
-          highlighted={selectedConversation === selectedConversation}
-        />
-      )}
-      {conversations
-        .filter((conversation) => conversation !== selectedConversation)
-        .map((conversation) => (
+    <ScrollArea className="h-[52vh]">
+      <div className={styles.conversationList}>
+        {selectedConversation && selectedConversation.status === false && (
           <ConversationCard
-            key={conversation.recentMessageSenderId}
-            conversation={conversation}
-            onClick={() => handleConversationClick(conversation)}
+            conversation={selectedConversation}
+            highlighted={selectedConversation === selectedConversation}
           />
-        ))}
-    </div>
+        )}
+        {conversations
+          .filter((conversation) => conversation !== selectedConversation)
+          .map((conversation) => (
+            <ConversationCard
+              key={conversation.recentMessageSenderId}
+              conversation={conversation}
+              onClick={() => handleConversationClick(conversation)}
+            />
+          ))}
+      </div>
+    </ScrollArea>
   );
 };
 

@@ -170,7 +170,7 @@ const ConversationBody = ({
         </div>
       </div>
       <Separator />
-      <ScrollArea className="h-[30vh]">
+      <ScrollArea className="h-[40vh]">
         <div className="flex flex-col flex-1 gap-6">
           {loading && (
             <div className="h-4">
@@ -217,7 +217,6 @@ const ConversationBody = ({
                   </div>
                 </div>
               </div>
-              {/* <div ref={chatEndRef} /> */}
             </div>
           ))}
           <div ref={endOfMessagesRef} />

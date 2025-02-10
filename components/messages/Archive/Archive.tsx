@@ -1,51 +1,53 @@
-import LoadingButton from "@/components/LoadingButton";
-import { fetchUserConversations } from "@/services/messageService";
-import { RootState } from "@/store/store";
 import { ConversationInterface } from "@/types/messageInterface";
-import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import ConversationCard from "../ConversationCard";
+import styles from "../styles.module.css";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-const Archive = () => {
-  const providerDetails = useSelector((state: RootState) => state.login);
-  const [conversations, setConversations] = useState<ConversationInterface[]>(
-    []
-  );
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const userConversation = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await fetchUserConversations({
-        providerId: providerDetails.providerId,
-      });
-      if (response) {
-        setConversations(response);
-      }
-    } catch (error) {
-      console.log("Error", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [providerDetails.providerId]);
+const Archive = ({
+  conversations,
+  onCoversationSelect,
+  defaultHighlighted,
+}: {
+  conversations: ConversationInterface[];
+  onCoversationSelect: (conversation: ConversationInterface) => void;
+  defaultHighlighted: ConversationInterface | undefined;
+}) => {
+  const [selectedConversation, setSelectedConversation] =
+    useState<ConversationInterface>();
 
   useEffect(() => {
-    userConversation();
-  }, [userConversation]);
+    if (!selectedConversation && defaultHighlighted) {
+      setSelectedConversation(defaultHighlighted);
+      onCoversationSelect(defaultHighlighted);
+    }
+  }, [defaultHighlighted, onCoversationSelect, selectedConversation]);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
+  const handleConversationClick = (consultant: ConversationInterface) => {
+    setSelectedConversation(consultant);
+    onCoversationSelect(consultant);
+  };
 
   return (
-    <div>
-      {conversations.map((conversation) => (
-        <ConversationCard
-          key={conversation.recentMessageSenderId}
-          conversation={conversation}
-        />
-      ))}
-    </div>
+    <ScrollArea className="h-[52vh]">
+      <div className={styles.conversationList}>
+        {selectedConversation && selectedConversation.status === true && (
+          <ConversationCard
+            conversation={selectedConversation}
+            highlighted={selectedConversation === selectedConversation}
+          />
+        )}
+        {conversations
+          .filter((conversation) => conversation !== selectedConversation)
+          .map((conversation) => (
+            <ConversationCard
+              key={conversation.recentMessageSenderId}
+              conversation={conversation}
+              onClick={() => handleConversationClick(conversation)}
+            />
+          ))}
+      </div>
+    </ScrollArea>
   );
 };
 

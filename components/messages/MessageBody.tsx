@@ -18,20 +18,23 @@ const MessageBody = () => {
     []
   );
   const [loading, setLoading] = useState<boolean>(false);
-  const defaultConversation = conversations[0];
-  const [selectedConversation, setSelectedConversation] =
-    useState<ConversationInterface>(defaultConversation);
+  const inboxConversations = conversations.filter((convo) => !convo.status);
+  const archiveConversations = conversations.filter((convo) => convo.status);
+  const defaultConversation = undefined;
+  const [selectedConversation, setSelectedConversation] = useState<ConversationInterface | undefined>();
 
   const messagesTab = [
     {
       value: "inbox",
       label: "Inbox",
       component: Inbox,
+      data: inboxConversations,
     },
     {
       value: "archived",
       label: "Archived",
       component: Archive,
+      data: archiveConversations,
     },
   ];
 
@@ -76,13 +79,13 @@ const MessageBody = () => {
                   </CustomTabsTrigger>
                 ))}
               </TabsList>
-              {messagesTab.map(({ value, component: Component }) => (
+              {messagesTab.map(({ value, component: Component, data }) => (
                 <TabsContent value={value} key={value}>
                   {Component ? (
                     <>
                       {conversations.length > 0 ? (
                         <Component
-                          conversations={conversations}
+                          conversations={data}
                           defaultHighlighted={defaultConversation}
                           onCoversationSelect={setSelectedConversation}
                         />
@@ -109,9 +112,7 @@ const MessageBody = () => {
               selectedConversation={selectedConversation}
             />
           ) : (
-            <div className={styles.listTitle}>
-              No Conversation Selected
-            </div>
+            <div className={`${styles.listTitle} flex flex-1 h-full`}>No Conversation Selected</div>
           )}
         </div>
       </div>
