@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import LoadingButton from "@/components/LoadingButton";
 
 export default function ChatPage({
   userId,
@@ -26,15 +27,17 @@ export default function ChatPage({
   const socketRef = useRef<Socket | null>(null);
   const [connectionAttempts, setConnectionAttempts] = useState<number>(0);
   const [messages, setMessages] = useState<UserMessagesInterface[]>([]);
-  const [input, setInput] = useState("");
-  const [page, setPage] = useState(1);
+  const [input, setInput] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
   const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const pageSize = 15;
   const maxRetries = 3;
 
   const fetchUserMessages = useCallback(
     async (newPage: number) => {
       try {
+        setLoading(true);
         const response = await fetchMessages({
           userID: userId,
           recipientId: recipientId,
@@ -52,6 +55,8 @@ export default function ChatPage({
         }
       } catch (error) {
         console.log("Error fetching messages:", error);
+      } finally {
+        setLoading(false);
       }
     },
     [userId, recipientId, pageSize]
@@ -171,6 +176,11 @@ export default function ChatPage({
       <Separator />
       <ScrollArea className="h-[30vh]">
         <div className="flex flex-col flex-1 gap-6">
+          {loading && (
+            <div className="h-4">
+              <LoadingButton />
+            </div>
+          )}
           <button
             onClick={() => setPage((prev) => prev + 1)}
             className="p-2 mb-2 bg-gray-300 rounded"
