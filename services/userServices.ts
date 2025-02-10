@@ -108,17 +108,18 @@ export const fetchUserEssentialsDashboard = async ({
 
 export const fetchUserAppointments = async ({
   userDetailsId,
+  q,
 }: {
   userDetailsId: string;
+  q: string;
 }) => {
   try {
     const response = await ApiFetch({
       method: "get",
-      url: `/provider/appointments/patient/${userDetailsId}?q=ALL`,
+      url: `/provider/appointments/patient/${userDetailsId}?q=${q}`,
     });
-    console.log(response.data);
+
     const data: UserAppointmentInterface[] = await response.data;
-    console.log(data);
     return data;
   } catch (error) {
     console.log("Error fetching response", error);

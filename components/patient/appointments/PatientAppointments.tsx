@@ -1,25 +1,28 @@
+import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { PatientAppointmentClient } from "@/components/tables/patient/patientAppointments/client";
-import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { AppointmentsDialog } from "./AppointmentsDialog";
 import { PlusIcon } from "lucide-react";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
-import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
-import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
+import { useState } from "react";
 
 const patientAppointmentsTab = [
   {
     value: "past",
     label: "Past",
+    status: ["No Show", "Consulted"],
     component: PatientAppointmentClient,
   },
   {
-    value: "upcomming",
-    label: "Upcomming",
+    value: "upcoming",
+    label: "Upcoming",
+    status: ["Confirmed"],
     component: PatientAppointmentClient,
   },
   {
     value: "waiting_list",
     label: "Waiting List",
+    status: ["Scheduled"],
     component: PatientAppointmentClient,
   },
 ];
@@ -35,8 +38,8 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-            <PlusIcon />
-            New Appointment
+          <PlusIcon />
+          New Appointment
         </DefaultButton>
 
         <AppointmentsDialog
@@ -47,7 +50,7 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
           isOpen={isDialogOpen}
         />
       </div>
-      <Tabs defaultValue="upcomming" className="">
+      <Tabs defaultValue="upcoming" className="">
         <TabsList className="flex gap-3 w-full">
           {patientAppointmentsTab.map((tab) => (
             <CustomTabsTrigger value={tab.value} key={tab.value}>
@@ -55,11 +58,17 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
             </CustomTabsTrigger>
           ))}
         </TabsList>
-        {patientAppointmentsTab.map(({ value, component: Component }) => (
-          <TabsContent value={value} key={value}>
-            {Component ? <Component userDetailsId={userDetailsId} /> : value}
-          </TabsContent>
-        ))}
+        {patientAppointmentsTab.map(
+          ({ value, component: Component, status }) => (
+            <TabsContent value={value} key={value}>
+              {Component ? (
+                <Component userDetailsId={userDetailsId} status={status} />
+              ) : (
+                value
+              )}
+            </TabsContent>
+          )
+        )}
       </Tabs>
     </div>
   );

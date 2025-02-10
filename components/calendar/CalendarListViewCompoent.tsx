@@ -45,7 +45,7 @@ export const CalendarListViewComponent = ({
         return "bg-green-200 text-green-700 focus:ring-lime-700";
       case "Consulted":
         return "bg-lime-200 text-lime-700 focus:ring-lime-700";
-      case "Noshow":
+      case "No Show":
         return "bg-purple-200 text-purple-700 focus:ring-purple-700";
       case "Scheduled":
         return "bg-purple-200 text-purple-700 focus:ring-purple-700";
@@ -61,9 +61,8 @@ export const CalendarListViewComponent = ({
     };
     try {
       await updateAppointmentStatus({ appointmentID: patientID, requestData });
-      console.log(`Status updated to ${newStatus} for patient ${patientName}`);
     } catch (error) {
-      console.error("Failed to update status:", error);
+      console.log("Failed to update status:", error);
     }
   };
   return (
@@ -117,10 +116,10 @@ export const CalendarListViewComponent = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="confirmed">Confirmed</SelectItem>
-                    <SelectItem value="consulted">Consulted</SelectItem>
-                    <SelectItem value="noshow">No Show</SelectItem>
-                    <SelectItem value="scheduled">Scheduled</SelectItem>
+                    <SelectItem value="Confirmed">Confirmed</SelectItem>
+                    <SelectItem value="Consulted">Consulted</SelectItem>
+                    <SelectItem value="No Show">No Show</SelectItem>
+                    <SelectItem value="Scheduled">Scheduled</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

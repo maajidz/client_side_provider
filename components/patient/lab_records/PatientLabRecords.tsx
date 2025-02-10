@@ -1,12 +1,11 @@
-import PageContainer from "@/components/layout/page-container";
+import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import OrderRecords from "./orders/OrderRecords";
 import ResultRecords from "./results/ResultRecords";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
-import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 
 const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
   const [activeTab, setActiveTab] = useState<string>("labResults");
@@ -26,7 +25,6 @@ const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
   ];
 
   return (
-    <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Tabs
           defaultValue="labResults"
@@ -60,7 +58,6 @@ const PatientLabRecords = ({ userDetailsId }: { userDetailsId: string }) => {
           ))}
         </Tabs>
       </div>
-    </PageContainer>
   );
 };
 
