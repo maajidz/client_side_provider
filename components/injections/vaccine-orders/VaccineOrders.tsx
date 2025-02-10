@@ -181,7 +181,7 @@ function VaccineOrders() {
 
   // Effects
   useEffect(() => {
-    if (userDetailsId) {
+    if (!userDetailsId) {
       fetchUserData();
     }
 

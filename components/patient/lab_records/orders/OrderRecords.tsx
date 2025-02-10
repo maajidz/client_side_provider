@@ -26,6 +26,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 // import { useSelector } from "react-redux";
 import { z } from "zod";
+import PageContainer from "@/components/layout/page-container";
 
 interface OrderRecordsProps {
   userDetailsId: string;
@@ -87,7 +88,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
   }
 
   return (
-    <div>
+    <PageContainer scrollable={true}>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -159,7 +160,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
           />
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }
 

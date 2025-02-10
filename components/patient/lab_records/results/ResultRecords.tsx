@@ -26,6 +26,7 @@ import { columns } from "../../../lab/LabResults/columns";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import PageContainer from "@/components/layout/page-container";
 
 interface ResultRecordsProps {
   userDetailsId: string;
@@ -127,7 +128,7 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
   }
 
   return (
-    <>
+    <PageContainer scrollable={true}>
       <div>
         {/* Search Form */}
         <Form {...form}>
@@ -228,7 +229,7 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
           )}
         </div>
       </div>
-    </>
+    </PageContainer>
   );
 }
 

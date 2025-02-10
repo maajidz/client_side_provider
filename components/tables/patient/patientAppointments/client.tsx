@@ -1,4 +1,5 @@
 "use client";
+import PageContainer from "@/components/layout/page-container";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
 import { useEffect, useState } from "react";
@@ -11,8 +12,10 @@ import generateAppointmentPDF from "@/components/patient/appointments/generateAp
 
 export function PatientAppointmentClient({
   userDetailsId,
+  status,
 }: {
   userDetailsId: string;
+  status: string[];
 }) {
   const [userAppointment, setuserAppointment] = useState<
     UserAppointmentInterface[]
@@ -30,6 +33,7 @@ export function PatientAppointmentClient({
       try {
         const fetchedAppointments = await fetchUserAppointments({
           userDetailsId: userDetailsId,
+          q: status.join(","),
         });
         console.log("Fetched Appointments:", fetchedAppointments);
         if (fetchedAppointments) {
@@ -44,7 +48,7 @@ export function PatientAppointmentClient({
     };
 
     fetchAndSetResponse();
-  }, [userDetailsId]);
+  }, [userDetailsId, status]);
 
   const handleRowClick = (appointmentData: UserAppointmentInterface) => {
     setEditData(appointmentData);
@@ -60,7 +64,7 @@ export function PatientAppointmentClient({
   }
 
   return (
-    <>
+    <PageContainer scrollable={true}>
       <div className="flex justify-end">
         <Button
           variant={"outline"}
@@ -96,6 +100,6 @@ export function PatientAppointmentClient({
         appointmentsData={editData}
         isOpen={isDialogOpen}
       />
-    </>
+    </PageContainer>
   );
 }

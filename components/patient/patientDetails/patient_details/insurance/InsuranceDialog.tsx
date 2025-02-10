@@ -20,14 +20,16 @@ import { isInsured } from "@/constants/data";
 import { useToast } from "@/hooks/use-toast";
 import { insuranceFormSchema } from "@/schema/insuranceSchema";
 import { createInsurance, updateInsurance } from "@/services/insuranceServices";
-import { InsuranceResponse } from "@/types/insuranceInterface";
+import {
+  CreateInsuranceInterface,
+  InsuranceResponse,
+  UpdateInsuranceType,
+} from "@/types/insuranceInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon, UploadCloudIcon } from "lucide-react";
 import Image from "next/image";
-// import { UploadCloudIcon } from "lucide-react";
-// import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -68,14 +70,14 @@ function InsuranceDialog({
       groupNameOrNumber: selectedInsurance?.groupNameOrNumber ?? "",
       subscriberNumber: selectedInsurance?.subscriberNumber ?? "",
       idNumber: selectedInsurance?.idNumber ?? "",
-      frontDocumentImage: [] as File[],
-      backDocumentImage: [] as File[],
+      frontDocumentImage: {} as File,
+      backDocumentImage: {} as File,
     },
   });
 
   // Image State
-  const [frontImageFile, setFrontImageFile] = useState<File | null>(null);
-  const [backImageFile, setBackImageFile] = useState<File | null>(null);
+  const [frontImageFile, setFrontImageFile] = useState<File>();
+  const [backImageFile, setBackImageFile] = useState<File>();
 
   // Handle Dialog State
   const handleIsDialogOpen = (status: boolean) => {
@@ -93,21 +95,27 @@ function InsuranceDialog({
     const formValues = methods.getValues();
     console.log(formValues);
 
-    const requestData = {
-      type: selectedIsInsured,
-      companyName: formValues.companyName,
-      groupNameOrNumber: formValues.groupNameOrNumber,
-      subscriberNumber: formValues.subscriberNumber,
-      idNumber: formValues.idNumber,
-      status: "inactive",
-      images: [frontImageFile, backImageFile],
-      userDetailsID: userDetailsId,
-    };
+    const formData = new FormData();
+    formData.append("type", selectedIsInsured);
+    formData.append("companyName", formValues.companyName);
+    formData.append("groupNameOrNumber", formValues.groupNameOrNumber);
+    formData.append("subscriberNumber", formValues.subscriberNumber);
+    formData.append("idNumber", formValues.idNumber);
+    formData.append("status", "inactive");
+    formData.append("userDetailsID", userDetailsId);
+    formData.append("images", formValues.frontDocumentImage);
+    formData.append("images", formValues.backDocumentImage);
+
     try {
       if (selectedInsurance) {
-        updateInsurance({ requestData, id: selectedInsurance.id });
+        updateInsurance({
+          requestData: formData as unknown as UpdateInsuranceType,
+          id: selectedInsurance.id,
+        });
       } else {
-        await createInsurance({ requestData });
+        await createInsurance({
+          requestData: formData as unknown as CreateInsuranceInterface,
+        });
       }
 
       showToast({
