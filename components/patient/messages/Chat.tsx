@@ -41,7 +41,12 @@ export default function ChatPage({
           page: newPage,
           pageSize: pageSize,
         });
-        if (response) setMessages(response.reverse());
+        if (response) {
+          setMessages((prevMessages) => [
+            ...response.reverse(),
+            ...prevMessages,
+          ]);
+        }
       } catch (error) {
         console.log("Error fetching messages:", error);
       }
@@ -52,7 +57,7 @@ export default function ChatPage({
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({
       behavior: "smooth",
-      block: "end", 
+      block: "end",
       inline: "nearest",
     });
   }, [messages]);
@@ -169,9 +174,9 @@ export default function ChatPage({
           >
             Load More Messages
           </button>
-          {messages.map((msg) => (
+          {messages.map((msg, index) => (
             <div
-              key={msg.id}
+              key={`${msg.id}-${index}`}
               className={`flex ${
                 msg.senderID === userId ? "flex-row-reverse" : ""
               } gap-2`}
