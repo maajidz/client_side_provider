@@ -42,10 +42,13 @@ export default function ChatPage({
           pageSize: pageSize,
         });
         if (response) {
-          setMessages((prevMessages) => [
-            ...response.reverse(),
-            ...prevMessages,
-          ]);
+          setMessages((prevMessages) => {
+            const combinedMessages = [...response.reverse(), ...prevMessages];
+            const uniqueMessages = Array.from(
+              new Map(combinedMessages.map((msg) => [msg.id, msg])).values()
+            );
+            return uniqueMessages;
+          });
         }
       } catch (error) {
         console.log("Error fetching messages:", error);
@@ -174,9 +177,9 @@ export default function ChatPage({
           >
             Load More Messages
           </button>
-          {messages.map((msg, index) => (
+          {messages.map((msg) => (
             <div
-              key={`${msg.id}-${index}`}
+              key={msg.id}
               className={`flex ${
                 msg.senderID === userId ? "flex-row-reverse" : ""
               } gap-2`}
