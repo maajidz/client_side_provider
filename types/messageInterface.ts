@@ -7,6 +7,7 @@ export interface ConversationInterface {
   recentMessageTime: string;
   partnerUsername: string;
   partnerEmail: string;
+  status: boolean;
 }
 
 export type UserMessages = UserMessagesInterface[];

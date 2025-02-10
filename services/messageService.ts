@@ -1,42 +1,38 @@
 import ApiFetch from "@/config/api";
-import { ConversationInterface, UserMessagesInterface } from "@/types/messageInterface";
-import axios from "axios";
-
-const API_BASE_URL = "https://api.joinpomegranateapi.com";
-
-export const sendMessage = async (messageData: any) => {
-  return await axios.post(`${API_BASE_URL}/chat/message`, messageData);
-};
+import {
+  ConversationInterface,
+  UserMessagesInterface,
+} from "@/types/messageInterface";
 
 export const fetchMessages = async ({
   userID,
   recipientId,
   page,
-  pageSize
+  pageSize,
 }: {
   userID: string;
   recipientId: string;
   page: number;
-  pageSize: number
+  pageSize: number;
 }) => {
   const response = await ApiFetch({
     method: "get",
     url: `/chat/message?fromUuid=${userID}&toUuid=${recipientId}&page=${page}&pageSize=${pageSize}`,
   });
   console.log(response.data);
-  const data: UserMessagesInterface[]= await response.data;
+  const data: UserMessagesInterface[] = await response.data;
   console.log(data);
   return data;
 };
 
 export const fetchUserConversations = async ({
-  recipientId,
+  providerId,
 }: {
-  recipientId: string;
+  providerId: string;
 }) => {
   const response = await ApiFetch({
     method: "get",
-    url: `/chat/conversations?uuid=${recipientId}`,
+    url: `/provider/chat/latest/${providerId}`,
   });
   console.log(response.data);
   const data: ConversationInterface[] = await response.data;

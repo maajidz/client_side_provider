@@ -1,0 +1,47 @@
+.messageBody {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 0%;
+    gap: 1.5rem;
+}
+
+.section{
+    display: flex;
+    flex-direction: column;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    gap: 1.5rem;
+    border: 1px solid #D0D5DD;
+    border-radius: 0.5rem;
+}
+
+.listBody { 
+    flex: 1 1 30%;
+}
+
+.conversationBody { 
+    flex: 1 1 30%;
+}
+
+.listHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.listTitle{
+    color: #84012A;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.tabList{
+    display: flex;
+    flex-direction: row;
+    gap: 0.75rem;
+    width: 100%;
+}

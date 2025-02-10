@@ -20,12 +20,12 @@ export const navItems: NavItem[] = [
     icon: "calendar",
     label: "Calendar",
   },
-  // {
-  //   title: "Messages",
-  //   href: "/dashboard/provider/calendar",
-  //   icon: "message",
-  //   label: "Messages",
-  // },
+  {
+    title: "Messages",
+    href: "/dashboard/provider/messages",
+    icon: "message",
+    label: "Messages",
+  },
   {
     title: "Tasks",
     href: "/dashboard/provider/tasks",
