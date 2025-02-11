@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { injectionsSearchParams } from "@/schema/injectionsAndVaccinesSchema";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { fetchUserDataResponse } from "@/services/userServices";

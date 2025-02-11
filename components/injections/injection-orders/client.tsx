@@ -7,7 +7,7 @@ import FilterInjections from "./FilterInjections";
 import { useCallback, useEffect, useState } from "react";
 import { injectionsSearchParams } from "@/schema/injectionsAndVaccinesSchema";
 import { z } from "zod";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 
 

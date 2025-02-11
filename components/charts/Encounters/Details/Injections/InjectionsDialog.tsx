@@ -40,7 +40,7 @@ import {
   updateInjection,
 } from "@/services/injectionsServices";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 

@@ -27,7 +27,7 @@ import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { CreateUser, PatientDetails } from "@/types/userInterface";
 import { createNewPatient } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import PatientConfirmationScreen from "./PatientConfirmationScreen";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";

@@ -22,8 +22,8 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             setIsDialogOpen(true);
           }}
         >
-            <PlusIcon />
-            Tasks
+          <PlusIcon />
+          Tasks
         </DefaultButton>
         <TasksDialog
           userDetailsId={userDetailsId}
@@ -31,7 +31,10 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
           isOpen={isDialogOpen}
         />
       </div>
-      <ViewPatientTasks userDetailsId={userDetailsId} refreshTrigger={refreshTrigger} />
+      <ViewPatientTasks
+        userDetailsId={userDetailsId}
+        refreshTrigger={refreshTrigger}
+      />
     </>
   );
 };

@@ -27,7 +27,7 @@ import { CreateImageResultInterface } from "@/types/imageResults";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 

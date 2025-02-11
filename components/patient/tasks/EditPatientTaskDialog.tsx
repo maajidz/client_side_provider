@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { categoryOptions, priority, reminderOptions } from "@/constants/data";
 import { tasksSchema } from "@/schema/tasksSchema";
 import { updateTask } from "@/services/chartDetailsServices";

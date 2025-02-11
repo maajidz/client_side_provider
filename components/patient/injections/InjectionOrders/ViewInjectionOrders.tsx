@@ -1,7 +1,7 @@
 import { columns } from "@/components/injections/injection-orders/column";
 import LoadingButton from "@/components/LoadingButton";
 import { DataTable } from "@/components/ui/data-table";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { getInjectionsData } from "@/services/injectionsServices";
 import { RootState } from "@/store/store";
 import { InjectionsInterface } from "@/types/injectionsInterface";

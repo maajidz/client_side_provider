@@ -41,7 +41,7 @@ import { LabsDataResponse, Test } from "@/types/chartsInterface";
 import LoadingButton from "@/components/LoadingButton";
 import { createLabResultRequest } from "@/services/labResultServices";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
 import { fetchUserDataResponse } from "@/services/userServices";

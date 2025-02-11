@@ -39,7 +39,7 @@ import LoadingButton from "@/components/LoadingButton";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";

@@ -30,7 +30,7 @@ import {
 import { filterTasksSchema } from "@/schema/tasksSchema";
 import { categoryOptions, priority, status } from "@/constants/data";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import AddTaskComment from "./AddTaskComment";
 import EditPatientTaskDialog from "./EditPatientTaskDialog";
 

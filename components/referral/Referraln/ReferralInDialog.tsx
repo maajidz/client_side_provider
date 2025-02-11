@@ -38,7 +38,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import LoadingButton from "@/components/LoadingButton";
 import { UserData } from "@/types/userInterface";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";

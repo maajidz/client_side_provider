@@ -10,7 +10,7 @@ import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { DataTable } from "../ui/data-table";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { columns } from "./column";
 import FilterDocuments from "./FilterDocuments";
 import { useCallback, useEffect, useState } from "react";

@@ -4,7 +4,7 @@ import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import { getAllergiesData } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { AllergenResponseInterfae } from "@/types/allergyInterface";
 import EditAllergy from "@/components/charts/Encounters/Details/Allergies/EditAllergy";
 

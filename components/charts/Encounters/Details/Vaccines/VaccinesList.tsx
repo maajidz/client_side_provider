@@ -1,6 +1,6 @@
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { deleteHistoricalVaccine } from "@/services/chartDetailsServices";
 import { HistoricalVaccineInterface } from "@/types/chartsInterface";
 import { showToast } from "@/utils/utils";

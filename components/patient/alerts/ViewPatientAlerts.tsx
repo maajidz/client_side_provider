@@ -4,7 +4,7 @@ import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import { getAlertData } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { AlertResponseInterface } from "@/types/alertInterface";
 import AlertDialog from "@/components/charts/Encounters/Details/Alerts/AlertDialog";
 

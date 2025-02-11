@@ -20,7 +20,7 @@ import { providerLogin } from '@/services/loginServices';
 import { useDispatch } from 'react-redux';
 import { setLoginData } from '@/store/slices/loginSlice';
 import { checkProviderExistsOrNot } from '@/services/registerServices';
-import { useToast } from '@/components/ui/use-toast'
+import { useToast } from "@/hooks/use-toast";
 import { showToast } from '@/utils/utils';
 
 const formSchema = z.object({

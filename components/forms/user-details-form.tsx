@@ -19,7 +19,7 @@ import { ProviderDetailsFormValues, providerDetailsSchema } from '@/schema/provi
 import { sendProviderDetails, updateProviderDetails } from '@/services/registerServices';
 import { cn } from '@/lib/utils';
 import { Textarea } from '../ui/textarea';
-import { useToast } from '@/components/ui/use-toast'
+import { useToast } from "@/hooks/use-toast";
 import RadioButton from '../custom_buttons/radio_button/RadioButton';
 import { RootState } from '@/store/store';
 import { Separator } from '../ui/separator';

@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { deleteFollowUp, getFollowUpData, updateFollowUp } from '@/services/chartsServices'
 import LoadingButton from '@/components/LoadingButton'
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { showToast } from '@/utils/utils'
 import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 

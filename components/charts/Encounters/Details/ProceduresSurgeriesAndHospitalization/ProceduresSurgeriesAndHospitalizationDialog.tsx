@@ -31,7 +31,7 @@ import {
   updateProcedureData,
 } from "@/services/chartDetailsServices";
 import { UpdateProceduresInterface } from "@/types/procedureInterface";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";

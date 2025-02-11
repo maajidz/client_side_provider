@@ -14,7 +14,7 @@ import {
   CreateDiagnosesRequestBody,
   UserEncounterData,
 } from "@/types/chartsInterface";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   createDiagnoses,
   createSOAPChart,

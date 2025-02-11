@@ -6,7 +6,7 @@ import {
   InjectionsResponse,
 } from "@/types/injectionsInterface";
 import { useCallback, useEffect, useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import FormLabels from "@/components/custom_buttons/FormLabels";
 import { Edit2Icon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";

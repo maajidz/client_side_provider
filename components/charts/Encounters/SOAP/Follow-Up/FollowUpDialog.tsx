@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2Icon } from "lucide-react";
 import { UserEncounterData } from "@/types/chartsInterface";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { createFollowUp, createSOAPChart } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";

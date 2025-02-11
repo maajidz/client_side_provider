@@ -38,7 +38,7 @@ import { RootState } from "@/store/store";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { categoryOptions, priority, reminderOptions } from "@/constants/data";
 import { fetchProviderListDetails } from "@/services/registerServices";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";

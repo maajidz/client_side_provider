@@ -35,7 +35,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { getLabsData } from "@/services/chartsServices";
 import { createLabResultRequest } from "@/services/labResultServices";
 import { fetchProviderListDetails } from "@/services/registerServices";

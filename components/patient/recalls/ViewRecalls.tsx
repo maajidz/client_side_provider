@@ -24,7 +24,7 @@ import LoadingButton from "@/components/LoadingButton";
 import { getRecallsData } from "@/services/chartDetailsServices";
 import { status } from "@/constants/data";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   RecallsEditData,
   RecallsResponseInterface,

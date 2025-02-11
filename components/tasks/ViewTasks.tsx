@@ -32,7 +32,7 @@ import { filterTasksSchema } from "@/schema/tasksSchema";
 import { categoryOptions, priority, status } from "@/constants/data";
 import TasksDialog from "./TasksDialog";
 import { showToast } from "@/utils/utils";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 

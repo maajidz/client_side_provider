@@ -16,7 +16,7 @@ export const showToast = ({
 }) => {
   toast({
     description: (
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
         <div
           className={`flex ${
             type === "success" ? "bg-[#18A900]" : "bg-red-600"

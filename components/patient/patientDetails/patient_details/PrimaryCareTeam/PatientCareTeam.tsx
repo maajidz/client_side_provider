@@ -1,5 +1,5 @@
 import LoadingButton from "@/components/LoadingButton";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { fetchUserCareTeam } from "@/services/userServices";
 import { PatientCareTeamInterface } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";

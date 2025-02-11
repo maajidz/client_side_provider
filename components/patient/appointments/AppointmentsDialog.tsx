@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/dialog";
 import { useCallback, useEffect, useState } from "react";
 import { showToast } from "@/utils/utils";
-import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
@@ -43,6 +42,7 @@ import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { fetchProviderAvaialability } from "@/services/availabilityServices";
 import { ProviderAvailability } from "@/types/calendarInterface";
+import { useToast } from "@/hooks/use-toast";
 
 export function AppointmentsDialog({
   userDetailsId,
@@ -159,7 +159,7 @@ export function AppointmentsDialog({
         setLoading(false);
       }
     }
-  }, [providerData?.providerId, selectedDate]);
+  }, [providerData?.providerId, selectedDate, toast]);
 
   useEffect(() => {
     if (selectedDate) fetchAvailability();
