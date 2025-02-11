@@ -5,7 +5,7 @@ const appServerURL = "https://api.joinpomegranateapi.com";
 
 const ApiFetch = axios.create({
   baseURL: appServerURL,
-  timeout: 10000,
+  timeout: 20000,
   headers: { 'Content-Type': 'application/json' },
 });
 

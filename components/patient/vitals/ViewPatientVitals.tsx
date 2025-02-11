@@ -57,7 +57,7 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   if (loading) return <LoadingButton />;
 
   return (
-    <div className="py-5">
+    <div className="space-y-3">
       <div className="flex justify-end mb-4">
         <DefaultButton
           onClick={() => {

@@ -73,7 +73,7 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
           isOpen={isDialogOpen.create}
         />
       </div>
-      <div className="py-5">
+      <div className="space-y-3">
         {data?.data && (
           <DataTable
             searchKey="id"

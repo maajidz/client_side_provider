@@ -1,6 +1,6 @@
 import React from "react";
-import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
-import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+// import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 import FaceSheet from "./PatientDashboard/FaceSheet";
 // import FlowSheet from "@/components/charts/Encounters/Preview/FlowSheet";
 // import TreatmentPlan from "./PatientDashboard/TreatmentPlan";
@@ -36,13 +36,13 @@ const patientDashboardTab = [
 const PatientDashboard = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Tabs defaultValue="facesheet" className="">
-      <TabsList className="flex gap-3 w-full">
+      {/* <TabsList className="flex gap-3 w-full">
         {patientDashboardTab.map((tab) => (
           <CustomTabsTrigger value={tab.value} key={tab.value}>
             {tab.label}
           </CustomTabsTrigger>
         ))}
-      </TabsList>
+      </TabsList> */}
       {patientDashboardTab.map(({ value, component: Component }) => (
         <TabsContent value={value} key={value}>
           {Component ? <Component userDetailsId={userDetailsId} /> : value}

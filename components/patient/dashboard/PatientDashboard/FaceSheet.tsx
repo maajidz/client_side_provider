@@ -1,61 +1,54 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./face_Sheet.module.css";
-import { fetchUserEssentialsDashboard } from "@/services/userServices";
-import { PatientDashboardInterface } from "@/types/userInterface";
+import { fetchUserEssentials } from "@/services/userServices";
+import { PatientDetails } from "@/types/userInterface";
 import { SupplementInterface } from "@/types/supplementsInterface";
 import { getSupplements } from "@/services/chartDetailsServices";
 import LoadingButton from "@/components/LoadingButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [userData, setUserData] = useState<PatientDashboardInterface>();
+  const [userData, setUserData] = useState<PatientDetails>();
   const [supplementData, setSupplementData] = useState<SupplementInterface[]>();
 
-  const fetchUserData = async () => {
-    try {
-      setLoading(true);
-      const userData = await fetchUserEssentialsDashboard({
-        userDetailsId: userDetailsId,
-      });
-      if (userData) {
-        setUserData(userData);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.log("Error", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchSupplements = async () => {
+  const fetchUserData = useCallback(async () => {
     setLoading(true);
-
     try {
-      const response = await getSupplements({
-        userDetailsId: userDetailsId,
-      });
-
-      if (response) {
-        setSupplementData(response.data);
-      }
-    } catch (err) {
-      console.log("Error", err);
+      const data = await fetchUserEssentials({ userDetailsId });
+      setUserData(data);
+    } catch (error) {
+      console.log("Error fetching user data:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [userDetailsId]);
+
+  const fetchSupplements = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getSupplements({ userDetailsId });
+      setSupplementData(response.data);
+    } catch (error) {
+      console.error("Error fetching supplements:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [userDetailsId]);
 
   useEffect(() => {
     fetchUserData();
     fetchSupplements();
-  });
+  }, [fetchUserData, fetchSupplements]);
 
   if (loading) {
-    return <LoadingButton />;
+    return (
+      <div className="flex justify-center items-center h-full w-full">
+        <LoadingButton />
+      </div>
+    );
   }
 
   return (
@@ -82,7 +75,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               <NoDataRecorded />
             )}
           </div>
-          <div className={styles.infoContainer}>
+          {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="Diagnoses"
               href="diagnoses"
@@ -111,8 +104,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 <NoDataRecorded />
               )}
             </div>
-          </div>
-          <div className={styles.infoContainer}>
+          </div> */}
+          {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="Medications"
               href="medications"
@@ -138,8 +131,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 <NoDataRecorded />
               )}
             </div>
-          </div>
-          <div className={styles.infoContainer}>
+          </div> */}
+          {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="History"
               href="patientDetails"
@@ -253,7 +246,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 </div>
               </div>
             </ScrollArea>
-          </div>
+          </div> */}
           <div className={styles.infoContainer}>
             <TitleLinks
               title="Supplements"
@@ -318,7 +311,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             </div>
           </div>
-          <div className={styles.infoContainer}>
+          {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="Injections"
               href="injections"
@@ -373,8 +366,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             ) : (
               <NoDataRecorded />
             )}
-          </div>
-          <div className={styles.infoContainer}>
+          </div> */}
+          {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="Latest Labs"
               href="lab_records"
@@ -411,8 +404,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 <NoDataRecorded />
               )}
             </div>
-          </div>
-          <div className={styles.infoContainer}>
+          </div> */}
+          {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="Implanted Devices"
               href="patientDetails"
@@ -432,8 +425,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             ) : (
               <NoDataRecorded />
             )}
-          </div>
-          <div className={styles.infoContainer}>
+          </div> */}
+          {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="Vaccines"
               href="vaccines"
@@ -459,7 +452,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 <NoDataRecorded />
               )}
             </div>
-          </div>
+          </div> */}
           <div className={styles.infoContainer}>
             <TitleLinks
               title="Past Visits"
@@ -517,7 +510,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               <NoDataRecorded />
             )}
           </div>
-          <div className={styles.infoContainer}>
+          {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="Documents"
               href="documents"
@@ -556,7 +549,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 )}
               </div>
             </ScrollArea>
-          </div>
+          </div> */}
         </div>
       </ScrollArea>
     </>
@@ -595,7 +588,11 @@ const TitleLinks = ({
 }) => {
   return (
     <Link href={`/dashboard/provider/patient/${userDetailsId}/${href}`}>
-      <div className={styles.infoLabel}>{title}</div>
+      <div
+        className={`${styles.infoLabel} hover:text-blue-600 hover:underline`}
+      >
+        {title}
+      </div>
     </Link>
   );
 };

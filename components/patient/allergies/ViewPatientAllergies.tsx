@@ -51,7 +51,7 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-      <div className="py-5">
+      <div className="space-y-3">
         {data && (
           <DataTable
             searchKey="id"
