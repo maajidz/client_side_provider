@@ -1,12 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { DataTable } from "@/components/ui/data-table";
-import { columns } from "./columns";
-import LoadingButton from "@/components/LoadingButton";
-import { getAlertData } from "@/services/chartDetailsServices";
-import { showToast } from "@/utils/utils";
-import { useToast } from "@/hooks/use-toast";
-import { AlertResponseInterface } from "@/types/alertInterface";
 import AlertDialog from "@/components/charts/Encounters/Details/Alerts/AlertDialog";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import LoadingButton from "@/components/LoadingButton";
+import { DataTable } from "@/components/ui/data-table";
+import { useToast } from "@/components/ui/use-toast";
+import { getAlertData } from "@/services/chartDetailsServices";
+import { AlertResponseInterface } from "@/types/alertInterface";
+import { showToast } from "@/utils/utils";
+import { columns } from "./columns";
+import { PlusIcon } from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
 
 const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
   const [page, setPage] = useState<number>(1);
@@ -21,7 +23,10 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
     alertDescription: string;
     alertId: string;
   } | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState({
+    create: false,
+    edit: false,
+  });
 
   const fetchAlerts = useCallback(async () => {
     setLoading(true);
@@ -31,7 +36,7 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
       });
       if (response) {
         setData(response);
-        setTotalPages(response.total /limit);
+        setTotalPages(response.total / limit);
       }
     } catch (e) {
       console.log("Error", e);
@@ -50,6 +55,24 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
+      <div className="flex justify-end">
+        <DefaultButton
+          onClick={() => {
+            setIsDialogOpen((prev) => ({ ...prev, create: true }));
+          }}
+        >
+          <PlusIcon />
+          Alerts
+        </DefaultButton>
+        <AlertDialog
+          userDetailsId={userDetailsId}
+          onClose={() => {
+            setIsDialogOpen((prev) => ({ ...prev, create: false }));
+            fetchAlerts();
+          }}
+          isOpen={isDialogOpen.create}
+        />
+      </div>
       <div className="py-5">
         {data?.data && (
           <DataTable
@@ -77,9 +100,10 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
           userDetailsId={userDetailsId}
           alertData={editData}
           onClose={() => {
-            setIsDialogOpen(false);
+            setIsDialogOpen((prev) => ({ ...prev, edit: false }));
+            fetchAlerts();
           }}
-          isOpen={isDialogOpen}
+          isOpen={isDialogOpen.edit}
         />
       </div>
     </>

@@ -204,18 +204,16 @@ function SocialHistoryDialog({
                     </FormItem>
                   )}
                 />
-                <div className="flex flex-row gap-2">
-                  <div className="w-full">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        form.reset();
-                        onClose();
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
+                <div className="flex items-end justify-end gap-2 w-full">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      form.reset();
+                      onClose();
+                    }}
+                  >
+                    Cancel
+                  </Button>
                   <SubmitButton label="Save" disabled={loading} />
                 </div>
               </div>

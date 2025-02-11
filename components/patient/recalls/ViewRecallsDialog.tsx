@@ -11,7 +11,9 @@ interface ViewRecallDialogProps {
   isOpen: boolean;
   userDetailsId: string;
   selectedRecallData: RecallsEditData | null;
-  onSetIsDialogOpen: Dispatch<SetStateAction<{ edit: boolean; view: boolean }>>;
+  onSetIsDialogOpen: Dispatch<
+    SetStateAction<{ create: boolean; edit: boolean; view: boolean }>
+  >;
 }
 
 function ViewRecallDialog({
@@ -65,4 +67,3 @@ function ViewRecallDialog({
 }
 
 export default ViewRecallDialog;
-

@@ -104,7 +104,7 @@ export const columns = ({
   },
   {
     accessorKey: "id",
-    header: "Actions",
+    header: "",
     cell: ({ row }) => (
       <div>
         <DropdownMenu>

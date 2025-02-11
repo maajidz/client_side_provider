@@ -38,11 +38,15 @@ export const createPatientImplantedDevice = async ({
 
 export const fetchPatientImplantedDevice = async ({
   userDetailsId,
+  page,
+  limit,
 }: {
   userDetailsId: string;
+  page?: number;
+  limit?: number;
 }) => {
   const response = await ApiFetch({
-    url: `/provider/implanted-devices/${userDetailsId}`,
+    url: `/provider/implanted-devices/${userDetailsId}?page=${page}&limit=${limit}`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",

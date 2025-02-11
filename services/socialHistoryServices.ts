@@ -22,12 +22,16 @@ export const createSocialHistory = async ({
 
 export const getSocialHistory = async ({
   userDetailsId,
+  page,
+  limit,
 }: {
   userDetailsId: string;
+  page?: number;
+  limit?: number;
 }) => {
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/social-history/${userDetailsId}`,
+    url: `/provider/social-history/${userDetailsId}?page=${page}&limit=${limit}`,
   });
 
   const data: SocialHistoryResponseInterface = await response.data;

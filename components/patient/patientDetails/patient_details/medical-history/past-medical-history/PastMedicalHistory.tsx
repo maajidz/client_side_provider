@@ -1,31 +1,45 @@
+import LoadingButton from "@/components/LoadingButton";
 import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import PastMedicalHistoryDialog from "@/components/charts/Encounters/Details/PastMedicalHistory/PastMedicalHistoryDialog";
-import React, { useCallback, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
 import { getPastMedicalHistory } from "@/services/chartDetailsServices";
-import LoadingButton from "@/components/LoadingButton";
+import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
+import { useCallback, useEffect, useState } from "react";
 
 interface PastMedicalHistoryProps {
   userDetailsId: string;
 }
 
 function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
-  // Dialog State
-  const [isOpen, setIsOpen] = useState(false);
+  // Past Medical History State
   const [data, setData] = useState<PastMedicalHistoryInterface[]>([]);
+
+  // Loading State
   const [loading, setLoading] = useState(false);
 
+  // Pagination Data
+  const itemsPerPage = 3;
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // Dialog State
+  const [isOpen, setIsOpen] = useState(false);
+
+  // GET Past Medical History Data
   const fetchPastMedicalHistory = useCallback(async () => {
     setLoading(true);
 
     try {
       const response = await getPastMedicalHistory({
         userDetailsId,
+        page: page,
+        limit: itemsPerPage,
       });
 
       if (response) {
         setData(response.items);
+        setTotalPages(Math.ceil(response.total / itemsPerPage));
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -34,13 +48,11 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
     } finally {
       setLoading(false);
     }
-  }, [userDetailsId]);
+  }, [userDetailsId, page]);
 
   useEffect(() => {
     fetchPastMedicalHistory();
   }, [fetchPastMedicalHistory]);
-
-  if (loading) return <LoadingButton />;
 
   return (
     <div className="flex flex-col gap-2">
@@ -50,27 +62,57 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
         <PastMedicalHistoryDialog
           userDetailsId={userDetailsId}
           isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={() => {
+            setIsOpen(false);
+            fetchPastMedicalHistory();
+          }}
         />
       </div>
       <ScrollArea className="h-[12.5rem] min-h-10">
         <div className="flex flex-1 flex-col p-3 border rounded-lg m-3">
-          {data.map((history) => (
-            <div className="flex flex-col gap-3" key={history.id}>
-              <div className="font-semibold text-large">
-                Past Medical History on{" "}
-                {new Date(history.createdAt).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                })}{" "}
-              </div>
-              <div>
-                <div>{history.notes}</div>
-                <div>{history.glp_refill_note_practice}</div>
-              </div>
+          <div className="flex items-center justify-end space-x-2 py-4">
+            <div className="text-sm text-muted-foreground">
+              Page {page} of {totalPages}
             </div>
-          ))}
+            <div className="space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(page - 1)}
+                disabled={page <= 1}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(page + 1)}
+                disabled={page >= totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+          {loading ? (
+            <LoadingButton />
+          ) : (
+            data.map((history) => (
+              <div className="flex flex-col gap-3" key={history.id}>
+                <div className="font-semibold text-large">
+                  Past Medical History on{" "}
+                  {new Date(history.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                  })}{" "}
+                </div>
+                <div>
+                  <div>{history.notes}</div>
+                  <div>{history.glp_refill_note_practice}</div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </ScrollArea>
     </div>

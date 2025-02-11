@@ -260,11 +260,15 @@ export const getRecallsData = async ({
   limit,
   userDetailsId,
   providerId,
+  category,
+  status,
 }: {
   page: number;
   limit: number;
   userDetailsId?: string;
   providerId?: string;
+  category?: string;
+  status?: string;
 }) => {
   // Build the query string dynamically based on the parameters provided
   const queryParams = new URLSearchParams({
@@ -277,6 +281,12 @@ export const getRecallsData = async ({
   if (providerId) {
     queryParams.append("providerId", providerId);
   }
+  if (category) {
+    queryParams.append("category", category);
+  }
+  if (status) {
+    queryParams.append("status", status);
+  }
 
   const url = `/provider/recalls?${queryParams.toString()}`;
 
@@ -288,7 +298,6 @@ export const getRecallsData = async ({
     },
   });
 
-  console.log(response.data);
   const data: RecallsResponseInterface = await response.data;
   return data;
 };
@@ -461,11 +470,15 @@ export const deleteTask = async ({ id }: { id: string }) => {
  */
 export const getPastMedicalHistory = async ({
   userDetailsId,
+  page,
+  limit,
 }: {
   userDetailsId: string;
+  page?: number;
+  limit?: number;
 }) => {
   const response = await ApiFetch({
-    url: `/provider/medical-history/${userDetailsId}`,
+    url: `/provider/medical-history/${userDetailsId}?page=${page}&limit=${limit}`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -939,8 +952,8 @@ export const getProcedureData = async ({
   limit,
 }: {
   userDetailsId: string;
-  page? : number;
-  limit?: number
+  page?: number;
+  limit?: number;
 }) => {
   const response = await ApiFetch({
     method: "GET",
@@ -949,7 +962,7 @@ export const getProcedureData = async ({
       "Content-Type": "application/json",
     },
   });
-  
+
   const data: ProcedureResponse = await response.data;
   return data;
 };
