@@ -35,17 +35,16 @@ import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import {
-  UserAppointmentInterface,
-} from "@/types/userInterface";
+import { UserAppointmentInterface } from "@/types/userInterface";
 import FormLabels from "@/components/custom_buttons/FormLabels";
-import { timeZonesList } from "@/constants/data";
 import { CreateUserAppointmentsInterface } from "@/types/appointments";
 import { createUserAppointments } from "@/services/providerAppointments";
 import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
+import { fetchProviderAvaialability } from "@/services/availabilityServices";
+import { ProviderAvailability } from "@/types/calendarInterface";
 
 export function AppointmentsDialog({
   userDetailsId,
@@ -60,9 +59,10 @@ export function AppointmentsDialog({
 }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [providerAvailability, setProviderAvailability] =
+    useState<ProviderAvailability | null>(null);
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
-  const userData = useSelector((state: RootState)=> state.user);
+  const userData = useSelector((state: RootState) => state.user);
 
   const { toast } = useToast();
 
@@ -75,7 +75,6 @@ export function AppointmentsDialog({
         ? new Date(appointmentsData.dateOfAppointment)
         : new Date(),
       timeOfAppointment: appointmentsData?.timeOfAppointment || "",
-      timeZone: appointmentsData?.timeZone || "",
       status:
         (appointmentsData?.status as
           | "Scheduled"
@@ -86,10 +85,6 @@ export function AppointmentsDialog({
     },
   });
 
-  const filteredTimeZones = timeZonesList.filter((zone) =>
-    zone.label.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   useEffect(() => {
     if (appointmentsData) {
       form.reset({
@@ -97,7 +92,6 @@ export function AppointmentsDialog({
         reason: appointmentsData?.reason,
         dateOfAppointment: new Date(appointmentsData.dateOfAppointment),
         timeOfAppointment: appointmentsData?.timeOfAppointment,
-        timeZone: appointmentsData?.timeZone,
         status: appointmentsData?.status as
           | "Scheduled"
           | "Consulted"
@@ -107,7 +101,7 @@ export function AppointmentsDialog({
       });
       if (appointmentsData.providerId && ownersList) {
         const selected = ownersList.find(
-          (owner) => owner.id === appointmentsData.providerId
+          (owner) => owner.providerDetails?.id === appointmentsData.providerId
         );
         setSelectedOwner(selected);
         form.setValue("providerId", appointmentsData.providerId);
@@ -136,20 +130,55 @@ export function AppointmentsDialog({
     }
   }, [toast]);
 
+  const fetchAvailability = useCallback(async () => {
+    if (selectedOwner?.providerDetails?.id) {
+      setLoading(true);
+      try {
+        const fetchedAvailabilties = await fetchProviderAvaialability({
+          providerID: selectedOwner?.providerDetails?.id,
+          startDate:
+            form.getValues().dateOfAppointment.toISOString().split("T")[0] ??
+            "",
+          endDate:
+            form.getValues().dateOfAppointment.toISOString().split("T")[0] ??
+            "",
+        });
+
+        console.log("Fetched Availabilties:", fetchedAvailabilties);
+
+        if (fetchedAvailabilties) {
+          setProviderAvailability(fetchedAvailabilties);
+        }
+      } catch (error) {
+        console.error("Error fetching availability:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [selectedOwner?.providerDetails?.id, form.getValues().dateOfAppointment, form]);
+
   useEffect(() => {
     fetchOwnersList();
-  }, [fetchOwnersList]);
+    fetchAvailability();
+  }, [fetchOwnersList, fetchAvailability]);
+
+  const filteredDate = providerAvailability?.data.find(
+    (availability) =>
+      availability.date ===
+      form.getValues().dateOfAppointment.toISOString().split("T")[0]
+  );
 
   const onSubmit = async (values: AppointmentFormValues) => {
     if (userData) {
       const requestData: CreateUserAppointmentsInterface = {
         patientName: `${userData?.firstName} ${userData?.lastName}`,
-        patientEmail: `${userData?.email}`,
+        // patientEmail: `${userData?.email}`,
+        patientEmail: "ahbazarkoob@gmail.com",
         patientPhoneNumber: `${userData?.phoneNumber}`,
         additionalText: values.additionalText,
-        dateOfAppointment: values.dateOfAppointment.toISOString(),
+        dateOfAppointment: values.dateOfAppointment.toISOString().split("T")[0],
         timeOfAppointment: values.timeOfAppointment,
-        timeZone: values.timeZone,
+        timeZone: "UTC",
         status: values.status,
         providerId: values.providerId,
         userDetailsId: userDetailsId,
@@ -199,16 +228,16 @@ export function AppointmentsDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[30rem]">
+      <DialogContent className=" w-[50rem]">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="capitalize">
             {appointmentsData
               ? `Edit Appointment for ${appointmentsData.patientName}`
               : `New Appointment for ${userData?.firstName}
             ${userData?.lastName}`}
           </DialogTitle>
         </DialogHeader>
-        <ScrollArea className="max-h-[30rem] h-auto">
+        <ScrollArea className="max-h-[30rem] h-auto w-auto">
           <div className={formStyles.formBody}>
             <div className="flex flex-col gap-2 px-3">
               <FormLabels
@@ -248,9 +277,11 @@ export function AppointmentsDialog({
                             onValueChange={(value) => {
                               field.onChange(value);
                               const selected = ownersList.find(
-                                (owner) => owner.id === value
+                                (owner) => owner.providerDetails?.id === value
                               );
                               setSelectedOwner(selected);
+                              console.log(selected);
+                              console.log("Selected Provider ID:", value);
                             }}
                           >
                             <SelectTrigger>
@@ -258,7 +289,10 @@ export function AppointmentsDialog({
                             </SelectTrigger>
                             <SelectContent>
                               {ownersList.map((owner) => (
-                                <SelectItem key={owner.id} value={owner.id}>
+                                <SelectItem
+                                  key={owner.id}
+                                  value={owner.providerDetails?.id || owner.id}
+                                >
                                   {owner.firstName} {owner.lastName}
                                 </SelectItem>
                               ))}
@@ -299,79 +333,85 @@ export function AppointmentsDialog({
                       </FormItem>
                     )}
                   />
-                  {appointmentsData ? (
-                    <FormLabels
-                      label="Date"
-                      value={appointmentsData.dateOfAppointment}
-                    />
-                  ) : (
-                    <FormField
-                      control={form.control}
-                      name="dateOfAppointment"
-                      render={({ field }) => (
-                        <FormItem className={formStyles.formItem}>
-                          <FormLabel>Date</FormLabel>
-                          <Input
-                            type="date"
-                            {...field}
-                            value={field.value.toISOString().split("T")[0]}
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-                  {appointmentsData ? (
-                    <FormLabels
-                      label="Start Time"
-                      value={`${appointmentsData.timeOfAppointment} / ${appointmentsData.timeZone}`}
-                    />
-                  ) : (
-                    <FormField
-                      control={form.control}
-                      name="timeOfAppointment"
-                      render={({ field }) => (
-                        <FormItem className={formStyles.formItem}>
-                          <FormLabel className="w-28">Start Time</FormLabel>
-                          <Input type="time" {...field} value={field.value} />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-                  {!appointmentsData && (
-                    <FormField
-                      control={form.control}
-                      name="timeZone"
-                      render={({ field }) => (
-                        <FormItem className={formStyles.formItem}>
-                          <FormLabel className="w-20">Time zone</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <SelectTrigger className="border-none">
-                              <SelectValue placeholder="Select a timezone" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <Input
-                                type="text"
-                                placeholder="Search time zones"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full p-2 border rounded-md"
-                              />
-                              {filteredTimeZones.map((tz) => (
-                                <SelectItem key={tz.value} value={tz.value}>
-                                  {tz.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormItem>
-                      )}
-                    />
-                  )}
+                  <div className="flex flex-row gap-4">
+                    {appointmentsData ? (
+                      <FormLabels
+                        label="Date"
+                        value={appointmentsData.dateOfAppointment}
+                      />
+                    ) : (
+                      <FormField
+                        control={form.control}
+                        name="dateOfAppointment"
+                        render={({ field }) => (
+                          <FormItem className={formStyles.formItem}>
+                            <FormLabel>Date</FormLabel>
+                            <Input
+                              type="date"
+                              {...field}
+                              value={
+                                field.value instanceof Date
+                                  ? field.value.toISOString().split("T")[0]
+                                  : ""
+                              }
+                              onChange={(e) =>
+                                field.onChange(new Date(e.target.value))
+                              }
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                    {appointmentsData ? (
+                      <FormLabels
+                        label="Start Time"
+                        value={`${appointmentsData.timeOfAppointment} / ${appointmentsData.timeZone}`}
+                      />
+                    ) : (
+                      <FormField
+                        control={form.control}
+                        name="timeOfAppointment"
+                        render={({ field }) => (
+                          <FormItem className={formStyles.formItem}>
+                            <FormLabel className="w-28">Time Slot</FormLabel>
+                            {/* <Input
+                                type="time"
+                                {...field}
+                                value={field.value}
+                              /> */}
+                            <Select
+                              defaultValue={field.value}
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                const selectedSlot = filteredDate?.slots.find(
+                                  (availability) =>
+                                    availability.startTime === value
+                                );
+                                console.log(selectedSlot);
+                                console.log("Selected Slot Start Time:", value);
+                              }}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a time slot" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {filteredDate?.slots.map((availability) => (
+                                  <SelectItem
+                                    key={availability.id}
+                                    value={availability.startTime}
+                                  >
+                                    {availability.startTime}{""}-(30 min)
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </div>
                   <FormField
                     control={form.control}
                     name="reason"
@@ -388,9 +428,7 @@ export function AppointmentsDialog({
                     name="additionalText"
                     render={({ field }) => (
                       <FormItem className={formStyles.formItem}>
-                        <FormLabel className="w-48">
-                          Message to Patient
-                        </FormLabel>
+                        <FormLabel>Message to Patient</FormLabel>
                         <Textarea {...field} value={field.value} />
                         <FormMessage />
                       </FormItem>
