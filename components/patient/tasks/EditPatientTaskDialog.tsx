@@ -69,14 +69,14 @@ const EditPatientTaskDialog = ({
   const form = useForm<z.infer<typeof tasksSchema>>({
     resolver: zodResolver(tasksSchema),
     defaultValues: {
-      category: "",
-      task: "",
-      owner: "",
-      priority: "low",
+      category: tasksData?.category ?? "",
+      task: tasksData?.notes ?? "",
+      owner: tasksData?.assignedProvider?.id ?? "",
+      priority: tasksData?.priority ?? "low",
       dueDate: "",
       sendReminder: [],
-      comments: "",
-      userDetailsId: "",
+      comments: tasksData?.description ?? "",
+      userDetailsId: tasksData?.userDetailsId ?? "",
     },
   });
 
@@ -125,8 +125,10 @@ const EditPatientTaskDialog = ({
       }
 
       setSelectedOwner(
-        ownersList.find((owner) => owner.id === tasksData.assignerProvider?.id)
+        ownersList.find((owner) => owner.providerDetails?.id === tasksData.assignerProvider?.id)
       );
+      console.log("Fetched",tasksData.assignerProvider?.id)
+      console.log("Set", form.getValues().owner)
     }
   }, [form, tasksData, ownersList]);
 
@@ -237,10 +239,11 @@ const EditPatientTaskDialog = ({
                         <FormLabel className="w-fit">Owner</FormLabel>
                         <FormControl>
                           <Select
+                            defaultValue={field.value}
                             onValueChange={(value) => {
                               field.onChange(value);
                               const selected = ownersList.find(
-                                (owner) => owner.id === value
+                                (owner) => owner.providerDetails?.id === value
                               );
                               setSelectedOwner(selected);
                             }}
@@ -250,7 +253,7 @@ const EditPatientTaskDialog = ({
                             </SelectTrigger>
                             <SelectContent>
                               {ownersList.map((owner) => (
-                                <SelectItem key={owner.id} value={owner.id}>
+                                <SelectItem key={owner.id} value={owner.providerDetails?.id || owner.id}>
                                   {owner.firstName} {owner.lastName}
                                 </SelectItem>
                               ))}
