@@ -8,18 +8,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteTask } from "@/services/chartDetailsServices";
+import { deleteSupplement } from "@/services/chartDetailsServices";
 import { SupplementInterface } from "@/types/supplementsInterface";
 import { Ellipsis } from "lucide-react";
+import { Dispatch, SetStateAction } from "react";
 
 const handleSupplementDelete = async (
-  taskId: string,
+  id: string,
   setLoading: (loading: boolean) => void,
-  showToast: (args: { type: string; message: string }) => void
+  showToast: (args: { type: string; message: string }) => void,
+  fetchSupplements: () => void
 ) => {
   setLoading(true);
   try {
-    await deleteTask({ id: taskId });
+    await deleteSupplement(id);
     showToast({
       type: "success",
       message: "supplement deleted successfully",
@@ -29,9 +31,9 @@ const handleSupplementDelete = async (
     showToast({ type: "error", message: "Failed to delete supplement" });
   } finally {
     setLoading(false);
+    fetchSupplements();
   }
 };
-
 
 export const columns = ({
   setEditData,
@@ -41,7 +43,12 @@ export const columns = ({
   fetchSupplementsList,
 }: {
   setEditData: (data: SupplementInterface | null) => void;
-  setIsDialogOpen: (isOpen: boolean) => void;
+  setIsDialogOpen: Dispatch<
+    SetStateAction<{
+      create: boolean;
+      edit: boolean;
+    }>
+  >;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchSupplementsList: () => void;
@@ -115,22 +122,24 @@ export const columns = ({
             <DropdownMenuItem
               onClick={() => {
                 setEditData(row.original);
-                setIsDialogOpen(true);
+                setIsDialogOpen((prev) => ({ ...prev, edit: true }));
               }}
             >
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                handleSupplementDelete(row.original.id, setLoading, showToast);
-                fetchSupplementsList();
+                handleSupplementDelete(
+                  row.original.id,
+                  setLoading,
+                  showToast,
+                  fetchSupplementsList
+                );
               }}
             >
               Delete
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              Mark as Inactive
-            </DropdownMenuItem>
+            <DropdownMenuItem>Mark as Inactive</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
