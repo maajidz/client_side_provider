@@ -1,11 +1,8 @@
 import { z } from "zod";
 
 export const addVitalsSchema = z.object({
-  dateTime: z
-    .string().min(1, { message: "Must be a valid datetime string" }),
-  weightLbs: z
-    .number()
-    .min(0, { message: "Weight in lbs must be a positive number" }),
+  dateTime: z.string({ required_error: "Must be a valid datetime string" }),
+  weightLbs: z.number({required_error: "Weight in lbs must be a positive number"}),
   weightOzs: z
     .number()
     .min(0, { message: "Weight in ozs must be a positive number" })

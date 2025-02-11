@@ -24,6 +24,7 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
 
   // Pagination State
   const limit = 5;
+  const [total, setTotal] = useState<number>(1);
   const [page, setPage] = useState(1);
 
   // Toast State
@@ -31,6 +32,11 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
 
   // For Both, Edit and Add Dialog
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    fetchVitalsData();
+  };
 
   // GET Vitals Data
   const fetchVitalsData = useCallback(async () => {
@@ -41,6 +47,7 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
 
       if (response) {
         setVitalsData(response.data);
+        setTotal(Math.ceil(response.total / Number(limit)));
       }
     } catch (err) {
       console.log(err);
@@ -57,54 +64,47 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   if (loading) return <LoadingButton />;
 
   return (
-    <div className="space-y-3">
-      <div className="flex justify-end mb-4">
+    <>
+      <div className="flex justify-end mb-3">
         <DefaultButton
           onClick={() => {
-            setEditData(undefined); 
+            setEditData(undefined);
             setIsDialogOpen(true);
           }}
         >
           <PlusIcon />
           Add Vitals
         </DefaultButton>
-      </div>
-      <DataTable
-        searchKey="vitals"
-        columns={columns({
-          fetchVitalsData,
-          setEditData,
-          setIsDialogOpen,
-          setLoading,
-          showToast: () =>
-            showToast({
-              toast,
-              type: "success",
-              message: "Deleted Successfully",
-            }),
-        })}
-        data={vitalsData}
-        pageNo={page}
-        totalPages={1}
-        onPageChange={(newPage) => setPage(newPage)}
-      />
-
-      {/* Edit and Add Vital Dialog */}
-      {isDialogOpen && (
         <VitalDialog
           isOpen={isDialogOpen}
           vitalsData={editData}
           userDetailsId={userDetailsId}
-          onHandleDialog={(isOpen) => {
-            setIsDialogOpen(isOpen);
-            if (!isOpen) setEditData(undefined);
-          }}
-          onFetchVitalsData={fetchVitalsData}
+          onClose={handleDialogClose}
         />
-      )}
-    </div>
+      </div>
+      <div className="space-y-3">
+        <DataTable
+          searchKey="vitals"
+          columns={columns({
+            fetchVitalsData,
+            setEditData,
+            setIsDialogOpen,
+            setLoading,
+            showToast: () =>
+              showToast({
+                toast,
+                type: "success",
+                message: "Deleted Successfully",
+              }),
+          })}
+          data={vitalsData}
+          pageNo={page}
+          totalPages={total}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+      </div>
+    </>
   );
 };
 
 export default ViewPatientVitals;
-

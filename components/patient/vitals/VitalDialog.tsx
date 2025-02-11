@@ -33,8 +33,7 @@ interface VitalsDialogProps {
   isOpen: boolean;
   userDetailsId: string;
   vitalsData?: VitalsInterface;
-  onFetchVitalsData: () => Promise<void>;
-  onHandleDialog: (isOpen: boolean) => void;
+  onClose: () => void;
 }
 
 const formatDate = (dateString: string) => {
@@ -50,8 +49,7 @@ function VitalDialog({
   isOpen,
   userDetailsId,
   vitalsData,
-  onFetchVitalsData,
-  onHandleDialog,
+  onClose,
 }: VitalsDialogProps) {
   // Provider State
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -77,12 +75,6 @@ function VitalDialog({
     },
   });
 
-  // Handle Dialog State
-  const handleIsDialogOpen = (status: boolean) => {
-    onHandleDialog(status);
-    form.reset();
-  };
-
   // POST Vitals Data
   const onSubmit = async (formData: z.infer<typeof addVitalsSchema>) => {
     setLoading(true);
@@ -99,15 +91,19 @@ function VitalDialog({
           id: vitalsData.id,
           requestData: finalVitalData,
         });
+        showToast({
+          toast,
+          type: "success",
+          message: "Vital updated successfully",
+        });
       } else {
         await createVitalData(finalVitalData);
+        showToast({
+          toast,
+          type: "success",
+          message: "Vital created successfully",
+        });
       }
-
-      showToast({
-        toast,
-        type: "success",
-        message: "Vital created successfully",
-      });
     } catch (err) {
       if (err instanceof Error) {
         showToast({
@@ -123,15 +119,14 @@ function VitalDialog({
         });
       }
     } finally {
-      form.reset();
       setLoading(false);
-      handleIsDialogOpen(false);
-      onFetchVitalsData();
+      onClose();
+      form.reset();
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleIsDialogOpen}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[780px]">
         <DialogHeader>
           <DialogTitle>{vitalsData ? "Edit Vital" : "Add Vital"}</DialogTitle>
@@ -318,11 +313,7 @@ function VitalDialog({
               </div>
               <DialogFooter>
                 <div className="flex justify-end gap-2 w-fit">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => handleIsDialogOpen(false)}
-                  >
+                  <Button type="button" variant="outline" onClick={onClose}>
                     Cancel
                   </Button>
                   <SubmitButton label="Save" disabled={loading} />
