@@ -35,6 +35,7 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
+import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 
 const ViewTasks = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -50,6 +51,13 @@ const ViewTasks = () => {
   const [patients, setPatients] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+  const [filters, setFilters] = useState({
+    status: "",
+    category: "",
+    priority: "",
+    userDetailsId: "",
+  });
+
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof filterTasksSchema>>({
@@ -61,6 +69,19 @@ const ViewTasks = () => {
       userDetailsId: "",
     },
   });
+
+  function onSubmit(values: z.infer<typeof filterTasksSchema>) {
+    setFilters((prev) => ({
+      ...prev,
+
+      status: values.status || "",
+      category: values.category || "",
+      priority: values.priority || "",
+      userDetailsId: values.userDetailsId || "",
+    }));
+
+    setPage(1);
+  }
 
   const fetchTasksList = useCallback(
     async (
@@ -76,10 +97,10 @@ const ViewTasks = () => {
             providerId: providerDetails.providerId,
             limit: limit,
             page: page,
-            status,
-            category,
-            priority,
-            userDetailsId,
+            status: status || filters.status,
+            category: category || filters.category,
+            priority: priority || filters.priority,
+            userDetailsId: userDetailsId || filters.userDetailsId,
           });
           if (response) {
             setResultList(response);
@@ -91,7 +112,7 @@ const ViewTasks = () => {
         console.log("Error", e);
       }
     },
-    [providerDetails]
+    [providerDetails, filters]
   );
 
   const fetchPatientList = useCallback(async () => {
@@ -119,24 +140,13 @@ const ViewTasks = () => {
       .includes(searchTerm.toLowerCase())
   );
 
-  function onSubmit(values: z.infer<typeof filterTasksSchema>) {
-    console.log(values);
-    fetchTasksList(
-      page,
-      values.status,
-      values.category,
-      values.priority,
-      values.userDetailsId
-    );
-  }
-
   useEffect(() => {
-    fetchPatientList()
-  }, [fetchPatientList])
+    fetchPatientList();
+  }, [fetchPatientList]);
 
   useEffect(() => {
     fetchTasksList(page);
-  }, [page, fetchTasksList]);
+  }, [filters, fetchTasksList, page]);
 
   if (loading) {
     return <LoadingButton />;
@@ -147,7 +157,7 @@ const ViewTasks = () => {
       <div className="">
         <Form {...form}>
           <form
-            onChange={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="flex justify-between"
           >
             <FormField
@@ -280,6 +290,9 @@ const ViewTasks = () => {
                 </FormItem>
               )}
             />
+            <div className="flex items-end">
+              <SubmitButton label="Search" />
+            </div>
           </form>
         </Form>
 
@@ -300,7 +313,7 @@ const ViewTasks = () => {
                     message: "Deleted Successfully",
                   }),
                 fetchTasksList: () => fetchTasksList(page),
-                isPatientTask: false
+                isPatientTask: false,
               })}
               data={resultList?.data}
               pageNo={page}
