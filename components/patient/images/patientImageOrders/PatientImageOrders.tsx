@@ -1,4 +1,5 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import PageContainer from "@/components/layout/page-container";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
@@ -81,81 +82,72 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   }
 
   return (
-    <>
-      <div className="">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
-          >
-            <FormField
-              control={form.control}
-              name="orderedby"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ordered By</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Reviewer" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="reviewer1">Reviewer</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <PageContainer scrollable={true}>
+      <Form {...form}>
+        <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <FormField
+            control={form.control}
+            name="orderedby"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ordered By</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Reviewer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="reviewer1">Reviewer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="signed">Signed</SelectItem>
-                        <SelectItem value="unsigned">Unsigned</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex items-end">
-              <SubmitButton label="Search" />
-            </div>
-          </form>
-        </Form>
-        <div className="py-5">
-          {orderList?.data && (
-            <DataTable
-              searchKey="id"
-              columns={columns()}
-              data={orderList?.data}
-              pageNo={page}
-              totalPages={totalPages}
-              onPageChange={(newPage: number) => setPage(newPage)}
-            />
-          )}
-        </div>
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="signed">Signed</SelectItem>
+                      <SelectItem value="unsigned">Unsigned</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+      <div className="py-5">
+        {orderList?.data && (
+          <DataTable
+            searchKey="id"
+            columns={columns()}
+            data={orderList?.data}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
+        )}
       </div>
-    </>
+    </PageContainer>
   );
 };
 

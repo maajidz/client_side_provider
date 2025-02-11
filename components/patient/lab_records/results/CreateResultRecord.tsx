@@ -39,7 +39,10 @@ import { useToast } from "@/hooks/use-toast";
 import { getLabsData } from "@/services/chartsServices";
 import { createLabResultRequest } from "@/services/labResultServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
-import { fetchUserDataResponse, fetchUserInfo } from "@/services/userServices";
+import {
+  fetchUserDataResponse,
+  fetchUserEssentials,
+} from "@/services/userServices";
 import { LabsDataResponse, Test } from "@/types/chartsInterface";
 import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
 import { PatientDetails, UserData } from "@/types/userInterface";
@@ -124,10 +127,10 @@ const CreateResultRecord = () => {
 
     try {
       if (userDetailsId) {
-        const response = await fetchUserInfo({ userDetailsId });
+        const response = await fetchUserEssentials({ userDetailsId });
 
         if (response) {
-          setPatient(response?.userDetails);
+          setPatient(response);
         }
       }
     } catch (err) {
@@ -173,7 +176,7 @@ const CreateResultRecord = () => {
     } finally {
       setLoading((prev) => ({ ...prev, lab: false }));
     }
-  }, [labResponse.total]);
+  }, []);
 
   const fetchProvidersList = useCallback(async () => {
     setLoading((prev) => ({ ...prev, provider: true }));
@@ -192,16 +195,13 @@ const CreateResultRecord = () => {
     }
   }, []);
 
-  const fetchLabTestsData = useCallback(
-    async (labId: string) => {
-      if (!labId) return;
-      const selectedLab = labResponse?.data?.find((lab) => lab.id === labId);
-      if (selectedLab) {
-        setLabTestResponse(selectedLab.tests || []);
-      }
-    },
-    [labResponse]
-  );
+  const fetchLabTestsData = useCallback(async (labId: string) => {
+    if (!labId) return;
+    const selectedLab = labResponse?.data?.find((lab) => lab.id === labId);
+    if (selectedLab) {
+      setLabTestResponse(selectedLab.tests || []);
+    }
+  }, []);
 
   useEffect(() => {
     fetchPatientData();

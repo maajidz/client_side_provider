@@ -26,6 +26,7 @@ import { getImageResults } from "@/services/imageResultServices";
 import { ImageResultResponseInterface } from "@/types/imageResults";
 import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import PageContainer from "@/components/layout/page-container";
 
 function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -41,9 +42,7 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof filterImageResultsSchema>) {
-    console.log(values);
-  }
+  const filters = form.watch();
 
   const fetchImageResultsList = useCallback(
     async (page: number) => {
@@ -53,9 +52,10 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
         if (providerDetails) {
           const response = await getImageResults({
             providerId: providerDetails.providerId,
-            userDetailsId: userDetailsId,
-            limit: limit,
-            page: page,
+            userDetailsId,
+            limit,
+            page,
+            status: filters.status == "all" ? "" : filters.status,
           });
           if (response) {
             setResultList(response);
@@ -69,7 +69,7 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
         setLoading(false);
       }
     },
-    [providerDetails, userDetailsId]
+    [filters.status, providerDetails, userDetailsId]
   );
 
   useEffect(() => {
@@ -81,12 +81,9 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
   }
 
   return (
-    <>
+    <PageContainer scrollable={true}>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
-        >
+        <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           <FormField
             control={form.control}
             name="status"
@@ -102,8 +99,15 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
                       <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="signed">Signed</SelectItem>
-                      <SelectItem value="unsigned">Unsigned</SelectItem>
+                      <SelectItem value="all" className="cursor-pointer">
+                        All
+                      </SelectItem>
+                      <SelectItem value="signed" className="cursor-pointer">
+                        Signed
+                      </SelectItem>
+                      <SelectItem value="unsigned" className="cursor-pointer">
+                        Unsigned
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -111,10 +115,6 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
               </FormItem>
             )}
           />
-
-          <div className="flex items-end">
-            <SubmitButton label="Search" />
-          </div>
         </form>
       </Form>
       <div className="py-5">
@@ -129,7 +129,7 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
           />
         )}
       </div>
-    </>
+    </PageContainer>
   );
 }
 

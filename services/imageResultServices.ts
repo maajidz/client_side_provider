@@ -55,20 +55,33 @@ export const getImageResults = async ({
   userDetailsId,
   limit,
   page,
+  status,
 }: {
   providerId: string;
-  userDetailsId: string;
+  userDetailsId?: string;
   limit: number;
   page: number;
+  status?: string;
 }) => {
+  const queryParams = new URLSearchParams();
+
+  if (page) {
+    queryParams.append("page", page.toString());
+  }
+  if (limit) {
+    queryParams.append("limit", limit.toString());
+  }
+  if (status) {
+    queryParams.append("status", status);
+  }
+
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/images/results/${providerId}/${userDetailsId}/?limit=${limit}&page=${page}`,
+    url: `/provider/images/results/${providerId}/${userDetailsId}/?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },
   });
-  console.log(response.data);
   const data: ImageResultResponseInterface = await response.data;
   return data;
 };

@@ -260,7 +260,7 @@ export const updateDiagnoses = async ({
     },
     data: requestData,
   });
-  
+
   const data: PastDiagnosesInterface[] = await response.data;
   return data;
 };
@@ -532,7 +532,7 @@ export const getImagesOrdersData = async ({
       "Content-Type": "application/json",
     },
   });
-  console.log(response.data);
+
   const data: ImageOrdersResponseInterface = await response.data;
   return data;
 };
