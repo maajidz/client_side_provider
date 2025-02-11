@@ -33,6 +33,8 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AddTaskComment from "./AddTaskComment";
 import EditPatientTaskDialog from "./EditPatientTaskDialog";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 
 const ViewPatientTasks = ({
   userDetailsId,
@@ -53,6 +55,12 @@ const ViewPatientTasks = ({
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
     null
   );
+  const [filters, setFilters] = useState({
+    status: "",
+    category: "",
+    priority: "",
+  });
+
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof filterTasksSchema>>({
@@ -64,6 +72,18 @@ const ViewPatientTasks = ({
       userDetailsId: "",
     },
   });
+
+  function onSubmit(values: z.infer<typeof filterTasksSchema>) {
+    setFilters((prev) => ({
+      ...prev,
+
+      status: values.status || "",
+      category: values.category || "",
+      priority: values.priority || "",
+    }));
+
+    setPage(1);
+  }
 
   const fetchTasksList = useCallback(
     async (
@@ -80,10 +100,10 @@ const ViewPatientTasks = ({
             providerId: providerDetails.providerId,
             limit: limit,
             page: page,
-            status,
-            category,
-            priority,
-            userDetailsId,
+            status: status || filters.status,
+            category: category || filters.category,
+            priority: priority || filters.priority,
+            userDetailsId: userDetailsId,
           });
           if (response) {
             setResultList(response);
@@ -97,19 +117,8 @@ const ViewPatientTasks = ({
         setLoading(false);
       }
     },
-    [providerDetails]
+    [providerDetails, filters]
   );
-
-  function onSubmit(values: z.infer<typeof filterTasksSchema>) {
-    console.log(values);
-    fetchTasksList(
-      page,
-      userDetailsId,
-      values.status,
-      values.category,
-      values.priority
-    );
-  }
 
   useEffect(() => {
     fetchTasksList(page, userDetailsId);
@@ -135,12 +144,15 @@ const ViewPatientTasks = ({
     <>
       <div className="flex flex-col gap-3">
         <Form {...form}>
-          <form onChange={form.handleSubmit(onSubmit)} className="flex gap-3">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className={formStyles.formFilterBody}
+          >
             <FormField
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className={formStyles.formFilterItem}>
                   <FormLabel className="w-fit">Category</FormLabel>
                   <FormControl>
                     <Select
@@ -170,7 +182,7 @@ const ViewPatientTasks = ({
               control={form.control}
               name="status"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className={formStyles.formFilterItem}>
                   <FormLabel>Status</FormLabel>
                   <FormControl>
                     <Select
@@ -197,7 +209,7 @@ const ViewPatientTasks = ({
               control={form.control}
               name="priority"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className={formStyles.formFilterItem}>
                   <FormLabel>Priority</FormLabel>
                   <FormControl>
                     <Select
@@ -219,6 +231,9 @@ const ViewPatientTasks = ({
                 </FormItem>
               )}
             />
+            <div className="flex items-end w-full">
+              <SubmitButton label="Search" />
+            </div>
           </form>
         </Form>
         {/* Results Table */}

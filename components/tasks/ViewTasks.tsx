@@ -36,6 +36,7 @@ import { useToast } from "@/hooks/use-toast";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import SubmitButton from "../custom_buttons/buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 
 const ViewTasks = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -158,13 +159,13 @@ const ViewTasks = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex justify-between"
+            className={formStyles.formFilterBody}
           >
             <FormField
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className={formStyles.formFilterItem}>
                   <FormLabel className="w-fit">Category</FormLabel>
                   <FormControl>
                     <Select
@@ -194,7 +195,7 @@ const ViewTasks = () => {
               control={form.control}
               name="status"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className={formStyles.formFilterItem}>
                   <FormLabel>Status</FormLabel>
                   <FormControl>
                     <Select
@@ -221,7 +222,7 @@ const ViewTasks = () => {
               control={form.control}
               name="priority"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className={formStyles.formFilterItem}>
                   <FormLabel>Priority</FormLabel>
                   <FormControl>
                     <Select
@@ -247,7 +248,7 @@ const ViewTasks = () => {
               control={form.control}
               name="userDetailsId"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className={formStyles.formFilterItem}>
                   <FormLabel>Patient</FormLabel>
                   <FormControl>
                     <div className="relative">
@@ -290,14 +291,14 @@ const ViewTasks = () => {
                 </FormItem>
               )}
             />
-            <div className="flex items-end">
+            <div className="flex items-end w-full">
               <SubmitButton label="Search" />
             </div>
           </form>
         </Form>
 
         {/* Results Table */}
-        <div className="py-5">
+        <div className="space-y-3">
           {resultList?.data && (
             <DataTable
               searchKey="id"
