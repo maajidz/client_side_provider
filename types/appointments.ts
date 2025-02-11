@@ -30,7 +30,6 @@ export interface CreateUserAppointmentsInterface {
   patientPhoneNumber: string;
   additionalText: string;
   reason?: string;
-  additionalGuestInfo?: AdditionalGuestInfo[];
   dateOfAppointment: string;
   timeOfAppointment: string;
   timeZone: string;

@@ -28,8 +28,6 @@ import {
   DialogContent,
 } from "@/components/ui/dialog";
 import { useCallback, useEffect, useState } from "react";
-import { FetchProviderList } from "@/types/providerDetailsInterface";
-import { fetchProviderListDetails } from "@/services/registerServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
@@ -58,11 +56,12 @@ export function AppointmentsDialog({
   isOpen: boolean;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
-  const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
+  // const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [providerAvailability, setProviderAvailability] =
     useState<ProviderAvailability | null>(null);
-  const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
+  // const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
   const userData = useSelector((state: RootState) => state.user);
+  const providerData = useSelector((state: RootState) => state.login)
 
   const { toast } = useToast();
 
@@ -81,7 +80,6 @@ export function AppointmentsDialog({
           | "Consulted"
           | "No Show"
           | "Confirmed") || "Scheduled",
-      providerId: selectedOwner?.providerDetails?.id || "",
     },
   });
 
@@ -97,45 +95,44 @@ export function AppointmentsDialog({
           | "Consulted"
           | "No Show"
           | "Confirmed",
-        providerId: appointmentsData?.providerId,
       });
-      if (appointmentsData.providerId && ownersList) {
-        const selected = ownersList.find(
-          (owner) => owner.providerDetails?.id === appointmentsData.providerId
-        );
-        setSelectedOwner(selected);
-        form.setValue("providerId", appointmentsData.providerId);
-      }
+      // if (appointmentsData.providerId && ownersList) {
+      //   const selected = ownersList.find(
+      //     (owner) => owner.providerDetails?.id === appointmentsData.providerId
+      //   );
+      //   setSelectedOwner(selected);
+      //   form.setValue("providerId", appointmentsData.providerId);
+      // }
     }
-  }, [appointmentsData, form, selectedOwner, ownersList]);
+  }, [appointmentsData, form]);
 
-  const fetchOwnersList = useCallback(async () => {
-    setLoading(true);
+  // const fetchOwnersList = useCallback(async () => {
+  //   setLoading(true);
 
-    try {
-      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+  //   try {
+  //     const response = await fetchProviderListDetails({ page: 1, limit: 10 });
 
-      if (response) {
-        setOwnersList(response.data || []);
-      }
-    } catch (err) {
-      console.log(err);
-      showToast({
-        toast,
-        type: "error",
-        message: "Failed to fetch owners list.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [toast]);
+  //     if (response) {
+  //       setOwnersList(response.data || []);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //     showToast({
+  //       toast,
+  //       type: "error",
+  //       message: "Failed to fetch owners list.",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [toast]);
 
   const fetchAvailability = useCallback(async () => {
-    if (selectedOwner?.providerDetails?.id) {
+    if (providerData?.providerId) {
       setLoading(true);
       try {
         const fetchedAvailabilties = await fetchProviderAvaialability({
-          providerID: selectedOwner?.providerDetails?.id,
+          providerID: providerData?.providerId,
           startDate:
             form.getValues().dateOfAppointment.toISOString().split("T")[0] ??
             "",
@@ -155,12 +152,11 @@ export function AppointmentsDialog({
         setLoading(false);
       }
     }
-  }, [selectedOwner?.providerDetails?.id, form.getValues().dateOfAppointment, form]);
+  }, [providerData?.providerId, form.getValues().dateOfAppointment, form]);
 
   useEffect(() => {
-    fetchOwnersList();
     fetchAvailability();
-  }, [fetchOwnersList, fetchAvailability]);
+  }, [fetchAvailability]);
 
   const filteredDate = providerAvailability?.data.find(
     (availability) =>
@@ -180,22 +176,22 @@ export function AppointmentsDialog({
         timeOfAppointment: values.timeOfAppointment,
         timeZone: "UTC",
         status: values.status,
-        providerId: values.providerId,
+        providerId: providerData?.providerId,
         userDetailsId: userDetailsId,
         reason: values.reason,
-        additionalGuestInfo: [
-          {
-            name: "",
-            phoneNumber: "",
-            email: "",
-          },
-        ],
+        // additionalGuestInfo: [
+        //   {
+        //     name: "",
+        //     phoneNumber: "",
+        //     email: "",
+        //   },
+        // ],
       };
       console.log(requestData);
       try {
         setLoading(true);
-        if (appointmentsData) {
-        } else {
+        // if (appointmentsData) {
+        // } else {
           const response = await createUserAppointments({
             requestData: requestData,
           });
@@ -206,7 +202,7 @@ export function AppointmentsDialog({
               message: "Appointment Created successfully",
             });
           }
-        }
+        // }
       } catch (error) {
         console.log("Error", error);
         showToast({
@@ -256,11 +252,19 @@ export function AppointmentsDialog({
                     : userData?.phoneNumber
                 }
               />
+              <FormLabels
+                label="Provider Name"
+                value={
+                  appointmentsData
+                    ? appointmentsData.providerName
+                    : `${providerData?.firstName} ${providerData?.lastName}`
+                }
+              />
             </div>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className={formStyles.formBody}>
-                  {appointmentsData ? (
+                  {/* {appointmentsData ? (
                     <FormLabels
                       label="Provider:"
                       value={appointmentsData.providerName}
@@ -302,7 +306,7 @@ export function AppointmentsDialog({
                         </FormItem>
                       )}
                     />
-                  )}
+                  )} */}
                   <FormField
                     control={form.control}
                     name="status"
