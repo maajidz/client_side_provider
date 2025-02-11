@@ -50,13 +50,11 @@ function TasksDialog({
   userDetailsId,
   tasksData,
   onClose,
-  onFetchTasks,
 }: {
   isOpen: boolean;
   userDetailsId: string;
   tasksData?: TasksResponseDataInterface | null;
   onClose: () => void;
-  onFetchTasks: () => Promise<void>;
 }) {
   const [showDueDate, setShowDueDate] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -168,7 +166,6 @@ function TasksDialog({
       onClose();
       setLoading(false);
       setShowDueDate(false);
-      await onFetchTasks();
       form.reset();
     }
   };

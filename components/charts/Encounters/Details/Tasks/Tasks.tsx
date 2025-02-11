@@ -77,7 +77,6 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
               onClose={() => {
                 setIsDialogOpen(false);
               }}
-              onFetchTasks={fetchTasks}
             />
           </div>
           <AccordionContent className="sm:max-w-4xl">

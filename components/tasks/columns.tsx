@@ -38,7 +38,8 @@ const handleTasksDelete = async (
 const handleTasksStatusUpdate = async (
   taskId: string,
   setLoading: (loading: boolean) => void,
-  showToast: (args: { type: string; message: string }) => void
+  showToast: (args: { type: string; message: string }) => void,
+  fetchTasks: () => void
 ) => {
   setLoading(true);
   try {
@@ -50,6 +51,7 @@ const handleTasksStatusUpdate = async (
       type: "success",
       message: "Task deleted successfully",
     });
+    fetchTasks();
   } catch (error) {
     console.error("Error:", error);
     showToast({ type: "error", message: "Failed to delete task" });
@@ -178,7 +180,7 @@ export const columns = ({
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                handleTasksStatusUpdate(row.original.id, setLoading, showToast);
+                handleTasksStatusUpdate(row.original.id, setLoading, showToast, fetchTasksList);
               }}
             >
               Mark as completed

@@ -34,7 +34,13 @@ import { useToast } from "@/components/ui/use-toast";
 import AddTaskComment from "./AddTaskComment";
 import EditPatientTaskDialog from "./EditPatientTaskDialog";
 
-const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
+const ViewPatientTasks = ({
+  userDetailsId,
+  refreshTrigger,
+}: {
+  userDetailsId: string;
+  refreshTrigger: number;
+}) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
   const [loading, setLoading] = useState(false);
@@ -107,11 +113,23 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
 
   useEffect(() => {
     fetchTasksList(page, userDetailsId);
-  }, [page, fetchTasksList, userDetailsId]);
+  }, [page, fetchTasksList, userDetailsId, refreshTrigger]);
 
   if (loading) {
     return <LoadingButton />;
   }
+
+  const handleCommentDialogClose = () => {
+    setIsCommentDialogOpen(false);
+    setEditData(null);
+    fetchTasksList(page, userDetailsId);
+  };
+
+  const handleEditDialogClose = () => {
+    setIsDialogOpen(false);
+    setEditData(null);
+    fetchTasksList(page, userDetailsId);
+  };
 
   return (
     <>
@@ -231,9 +249,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
 
           <AddTaskComment
             tasksData={editData}
-            onClose={() => {
-              setIsCommentDialogOpen(false);
-            }}
+            onClose={handleCommentDialogClose}
             isOpen={isCommentDialogOpen}
           />
 
@@ -241,9 +257,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             tasksData={editData}
             userDetailsId={userDetailsId}
             isOpen={isDialogOpen}
-            onClose={() => {
-              setIsDialogOpen(false);
-            }}
+            onClose={handleEditDialogClose}
             onFetchTasks={fetchTasksList}
           />
         </div>

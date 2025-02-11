@@ -1,5 +1,5 @@
 "use client";
-// import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
+import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import ViewPatientTasks from "./ViewPatientTasks";
@@ -7,7 +7,12 @@ import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  console.log(isDialogOpen);
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setRefreshTrigger((prev) => prev + 1);
+  };
 
   return (
     <>
@@ -20,16 +25,13 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             <PlusIcon />
             Tasks
         </DefaultButton>
-        {/* <TasksDialog
+        <TasksDialog
           userDetailsId={userDetailsId}
-          onClose={() => {
-            setIsDialogOpen(false);
-          }}
+          onClose={handleDialogClose}
           isOpen={isDialogOpen}
-          onFetchTasks={() => {}}
-        /> */}
+        />
       </div>
-      <ViewPatientTasks userDetailsId={userDetailsId} />
+      <ViewPatientTasks userDetailsId={userDetailsId} refreshTrigger={refreshTrigger} />
     </>
   );
 };
