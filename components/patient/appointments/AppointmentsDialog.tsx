@@ -36,16 +36,16 @@ import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import {
-  PatientDetails,
   UserAppointmentInterface,
 } from "@/types/userInterface";
 import FormLabels from "@/components/custom_buttons/FormLabels";
 import { timeZonesList } from "@/constants/data";
 import { CreateUserAppointmentsInterface } from "@/types/appointments";
 import { createUserAppointments } from "@/services/providerAppointments";
-import { fetchUserInfo } from "@/services/userServices";
 import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
 
 export function AppointmentsDialog({
   userDetailsId,
@@ -61,8 +61,8 @@ export function AppointmentsDialog({
   const [loading, setLoading] = useState<boolean>(false);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [userData, setUserData] = useState<PatientDetails>();
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
+  const userData = useSelector((state: RootState)=> state.user);
 
   const { toast } = useToast();
 
@@ -115,15 +115,6 @@ export function AppointmentsDialog({
     }
   }, [appointmentsData, form, selectedOwner, ownersList]);
 
-  const fetchAndSetResponse = useCallback(async () => {
-    setLoading(true);
-    const userData = await fetchUserInfo({ userDetailsId: userDetailsId });
-    if (userData) {
-      setUserData(userData.userDetails);
-      setLoading(false);
-    }
-  }, [userDetailsId]);
-
   const fetchOwnersList = useCallback(async () => {
     setLoading(true);
 
@@ -146,16 +137,15 @@ export function AppointmentsDialog({
   }, [toast]);
 
   useEffect(() => {
-    fetchAndSetResponse();
     fetchOwnersList();
-  }, [fetchOwnersList, fetchAndSetResponse]);
+  }, [fetchOwnersList]);
 
   const onSubmit = async (values: AppointmentFormValues) => {
     if (userData) {
       const requestData: CreateUserAppointmentsInterface = {
-        patientName: `${userData?.user?.firstName} ${userData?.user?.lastName}`,
-        patientEmail: `${userData?.user?.email}`,
-        patientPhoneNumber: `${userData.user.phoneNumber}`,
+        patientName: `${userData?.firstName} ${userData?.lastName}`,
+        patientEmail: `${userData?.email}`,
+        patientPhoneNumber: `${userData?.phoneNumber}`,
         additionalText: values.additionalText,
         dateOfAppointment: values.dateOfAppointment.toISOString(),
         timeOfAppointment: values.timeOfAppointment,
@@ -214,8 +204,8 @@ export function AppointmentsDialog({
           <DialogTitle>
             {appointmentsData
               ? `Edit Appointment for ${appointmentsData.patientName}`
-              : `New Appointment for ${userData?.user?.firstName}
-            ${userData?.user.lastName}`}
+              : `New Appointment for ${userData?.firstName}
+            ${userData?.lastName}`}
           </DialogTitle>
         </DialogHeader>
         <ScrollArea className="max-h-[30rem] h-auto">
@@ -226,7 +216,7 @@ export function AppointmentsDialog({
                 value={
                   appointmentsData
                     ? appointmentsData.patientEmail
-                    : userData?.user?.email
+                    : userData?.email
                 }
               />
               <FormLabels
@@ -234,7 +224,7 @@ export function AppointmentsDialog({
                 value={
                   appointmentsData
                     ? appointmentsData.patientPhoneNumber
-                    : userData?.user?.phoneNumber
+                    : userData?.phoneNumber
                 }
               />
             </div>
