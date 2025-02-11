@@ -99,13 +99,14 @@ export interface UserDetails extends CreateUserDetails {
 
 export interface UserResponseInterface {
   data: UserData[];
-  page: string;
+  page: number;
   pageSize: number;
   total: number;
 }
 
 export interface UserData {
   id: string;
+  patientId: string;
   dob: string;
   height: number;
   heightType: string;

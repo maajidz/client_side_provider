@@ -1,7 +1,8 @@
 "use client";
 
 import Profile from "@/app/dashboard/provider/profile/page";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import ChangePassword from "./ChangePassword";
 import { useState } from "react";
 
@@ -16,17 +17,16 @@ function Account() {
       >
         <div className="flex items-center justify-between gap-10 border-b rounded-md border-gray-300 p-1.5">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="myProfile">My Profile</TabsTrigger>
-            <TabsTrigger value="changePassword">Change Password</TabsTrigger>
+            <CustomTabsTrigger value="myProfile">My Profile</CustomTabsTrigger>
+            <CustomTabsTrigger value="changePassword">
+              Change Password
+            </CustomTabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="myProfile">
           <Profile />
         </TabsContent>
-        <TabsContent
-          value="changePassword"
-          className="flex space-y-2"
-        >
+        <TabsContent value="changePassword" className="flex space-y-2">
           <ChangePassword />
         </TabsContent>
       </Tabs>

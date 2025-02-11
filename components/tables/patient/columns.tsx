@@ -6,14 +6,14 @@ export const columns = (
   handleRowClick: (id: string) => void
 ): ColumnDef<UserData>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: "patientId",
+    header: "Patient ID",
     cell: ({ row }) => (
       <div
         className="cursor-pointer"
         onClick={() => handleRowClick(row.original.id)}
       >
-        {row.getValue("id")}
+        {row.getValue("patientId")}
       </div>
     ),
   },

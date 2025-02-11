@@ -935,17 +935,21 @@ export const createProcedure = async ({
 
 export const getProcedureData = async ({
   userDetailsId,
+  page,
+  limit,
 }: {
   userDetailsId: string;
+  page? : number;
+  limit?: number
 }) => {
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/procedures/${userDetailsId}`,
+    url: `/provider/procedures/${userDetailsId}?page=${page}&limit=${limit}`,
     headers: {
       "Content-Type": "application/json",
     },
   });
-  console.log(response.data);
+  
   const data: ProcedureResponse = await response.data;
   return data;
 };
