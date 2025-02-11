@@ -1,5 +1,5 @@
 import LoadingButton from "@/components/LoadingButton";
-import { fetchUserInfo } from "@/services/userServices";
+import { fetchUserEssentials } from "@/services/userServices";
 import { RootState } from "@/store/store";
 import { PatientDetails } from "@/types/userInterface";
 import { useState, useEffect } from "react";
@@ -28,11 +28,11 @@ const RxPatientDetailsSection = ({
       setError("");
 
       try {
-        const userData = await fetchUserInfo({ userDetailsId });
+        const userData = await fetchUserEssentials({ userDetailsId });
 
         if (isMounted) {
-          if (userData?.userDetails?.user) {
-            setPatientDetails(userData.userDetails);
+          if (userData) {
+            setPatientDetails(userData);
           } else {
             setError("Could not fetch details for this user");
           }
@@ -130,10 +130,12 @@ const RxPatientDetailsSection = ({
         </div>
         <div>
           <span className="font-semibold">Phone No:</span>{" "}
-          {patientDetails?.user.phoneNumber}
+          {providerDetails?.phoneNumber}
         </div>
-        <span className="font-semibold">NIP: </span> {providerDetails.nip}
-        <div></div>
+        <div>
+          <span className="font-semibold">NIP: </span>
+          {providerDetails.nip}
+        </div>
       </div>
     </div>
   );

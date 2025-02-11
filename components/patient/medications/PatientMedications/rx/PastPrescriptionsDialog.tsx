@@ -11,12 +11,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { getPrescriptionsData } from "@/services/chartsServices";
 import { RootState } from "@/store/store";
 import { FetchPrescription } from "@/types/chartsInterface";
-// import { getPrescriptionsData } from "@/services/chartsServices";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getPrescriptionsData } from "@/services/chartsServices";
 
 interface PastPrescriptionsDialogProps {
   isDialogOpen: boolean;
@@ -51,10 +50,9 @@ const PastPrescriptionsDialog = ({
         console.log("Error", e);
       } finally {
         setLoading(false);
-        onClose();
       }
     }
-  }, [chartId, onClose]);
+  }, [chartId]);
 
   useEffect(() => {
     fetchAndSetResponse();
@@ -129,7 +127,7 @@ const PastPrescriptionsDialog = ({
             </div>
           </div>
           <DialogFooter>
-            <SubmitButton label="Save Changes" />
+            <SubmitButton label="Save Changes" onClick={onClose} />
           </DialogFooter>
         </ScrollArea>
       </DialogContent>

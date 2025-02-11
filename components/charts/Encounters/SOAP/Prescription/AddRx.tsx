@@ -662,7 +662,7 @@ const AddRx = ({
                 <Button
                   variant={"ghost"}
                   onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
-                  className="text-[#84012A]"
+                  className="text-[#84012A] font-semibold ml-1"
                 >
                   Add a custom drug
                 </Button>

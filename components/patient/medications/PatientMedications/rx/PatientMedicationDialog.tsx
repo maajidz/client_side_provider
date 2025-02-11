@@ -41,12 +41,12 @@ import { useToast } from "@/hooks/use-toast";
 
 const PatientMedicationDialog = ({
   userDetailsId,
-  onClose,
   isOpen,
+  onClose,
 }: {
   userDetailsId: string;
-  onClose: () => void;
   isOpen: boolean;
+  onClose: () => void;
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [drugName, setDrugName] = useState<string>("");
@@ -85,7 +85,6 @@ const PatientMedicationDialog = ({
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
     setLoading(false);
-    console.log(values);
     if (chartId) {
       const requestData = {
         drug_name: drugName,
@@ -124,6 +123,7 @@ const PatientMedicationDialog = ({
         console.log("Error", e);
       } finally {
         setLoading(false);
+        form.reset();
         onClose();
       }
     }
@@ -635,7 +635,7 @@ const PatientMedicationDialog = ({
                 <Button
                   variant={"ghost"}
                   onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
-                  className="text-[#84012A]"
+                  className="text-[#84012A] font-semibold ml-1"
                 >
                   Add a custom drug
                 </Button>
