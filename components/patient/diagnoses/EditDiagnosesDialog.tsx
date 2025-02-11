@@ -41,7 +41,7 @@ import formStyles from "@/components/formStyles.module.css";
 
 interface EditDiagnosisDialogProps {
   isOpen: boolean;
-  diagnosisData: DiagnosesInterface | undefined;
+  diagnosisData: DiagnosesInterface | null;
   onFetchDiagnosesData: (page: number) => Promise<void>;
   onClose: () => void;
 }

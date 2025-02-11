@@ -10,14 +10,18 @@ import EditDiagnosisDialog from "./EditDiagnosesDialog";
 
 interface DiagnosesClientProps {
   userDetailsId: string;
+  refreshTrigger: number;
 }
 
-function DiagnosesClient({ userDetailsId }: DiagnosesClientProps) {
+function DiagnosesClient({
+  userDetailsId,
+  refreshTrigger,
+}: DiagnosesClientProps) {
   // Diagnoses State
   const [diagnosesData, setDiagnoses] = useState<DiagnosesInterface[]>([]);
 
   // Edit Data State
-  const [editData, setEditData] = useState<DiagnosesInterface>();
+  const [editData, setEditData] = useState<DiagnosesInterface | null>(null);
 
   // Pagination State
   const itemsPerPage = 5;
@@ -61,7 +65,13 @@ function DiagnosesClient({ userDetailsId }: DiagnosesClientProps) {
   // Effects
   useEffect(() => {
     fetchDiagnoses(page);
-  }, [fetchDiagnoses, page]);
+  }, [fetchDiagnoses, page, refreshTrigger]);
+
+  const handleEditDialogClose = () => {
+    setIsDialogOpen(false);
+    setEditData(null);
+    fetchDiagnoses(page);
+  };
 
   if (loading) return <LoadingButton />;
 
@@ -92,7 +102,7 @@ function DiagnosesClient({ userDetailsId }: DiagnosesClientProps) {
         diagnosisData={editData}
         isOpen={isDialogOpen}
         onFetchDiagnosesData={fetchDiagnoses}
-        onClose={() => setIsDialogOpen(false)}
+        onClose={handleEditDialogClose}
       />
     </>
   );

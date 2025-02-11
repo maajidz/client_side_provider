@@ -9,7 +9,13 @@ import { useSelector } from "react-redux";
 
 const PatientDiagnoses = ({ userDetailsId }: { userDetailsId: string }) => {
   // Dialog State
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setRefreshTrigger((prev) => prev + 1);
+  };
 
   // Chart State
   const chartId = useSelector((state: RootState) => state.user.chartId);
@@ -23,14 +29,14 @@ const PatientDiagnoses = ({ userDetailsId }: { userDetailsId: string }) => {
         </DefaultButton>
       </div>
       <div className="space-y-3">
-        <DiagnosesClient userDetailsId={userDetailsId} />
+        <DiagnosesClient userDetailsId={userDetailsId} refreshTrigger={refreshTrigger} />
 
         {/* Add Diagnoses */}
         <AddDiagnosesDialog
           isOpen={isDialogOpen}
           userDetailsId={userDetailsId}
           chartId={chartId}
-          onClose={() => setIsDialogOpen(false)}
+          onClose={handleDialogClose}
         />
       </div>
     </PageContainer>

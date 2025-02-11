@@ -39,7 +39,7 @@ export const columns = ({
   showToast,
   fetchDiagnoses,
 }: {
-  setEditData: (data: DiagnosesInterface | undefined) => void;
+  setEditData: (data: DiagnosesInterface | null) => void;
   setIsDialogOpen: (value: boolean) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
