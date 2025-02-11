@@ -63,8 +63,8 @@ const AlertDialog = ({
   const form = useForm<z.infer<typeof alertSchema>>({
     resolver: zodResolver(alertSchema),
     defaultValues: {
-      alertName: alertData?.alertName || "",
-      alertDescription: alertData?.alertDescription || "",
+      alertName: "",
+      alertDescription: "",
     },
   });
 
@@ -84,16 +84,19 @@ const AlertDialog = ({
 
   useEffect(() => {
     fetchAlertTypeData();
-    if (alertData) {
+  }, [fetchAlertTypeData]);
+
+  useEffect(() => {
+    if (alertData && alertTypeData) {
+      const matchedAlertType = alertTypeData.data.find(
+        (type) => type.alertName === alertData.alertName
+      );
       form.reset({
-        alertName: alertData.alertName,
-        alertDescription: alertData.alertDescription,
+        alertName: matchedAlertType?.id || "",
+        alertDescription: alertData.alertDescription || "",
       });
-      if (alertData.alertName) {
-        form.setValue("alertName", alertData.alertName);
-      }
     }
-  }, [alertData, form, fetchAlertTypeData]);
+  }, [alertData, alertTypeData, form]);
 
   const onSubmit = async (values: z.infer<typeof alertSchema>) => {
     console.log("Form Values:", values);
@@ -153,10 +156,8 @@ const AlertDialog = ({
                       <FormLabel>Alert Name</FormLabel>
                       <FormControl>
                         <Select
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                          }}
-                          value={field.value}
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Choose Alert from Master List" />
@@ -167,9 +168,6 @@ const AlertDialog = ({
                                 {typeData.alertName}
                               </SelectItem>
                             ))}
-                            {/* <SelectItem value="provider1">Provider 1</SelectItem>
-                          <SelectItem value="provider2">Provider 2</SelectItem>
-                          <SelectItem value="provider3">Provider 3</SelectItem> */}
                           </SelectContent>
                         </Select>
                       </FormControl>

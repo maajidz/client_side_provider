@@ -8,9 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { deleteAlert } from "@/services/chartDetailsServices";
 import { AlertData } from "@/types/alertInterface";
+import { Ellipsis } from "lucide-react";
 
 const handleDeleteAlert = async (
   alertId: string,
@@ -48,7 +48,12 @@ export const columns = ({
       alertId: string;
     } | null
   ) => void;
-  setIsDialogOpen: (isOpen: boolean) => void;
+  setIsDialogOpen: React.Dispatch<
+    React.SetStateAction<{
+      create: boolean;
+      edit: boolean;
+    }>
+  >;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchAlerts: () => void;
@@ -71,11 +76,9 @@ export const columns = ({
     accessorKey: "alertType",
     header: "Alert type",
     cell: ({ row }) => {
-      const alertType = row.original.alertType
-      return (
-        <div className="cursor-pointer">{alertType.alertName}</div>
-      );
-  },
+      const alertType = row.original.alertType;
+      return <div className="cursor-pointer">{alertType.alertName}</div>;
+    },
   },
   {
     accessorKey: "id",
@@ -84,18 +87,18 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <DotsVerticalIcon />
+            <Ellipsis />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                setEditData( {
-                    alertName: row.original.alertType.alertName,
-                    alertDescription: row.original.alertDescription,
-                    alertId: row.original.id
-                  });
-                setIsDialogOpen(true);
+                setEditData({
+                  alertName: row.original.alertType.alertName,
+                  alertDescription: row.original.alertDescription,
+                  alertId: row.original.id,
+                });
+                setIsDialogOpen((prev) => ({ ...prev, edit: true }));
               }}
             >
               Edit
