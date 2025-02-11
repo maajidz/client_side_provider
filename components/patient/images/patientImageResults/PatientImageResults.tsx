@@ -25,7 +25,6 @@ import LoadingButton from "@/components/LoadingButton";
 import { getImageResults } from "@/services/imageResultServices";
 import { ImageResultResponseInterface } from "@/types/imageResults";
 import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import PageContainer from "@/components/layout/page-container";
 
 function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {

@@ -176,7 +176,7 @@ const CreateResultRecord = () => {
     } finally {
       setLoading((prev) => ({ ...prev, lab: false }));
     }
-  }, []);
+  }, [labResponse?.total]);
 
   const fetchProvidersList = useCallback(async () => {
     setLoading((prev) => ({ ...prev, provider: true }));
@@ -201,7 +201,7 @@ const CreateResultRecord = () => {
     if (selectedLab) {
       setLabTestResponse(selectedLab.tests || []);
     }
-  }, []);
+  }, [labResponse?.data]);
 
   useEffect(() => {
     fetchPatientData();

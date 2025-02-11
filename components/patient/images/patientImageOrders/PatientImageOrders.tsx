@@ -1,4 +1,3 @@
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import PageContainer from "@/components/layout/page-container";
 import { DataTable } from "@/components/ui/data-table";
 import {
@@ -41,10 +40,6 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
       status: "",
     },
   });
-
-  function onSubmit(values: z.infer<typeof filterLabOrdersSchema>) {
-    console.log(values);
-  }
 
   const fetchLabOrdersList = useCallback(
     async (page: number) => {
