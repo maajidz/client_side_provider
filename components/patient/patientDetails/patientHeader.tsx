@@ -38,7 +38,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             email: userData.user.email ?? "",
             firstName: userData.user.firstName ?? "",
             lastName: userData.user.lastName ?? "",
-            phoneNumber: ""
+            phoneNumber: userData.user.phoneNumber ?? ""
           })
         );
       }
