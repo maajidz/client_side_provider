@@ -1,45 +1,24 @@
 import { CustomDataTable } from "@/components/custom_buttons/table/CustomDataTable";
 import LoadingButton from "@/components/LoadingButton";
-import { fetchPatientImplantedDevice } from "@/services/implantedDevices";
 import { Device } from "@/types/implantedDevices";
-import React, { useCallback, useEffect, useState } from "react";
 import { columns } from "./columns";
+import { Dispatch, SetStateAction } from "react";
+
+interface ImplantedDevicesClientProps {
+  data: Device[];
+  loading: boolean;
+  pageNo: number;
+  totalPages: number;
+  onSetPageNo: Dispatch<SetStateAction<number>>;
+}
 
 const ImplantedDevicesClient = ({
-  userDetailsId,
-}: {
-  userDetailsId: string;
-}) => {
-  const [data, setData] = useState<Device[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const itemsPerPage = 5;
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const fetchDevices = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const response = await fetchPatientImplantedDevice({
-        userDetailsId,
-      });
-
-      if (response) {
-        setData(response.organizedData);
-        setTotalPages(Math.ceil(response.total / itemsPerPage));
-      }
-    } catch (e) {
-      console.log("Error", e);
-    } finally {
-      setLoading(false);
-    }
-  }, [userDetailsId]);
-
-  useEffect(() => {
-    fetchDevices();
-  }, [fetchDevices]);
-
+  data,
+  loading,
+  pageNo,
+  totalPages,
+  onSetPageNo
+}: ImplantedDevicesClientProps) => {
   if (loading) return <LoadingButton />;
 
   return (
@@ -47,9 +26,9 @@ const ImplantedDevicesClient = ({
       <CustomDataTable
         columns={columns()}
         data={data || []}
-        pageNo={page}
+        pageNo={pageNo}
         totalPages={totalPages}
-        onPageChange={(newPage) => setPage(newPage)}
+        onPageChange={(newPage) => onSetPageNo(newPage)}
       />
     </>
   );
