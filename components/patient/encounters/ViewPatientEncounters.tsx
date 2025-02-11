@@ -96,37 +96,35 @@ const ViewPatientEncounters = ({
   }
 
   return (
-    <>
-      <Tabs defaultValue="lastvisit" className="flex flex-row gap-5">
-        <TabsList className="flex flex-col h-full w-56 justify-start items-start p-3 gap-3 overflow-hidden">
-          {patientEncountersTab.map((tab) => (
-            <CustomTabsTrigger value={tab.value} key={tab.value}>
-              {tab.label}
-            </CustomTabsTrigger>
-          ))}
-        </TabsList>
-        {patientEncountersTab.map(({ value, component: Component }) => (
-          <TabsContent value={value} key={value} className="w-full">
-            <ScrollArea className={cn("h-[calc(80dvh-52px)]")}>
-              {value === "lastvisit"
-                ? chartList &&
-                  chartList.response &&
-                  chartList.response[0].chart && (
-                    <ChartNotes patientChart={chartList.response[0].chart} />
-                  )
-                : chartList && (
-                    <Component
-                      chartList={chartList}
-                      page={page}
-                      totalPages={totalPages}
-                      setPage={setPage}
-                    />
-                  )}
-            </ScrollArea>
-          </TabsContent>
+    <Tabs defaultValue="lastvisit" className="flex flex-row gap-5">
+      <TabsList className="flex flex-col h-full w-56 justify-start items-start p-3 gap-3 overflow-hidden">
+        {patientEncountersTab.map((tab) => (
+          <CustomTabsTrigger value={tab.value} key={tab.value}>
+            {tab.label}
+          </CustomTabsTrigger>
         ))}
-      </Tabs>
-    </>
+      </TabsList>
+      {patientEncountersTab.map(({ value, component: Component }) => (
+        <TabsContent value={value} key={value} className="w-full">
+          <ScrollArea className={cn("h-[calc(60dvh-52px)]")}>
+            {value === "lastvisit"
+              ? chartList &&
+                chartList.response &&
+                chartList.response[0].chart && (
+                  <ChartNotes patientChart={chartList.response[0].chart} />
+                )
+              : chartList && (
+                  <Component
+                    chartList={chartList}
+                    page={page}
+                    totalPages={totalPages}
+                    setPage={setPage}
+                  />
+                )}
+          </ScrollArea>
+        </TabsContent>
+      ))}
+    </Tabs>
   );
 };
 
