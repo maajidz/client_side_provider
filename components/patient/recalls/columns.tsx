@@ -42,7 +42,15 @@ export const columns = ({
   fetchRecalls,
 }: {
   setEditData: (data: RecallsData | null) => void;
-  setIsDialogOpen: ({ edit, view }: { edit: boolean; view: boolean }) => void;
+  setIsDialogOpen: ({
+    create,
+    edit,
+    view,
+  }: {
+    create: boolean;
+    edit: boolean;
+    view: boolean;
+  }) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchRecalls: () => void;
@@ -120,7 +128,7 @@ export const columns = ({
             <DropdownMenuItem
               onClick={() => {
                 setEditData(row.original);
-                setIsDialogOpen({ edit: false, view: true });
+                setIsDialogOpen({ create: false, edit: false, view: true });
               }}
             >
               View
@@ -128,7 +136,7 @@ export const columns = ({
             <DropdownMenuItem
               onClick={() => {
                 setEditData(row.original);
-                setIsDialogOpen({ edit: true, view: false });
+                setIsDialogOpen({ create: false, edit: true, view: false });
               }}
             >
               Edit

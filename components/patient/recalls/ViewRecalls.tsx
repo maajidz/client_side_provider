@@ -1,5 +1,4 @@
-
-import React, { useCallback, useEffect, useState } from "react";
+import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
@@ -33,6 +32,8 @@ import RecallsDialog from "@/components/charts/Encounters/Details/Recalls/Recall
 import { filterRecallsSchema } from "@/schema/recallFormSchema";
 import { columns } from "./columns";
 import ViewRecallDialog from "./ViewRecallsDialog";
+import { PlusIcon } from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 
 const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
@@ -43,6 +44,7 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const limit = 8;
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isDialogOpen, setIsDialogOpen] = useState({
+    create: false,
     edit: false,
     view: false,
   });
@@ -52,119 +54,136 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const form = useForm<z.infer<typeof filterRecallsSchema>>({
     resolver: zodResolver(filterRecallsSchema),
     defaultValues: {
-      type: "",
-      status: "",
+      type: "all",
+      status: "all",
     },
   });
 
-  const fetchRecalls = useCallback(
-    async (page: number) => {
-      setLoading(true);
-      try {
-        const response = await getRecallsData({
-          page: page,
-          limit: limit,
-          userDetailsId: userDetailsId,
-          providerId: providerDetails.providerId,
-        });
-        if (response) {
-          setResultList(response);
-          setTotalPages(Math.ceil(response.total / limit));
-        }
-      } catch (e) {
-        console.log("Error", e);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [userDetailsId, providerDetails.providerId]
-  );
+  const filters = form.watch();
 
-  function onSubmit(values: z.infer<typeof filterRecallsSchema>) {
-    console.log(values);
-    // fetchTasksList(
-    //   page,
-    //   values.status,
-    //   values.category,
-    //   values.priority,
-    //   values.userDetailsId
-    // );
-  }
+  const fetchRecalls = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getRecallsData({
+        page,
+        limit,
+        userDetailsId,
+        providerId: providerDetails.providerId,
+        category: filters.type === "all" ? "" : filters.type,
+        status: filters.status === "all" ? "" : filters.status,
+      });
+      if (response) {
+        setResultList(response);
+        setTotalPages(Math.ceil(response.total / limit));
+      }
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    filters.type,
+    filters.status,
+    providerDetails.providerId,
+    page,
+    userDetailsId,
+  ]);
 
   useEffect(() => {
-    fetchRecalls(page);
-  }, [page, fetchRecalls]);
-
-  if (loading) {
-    return <LoadingButton />;
-  }
+    fetchRecalls();
+  }, [fetchRecalls]);
 
   return (
     <>
-      <div className="">
-        <Form {...form}>
-          <form onChange={form.handleSubmit(onSubmit)} className="flex gap-5">
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-fit">Type</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choose Category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Asynchronous Refill Visit">
-                          Asynchronous Refill Visit
+      <div className="flex justify-end">
+        <DefaultButton
+          onClick={() => {
+            setIsDialogOpen((prev) => ({ ...prev, create: true }));
+          }}
+        >
+          <PlusIcon />
+          Recalls
+        </DefaultButton>
+        <RecallsDialog
+          userDetailsId={userDetailsId}
+          onClose={() => {
+            setIsDialogOpen((prev) => ({ ...prev, create: false }));
+            fetchRecalls();
+          }}
+          isOpen={isDialogOpen.create}
+        />
+      </div>
+      <Form {...form}>
+        <form className="flex gap-5">
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="w-fit">Type</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="Asynchronous Refill Visit">
+                        Asynchronous Refill Visit
+                      </SelectItem>
+                      <SelectItem value="Synchronous Visit">
+                        Synchronous Visit
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      {status.map((status) => (
+                        <SelectItem
+                          key={status.value}
+                          value={status.value.toLowerCase()}
+                        >
+                          {status.label}
                         </SelectItem>
-                        <SelectItem value="Synchronous Visit">
-                          Synchronous Visit
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {status.map((status) => (
-                          <SelectItem key={status.value} value={status.value}>
-                            {status.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
 
-        {/* Results Table */}
-        <div className="space-y-3 py-5">
-          {resultList?.data && (
+      {/* Results Table */}
+      <div className="space-y-3 py-5">
+        {loading ? (
+          <LoadingButton />
+        ) : (
+          resultList?.data && (
             <DataTable
               searchKey="id"
               columns={columns({
@@ -177,32 +196,33 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
                     type: "success",
                     message: "Deleted Successfully",
                   }),
-                fetchRecalls: () => fetchRecalls(page),
+                fetchRecalls: () => fetchRecalls(),
               })}
               data={resultList?.data}
               pageNo={page}
               totalPages={totalPages}
               onPageChange={(newPage: number) => setPage(newPage)}
             />
-          )}
+          )
+        )}
 
-          <RecallsDialog
-            userDetailsId={userDetailsId}
-            recallsData={editData}
-            onClose={() => {
-              setIsDialogOpen((prev) => ({ ...prev, edit: false }));
-            }}
-            isOpen={isDialogOpen.edit}
-          />
+        <RecallsDialog
+          userDetailsId={userDetailsId}
+          recallsData={editData}
+          onClose={() => {
+            setIsDialogOpen((prev) => ({ ...prev, edit: false }));
+            fetchRecalls();
+          }}
+          isOpen={isDialogOpen.edit}
+        />
 
-          {/* View Dialog */}
-          <ViewRecallDialog
-            userDetailsId={userDetailsId}
-            isOpen={isDialogOpen.view}
-            selectedRecallData={editData}
-            onSetIsDialogOpen={setIsDialogOpen}
-          />
-        </div>
+        {/* View Dialog */}
+        <ViewRecallDialog
+          userDetailsId={userDetailsId}
+          isOpen={isDialogOpen.view}
+          selectedRecallData={editData}
+          onSetIsDialogOpen={setIsDialogOpen}
+        />
       </div>
     </>
   );

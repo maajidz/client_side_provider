@@ -143,7 +143,7 @@ const RecallsDialog = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {recallsData ? "Edit Recalls" : "Add Recalls"}
+            {recallsData ? "Update Recall" : "Add Recall"}
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -294,11 +294,13 @@ const RecallsDialog = ({
                     </FormItem>
                   )}
                 />
-                <div className="flex justify-end gap-2">
-                  <SubmitButton label="Add" />
-                  <Button variant="outline" type="button">
-                    Cancel
-                  </Button>
+                <div className="flex justify-end">
+                  <div className="flex  gap-2 w-fit">
+                    <Button variant="outline" type="button" onClick={onClose}>
+                      Cancel
+                    </Button>
+                    <SubmitButton label="Add" />
+                  </div>
                 </div>
               </div>
             </ScrollArea>
