@@ -61,7 +61,7 @@ export function AppointmentsDialog({
     useState<ProviderAvailability | null>(null);
   // const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
   const userData = useSelector((state: RootState) => state.user);
-  const providerData = useSelector((state: RootState) => state.login)
+  const providerData = useSelector((state: RootState) => state.login);
 
   const { toast } = useToast();
 
@@ -82,6 +82,9 @@ export function AppointmentsDialog({
           | "Confirmed") || "Scheduled",
     },
   });
+
+  const selectedDate =
+    form.watch("dateOfAppointment")?.toLocaleDateString("en-CA") ?? "";
 
   useEffect(() => {
     if (appointmentsData) {
@@ -128,17 +131,21 @@ export function AppointmentsDialog({
   // }, [toast]);
 
   const fetchAvailability = useCallback(async () => {
+    if (!providerData?.providerId) {
+      showToast({
+        toast,
+        type: "error",
+        message: "Provider Details not found!",
+      });
+    }
+
     if (providerData?.providerId) {
       setLoading(true);
       try {
         const fetchedAvailabilties = await fetchProviderAvaialability({
           providerID: providerData?.providerId,
-          startDate:
-            form.getValues().dateOfAppointment.toISOString().split("T")[0] ??
-            "",
-          endDate:
-            form.getValues().dateOfAppointment.toISOString().split("T")[0] ??
-            "",
+          startDate: selectedDate,
+          endDate: selectedDate,
         });
 
         console.log("Fetched Availabilties:", fetchedAvailabilties);
@@ -152,11 +159,11 @@ export function AppointmentsDialog({
         setLoading(false);
       }
     }
-  }, [providerData?.providerId, form.getValues().dateOfAppointment, form]);
+  }, [providerData?.providerId, selectedDate]);
 
   useEffect(() => {
-    fetchAvailability();
-  }, [fetchAvailability]);
+    if (selectedDate) fetchAvailability();
+  }, [selectedDate, fetchAvailability]);
 
   const filteredDate = providerAvailability?.data.find(
     (availability) =>
@@ -192,16 +199,16 @@ export function AppointmentsDialog({
         setLoading(true);
         // if (appointmentsData) {
         // } else {
-          const response = await createUserAppointments({
-            requestData: requestData,
+        const response = await createUserAppointments({
+          requestData: requestData,
+        });
+        if (response) {
+          showToast({
+            toast,
+            type: "success",
+            message: "Appointment Created successfully",
           });
-          if (response) {
-            showToast({
-              toast,
-              type: "success",
-              message: "Appointment Created successfully",
-            });
-          }
+        }
         // }
       } catch (error) {
         console.log("Error", error);
@@ -400,14 +407,17 @@ export function AppointmentsDialog({
                                 <SelectValue placeholder="Select a time slot" />
                               </SelectTrigger>
                               <SelectContent>
-                                {filteredDate?.slots.map((availability) => (
+                                {filteredDate?.slots ? filteredDate?.slots.map((availability) => (
                                   <SelectItem
                                     key={availability.id}
                                     value={availability.startTime}
                                   >
-                                    {availability.startTime}{""}-(30 min)
+                                    {availability.startTime}
+                                    {""}-(30 min) {availability.isAvailable}
                                   </SelectItem>
-                                ))}
+                                )): (
+                                  <div>No slots available for {selectedDate}. Select a different date.</div>
+                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -422,7 +432,7 @@ export function AppointmentsDialog({
                     render={({ field }) => (
                       <FormItem className={formStyles.formItem}>
                         <FormLabel>Reason</FormLabel>
-                        <Textarea {...field} value={field.value} />
+                        <Textarea {...field} onChange={field.onChange} />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -433,7 +443,7 @@ export function AppointmentsDialog({
                     render={({ field }) => (
                       <FormItem className={formStyles.formItem}>
                         <FormLabel>Message to Patient</FormLabel>
-                        <Textarea {...field} value={field.value} />
+                        <Textarea {...field} onChange={field.onChange} />
                         <FormMessage />
                       </FormItem>
                     )}

@@ -2,7 +2,7 @@
 import PageContainer from "@/components/layout/page-container";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
 import { UserAppointmentInterface } from "@/types/userInterface";
 import { fetchUserAppointments } from "@/services/userServices";
@@ -13,9 +13,11 @@ import generateAppointmentPDF from "@/components/patient/appointments/generateAp
 export function PatientAppointmentClient({
   userDetailsId,
   status,
+  refreshTrigger
 }: {
   userDetailsId: string;
   status: string[];
+  refreshTrigger: number;
 }) {
   const [userAppointment, setuserAppointment] = useState<
     UserAppointmentInterface[]
@@ -28,32 +30,38 @@ export function PatientAppointmentClient({
     null
   );
 
-  useEffect(() => {
-    const fetchAndSetResponse = async () => {
-      try {
-        const fetchedAppointments = await fetchUserAppointments({
-          userDetailsId: userDetailsId,
-          q: status.join(","),
-        });
-        console.log("Fetched Appointments:", fetchedAppointments);
-        if (fetchedAppointments) {
-          setuserAppointment(fetchedAppointments);
-          setTotalPages(1);
-        }
-      } catch (error) {
-        console.error("Error fetching appointments:", error);
-      } finally {
-        setLoading(false);
+  const fetchAppointments = useCallback(async () => {
+    try {
+      setLoading(true);
+      const fetchedAppointments = await fetchUserAppointments({
+        userDetailsId: userDetailsId,
+        q: status.join(","),
+      });
+      if (fetchedAppointments) {
+        setuserAppointment(fetchedAppointments);
+        setTotalPages(1);
       }
-    };
-
-    fetchAndSetResponse();
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    } finally {
+      setLoading(false);
+    }
   }, [userDetailsId, status]);
+
+  useEffect(() => {
+    fetchAppointments();
+  }, [fetchAppointments, refreshTrigger]);
 
   const handleRowClick = (appointmentData: UserAppointmentInterface) => {
     setEditData(appointmentData);
     setIsDialogOpen(true);
   };
+
+  const handleDialogClose= () => {
+    setIsDialogOpen(false);
+    setEditData(null);
+    fetchAppointments();
+  }
 
   if (loading) {
     return (
@@ -94,9 +102,7 @@ export function PatientAppointmentClient({
       )}
       <AppointmentsDialog
         userDetailsId={userDetailsId}
-        onClose={() => {
-          setIsDialogOpen(false);
-        }}
+        onClose={handleDialogClose}
         appointmentsData={editData}
         isOpen={isDialogOpen}
       />

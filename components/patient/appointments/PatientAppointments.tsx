@@ -6,7 +6,18 @@ import { AppointmentsDialog } from "./AppointmentsDialog";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
-const patientAppointmentsTab = [
+interface PatientAppointmentTab {
+  value: string;
+  label: string;
+  status: string[];
+  component: React.ComponentType<{
+    userDetailsId: string;
+    status: string[];
+    refreshTrigger: number;
+  }>;
+}
+
+const patientAppointmentsTab: PatientAppointmentTab[] = [
   {
     value: "past",
     label: "Past",
@@ -29,11 +40,18 @@ const patientAppointmentsTab = [
 
 const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setRefreshTrigger((prev) => prev + 1);
+  };
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex justify-end">
         <DefaultButton
+          aria-label="Create New Appointment"
           onClick={() => {
             setIsDialogOpen(true);
           }}
@@ -44,9 +62,7 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
 
         <AppointmentsDialog
           userDetailsId={userDetailsId}
-          onClose={() => {
-            setIsDialogOpen(false);
-          }}
+          onClose={handleDialogClose}
           isOpen={isDialogOpen}
         />
       </div>
@@ -61,11 +77,11 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
         {patientAppointmentsTab.map(
           ({ value, component: Component, status }) => (
             <TabsContent value={value} key={value}>
-              {Component ? (
-                <Component userDetailsId={userDetailsId} status={status} />
-              ) : (
-                value
-              )}
+              <Component
+                userDetailsId={userDetailsId}
+                status={status}
+                refreshTrigger={refreshTrigger}
+              />
             </TabsContent>
           )
         )}
