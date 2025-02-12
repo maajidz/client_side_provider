@@ -1,5 +1,4 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { getHistoricalVaccine } from "@/services/chartDetailsServices";
 import { HistoricalVaccineInterface } from "@/types/chartsInterface";
 import { columns } from "./column";
@@ -7,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import VaccinesDialog from "@/components/charts/Encounters/Details/Vaccines/VaccinesDialog";
 import { PlusIcon } from "lucide-react";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface HistoricalVaccinesProps {
   userDetailsId: string;
@@ -66,7 +66,7 @@ const HistoricalVaccinesClient = ({
   }
 
   return (
-    <div className="py-5">
+    <div className="flex flex-col gap-3">
       <div className="flex justify-end">
         <DefaultButton
           onClick={() => {
@@ -85,8 +85,7 @@ const HistoricalVaccinesClient = ({
           onFetchHistoricalData={fetchHistoricalVaccine}
         />
       </div>
-      <DataTable
-        searchKey="id"
+      <DefaultDataTable
         columns={columns()}
         data={historicalVaccineData}
         pageNo={page}

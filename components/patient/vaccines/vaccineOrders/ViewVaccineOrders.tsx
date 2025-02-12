@@ -1,5 +1,4 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { getVaccinesData } from "@/services/injectionsServices";
 import { VaccinesInterface } from "@/types/injectionsInterface";
 import { columns } from "@/components/injections/vaccine-orders/column";
@@ -7,6 +6,8 @@ import { useCallback, useEffect, useState } from "react";
 import { vaccineSearchParams } from "@/schema/injectionsAndVaccinesSchema";
 import { z } from "zod";
 import FilterVaccineOrders from "./FilterVaccineOrders";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import VaccineOrders from "@/components/injections/vaccine-orders/VaccineOrders";
 
 function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   // Data State
@@ -72,14 +73,14 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
 
   return (
     <div className="space-y-2">
-      <div className="space-y-2">
+      <div className="flex flex-1 flex-row justify-between items-center">
         <FilterVaccineOrders
           vaccinesData={vaccinesData}
           onHandleSearch={handleSearch}
         />
+        <VaccineOrders />
       </div>
-      <DataTable
-        searchKey="Injections"
+      <DefaultDataTable
         columns={columns()}
         data={vaccinesData}
         pageNo={pageNo}
