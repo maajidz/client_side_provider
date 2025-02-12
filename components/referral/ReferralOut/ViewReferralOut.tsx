@@ -1,6 +1,5 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
   FormControl,
@@ -25,6 +24,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const ViewReferralOut = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -198,8 +198,7 @@ const ViewReferralOut = () => {
 
         {/* DataTable */}
         {resultList && (
-          <DataTable
-            searchKey="id"
+          <DefaultDataTable
             columns={columns()}
             data={resultList}
             pageNo={page}

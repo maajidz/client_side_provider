@@ -1,6 +1,5 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
   FormControl,
@@ -27,6 +26,7 @@ import { useForm } from "react-hook-form";
 // import { useSelector } from "react-redux";
 import { z } from "zod";
 import PageContainer from "@/components/layout/page-container";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface OrderRecordsProps {
   userDetailsId: string;
@@ -150,8 +150,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
       </Form>
       <div className="py-5">
         {orderList?.data && (
-          <DataTable
-            searchKey="id"
+          <DefaultDataTable
             columns={columns()}
             data={orderList?.data}
             pageNo={page}

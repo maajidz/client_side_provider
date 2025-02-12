@@ -1,6 +1,5 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
   FormField,
@@ -27,6 +26,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import PageContainer from "@/components/layout/page-container";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface ResultRecordsProps {
   userDetailsId: string;
@@ -218,8 +218,7 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
         {/* Results Table */}
         <div className="py-5">
           {resultList?.results && (
-            <DataTable
-              searchKey="id"
+            <DefaultDataTable
               columns={columns()}
               data={resultList?.results}
               pageNo={page}

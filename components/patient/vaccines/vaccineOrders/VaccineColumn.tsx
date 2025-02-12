@@ -4,24 +4,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { deleteVaccineOrder } from "@/services/injectionsServices";
 import { VaccinesInterface } from "@/types/injectionsInterface";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 
 const handleDeleteVaccineOrder = async (
-  vaccineId: string,
+  vaccineOrderId: string,
   setLoading: (loading: boolean) => void,
   showToast: (args: { type: string; message: string }) => void,
   fetchVaccineOrderData: () => void
 ) => {
   setLoading(true);
   try {
-    // await deleteHistoricalVaccine({ id: vaccineId });
+    await deleteVaccineOrder({ vaccineOrderId: vaccineOrderId });
     showToast({
       type: "success",
       message: "Allergy deleted successfully",
     });
-    console.log(vaccineId);
     fetchVaccineOrderData();
   } catch (error) {
     console.error("Error:", error);

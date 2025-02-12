@@ -113,6 +113,24 @@ export const getVaccinesData = async (params: VaccinesSearchParamsType) => {
   return data;
 };
 
+export const deleteVaccineOrder = async ({
+  vaccineOrderId,
+}: {
+  vaccineOrderId: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/injections/vaccine/${vaccineOrderId}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+
+  const data = await response.data;
+  return data;
+};
+
+
 export const createInjection = async ({
   requestBody,
 }: {
