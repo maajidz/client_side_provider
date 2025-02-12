@@ -84,12 +84,10 @@ function LabResults() {
   }
 
   // GET Patients' Data
-  const fetchPatientData = useCallback(async () => {
+  const fetchPatientData = useCallback(async (currentPage: number) => {
     setLoading((prev) => ({ ...prev, patients: true }));
-
     try {
-      const response = await fetchUserDataResponse({ pageNo: page });
-
+      const response = await fetchUserDataResponse({ pageNo: currentPage });
       if (response) {
         setPatientData(response.data);
       }
@@ -98,15 +96,14 @@ function LabResults() {
     } finally {
       setLoading((prev) => ({ ...prev, patients: false }));
     }
-  }, [page]);
+  }, []);
 
   // Fetch Providers Data
-  const fetchProvidersData = useCallback(async () => {
+  const fetchProvidersData = useCallback(async (currentPage: number) => {
     setLoading((prev) => ({ ...prev, providers: true }));
-
     try {
       const response = await fetchProviderListDetails({
-        page: page,
+        page: currentPage,
         limit: 10,
       });
       setProvidersList(response.data);
@@ -115,7 +112,7 @@ function LabResults() {
     } finally {
       setLoading((prev) => ({ ...prev, providers: false }));
     }
-  }, [page]);
+  }, []);
 
   const fetchLabResultsList = useCallback(
     async (page: number) => {
@@ -146,8 +143,8 @@ function LabResults() {
 
   useEffect(() => {
     fetchLabResultsList(page);
-    fetchPatientData();
-    fetchProvidersData();
+    fetchPatientData(page);
+    fetchProvidersData(page);
   }, [page, fetchLabResultsList, fetchPatientData, fetchProvidersData]);
 
   const filteredPatients = patientData.filter((patient) =>
