@@ -1,5 +1,4 @@
 import PageContainer from "@/components/layout/page-container";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
   FormControl,
@@ -26,6 +25,7 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "@/components/images/ImageOrders/columns";
 import LoadingButton from "@/components/LoadingButton";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -132,8 +132,7 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
       </Form>
       <div className="py-5">
         {orderList?.data && (
-          <DataTable
-            searchKey="id"
+          <DefaultDataTable
             columns={columns()}
             data={orderList?.data}
             pageNo={page}

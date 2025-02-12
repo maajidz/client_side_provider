@@ -1,11 +1,11 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { getDocumentsData } from "@/services/documentsServices";
 import { DocumentsInterface } from "@/types/documentsInterface";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import DragAndDrop from "./DragAndDrop";
 import UploadDocumentDialog from "./UploadDocumentDialog";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
   const [documentsData, setDocumentsData] = useState<DocumentsInterface[]>([]);
@@ -59,7 +59,7 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-3">
       <div className="flex justify-end">
         <UploadDocumentDialog
           userDetailsId={userDetailsId}
@@ -70,8 +70,7 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
         />
       </div>
       {paginatedData ? (
-        <DataTable
-          searchKey="Documents"
+        <DefaultDataTable
           columns={columns()}
           data={paginatedData}
           pageNo={page}
@@ -85,7 +84,7 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
           }
         />
       )}
-    </>
+    </div>
   );
 }
 
