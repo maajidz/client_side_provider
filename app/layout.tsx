@@ -4,16 +4,29 @@ import "./globals.css";
 import { ReduxProvider } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+// const geistSans = localFont({
+//   src: "./fonts/GeistVF.woff",
+//   variable: "--font-geist-sans",
+//   weight: "100 900",
+// });
+// const geistMono = localFont({
+//   src: "./fonts/GeistMonoVF.woff",
+//   variable: "--font-geist-mono",
+//   weight: "100 900",
+// });
+
+const outfit = localFont({
+  src: "./fonts/Outfit-VariableFont_wght.ttf",
+  variable: "--font-outfit",
+})
+const plusJakartaSans = localFont({
+  src: "./fonts/PlusJakartaSans-VariableFont_wght.ttf",
+  variable: "--font-outfit",
+})
+const plusJakartaSansItalics = localFont({
+  src: "./fonts/PlusJakartaSans-Italic-VariableFont_wght.ttf",
+  variable: "--font-outfit",
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -28,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${outfit.variable} ${plusJakartaSans.variable} ${plusJakartaSansItalics.variable} antialiased`}
       >
         <ReduxProvider>
           <Toaster />

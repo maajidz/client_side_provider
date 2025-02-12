@@ -92,12 +92,12 @@ export const navItems: NavItem[] = [
     icon: "refer",
     label: "Referrals",
   },
-  {
-    title: "Profile",
-    href: "/dashboard/provider/profile",
-    icon: "user",
-    label: "Profile",
-  },
+  // {
+  //   title: "Profile",
+  //   href: "/dashboard/provider/profile",
+  //   icon: "user",
+  //   label: "Profile",
+  // },
 ];
 
 export const roles = ["Manager", "Provider"];
