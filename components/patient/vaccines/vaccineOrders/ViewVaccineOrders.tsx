@@ -1,12 +1,14 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { getVaccinesData } from "@/services/injectionsServices";
 import { VaccinesInterface } from "@/types/injectionsInterface";
-import { columns } from "@/components/injections/vaccine-orders/column";
 import { useCallback, useEffect, useState } from "react";
 import { vaccineSearchParams } from "@/schema/injectionsAndVaccinesSchema";
 import { z } from "zod";
 import FilterVaccineOrders from "./FilterVaccineOrders";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { columns } from "./VaccineColumn";
+import { useToast } from "@/hooks/use-toast";
+import { showToast } from "@/utils/utils";
 
 function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   // Data State
@@ -25,9 +27,10 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
 
   // Loading State
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   // GET Injections Data
-  const fetchInjectionsData = useCallback(async () => {
+  const fetchVaccineOrderData = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -51,7 +54,6 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   }, [pageNo, userDetailsId, filters.providerId, filters.status]);
 
   const handleSearch = (filterValues: z.infer<typeof vaccineSearchParams>) => {
-
     if (filterValues.providerId === "all") {
       filterValues.providerId = "";
     }
@@ -65,22 +67,29 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
 
   // Effects
   useEffect(() => {
-    fetchInjectionsData();
-  }, [fetchInjectionsData]);
+    fetchVaccineOrderData();
+  }, [fetchVaccineOrderData]);
 
   if (loading) return <LoadingButton />;
 
   return (
-    <div className="space-y-2">
-      <div className="space-y-2">
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-1 flex-row gap-3 items-center w-full">
         <FilterVaccineOrders
           vaccinesData={vaccinesData}
           onHandleSearch={handleSearch}
         />
       </div>
-      <DataTable
-        searchKey="Injections"
-        columns={columns()}
+      <DefaultDataTable
+        columns={columns({
+           setLoading,
+           showToast: () => showToast({
+            toast,
+            type: "success",
+            message: "Deleted Successfully",
+          }),
+           fetchVaccineOrderData: () => fetchVaccineOrderData(),
+        })}
         data={vaccinesData}
         pageNo={pageNo}
         totalPages={totalPages}

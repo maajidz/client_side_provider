@@ -1,8 +1,8 @@
 import React from "react";
 import { columns } from "@/components/tables/charts/columns";
-import { DataTable } from "@/components/ui/data-table";
 import { useRouter } from "next/navigation";
 import { EncounterInterface } from "@/types/encounterInterface";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const AllEncountersTab = ({
   chartList,
@@ -22,8 +22,7 @@ const AllEncountersTab = ({
   return (
     <div className="w-full">
       {chartList?.response && (
-        <DataTable
-          searchKey="name"
+        <DefaultDataTable
           columns={columns(handleRowClick)}
           data={chartList.response}
           pageNo={page}

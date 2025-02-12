@@ -1,7 +1,50 @@
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { deleteHistoricalVaccine } from "@/services/chartDetailsServices";
 import { HistoricalVaccineInterface } from "@/types/chartsInterface";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns = (): ColumnDef<HistoricalVaccineInterface>[] => [
+const handleDeleteVaccine = async (
+  vaccineId: string,
+  setLoading: (loading: boolean) => void,
+  showToast: (args: { type: string; message: string }) => void,
+  fetchHistoricalVaccine: () => void
+) => {
+  setLoading(true);
+  try {
+    await deleteHistoricalVaccine({ id: vaccineId });
+    showToast({
+      type: "success",
+      message: "Allergy deleted successfully",
+    });
+    fetchHistoricalVaccine();
+  } catch (error) {
+    console.error("Error:", error);
+    showToast({ type: "error", message: "Failed to delete Allergy" });
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const columns = ({
+  setEditData,
+  setIsVaccinesDialogOpen,
+  setLoading,
+  showToast,
+  fetchHistoricalVaccine,
+}: {
+  setEditData: (data: HistoricalVaccineInterface) => void;
+  setIsVaccinesDialogOpen: (isOpen: boolean) => void;
+  setLoading: (loading: boolean) => void;
+  showToast: (args: { type: string; message: string }) => void;
+  fetchHistoricalVaccine: () => void;
+}): ColumnDef<HistoricalVaccineInterface>[] => [
   {
     accessorKey: "vaccine_name",
     header: "Vaccine Name",
@@ -40,6 +83,43 @@ export const columns = (): ColumnDef<HistoricalVaccineInterface>[] => [
         }`}
       >
         {row.original.status.toUpperCase()}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "id",
+    header: "",
+    cell: ({ row }) => (
+      <div>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <DotsHorizontalIcon />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                setEditData(row.original);
+                setIsVaccinesDialogOpen(true);
+              }}
+            >
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                handleDeleteVaccine(
+                  row.original.id,
+                  setLoading,
+                  showToast,
+                  fetchHistoricalVaccine
+                );
+                fetchHistoricalVaccine();
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     ),
   },

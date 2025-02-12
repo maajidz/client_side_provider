@@ -5,6 +5,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -24,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import formStyles from "@/components/formStyles.module.css";
 
 export interface FilterVaccineOrdersProps {
   vaccinesData: VaccinesInterface[];
@@ -83,18 +85,18 @@ function FilterVaccineOrders({
   }
 
   return (
-    <>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+          className={`w-full ${formStyles.formFilterBody}`}
         >
           {/* Ordered By Filter */}
           <FormField
             control={form.control}
             name="providerId"
             render={({ field }) => (
-              <FormItem className="flex items-center">
+              <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Ordered By</FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
@@ -134,7 +136,8 @@ function FilterVaccineOrders({
             control={form.control}
             name="status"
             render={({ field }) => (
-              <FormItem className="flex items-center">
+              <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Status</FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
@@ -167,7 +170,6 @@ function FilterVaccineOrders({
           </div>
         </form>
       </Form>
-    </>
   );
 }
 

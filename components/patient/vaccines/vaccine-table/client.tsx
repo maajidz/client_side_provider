@@ -1,5 +1,4 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { getHistoricalVaccine } from "@/services/chartDetailsServices";
 import { HistoricalVaccineInterface } from "@/types/chartsInterface";
 import { columns } from "./column";
@@ -7,6 +6,9 @@ import { useCallback, useEffect, useState } from "react";
 import VaccinesDialog from "@/components/charts/Encounters/Details/Vaccines/VaccinesDialog";
 import { PlusIcon } from "lucide-react";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { useToast } from "@/hooks/use-toast";
+import { showToast } from "@/utils/utils";
 
 interface HistoricalVaccinesProps {
   userDetailsId: string;
@@ -22,6 +24,7 @@ const HistoricalVaccinesClient = ({
 
   // Loading State
   const [loading, setLoading] = useState(false);
+  // const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   // Pagination Data
   const limit = 10;
@@ -30,6 +33,8 @@ const HistoricalVaccinesClient = ({
 
   // Dialog State
   const [isVaccinesDialogOpen, setIsVaccinesDialogOpen] = useState(false);
+  const [editData, setEditData] = useState<HistoricalVaccineInterface>();
+  const { toast } = useToast();
 
   // GET Historical Vaccine Data
   const fetchHistoricalVaccine = useCallback(async () => {
@@ -66,18 +71,19 @@ const HistoricalVaccinesClient = ({
   }
 
   return (
-    <div className="py-5">
+    <div className="flex flex-col gap-3">
       <div className="flex justify-end">
         <DefaultButton
           onClick={() => {
             setIsVaccinesDialogOpen(true);
           }}
         >
-            <PlusIcon />
-            Vaccines
+          <PlusIcon />
+          Vaccines
         </DefaultButton>
         <VaccinesDialog
           userDetailsId={userDetailsId}
+          vaccinesData={editData}
           isOpen={isVaccinesDialogOpen}
           onClose={() => {
             setIsVaccinesDialogOpen(false);
@@ -85,9 +91,19 @@ const HistoricalVaccinesClient = ({
           onFetchHistoricalData={fetchHistoricalVaccine}
         />
       </div>
-      <DataTable
-        searchKey="id"
-        columns={columns()}
+      <DefaultDataTable
+        columns={columns({
+          setEditData,
+          setIsVaccinesDialogOpen,
+          setLoading,
+          showToast: () =>
+            showToast({
+              toast,
+              type: "success",
+              message: "Deleted Successfully",
+            }),
+          fetchHistoricalVaccine: () => fetchHistoricalVaccine(),
+        })}
         data={historicalVaccineData}
         pageNo={page}
         totalPages={totalPages}
