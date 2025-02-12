@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import { getAllergiesData } from "@/services/chartDetailsServices";
@@ -7,6 +6,7 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { AllergenResponseInterfae } from "@/types/allergyInterface";
 import EditAllergy from "@/components/charts/Encounters/Details/Allergies/EditAllergy";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
   const [page, setPage] = useState<number>(1);
@@ -53,8 +53,7 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
     <>
       <div className="space-y-3">
         {data && (
-          <DataTable
-            searchKey="id"
+          <DefaultDataTable
             columns={columns({
               setEditData,
               setIsDialogOpen,

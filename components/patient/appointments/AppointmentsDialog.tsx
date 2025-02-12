@@ -413,7 +413,9 @@ export function AppointmentsDialog({
                                     value={availability.startTime}
                                   >
                                     {availability.startTime}
-                                    {""}-(30 min) {availability.isAvailable}
+                                    {""}-(30 min) 
+                                    -{"Is Avaialable"}
+                                    {availability.isAvailable? "Yes": "No"}
                                   </SelectItem>
                                 )): (
                                   <div>No slots available for {selectedDate}. Select a different date.</div>

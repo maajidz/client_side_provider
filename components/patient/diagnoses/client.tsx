@@ -1,5 +1,4 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { useToast } from "@/hooks/use-toast";
 import { fetchDiagnosesForUser } from "@/services/chartsServices";
 import { DiagnosesInterface } from "@/types/chartsInterface";
@@ -7,6 +6,7 @@ import { showToast } from "@/utils/utils";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import EditDiagnosisDialog from "./EditDiagnosesDialog";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface DiagnosesClientProps {
   userDetailsId: string;
@@ -77,8 +77,7 @@ function DiagnosesClient({
 
   return (
     <>
-      <DataTable
-        searchKey="diagnoses"
+      <DefaultDataTable
         columns={columns({
           setEditData,
           setIsDialogOpen,

@@ -1,6 +1,5 @@
 "use client";
 import PageContainer from "@/components/layout/page-container";
-import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
 import { useCallback, useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
@@ -9,6 +8,7 @@ import { fetchUserAppointments } from "@/services/userServices";
 import { AppointmentsDialog } from "@/components/patient/appointments/AppointmentsDialog";
 import { Button } from "@/components/ui/button";
 import generateAppointmentPDF from "@/components/patient/appointments/generateAppointmentPdf";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 export function PatientAppointmentClient({
   userDetailsId,
@@ -86,8 +86,7 @@ export function PatientAppointmentClient({
       </div>
       {userAppointment.length > 0 ? (
         <div className="space-y-4">
-          <DataTable
-            searchKey="name"
+          <DefaultDataTable
             columns={columns(handleRowClick)}
             data={userAppointment}
             pageNo={pageNo}

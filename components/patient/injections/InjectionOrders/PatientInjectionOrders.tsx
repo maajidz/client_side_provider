@@ -8,7 +8,7 @@ const PatientInjectionOrders = ({
   userDetailsId: string;
 }) => {
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col gap-3">
       <div className="flex justify-end">
         <InjectionOrders />
       </div>

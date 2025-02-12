@@ -1,5 +1,4 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { useToast } from "@/hooks/use-toast";
 import { getUserPrescriptionsData } from "@/services/prescriptionsServices";
 import { RootState } from "@/store/store";
@@ -9,6 +8,7 @@ import { columns } from "./column";
 import { useEffect, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import EditPrescription from "./EditPrescription";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const ViewPatientMedications = ({
   userDetailsId,
@@ -62,8 +62,7 @@ const ViewPatientMedications = ({
     <>
       <div className="space-y-3 py-5">
         {resultList && (
-          <DataTable
-            searchKey="id"
+          <DefaultDataTable
             columns={columns({
               setEditData,
               setIsDialogOpen,

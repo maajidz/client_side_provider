@@ -1,7 +1,6 @@
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import SupplementsDialog from "@/components/charts/Encounters/Details/Supplements/SupplementsDialog";
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { useToast } from "@/hooks/use-toast";
 import { getSupplements } from "@/services/chartDetailsServices";
 import { RootState } from "@/store/store";
@@ -11,6 +10,7 @@ import { columns } from "./columns";
 import { PlusIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const ViewPatientSupplements = ({
   userDetailsId,
@@ -77,8 +77,7 @@ const ViewPatientSupplements = ({
       </div>
       <div className="space-y-3 py-5">
         {resultList && (
-          <DataTable
-            searchKey="id"
+          <DefaultDataTable
             columns={columns({
               setEditData,
               setIsDialogOpen,

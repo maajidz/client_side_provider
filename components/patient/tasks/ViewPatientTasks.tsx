@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
   FormField,
@@ -35,6 +34,7 @@ import AddTaskComment from "./AddTaskComment";
 import EditPatientTaskDialog from "./EditPatientTaskDialog";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const ViewPatientTasks = ({
   userDetailsId,
@@ -239,8 +239,7 @@ const ViewPatientTasks = ({
         {/* Results Table */}
         <div className="space-y-3">
           {resultList?.data && (
-            <DataTable
-              searchKey="id"
+            <DefaultDataTable
               columns={columns({
                 setEditData,
                 setIsDialogOpen,

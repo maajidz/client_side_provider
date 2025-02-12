@@ -1,5 +1,4 @@
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
   FormField,
@@ -35,6 +34,7 @@ import ViewRecallDialog from "./ViewRecallsDialog";
 import { PlusIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -184,8 +184,7 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
           <LoadingButton />
         ) : (
           resultList?.data && (
-            <DataTable
-              searchKey="id"
+            <DefaultDataTable
               columns={columns({
                 setEditData,
                 setIsDialogOpen,
