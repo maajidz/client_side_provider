@@ -1,8 +1,6 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import RxPatientDetailsSection from "@/components/charts/Encounters/SOAP/Prescription/RxPatientDetailsSection";
+// import RxPatientDetailsSection from "@/components/charts/Encounters/SOAP/Prescription/RxPatientDetailsSection";
 import LoadingButton from "@/components/LoadingButton";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { getPrescriptionsData } from "@/services/chartsServices";
 import { RootState } from "@/store/store";
 import { FetchPrescription } from "@/types/chartsInterface";
@@ -25,7 +22,7 @@ interface PastPrescriptionsDialogProps {
 
 const PastPrescriptionsDialog = ({
   isDialogOpen,
-  userDetailsId,
+  // userDetailsId,
   onClose,
 }: PastPrescriptionsDialogProps) => {
   // Data State
@@ -68,12 +65,12 @@ const PastPrescriptionsDialog = ({
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[30rem] min-h-30 p-3">
+        <>
           <div className="flex flex-col gap-4">
             {/* Patient Details Section */}
-            <RxPatientDetailsSection userDetailsId={userDetailsId} />
+            {/* <RxPatientDetailsSection userDetailsId={userDetailsId} /> */}
             {/* Search & Add Rx Section */}
-            <div className="flex flex-col p-4 shadow-sm">
+            {/* <div className="flex flex-col p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-lg font-semibold text-gray-700">
                   Search & Add Rx
@@ -92,7 +89,7 @@ const PastPrescriptionsDialog = ({
                   Add a custom drug
                 </Button>
               </div>
-            </div>
+            </div> */}
 
             {/* Past Rx Section */}
             <div className="flex flex-col p-4">
@@ -129,7 +126,7 @@ const PastPrescriptionsDialog = ({
           <DialogFooter>
             <SubmitButton label="Save Changes" onClick={onClose} />
           </DialogFooter>
-        </ScrollArea>
+        </>
       </DialogContent>
     </Dialog>
   );
