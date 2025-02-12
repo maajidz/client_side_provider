@@ -1,5 +1,4 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { useToast } from "@/hooks/use-toast";
 import { getVitalsData } from "@/services/vitalsServices";
 import { VitalsInterface } from "@/types/vitalsInterface";
@@ -9,6 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import VitalDialog from "./VitalDialog";
 import { PlusIcon } from "lucide-react";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   // Vitals State
@@ -83,8 +83,7 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
         />
       </div>
       <div className="space-y-3">
-        <DataTable
-          searchKey="vitals"
+        <DefaultDataTable
           columns={columns({
             fetchVitalsData,
             setEditData,

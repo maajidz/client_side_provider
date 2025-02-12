@@ -78,7 +78,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             </div>
             <PatientLabelDetails
               label="ID:"
-              value={`${userId.slice(0, 15)}...`}
+              value={response?.patientId ? response.patientId : "N/A"}
             />
           </div>
         </div>
@@ -105,7 +105,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
                 label="Weight:"
                 value={
                   response && response.vitals
-                    ? `${response?.vitals[0]?.weightLbs}lbs ${response?.vitals[0]?.weightOzs}ozs`
+                    ? `${response?.vitals[response.vitals.length - 1]?.weightLbs}lbs ${response?.vitals[0]?.weightOzs}ozs`
                     : "N/A"
                 }
               />

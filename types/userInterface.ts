@@ -39,6 +39,7 @@ export interface PatientDetailsInterface {
 export interface PatientDetails {
   id: string;
   dob: string;
+  patientId: string;
   height: number;
   heightType: string;
   weight: number;

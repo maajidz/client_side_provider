@@ -1,6 +1,5 @@
 "use client";
 
-import { DataTable } from "@/components/ui/data-table";
 import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
@@ -14,6 +13,7 @@ import { MedicationResultInterface } from "@/types/medicationInterface";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import MedicationDetailsDialog from "./MedicationDetailsDialog";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface AddMedicationBodyProps {
   userDetailsId: string;
@@ -167,8 +167,7 @@ const AddMedicationBody = ({ userDetailsId }: AddMedicationBodyProps) => {
       {isLoading.get || isLoading.post ? (
         <LoadingButton />
       ) : (
-        <DataTable
-          searchKey="medications"
+        <DefaultDataTable
           columns={columns(handleSelectedMedication)}
           data={filteredData}
           pageNo={currentPage}

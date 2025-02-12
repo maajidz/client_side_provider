@@ -32,7 +32,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
       const response = await getSupplements({ userDetailsId });
       setSupplementData(response.data);
     } catch (error) {
-      console.error("Error fetching supplements:", error);
+      console.log("Error fetching supplements:", error);
     } finally {
       setLoading(false);
     }
@@ -281,35 +281,37 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               href="vitals"
               userDetailsId={userDetailsId}
             />
-            <div className={styles.section}>
-              {userData?.vitals ? (
-                userData?.vitals.map((vitals) => (
-                  <div
-                    key={vitals.id}
-                    className={`${styles.subContainer} bg-[#F5F5F5] p-2 rounded`}
-                  >
-                    <div className={styles.infoSub}>
-                      {new Date(vitals.dateTime).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "numeric",
-                      })}
+            <ScrollArea className="h-[12.5rem] min-h-10">
+              <div className={styles.section}>
+                {userData?.vitals ? (
+                  userData?.vitals.reverse().map((vitals) => (
+                    <div
+                      key={vitals.id}
+                      className={`${styles.subContainer} bg-[#F5F5F5] p-2 rounded`}
+                    >
+                      <div className={styles.infoSub}>
+                        {new Date(vitals.dateTime).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "2-digit",
+                          year: "numeric",
+                        })}
+                      </div>
+                      <FaceSheetLabels
+                        label="Weight:"
+                        value={`${vitals.weightLbs} lbs ${vitals.weightOzs} ozs`}
+                      />
+                      <FaceSheetLabels
+                        label="Height:"
+                        value={`${vitals.heightFeets} ' ${vitals.heightInches}`}
+                      />
+                      <FaceSheetLabels label="BMI:" value={`${vitals.BMI}`} />
                     </div>
-                    <FaceSheetLabels
-                      label="Weight:"
-                      value={`${vitals.weightLbs} lbs ${vitals.weightOzs} ozs`}
-                    />
-                    <FaceSheetLabels
-                      label="Height:"
-                      value={`${vitals.heightFeets} ' ${vitals.heightInches}`}
-                    />
-                    <FaceSheetLabels label="BMI:" value={`${vitals.BMI}`} />
-                  </div>
-                ))
-              ) : (
-                <NoDataRecorded />
-              )}
-            </div>
+                  ))
+                ) : (
+                  <NoDataRecorded />
+                )}
+              </div>
+            </ScrollArea>
           </div>
           {/* <div className={styles.infoContainer}>
             <TitleLinks

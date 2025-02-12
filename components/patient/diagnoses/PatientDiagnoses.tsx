@@ -22,22 +22,27 @@ const PatientDiagnoses = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex justify-end">
-        <DefaultButton onClick={() => setIsDialogOpen(true)}>
-          <PlusIcon />
-          Diagnoses
-        </DefaultButton>
-      </div>
-      <div className="space-y-3">
-        <DiagnosesClient userDetailsId={userDetailsId} refreshTrigger={refreshTrigger} />
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-end">
+          <DefaultButton onClick={() => setIsDialogOpen(true)}>
+            <PlusIcon />
+            Diagnoses
+          </DefaultButton>
+        </div>
+        <div className="space-y-3">
+          <DiagnosesClient
+            userDetailsId={userDetailsId}
+            refreshTrigger={refreshTrigger}
+          />
 
-        {/* Add Diagnoses */}
-        <AddDiagnosesDialog
-          isOpen={isDialogOpen}
-          userDetailsId={userDetailsId}
-          chartId={chartId}
-          onClose={handleDialogClose}
-        />
+          {/* Add Diagnoses */}
+          <AddDiagnosesDialog
+            isOpen={isDialogOpen}
+            userDetailsId={userDetailsId}
+            chartId={chartId}
+            onClose={handleDialogClose}
+          />
+        </div>
       </div>
     </PageContainer>
   );

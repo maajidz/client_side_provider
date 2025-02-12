@@ -1,5 +1,4 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { useToast } from "@/hooks/use-toast";
 import { QuickNotesInterface } from "@/types/quickNotesInterface";
 import { showToast } from "@/utils/utils";
@@ -7,6 +6,7 @@ import { columns } from "./columns";
 import QuickNotesDialog from "./QuickNotesDialog";
 import { useState } from "react";
 import PageContainer from "@/components/layout/page-container";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface ViewPatientNotesProps {
   userDetailsId: string;
@@ -49,8 +49,7 @@ const ViewPatientQuickNotes = ({
     <PageContainer scrollable={true}>
       <div className="space-y-3">
         {data && (
-          <DataTable
-            searchKey="id"
+          <DefaultDataTable
             columns={columns({
               setIsDialogOpen,
               setEditData,

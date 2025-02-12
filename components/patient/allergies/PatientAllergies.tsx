@@ -8,7 +8,7 @@ const PatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   
   return (
-    <>
+    <div className="flex flex-col gap-3">
       <div className="flex justify-end">
         <DefaultButton
           onClick={() => {
@@ -27,7 +27,7 @@ const PatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
         />
       </div>
       <ViewPatientAllergies userDetailsId={userDetailsId} />
-    </>
+    </div>
   );
 };
 

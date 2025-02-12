@@ -1,7 +1,6 @@
 import AlertDialog from "@/components/charts/Encounters/Details/Alerts/AlertDialog";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { useToast } from "@/components/ui/use-toast";
 import { getAlertData } from "@/services/chartDetailsServices";
 import { AlertResponseInterface } from "@/types/alertInterface";
@@ -9,6 +8,7 @@ import { showToast } from "@/utils/utils";
 import { columns } from "./columns";
 import { PlusIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
   const [page, setPage] = useState<number>(1);
@@ -54,7 +54,7 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-3">
       <div className="flex justify-end">
         <DefaultButton
           onClick={() => {
@@ -75,8 +75,7 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
       </div>
       <div className="space-y-3">
         {data?.data && (
-          <DataTable
-            searchKey="id"
+          <DefaultDataTable
             columns={columns({
               setEditData,
               setIsDialogOpen,
@@ -106,7 +105,7 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
           isOpen={isDialogOpen.edit}
         />
       </div>
-    </>
+    </div>
   );
 };
 
