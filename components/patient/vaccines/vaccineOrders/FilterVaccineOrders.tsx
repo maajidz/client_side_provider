@@ -85,11 +85,10 @@ function FilterVaccineOrders({
   }
 
   return (
-    <div className="flex flex-1 w-full">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className={formStyles.formFilterBody}
+          className={`w-full ${formStyles.formFilterBody}`}
         >
           {/* Ordered By Filter */}
           <FormField
@@ -171,7 +170,6 @@ function FilterVaccineOrders({
           </div>
         </form>
       </Form>
-    </div>
   );
 }
 
