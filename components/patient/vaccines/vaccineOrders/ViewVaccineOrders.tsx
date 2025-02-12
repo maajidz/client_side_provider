@@ -83,7 +83,7 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     fetchProvidersData();
