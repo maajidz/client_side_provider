@@ -11,6 +11,7 @@ import { calculateAge } from "@/utils/utils";
 import { Button } from "../ui/button";
 import StickyNotesDialog from "../charts/Encounters/Details/StickyNotes/StickyNotesDialog";
 import MessagesDialog from "../messages/MessagesDialog";
+import { Label } from "@/components/ui/label"
 
 function UserList({
   users,
@@ -181,18 +182,23 @@ export function SearchInput() {
   };
 
   return (
-    <div className="relative flex flex-col space-y-4 w-full items-center">
-      <div className="flex flex-row gap-2 border border-[#84012A] px-2 rounded-full items-center w-96 justify-center justify-items-center">
-        <SearchIcon size={25} className="text-[#84012A]" />
-        <Input
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setSelectedUser(null);
-          }}
-          placeholder="Search patient..."
-          className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
-        />
+    <div className="relative flex flex-col space-y-4 flex-1">
+      <div className="flex flex-col relative w-full max-w-2xl">
+        <div className="flex flex-col w-full relative justify-center gap-1">
+        <Label className="text-xs text-gray-700 font-medium" htmlFor="email">Search for patients</Label>
+          <div className="flex flex-1 items-center peer-focus-visible:bg-red-700">
+          <Input
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setSelectedUser(null);
+              }}
+              placeholder="eg. Frederick Norman or PMG567378..."
+              className="w-full h-11 focus-visible:ring-pink-100 focus-visible:ring-2 focus-visible:border-pink-300 hover:border-gray-300 peer"
+            />
+          <SearchIcon size={20} className="text-[#D5D7DA] absolute right-2 peer-focus-visible:text-[#84012A]" />
+          </div>
+        </div>
       </div>
       <div className="absolute w-full flex justify-center">
         {loading && (
