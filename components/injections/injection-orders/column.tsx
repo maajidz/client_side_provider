@@ -94,7 +94,7 @@ export const columns = ({
           fetchInjectionList();
         }}
       >
-        <Trash2Icon />
+        <Trash2Icon color="#84012A" />
       </Button>
     ),
   },
