@@ -1,6 +1,4 @@
 import React from 'react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
 
 export default function PageContainer({
   children,
@@ -12,15 +10,13 @@ export default function PageContainer({
   return (
     <>
       {scrollable ? (
-        <ScrollArea className={cn("h-[calc(100dvh-52px)]")}>
-          <div className="h-full p-4 md:px-8">
-            <div>
-            {children}
+        // <ScrollArea className={cn("h-[calc(100dvh-52px)]")}>
+            <div className="flex flex-1 w-full h-full justify-center">
+              {children}
             </div>
-          </div>
-        </ScrollArea>
+        // </ScrollArea>
       ) : (
-        <div className="h-full p-4 md:px-8">
+        <div className="h-full p-4">
           {children}
         </div>
       )}

@@ -40,7 +40,7 @@ function AccountIcon() {
     <div className="relative" ref={dropdownRef}>
       <User
         color="#84012A"
-        className="w-8 h-8 p-2 rounded-full cursor-pointer bg-[#FFE7E7]"
+        className="w-8 h-8 p-2 rounded-full cursor-pointer bg-white border-2 border-pink-100"
         onClick={handleShowDropdown}
       />
       {showDropdown && (
