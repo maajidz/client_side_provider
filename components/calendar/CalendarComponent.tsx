@@ -40,6 +40,7 @@ import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "../custom_buttons/buttons/SubmitButton";
+import GhostButton from "../custom_buttons/buttons/GhostButton";
 
 interface EventData {
   id: string;
@@ -386,18 +387,19 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
                               </Button>
                             </div>
                           ))}
-                          <Button
-                            type="button"
-                            onClick={() =>
-                              append({ startTime: "", endTime: "" })
-                            }
-                          >
-                            Add Slot
-                          </Button>
                         </FormItem>
                       )}
                     />
-                    <SubmitButton label="Save Changes" />
+                    <div className="flex flex-row justify-between">
+                      <GhostButton
+                        onClick={() => append({ startTime: "", endTime: "" })}
+                      >
+                        Add Slot
+                      </GhostButton>
+                      <div>
+                        <SubmitButton label="Save Changes" />
+                      </div>
+                    </div>
                   </form>
                 </FormProvider>
               </TabsContent>

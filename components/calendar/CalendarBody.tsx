@@ -96,7 +96,7 @@ export const CalendarBody = () => {
           setProviderAppointment(fetchedAppointments);
         }
       } catch (error) {
-        console.error("Error fetching Appointments:", error);
+        console.log("Error fetching Appointments:", error);
       } finally {
         setLoading(false);
       }
@@ -196,18 +196,6 @@ export const CalendarBody = () => {
           )}
         </TabsContent>
       </Tabs>
-      {/* {providerAvailability  && providerAvailability.data && (
-        <DataTable
-          searchKey="name"
-          columns={columns()}
-          data={Object.values(groupByDate(providerAvailability.data))
-            .flat()
-            .sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime())}
-          pageNo={pageNo}
-          totalPages={totalPages}
-          onPageChange={(newPage: number) => setPageNo(newPage)}
-        />
-      )}  */}
     </>
   );
 };
