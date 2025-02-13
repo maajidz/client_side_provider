@@ -2,7 +2,6 @@ import LoadingButton from "@/components/LoadingButton";
 import { getInjectionsData } from "@/services/injectionsServices";
 import { InjectionsInterface } from "@/types/injectionsInterface";
 import { columns } from "./column";
-// import FilterInjections from "./FilterInjections";
 import { useCallback, useEffect, useState } from "react";
 import { injectionsSearchParams } from "@/schema/injectionsAndVaccinesSchema";
 import { z } from "zod";
@@ -328,10 +327,6 @@ function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
             </div>
           </form>
         </Form>
-        {/* <FilterInjections
-          injectionsData={injectionsData}
-          onHandleSearch={handleSearch}
-        /> */}
       </div>
       <DefaultDataTable
         columns={columns({

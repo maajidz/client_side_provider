@@ -66,6 +66,9 @@ function VaccineOrders({
   // Form State
   const form = useForm<z.infer<typeof addVaccineSchema>>({
     resolver: zodResolver(addVaccineSchema),
+    defaultValues : {
+      
+    }
   });
 
   // Toast State
