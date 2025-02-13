@@ -53,20 +53,20 @@ function UserList({
           </div>
           <div className="flex flex-row items-center opacity-0 group-hover:opacity-100">
             <Button variant="link" className="text-cyan-600 text-xs"><ExternalLink />Dashboard</Button>
-            <DropdownMenu>
-            <Button variant="ghost" className="h-6 pl-3 pr-2 text-cyan-600 text-xs gap-1 hover:bg-sky-100 hover:text-sky-600"><DropdownMenuTrigger className="flex flex-row justify-center items-center">New<ChevronDown className="mt-1" /></DropdownMenuTrigger></Button>
-              <DropdownMenuContent>
-                <DropdownMenuItem className="gap-1 hover:font-semibold hover:bg-sk">Encounter <PlusIcon size={16}/></DropdownMenuItem>
-                <DropdownMenuItem>Quick RX<PlusIcon/></DropdownMenuItem>
-                <DropdownMenuItem>Task<PlusIcon/></DropdownMenuItem>
-                <DropdownMenuItem>Message<PlusIcon/></DropdownMenuItem>
-                <DropdownMenuItem>Sticky<PlusIcon/></DropdownMenuItem>
-                <DropdownMenuItem>Quick Note<PlusIcon/></DropdownMenuItem>
-                <DropdownMenuItem>Invoice<PlusIcon/></DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              <DropdownMenu>
+              <Button variant="ghost" className="relative h-6 pl-3 pr-2 text-cyan-600 text-xs gap-1 hover:bg-sky-100 hover:text-sky-600"><DropdownMenuTrigger className="flex flex-row justify-center items-center">New<ChevronDown className="mt-1" /></DropdownMenuTrigger></Button>
+                <DropdownMenuContent className="absolute top-0 -left-24 font-medium">
+                  <DropdownMenuItem className="group transition-all duration-250"><span className="group-hover:text-sky-600">Encounter</span><PlusIcon className="group-hover:text-sky-600 transition-all scale-50 duration-300 opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-1 group-hover:scale-100" size={16}/></DropdownMenuItem>
+                  <DropdownMenuItem className="group transition-all duration-250"><span className="group-hover:text-sky-600">Quick RX</span><PlusIcon className="group-hover:text-sky-600 transition-all scale-50 duration-300 opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-1 group-hover:scale-100" size={16}/></DropdownMenuItem>
+                  <DropdownMenuItem className="group transition-all duration-250"><span className="group-hover:text-sky-600">Task</span><PlusIcon className="group-hover:text-sky-600 transition-all scale-50 duration-300 opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-1 group-hover:scale-100" size={16}/></DropdownMenuItem>
+                  <DropdownMenuItem className="group transition-all duration-250"><span className="group-hover:text-sky-600">Message</span><PlusIcon className="group-hover:text-sky-600 transition-all scale-50 duration-300 opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-1 group-hover:scale-100" size={16}/></DropdownMenuItem>
+                  <DropdownMenuItem className="group transition-all duration-250"><span className="group-hover:text-sky-600">Sticky</span><PlusIcon className="group-hover:text-sky-600 transition-all scale-50 duration-300 opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-1 group-hover:scale-100" size={16}/></DropdownMenuItem>
+                  <DropdownMenuItem className="group transition-all duration-250"><span className="group-hover:text-sky-600">Quick Note</span><PlusIcon className="group-hover:text-sky-600 transition-all scale-50 duration-300 opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-1 group-hover:scale-100" size={16}/></DropdownMenuItem>
+                  <DropdownMenuItem className="group transition-all duration-250"><span className="group-hover:text-sky-600">Invoice</span><PlusIcon className="group-hover:text-sky-600 transition-all scale-50 duration-300 opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-1 group-hover:scale-100" size={16}/></DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
-        </div>
       ))}
     </div>
   );
