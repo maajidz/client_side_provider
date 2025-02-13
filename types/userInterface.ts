@@ -1,12 +1,16 @@
 import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
 import { AllergenResponseInterfae } from "./allergyInterface";
-import { PastDiagnosesInterface } from "./chartsInterface";
+import { DiagnosesInterface, ImageOrdersData, TransferResponseData, UserChart } from "./chartsInterface";
 import { VitalsInterface } from "./vitalsInterface";
 import { Family } from "./familyHistoryInterface";
 import { SocialHistoryInterface } from "./socialHistoryInterface";
 import { Device } from "./implantedDevices";
 import { EncounterResponse } from "./encounterInterface";
 import { MedicationResultInterface } from "./medicationInterface";
+import { RecallsData } from "./recallsInterface";
+import { SupplementInterface } from "./supplementsInterface";
+import { InjectionsInterface } from "./injectionsInterface";
+import { UpdateProceduresInterface } from "./procedureInterface";
 
 export interface CreateUser {
   user: CreateUserDataInterface;
@@ -38,48 +42,68 @@ export interface PatientDetailsInterface {
 
 export interface PatientDetails {
   id: string;
-  dob: string;
   patientId: string;
+  dob: string;
   height: number;
   heightType: string;
   weight: number;
   weightType: string;
   location: string;
+  wallet: any;
   gender: string;
   createdAt: string;
   updatedAt: string;
   user: User;
   allergies: AllergenResponseInterfae[];
   vitals: VitalsInterface[];
-  wallet: any;
   encounter: EncounterResponse[];
 }
 
-export interface PatientDashboardInterface extends PatientDetails  {
-  id: string
-  diagnoses: PastDiagnosesInterface[];
-  medicationPrescriptions: MedicationPrescription[];
-  medicalHistory: PastMedicalHistoryInterface[];
-  familyHistory: Family[];
-  socialHistories: SocialHistoryInterface[];
+export interface PatientDashboardInterface {
+  id: string;
+  patientId: string;
+  dob: string;
+  height: number;
+  heightType: string;
+  weight: number;
+  weightType: string;
+  location: string;
+  wallet: any;
+  encounter: Encounter;
+  diagnoses: DiagnosesInterface
+  medicationPrescriptions: MedicationPrescription;
+  medicalHistory: PastMedicalHistoryInterface;
+  familyHistory: Family;
+  socialHistories: SocialHistoryInterface;
+  documents: Document;
+  vaccines: Vaccine;
+  injections: Injection;
+  labResults: LabResult;
   implantedDevices: Device[];
-  documents: Document[];
-  vaccines: Vaccine[];
-  injections: Injection[];
-  labResults: LabResult[];
   imageResults: ImageResult[];
+  procedures: UpdateProceduresInterface;
+  injections_order: InjectionsInterface;
+  supplements: SupplementInterface;
+  transfers: TransferResponseData;
+  recalls: RecallsData;
+  imageOrders: ImageOrdersData;
+}
+
+export interface Encounter {
+  id: string;
+  date: string;
+  chart?: UserChart;
 }
 
 export interface MedicationPrescription {
-  id: string
-  directions: string
-  fromDate: string
-  toDate: string
-  status: string
-  providerId: string
-  createdAt: string
-  updatedAt: string
-  medicationName: MedicationResultInterface
+  id: string;
+  directions: string;
+  fromDate: string;
+  toDate: string;
+  status: string;
+  providerId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateUserDetails {
