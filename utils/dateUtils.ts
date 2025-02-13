@@ -28,8 +28,8 @@ export const formatSentAt = (sentAt: string): string => {
     // Format full date (YYYY-MM-DD)
     const dateFormatter = new Intl.DateTimeFormat("en-CA", {
       year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
+      month: "short",
+      day: "numeric",
     });
   
     return `${dateFormatter.format(date)}, ${timeFormatter.format(date)}`;
