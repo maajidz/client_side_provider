@@ -8,6 +8,7 @@ import { navItems } from "@/constants/data";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ArrowUp } from "lucide-react";
 
 export default function Page() {
   const router = useRouter();
@@ -16,9 +17,9 @@ export default function Page() {
       <div className="flex flex-col max-w-5xl items-center gap-3 w-full">
         <div className="flex w-full gap-2 items-end py-8 justify-between">
           <SearchInput />
-          <Button variant="ghost" onClick={()=> router.push("/dashboard/provider/patient/add_patient")} className="hover:bg-cyan-50 hover:text-cyan-600 text-cyan-600 text-sm font-medium flex w-fit items-center gap-1 h-11 data-[state=active]:border-red-500">
+          <Button variant="outline" onClick={()=> router.push("/dashboard/provider/patient/add_patient")} className="h-11 text-gray-600 font-semibold">
             Add Patient
-            <Plus size={20} className="text-cyan-600" />
+            <Plus size={20} className="" />
           </Button>
         </div>
         <div className="grid grid-cols-3 gap-3 justify-center items-center w-full">
@@ -28,8 +29,14 @@ export default function Page() {
               <Link key={index} href={`${item.href}`}>
                 <div className="flex flex-col gap-3 justify-center border border-gray-200 px-6 rounded-lg w-full h-24 text-gray-900 hover:bg-pink-50 hover:border-pink-200 hover:text-[#84012a] hover:shadow-sm hover:shadow-pink-100 transition-all">
                   {Icon && <Icon className="" />}
-                  <div className="text-md font-semibold">
-                    {item.title}
+                  <div className="flex justify-between">
+                    <div className="text-md font-semibold">
+                      {item.title}
+                    </div>
+                    <div className="flex rounded-3xl bg-green-100 w-fit text-green-700 flex-row items-center font-semibold text-[.7rem] pl-2 pr-3 py-1 gap-1">
+                      <ArrowUp size={14} strokeWidth={3} className=" text-green-500" />
+                      5 new
+                    </div>
                   </div>
                 </div>
               </Link>

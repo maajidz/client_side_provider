@@ -23,10 +23,6 @@ const plusJakartaSans = localFont({
   src: "./fonts/PlusJakartaSans-VariableFont_wght.ttf",
   variable: "--font-outfit",
 })
-const plusJakartaSansItalics = localFont({
-  src: "./fonts/PlusJakartaSans-Italic-VariableFont_wght.ttf",
-  variable: "--font-outfit",
-})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -41,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${outfit.variable} ${plusJakartaSans.variable} ${plusJakartaSansItalics.variable} antialiased`}
+        className={`${outfit.variable} ${plusJakartaSans.variable} antialiased`}
       >
         <ReduxProvider>
           <Toaster />

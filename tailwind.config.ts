@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+		fontFamily: {
+			outfit: "var(--font-outfit)", // For Outfit
+			jakarta: "var(--font-outfit)", // For PlusJakartaSans
+		  },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
