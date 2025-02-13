@@ -7,15 +7,18 @@ import { useCallback, useEffect, useState } from "react";
 import { vaccineSearchParams } from "@/schema/injectionsAndVaccinesSchema";
 import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { showToast } from "@/utils/utils";
+import { useToast } from "@/hooks/use-toast";
 
-function VaccinesClient({refreshTrigger}: {refreshTrigger: number}) {
+function VaccinesClient({ refreshTrigger }: { refreshTrigger: number }) {
   // Data State
   const [vaccinesData, setVaccinesData] = useState<VaccinesInterface[]>([]);
 
   // Pagination State
   const itemsPerPage = 10;
-  const [pageNo, setPageNo] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pageNo, setPageNo] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const { toast } = useToast();
 
   // Filters State
   const [filters, setFilters] = useState({
@@ -84,7 +87,16 @@ function VaccinesClient({refreshTrigger}: {refreshTrigger: number}) {
         />
       </div>
       <DefaultDataTable
-        columns={columns()}
+        columns={columns({
+          setLoading,
+          showToast: () =>
+            showToast({
+              toast,
+              type: "success",
+              message: "Deleted Successfully",
+            }),
+            fetchInjectionsData: () => fetchInjectionsData(),
+        })}
         data={vaccinesData}
         pageNo={pageNo}
         totalPages={totalPages}

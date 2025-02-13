@@ -15,12 +15,12 @@ const handleInjectionsDelete = async (
     await deleteInjectionOrder({ injectionId: injectionId });
     showToast({
       type: "success",
-      message: "Task deleted successfully",
+      message: "Injection order deleted successfully",
     });
     fetchInjectionList();
   } catch (error) {
     console.error("Error:", error);
-    showToast({ type: "error", message: "Failed to delete task" });
+    showToast({ type: "error", message: "Failed to delete Injection order" });
   } finally {
     setLoading(false);
   }
