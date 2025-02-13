@@ -26,7 +26,7 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
-const ViewReferralOut = () => {
+const ViewReferralOut = ({ refreshTrigger }: { refreshTrigger: number }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<TransferResponseData[]>([]);
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ const ViewReferralOut = () => {
         });
         if (response) {
           setResultList(response);
-          setTotalPages(response.length / 10);
+          setTotalPages(Math.ceil(response.length / 10));
         }
         setLoading(false);
       }
@@ -57,7 +57,7 @@ const ViewReferralOut = () => {
 
   useEffect(() => {
     fetchReferralsList();
-  }, [fetchReferralsList]);
+  }, [fetchReferralsList, refreshTrigger]);
 
   if (loading) {
     return <LoadingButton />;

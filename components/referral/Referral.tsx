@@ -16,14 +16,34 @@ const Referral = () => {
     useState<boolean>(false);
   const [isReferralInDialogOpen, setIsReferralInDialogOpen] =
     useState<boolean>(false);
+  const [referralInRefreshTrigger, setReferralInRefreshTrigger] =
+    useState<number>(0);
+  const [referralOutRefreshTrigger, setReferralOutRefreshTrigger] =
+    useState<number>(0);
+
+  const handleReferralOutDialogClose = () => {
+    setIsReferralOutDialogOpen(false);
+    setReferralOutRefreshTrigger((prev) => prev + 1);
+  };
+
+  const handleReferralInDialogClose = () => {
+    setIsReferralInDialogOpen(false);
+    setReferralInRefreshTrigger((prev) => prev + 1);
+  };
 
   const patientReferralTab = [
     {
       value: "referralOut",
       label: "Referral Out",
       component: ViewReferralOut,
+      refreshTrigger: referralOutRefreshTrigger,
     },
-    { value: "referralIn", label: "Referral In", component: ViewReferralIn },
+    {
+      value: "referralIn",
+      label: "Referral In",
+      component: ViewReferralIn,
+      refreshTrigger: referralInRefreshTrigger,
+    },
   ];
 
   return (
@@ -61,21 +81,17 @@ const Referral = () => {
               </DefaultButton>
             )}
             <ReferralOutDialog
-              onClose={() => {
-                setIsReferralOutDialogOpen(false);
-              }}
+              onClose={handleReferralOutDialogClose}
               isOpen={isReferralOutDialogOpen}
             />
             <ReferralInDialog
-              onClose={() => {
-                setIsReferralInDialogOpen(false);
-              }}
+              onClose={handleReferralInDialogClose}
               isOpen={isReferralInDialogOpen}
             />
           </div>
-          {patientReferralTab.map(({ value, component: Component }) => (
+          {patientReferralTab.map(({ value, component: Component, refreshTrigger }) => (
             <TabsContent value={value} key={value}>
-              {Component ? <Component /> : value}
+              {Component ? <Component refreshTrigger={refreshTrigger} /> : value}
             </TabsContent>
           ))}
         </Tabs>
