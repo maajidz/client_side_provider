@@ -23,6 +23,7 @@ export interface CreateEncounterResponseInterface {
 export interface UserDetails {
   id: string;
   dob: string;
+  patientId: string;
   height: number;
   heightType: string;
   weight: number;
