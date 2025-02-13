@@ -1,4 +1,3 @@
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import LoadingButton from "@/components/LoadingButton";
@@ -8,8 +7,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -39,17 +37,24 @@ import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-function InjectionOrders() {
+function InjectionOrders({
+  onClose,
+  isOpen,
+}: {
+  onClose: () => void;
+  isOpen: boolean;
+}) {
   // To toggle patient input
   const params = useParams();
   const { userDetailsId } = params;
-  const userDetailsIdString = Array.isArray(userDetailsId) ? userDetailsId[0] : userDetailsId;
+  const userDetailsIdString = Array.isArray(userDetailsId)
+    ? userDetailsId[0]
+    : userDetailsId;
 
   // Data State
   const [patientData, setPatientData] = useState<UserData[]>([]);
@@ -60,7 +65,7 @@ function InjectionOrders() {
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
 
   // Dialog State
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
 
   // Loading State
   const [loading, setLoading] = useState({ get: false, post: false });
@@ -72,12 +77,6 @@ function InjectionOrders() {
 
   // Toast State
   const { toast } = useToast();
-
-  // Handle Dialog State
-  const handleIsDialogOpen = (status: boolean) => {
-    setIsDialogOpen(status);
-    form.reset();
-  };
 
   // Fetch User Data
   const fetchUserData = useCallback(async () => {
@@ -148,14 +147,13 @@ function InjectionOrders() {
     }
   }, [userDetailsIdString, form]);
 
-
   // POST Injection
   const onSubmit = async (formData: z.infer<typeof addInjectionSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
 
     const finalData: CreateInjectionType = {
       ...formData,
-      userDetailsId: userDetailsIdString ?? formData?.userDetailsId ?? '',
+      userDetailsId: userDetailsIdString ?? formData?.userDetailsId ?? "",
       dosage_quantity: formData.dosage.dosage_quantity,
       dosage_unit: formData.dosage.dosage_unit,
       period_number: formData.period.period_number,
@@ -170,7 +168,7 @@ function InjectionOrders() {
         type: "success",
         message: "Injection order created successfully",
       });
-      setIsDialogOpen(false);
+      onClose();
     } catch (err) {
       if (err instanceof Error) {
         showToast({
@@ -207,13 +205,7 @@ function InjectionOrders() {
   );
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={handleIsDialogOpen}>
-      <DialogTrigger asChild>
-        <DefaultButton>
-          <PlusIcon />
-          <div>Injection Order</div>
-        </DefaultButton>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>
           <DialogTitle>Add Injection Order</DialogTitle>
@@ -524,7 +516,7 @@ function InjectionOrders() {
                     <div className="flex justify-end gap-2 w-fit">
                       <Button
                         variant="outline"
-                        onClick={() => handleIsDialogOpen(false)}
+                        onClick={onClose}
                       >
                         Cancel
                       </Button>

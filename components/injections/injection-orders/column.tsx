@@ -7,7 +7,8 @@ import { Trash2Icon } from "lucide-react";
 const handleInjectionsDelete = async (
   injectionId: string,
   setLoading: (loading: boolean) => void,
-  showToast: (args: { type: string; message: string }) => void
+  showToast: (args: { type: string; message: string }) => void,
+  fetchInjectionList: () => void
 ) => {
   setLoading(true);
   try {
@@ -16,6 +17,7 @@ const handleInjectionsDelete = async (
       type: "success",
       message: "Task deleted successfully",
     });
+    fetchInjectionList();
   } catch (error) {
     console.error("Error:", error);
     showToast({ type: "error", message: "Failed to delete task" });
@@ -90,7 +92,7 @@ export const columns = ({
       <Button
         variant={"ghost"}
         onClick={() => {
-          handleInjectionsDelete(row.original.id, setLoading, showToast);
+          handleInjectionsDelete(row.original.id, setLoading, showToast, fetchInjectionList);
           fetchInjectionList();
         }}
       >

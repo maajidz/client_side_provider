@@ -1,5 +1,4 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { getInjectionsData } from "@/services/injectionsServices";
 import { InjectionsInterface } from "@/types/injectionsInterface";
 import { columns } from "./column";
@@ -9,54 +8,58 @@ import { injectionsSearchParams } from "@/schema/injectionsAndVaccinesSchema";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
-
-function InjectionsClient() {
-  // Data State
+function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
   const [injectionsData, setInjectionsData] = useState<InjectionsInterface[]>(
     []
   );
-
-  // Pagination State
+  const [pageNo, setPageNo] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [loading, setLoading] = useState(false);
   const itemsPerPage = 10;
-  const [pageNo, setPageNo] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  // Filters State
+  const { toast } = useToast();
   const [filters, setFilters] = useState({
     providerId: "",
     userDetailsId: "",
     status: "",
   });
 
-  // Loading State
-  const [loading, setLoading] = useState(false);
-
-  const { toast } = useToast();
-
   // GET Injections Data
-  const fetchInjectionsData = useCallback(async () => {
-    setLoading(true);
+  const fetchInjectionsData = useCallback(
+    async (
+      page: number,
+      status?: string,
+      providerId?: string,
+      userDetailsId?: string
+    ) => {
+      setLoading(true);
 
-    try {
-      const response = await getInjectionsData({
-        providerId: filters.providerId,
-        userDetailsId: filters.userDetailsId,
-        status: filters.status,
-        page: pageNo,
-        limit: itemsPerPage,
-      });
+      try {
+        const response = await getInjectionsData({
+          providerId: providerId || filters.providerId,
+          userDetailsId: userDetailsId || filters.userDetailsId,
+          status: status || filters.status,
+          page: page,
+          limit: itemsPerPage,
+        });
 
-      if (response) {
-        setInjectionsData(response.data);
-        setTotalPages(Math.ceil(response.total / itemsPerPage));
+        if (response) {
+          setInjectionsData(response.data);
+          setTotalPages(Math.ceil(response.total / itemsPerPage));
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [pageNo, filters.userDetailsId, filters.providerId, filters.status]);
+    },
+    [
+      filters.userDetailsId,
+      filters.providerId,
+      filters.status
+    ]
+  );
 
   const handleSearch = (
     filterValues: z.infer<typeof injectionsSearchParams>
@@ -79,8 +82,8 @@ function InjectionsClient() {
 
   // Effects
   useEffect(() => {
-    fetchInjectionsData();
-  }, [fetchInjectionsData]);
+    fetchInjectionsData(pageNo, filters.status, filters.providerId, filters.userDetailsId);
+  }, [filters, fetchInjectionsData, refreshTrigger, pageNo]);
 
   if (loading) return <LoadingButton />;
 
@@ -92,8 +95,7 @@ function InjectionsClient() {
           onHandleSearch={handleSearch}
         />
       </div>
-      <DataTable
-        searchKey="Injections"
+      <DefaultDataTable
         columns={columns({
           setLoading,
           showToast: () =>
@@ -102,7 +104,7 @@ function InjectionsClient() {
               type: "success",
               message: "Deleted Successfully",
             }),
-          fetchInjectionList: () => fetchInjectionsData(),
+          fetchInjectionList: () => fetchInjectionsData(pageNo),
         })}
         data={injectionsData}
         pageNo={pageNo}
