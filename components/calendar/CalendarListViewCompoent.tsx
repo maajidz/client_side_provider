@@ -12,29 +12,14 @@ import { updateAppointmentStatus } from "@/services/providerAppointments";
 import { User2Icon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { ProviderAppointmentsData } from "@/types/appointments";
+import { formatDate } from "date-fns";
+import GhostButton from "../custom_buttons/buttons/GhostButton";
 
 export const CalendarListViewComponent = ({
-  patientName,
-  patientID,
-  providerName,
-  startTime,
-  endTime,
-  dob,
-  phoneNumber,
-  vistType,
-  lastVist,
-  status,
+  appointment,
 }: {
-  patientName: string;
-  patientID: string;
-  providerName: string;
-  startTime: string;
-  endTime: string;
-  dob: string;
-  phoneNumber: string;
-  vistType: string;
-  lastVist: string;
-  status: string;
+  appointment: ProviderAppointmentsData;
 }) => {
   // 8d17ab-purple cde1cf-confirmed b0ce0c-consu
   const [statusValue, setStatusValue] = useState(status);
@@ -60,7 +45,10 @@ export const CalendarListViewComponent = ({
       status: newStatus,
     };
     try {
-      await updateAppointmentStatus({ appointmentID: patientID, requestData });
+      await updateAppointmentStatus({
+        appointmentID: appointment.id,
+        requestData,
+      });
     } catch (error) {
       console.log("Failed to update status:", error);
     }
@@ -68,18 +56,18 @@ export const CalendarListViewComponent = ({
   return (
     <div className="flex flex-col gap-2 border-2 rounded-lg px-4 py-3">
       <div className="flex justify-between font-semibold">
-        <div className="text-lg font-semibold">
-          {patientName}{" "}
+        <div className="text-lg font-semibold capitalize">
+          {appointment.patientName}{" "}
           <span className="text-[#666]">
-            [{patientID.slice(0, 5).toUpperCase()}]
+            [{appointment.id.slice(0, 5).toUpperCase()}]
           </span>
         </div>
         <div className="flex gap-3">
           <div className="text-sm text-[#444] flex items-center gap-2">
-            <span>{providerName}</span>
+            <span>{"providerName"}</span>
             <span className="text-[#555] text-base">|</span>
             <span>
-              {startTime} - {endTime}
+              {appointment.timeOfAppointment} - {appointment.timeOfAppointment}
             </span>
           </div>
         </div>
@@ -100,15 +88,20 @@ export const CalendarListViewComponent = ({
               <span>Status</span>
             </div>
             <div className="flex flex-col gap-2 font-semibold">
-              <span>{"Weight Loss continue with glp"}</span>
+              <span>{appointment.reason}</span>
               <div className="flex flex-row items-center gap-4">
-                <span>{dob}</span>
+                <span>
+                  {formatDate(appointment.userDetails.dob, "MM/dd/yyyy")}
+                </span>
                 <span className="flex items-center gap-1">
                   <MobileIcon />
-                  <span>{phoneNumber}</span>
+                  <span>{appointment.patientPhoneNumber}</span>
                 </span>
               </div>
-              <Select onValueChange={handleStatusChange}>
+              <Select
+                onValueChange={handleStatusChange}
+                value={appointment.status}
+              >
                 <SelectTrigger
                   className={`gap-2 w-fit h-[28px] font-semibold border-none ${getTriggerColor()}`}
                 >
@@ -128,16 +121,27 @@ export const CalendarListViewComponent = ({
         </div>
         <div className="flex gap-4 justify-start items-start">
           <div className="flex flex-col gap-2 text-gray-500">
-            <span>Visit Type</span>
-            <span>Visit On</span>
-            <span>Encounter</span>
-          </div>
-          <div className="flex flex-col gap-2 font-semibold">
-            <span>{vistType}</span>
-            <span>{lastVist}</span>
-            <Link href="" className="font-medium text-blue-600">
-              Start
-            </Link>
+            <div className="flex gap-4 justify-start items-start">
+              <div className="text-gray-500">Meeting Link</div>
+              <GhostButton>{appointment.meetingLink}</GhostButton>
+            </div>
+            <div className="flex gap-4 justify-start items-start">
+              <div className="text-gray-500">Visit On</div>
+              <div className="font-semibold">
+                {appointment.dateOfAppointment}
+              </div>
+            </div>
+            <div className="flex gap-4 justify-start items-start">
+              <div className="text-gray-500">Encounter</div>
+              {appointment.encounter?.id && (
+                <Link
+                  href={`/encounter/${appointment.encounter?.id}`}
+                  className="font-medium text-blue-600"
+                >
+                  Start
+                </Link>
+              )}
+            </div>
           </div>
           {/* <LabelComponent label="Vist Type" value={vistType} />
           <LabelComponent label="Vist On" value={lastVist} />
@@ -150,12 +154,3 @@ export const CalendarListViewComponent = ({
     </div>
   );
 };
-
-// const LabelComponent = ({ label, value }: { label: string; value: string }) => {
-//   return (
-//     <div className="flex gap-3 text-sm">
-//       <span className="font-medium text-[#4b5563]">{label}</span>
-//       <span className="font-medium">{value}</span>
-//     </div>
-//   );
-// };

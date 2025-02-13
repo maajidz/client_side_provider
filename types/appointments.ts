@@ -1,3 +1,5 @@
+import { UserDetails } from "./chartsInterface";
+
 export interface ProviderAppointmentsInterface {
   data: ProviderAppointmentsData[];
   total: number;
@@ -6,12 +8,24 @@ export interface ProviderAppointmentsInterface {
 }
 
 export interface ProviderAppointmentsData {
-  id: string;
-  patientName: string;
-  dateOfAppointment: string;
-  timeOfAppointment: string;
-  status: string;
-  encounter: Encounter;
+  id: string
+  patientName: string
+  patientEmail: string
+  patientPhoneNumber: string
+  additionalText: string
+  additionalGuestInfo?: AdditionalGuestInfo[]
+  dateOfAppointment: string
+  timeOfAppointment: string
+  endtimeOfAppointment?: string
+  timeZone: string
+  status: string
+  providerId: string
+  meetingLink: string
+  reason: string
+  createdAt: string
+  updatedAt: string
+  encounter: Encounter
+  userDetails: UserDetails
 }
 
 export interface Encounter {
