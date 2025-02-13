@@ -44,6 +44,7 @@ import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { EncounterInterface } from "@/types/encounterInterface";
+import formStyles from "@/components/formStyles.module.css";
 
 const ReferralInDialog = ({
   onClose,
@@ -159,7 +160,7 @@ const ReferralInDialog = ({
       // referringToProviderID: values.referralTo,
       referringToProviderID: "3abdd291-9a25-4390-8558-0059734de538",
       referringFromProviderID: providerDetails.providerId,
-      referralType: "",
+      referralType: "Internal",
       referralReason: values.referralReason,
       priority: values.priority,
       notes: values.referralNotes ?? "",
@@ -167,16 +168,27 @@ const ReferralInDialog = ({
       diagnoses: selectedDiagnoses.map((diagnosis) => diagnosis.id),
       insuranceId: "",
       attachments: [""],
-      userDetailsID: "",
+      userDetailsID: values.userDetailsId,
     };
     setLoading(true);
     try {
       await createTransfer({ requestData: requestData });
+      showToast({
+        toast,
+        type: "success",
+        message: "Created Referral successfully!",
+      });
       onClose();
     } catch (e) {
       console.log("Error:", e);
+      showToast({
+        toast,
+        type: "error",
+        message: "Failed to create Referral.",
+      });
     } finally {
       setLoading(false);
+      form.reset();
       onClose();
     }
   };
@@ -201,21 +213,20 @@ const ReferralInDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-5">
-              <div className="flex justify-between">
-                <div>Add Referral Out</div>
+            <div className={formStyles.formBody}>
+              <div className="flex justify-end">
                 <div className="flex gap-3">
                   <SubmitButton label="Save" disabled={loading} />
                   {/* <Button variant={'outline'}>Preview</Button>  */}
                 </div>
               </div>
-              <div className="flex flex-col">
-                <div className="flex w-full">
+              <div className="flex flex-col border rounded-lg p-3 gap-5">
+                <div className="flex gap-5 w-full">
                   <FormField
                     control={form.control}
                     name="userDetailsId"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col border p-3 w-full">
+                      <FormItem className={`${formStyles.formFilterItem}`}>
                         <FormControl>
                           <div className="relative">
                             <Input
@@ -261,7 +272,7 @@ const ReferralInDialog = ({
                     control={form.control}
                     name="referralTo"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col border p-3 w-full">
+                      <FormItem className={`${formStyles.formFilterItem}`}>
                         <FormLabel>Referral To</FormLabel>
                         <FormControl>
                           <Input placeholder="Enter Provider name" {...field} />
@@ -274,7 +285,7 @@ const ReferralInDialog = ({
                     control={form.control}
                     name="referralFrom"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col border p-3 w-full">
+                      <FormItem className={`${formStyles.formFilterItem}`}>
                         <FormLabel>Referral From</FormLabel>
                         <FormControl>
                           <Select
@@ -301,93 +312,92 @@ const ReferralInDialog = ({
                     )}
                   />
                 </div>
-                <div className="flex flex-col border p-2 w-full">
+                <FormField
+                  control={form.control}
+                  name="referralReason"
+                  render={({ field }) => (
+                    <FormItem className={`${formStyles.formFilterItem}`}>
+                      <FormLabel>Referral Reason</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter reason" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex w-full gap-5">
                   <FormField
                     control={form.control}
-                    name="referralReason"
+                    name="referralDate"
                     render={({ field }) => (
-                      <FormItem className="flex gap-2">
-                        <FormLabel>Referral Reason</FormLabel>
+                      <FormItem className={`${formStyles.formItem}`}>
+                        <FormLabel>Referral Date</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter reason" {...field} />
+                          <Input type="date" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <div className="flex w-full justify-between">
-                    <FormField
-                      control={form.control}
-                      name="referralDate"
-                      render={({ field }) => (
-                        <FormItem className="flex gap-3 items-center">
-                          <FormLabel>Referral Date</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="priority"
-                      render={({ field }) => (
-                        <FormItem className="flex gap-3 items-center">
-                          <FormLabel>Priority</FormLabel>
-                          <FormControl>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select priority" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="Normal">Normal</SelectItem>
-                                <SelectItem value="High">High</SelectItem>
-                                <SelectItem value="Low">Low</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="relatedEncounter"
-                      render={({ field }) => (
-                        <FormItem className="flex gap-3 items-center">
-                          <FormLabel>Related Encounter:</FormLabel>
-                          <FormControl>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select encounter" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {chartList?.response?.map((chart) => (
-                                  <SelectItem key={chart?.id} value={chart?.id}>
-                                    {chart?.createdAt.split("T")[0]} {chart?.id}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="priority"
+                    render={({ field }) => (
+                      <FormItem className={`${formStyles.formFilterItem}`}>
+                        <FormLabel>Priority</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select priority" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Normal">Normal</SelectItem>
+                              <SelectItem value="High">High</SelectItem>
+                              <SelectItem value="Low">Low</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="relatedEncounter"
+                    render={({ field }) => (
+                      <FormItem className={`${formStyles.formFilterItem}`}>
+                        <FormLabel>Related Encounter:</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select encounter" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {chartList?.response?.map((chart) => (
+                                <SelectItem key={chart?.id} value={chart?.id}>
+                                  {chart?.createdAt.split("T")[0]} {chart?.id}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
+
                 <FormField
                   control={form.control}
                   name="referralNotes"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className={`${formStyles.formFilterItem}`}>
                       <FormLabel>Referral Notes</FormLabel>
                       <FormControl>
                         <Textarea {...field} />
@@ -399,7 +409,7 @@ const ReferralInDialog = ({
                   )}
                 />
                 <div className="flex w-full">
-                  <div className="flex w-full flex-col gap-3  border p-3 ">
+                  <div className={`${formStyles.formFilterItem}`}>
                     <div className="flex w-full items-center justify-between">
                       <div>Diagnoses</div>
                       <Dialog>

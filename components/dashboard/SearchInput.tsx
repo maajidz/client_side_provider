@@ -58,7 +58,7 @@ function UserList({ users }: { users: UserData[] }) {
         >
           <div className="flex gap-3 items-center w-full">
             <div className="flex bg-pink-50 text-[#63293b] text-lg font-medium rounded-full h-14 w-14 justify-center items-center">
-              <span>
+              <span className="uppercase">
                 {user.user.firstName?.charAt(0)}
                 {user.user.lastName?.charAt(0)}
               </span>
