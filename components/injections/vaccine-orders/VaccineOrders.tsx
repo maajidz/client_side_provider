@@ -1,4 +1,3 @@
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { Button } from "@/components/ui/button";
@@ -7,8 +6,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -35,20 +33,24 @@ import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-function VaccineOrders() {
+function VaccineOrders({
+  onClose,
+  isOpen,
+}: {
+  onClose: () => void;
+  isOpen: boolean;
+}) {
   // To toggle patient input
   const params = useParams();
   const { userDetailsId } = params;
   const userDetailsIdString = Array.isArray(userDetailsId)
     ? userDetailsId[0]
     : userDetailsId;
-
 
   // Data State
   const [patientData, setPatientData] = useState<UserData[]>([]);
@@ -58,25 +60,19 @@ function VaccineOrders() {
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
 
-  // Dialog State
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   // Loading State
   const [loading, setLoading] = useState({ get: false, post: false });
 
   // Form State
   const form = useForm<z.infer<typeof addVaccineSchema>>({
     resolver: zodResolver(addVaccineSchema),
+    defaultValues : {
+      
+    }
   });
 
   // Toast State
   const { toast } = useToast();
-
-  // Handle Dialog State
-  const handleIsDialogOpen = (status: boolean) => {
-    setIsDialogOpen(status);
-    form.reset();
-  };
 
   // Fetch User Data
   const fetchUserData = useCallback(async () => {
@@ -158,7 +154,6 @@ function VaccineOrders() {
         type: "success",
         message: "Vaccine order created successfully",
       });
-      setIsDialogOpen(false);
     } catch (err) {
       if (err instanceof Error) {
         showToast({
@@ -176,6 +171,7 @@ function VaccineOrders() {
     } finally {
       setLoading((prev) => ({ ...prev, post: false }));
       form.reset();
+      onClose();
     }
   };
 
@@ -195,13 +191,7 @@ function VaccineOrders() {
   );
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={handleIsDialogOpen}>
-      <DialogTrigger asChild>
-        <DefaultButton>
-          <PlusIcon />
-          <div>Vaccine Order</div>
-        </DefaultButton>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>
           <DialogTitle>Add Vaccine Order</DialogTitle>
@@ -322,7 +312,7 @@ function VaccineOrders() {
                 <div className="flex justify-end gap-2 w-fit">
                   <Button
                     variant="outline"
-                    onClick={() => handleIsDialogOpen(false)}
+                    onClick={onClose}
                   >
                     Cancel
                   </Button>

@@ -1,5 +1,4 @@
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { getVaccinesData } from "@/services/injectionsServices";
 import { VaccinesInterface } from "@/types/injectionsInterface";
 import { columns } from "./column";
@@ -7,15 +6,19 @@ import FilterVaccines from "./FilterVaccines";
 import { useCallback, useEffect, useState } from "react";
 import { vaccineSearchParams } from "@/schema/injectionsAndVaccinesSchema";
 import { z } from "zod";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { showToast } from "@/utils/utils";
+import { useToast } from "@/hooks/use-toast";
 
-function VaccinesClient() {
+function VaccinesClient({ refreshTrigger }: { refreshTrigger: number }) {
   // Data State
   const [vaccinesData, setVaccinesData] = useState<VaccinesInterface[]>([]);
 
   // Pagination State
   const itemsPerPage = 10;
-  const [pageNo, setPageNo] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pageNo, setPageNo] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const { toast } = useToast();
 
   // Filters State
   const [filters, setFilters] = useState({
@@ -71,7 +74,7 @@ function VaccinesClient() {
   // Effects
   useEffect(() => {
     fetchInjectionsData();
-  }, [fetchInjectionsData]);
+  }, [fetchInjectionsData, refreshTrigger]);
 
   if (loading) return <LoadingButton />;
 
@@ -83,9 +86,17 @@ function VaccinesClient() {
           onHandleSearch={handleSearch}
         />
       </div>
-      <DataTable
-        searchKey="Injections"
-        columns={columns()}
+      <DefaultDataTable
+        columns={columns({
+          setLoading,
+          showToast: () =>
+            showToast({
+              toast,
+              type: "success",
+              message: "Deleted Successfully",
+            }),
+            fetchInjectionsData: () => fetchInjectionsData(),
+        })}
         data={vaccinesData}
         pageNo={pageNo}
         totalPages={totalPages}

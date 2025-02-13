@@ -27,13 +27,19 @@ export const injectionsSearchParams = z.object({
   status: z.string().optional(),
 });
 
-export const addVaccineSchema = addInjectionSchema
-  .pick({
-    userDetailsId: true,
-    providerId: true,
-  })
-  .extend({
-    vaccine_name: z.string().min(1, "Vaccine name is required"),
-  });
+// export const addVaccineSchema = addInjectionSchema
+//   .pick({
+//     userDetailsId: true,
+//     providerId: true,
+//   })
+//   .extend({
+//     vaccine_name: z.string().min(1, "Vaccine name is required"),
+//   });
+
+export const addVaccineSchema = z.object({
+  providerId: z.string({required_error: "Select a provider"}),
+  userDetailsId: z.string().optional(),
+  vaccine_name: z.string({required_error: "Vaccine name is required"})
+});
 
 export const vaccineSearchParams = injectionsSearchParams;

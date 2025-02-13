@@ -120,34 +120,24 @@ function UserList({ users }: { users: UserData[] }) {
               <DropdownMenuContent>
                 {links.map((link) =>
                   link.label === "Sticky" ? (
-                    <div key={link.label}>
-                      <DropdownMenuItem
-                        className="gap-1 hover:font-semibold hover:bg-sk"
-                        onClick={openStickyDialog}
-                      >
-                        {link.label} <PlusIcon size={16} />
-                      </DropdownMenuItem>
-                      <StickyNotesDialog
-                        chartId=""
-                        onClose={closeStickyDialog}
-                        isOpen={isStickyDialogOpen}
-                      />
-                    </div>
+                    <DropdownMenuItem
+                      key={link.label}
+                      className="gap-1 hover:font-semibold hover:bg-sk"
+                      onClick={openStickyDialog}
+                    >
+                      {link.label} <PlusIcon size={16} />
+                    </DropdownMenuItem>
                   ) : link.label === "Message" ? (
-                    <div key={link.label}>
-                      <DropdownMenuItem
-                        className="gap-1 hover:font-semibold hover:bg-sk"
-                        onClick={openMessageDialog}
-                      >
-                        {link.label} <PlusIcon size={16} />
-                      </DropdownMenuItem>
-                      <MessagesDialog
-                        onClose={closeMessageDialog}
-                        isOpen={isMessageDialogOpen}
-                      />
-                    </div>
+                    <DropdownMenuItem
+                      key={link.label}
+                      className="gap-1 hover:font-semibold hover:bg-sk"
+                      onClick={openMessageDialog}
+                    >
+                      {link.label} <PlusIcon size={16} />
+                    </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem
+                      key={link.label}
                       className="gap-1 hover:font-semibold hover:bg-sk"
                       onClick={() =>
                         router.push(
@@ -164,6 +154,15 @@ function UserList({ users }: { users: UserData[] }) {
           </div>
         </div>
       ))}
+      <StickyNotesDialog
+        chartId=""
+        onClose={closeStickyDialog}
+        isOpen={isStickyDialogOpen}
+      />
+      <MessagesDialog
+        onClose={closeMessageDialog}
+        isOpen={isMessageDialogOpen}
+      />
     </div>
   );
 }

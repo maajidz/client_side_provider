@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
   FormField,
@@ -37,8 +36,9 @@ import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
+import { DefaultDataTable } from "../custom_buttons/table/DefaultDataTable";
 
-const ViewTasks = () => {
+const ViewTasks = ({refreshTrigger}: {refreshTrigger: number}) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
   const [loading, setLoading] = useState(true);
@@ -147,7 +147,13 @@ const ViewTasks = () => {
 
   useEffect(() => {
     fetchTasksList(page);
-  }, [filters, fetchTasksList, page]);
+  }, [filters, fetchTasksList, page, refreshTrigger]);
+
+  const handleEditDialogClose = () => {
+    setIsDialogOpen(false);
+    setEditData(null);
+    fetchTasksList(page);
+  };
 
   if (loading) {
     return <LoadingButton />;
@@ -176,6 +182,7 @@ const ViewTasks = () => {
                         <SelectValue placeholder="Choose Category" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
                         {categoryOptions.map((category) => (
                           <SelectItem
                             key={category.value}
@@ -300,8 +307,7 @@ const ViewTasks = () => {
         {/* Results Table */}
         <div className="space-y-3">
           {resultList?.data && (
-            <DataTable
-              searchKey="id"
+            <DefaultDataTable
               columns={columns({
                 setEditData,
                 setIsCommentDialogOpen: () => {},
@@ -325,9 +331,7 @@ const ViewTasks = () => {
 
           <TasksDialog
             tasksData={editData}
-            onClose={() => {
-              setIsDialogOpen(false);
-            }}
+            onClose={handleEditDialogClose}
             isOpen={isDialogOpen}
           />
         </div>
