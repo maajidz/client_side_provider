@@ -24,13 +24,13 @@ const BasicInformation = ({
         <div className="flex flex-col gap-6">
           <div>
             <div className={styles.labelText}>First Name</div>
-            <div className={styles.valueText}>
+            <div className={`${styles.valueText} capitalize`}>
               {patientDetails?.user?.firstName ? patientDetails?.user?.firstName: 'N/A'}
             </div>
           </div>
           <div>
             <div className={styles.labelText}>Last Name</div>
-            <div className={styles.valueText}>
+            <div className={`${styles.valueText} capitalize`}>
               {patientDetails?.user?.lastName? patientDetails?.user?.lastName : 'N/A'}
             </div>
           </div>

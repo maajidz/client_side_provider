@@ -64,7 +64,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
   return (
     <div className="flex flex-row w-full items-center">
       <div className={styles.infoContainer}>
-        <div className={`${styles.infoBox} bg-[#EDF9F3]`}>
+        <div className={`${styles.infoBox} bg-[#EDF9F3] capitalize`}>
           {response &&
           response.user &&
           (response.user.firstName || response.user.lastName)

@@ -24,7 +24,7 @@ export const columns = (
       const user = row.getValue("user") as UserData["user"];
       return (
         <div
-          className="cursor-pointer"
+          className="cursor-pointer capitalize"
           onClick={() => handleRowClick(row.original.id)}
         >
           {user?.firstName} {user?.lastName}

@@ -144,7 +144,7 @@ const PatientQuestionnaires = ({
                         <div className={styles.detailsLabel}>
                           Q. {result.questionText}
                         </div>
-                        <div className={`${styles.detailsValue} pl-5`}>
+                        <div className={`${styles.detailsValue} pl-5 capitalize`}>
                           {result.answerText}
                         </div>
                       </div>
