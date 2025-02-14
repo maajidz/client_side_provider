@@ -79,8 +79,8 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   function onSubmit(values: z.infer<typeof injectionsSearchParams>) {
     setFilters((prev) => ({
       ...prev,
-      status: values.status || "",
-      providerId: values.providerId || "",
+      status: values.status ==="all" ? "" : values.status || "",
+      providerId: values.providerId ==="all" ? "" : values.providerId || "",
     }));
 
     setPage(1);
@@ -141,6 +141,7 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
                 <FormLabel>Provider</FormLabel>
                 <FormControl>
                   <Select
+                  defaultValue={field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
                       const selected = ownersList.find(
@@ -153,6 +154,7 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
                       <SelectValue placeholder="Select Owner" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
                       {ownersList.map((owner) => (
                         <SelectItem
                           key={owner.id}
@@ -183,6 +185,7 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
                       <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
                       {status.map((status) => (
                         <SelectItem key={status.value} value={status.value}>
                           {status.label}
