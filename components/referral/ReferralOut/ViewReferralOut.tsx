@@ -25,17 +25,65 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import formStyles from "@/components/formStyles.module.css";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { fetchProviderListDetails } from "@/services/registerServices";
 
 const ViewReferralOut = ({ refreshTrigger }: { refreshTrigger: number }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<TransferResponseData[]>([]);
+  const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [filters, setFilters] = useState({
+    referralFrom: "",
+    requestStatus: "",
+    responseStatus: "",
+  });
 
   const form = useForm<z.infer<typeof referralOutSearchParams>>({
     resolver: zodResolver(referralOutSearchParams),
+    defaultValues: {
+      referralFrom: "",
+      requestStatus: "",
+      responseStatus: "",
+    },
   });
+
+  const fetchOwnersList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+
+      if (response) {
+        setOwnersList(response.data);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOwnersList();
+  }, [fetchOwnersList]);
+
+  function onSubmit(values: z.infer<typeof referralOutSearchParams>) {
+    setFilters((prev) => ({
+      ...prev,
+      referralFrom:
+        values.referralFrom === "all" ? "" : values.referralFrom || "",
+      requestStatus:
+        values.requestStatus === "all" ? "" : values.requestStatus || "",
+      responseStatus:
+        values.responseStatus === "all" ? "" : values.responseStatus || "",
+    }));
+
+    setPage(1);
+  }
 
   const fetchReferralsList = useCallback(async () => {
     try {
@@ -43,6 +91,7 @@ const ViewReferralOut = ({ refreshTrigger }: { refreshTrigger: number }) => {
         const response = await getTransferData({
           id: providerDetails.providerId,
           idType: "Referring from ProviderID",
+          status: filters.responseStatus ?? "",
         });
         if (response) {
           setResultList(response);
@@ -53,7 +102,7 @@ const ViewReferralOut = ({ refreshTrigger }: { refreshTrigger: number }) => {
     } catch (e) {
       console.log("Error", e);
     }
-  }, [providerDetails]);
+  }, [providerDetails, filters]);
 
   useEffect(() => {
     fetchReferralsList();
@@ -67,9 +116,12 @@ const ViewReferralOut = ({ refreshTrigger }: { refreshTrigger: number }) => {
     <>
       <div className="py-5">
         <Form {...form}>
-          <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className={formStyles.formFilterBody}
+          >
             {/* Referral From Filter */}
-            <FormField
+            {/* <FormField
               control={form.control}
               name="referralFrom"
               render={({ field }) => (
@@ -85,14 +137,14 @@ const ViewReferralOut = ({ refreshTrigger }: { refreshTrigger: number }) => {
                   <FormMessage className="text-red-500" />
                 </FormItem>
               )}
-            />
+            /> */}
 
             {/* Referral To Filter */}
             <FormField
               control={form.control}
               name="referralTo"
               render={({ field }) => (
-                <FormItem className="flex items-center">
+                <FormItem className={formStyles.formFilterItem}>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
@@ -121,7 +173,7 @@ const ViewReferralOut = ({ refreshTrigger }: { refreshTrigger: number }) => {
                 const referralTo = form.watch("referralTo") ?? "";
 
                 return (
-                  <FormItem className="flex items-center">
+                  <FormItem className={formStyles.formFilterItem}>
                     <FormControl>
                       <Select
                         value={field.value}
@@ -134,7 +186,14 @@ const ViewReferralOut = ({ refreshTrigger }: { refreshTrigger: number }) => {
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="janeDoe">Jane</SelectItem>
+                          {ownersList.map((owner) => (
+                            <SelectItem
+                              key={owner.id}
+                              value={owner.providerDetails?.id || owner.id}
+                            >
+                              {owner.firstName} {owner.lastName}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -149,7 +208,7 @@ const ViewReferralOut = ({ refreshTrigger }: { refreshTrigger: number }) => {
               control={form.control}
               name="requestStatus"
               render={({ field }) => (
-                <FormItem className="flex items-center">
+                <FormItem className={formStyles.formFilterItem}>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
@@ -172,7 +231,7 @@ const ViewReferralOut = ({ refreshTrigger }: { refreshTrigger: number }) => {
               control={form.control}
               name="responseStatus"
               render={({ field }) => (
-                <FormItem className="flex items-center">
+                <FormItem className={formStyles.formFilterItem}>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>

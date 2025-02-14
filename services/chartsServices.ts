@@ -594,6 +594,8 @@ export const getTransferData = async ({
   id,
   idType,
   referralType,
+  statusType,
+  status
 }: {
   id: string;
   idType:
@@ -602,10 +604,15 @@ export const getTransferData = async ({
     | "Referring to ProviderID"
     | "Referring from ProviderID";
   referralType?: "external" | "internal";
+  statusType?: "responseStatus" | "requestStatus";
+  status?: string;
 }) => {
   const queryParams = new URLSearchParams();
   if (idType) queryParams.append("idType", idType);
   if (referralType) queryParams.append("referralType", referralType);
+  if (statusType) queryParams.append("statusType", statusType);
+  if (status) queryParams.append("status", status);
+
   const response = await ApiFetch({
     method: "GET",
     url: `/provider/transfer/${id}?${queryParams}`,
