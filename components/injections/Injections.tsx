@@ -1,15 +1,48 @@
 "use client";
 
 import PageContainer from "@/components/layout/page-container";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import InjectionsClient from "./injection-orders/client";
 import InjectionOrders from "./injection-orders/InjectionOrders";
 import VaccinesClient from "./vaccine-orders/client";
 import VaccineOrders from "./vaccine-orders/VaccineOrders";
 import React, { useState } from "react";
+import CustomTabsTrigger from "../custom_buttons/buttons/CustomTabsTrigger";
+import DefaultButton from "../custom_buttons/buttons/DefaultButton";
+import { PlusIcon } from "lucide-react";
 
 function Injections() {
   const [activeTab, setActiveTab] = useState("injectionOrders");
+  const [isInjectionDialogOpen, setIsInjectionDialogOpen] = useState(false);
+  const [isVaccineDialogOpen, setIsVaccineDialogOpen] = useState(false);
+  const [injectionRefreshTrigger, setInjectionRefreshTrigger] =
+    useState<number>(0);
+  const [vaccineRefreshTrigger, setVaccineRefreshTrigger] = useState<number>(0);
+
+  const handleInjectionDialogClose = () => {
+    setIsInjectionDialogOpen(false);
+    setInjectionRefreshTrigger((prev) => prev + 1);
+  };
+
+  const handleVaccineDialogClose = () => {
+    setIsVaccineDialogOpen(false);
+    setVaccineRefreshTrigger((prev) => prev + 1);
+  };
+
+  const injectionsTab = [
+    {
+      value: "injectionOrders",
+      label: "Injection Orders",
+      component: InjectionsClient,
+      refreshTrigger: injectionRefreshTrigger,
+    },
+    {
+      value: "vaccineOrders",
+      label: "Vaccine Orders",
+      component: VaccinesClient,
+      refreshTrigger: vaccineRefreshTrigger,
+    },
+  ];
 
   return (
     <PageContainer scrollable={true}>
@@ -18,27 +51,55 @@ function Injections() {
           defaultValue={activeTab}
           onValueChange={(value) => setActiveTab(value)}
         >
-          <div className="flex items-center justify-between gap-10 border-b border-gray-300 pb-2">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="injectionOrders">
-                Injection Orders
-              </TabsTrigger>
-              <TabsTrigger value="vaccineOrders">Vaccine Orders</TabsTrigger>
+          <div className="flex items-center justify-between gap-10 pb-2">
+            <TabsList className="flex gap-3 w-full">
+              {injectionsTab.map((tab) => (
+                <CustomTabsTrigger value={tab.value} key={tab.value}>
+                  {tab.label}
+                </CustomTabsTrigger>
+              ))}
             </TabsList>
             {activeTab === "injectionOrders" ? (
-              <InjectionOrders />
+              <>
+                <DefaultButton
+                  onClick={() => {
+                    setIsInjectionDialogOpen(true);
+                  }}
+                >
+                  <PlusIcon />
+                  <div>Injection Order</div>
+                </DefaultButton>
+                <InjectionOrders
+                  isOpen={isInjectionDialogOpen}
+                  onClose={handleInjectionDialogClose}
+                />
+              </>
             ) : (
-              <VaccineOrders />
+              <>
+                <DefaultButton
+                  onClick={() => {
+                    setIsVaccineDialogOpen(true);
+                  }}
+                >
+                  <PlusIcon />
+                  <div>Vaccine Order</div>
+                </DefaultButton>
+                <VaccineOrders
+                  isOpen={isVaccineDialogOpen}
+                  onClose={handleVaccineDialogClose}
+                />
+              </>
             )}
           </div>
-            <>
-              <TabsContent value="injectionOrders">
-                <InjectionsClient />
-              </TabsContent>
-              <TabsContent value="vaccineOrders">
-                <VaccinesClient />
-              </TabsContent>
-            </>
+          <>
+            {injectionsTab.map(
+              ({ value, component: Component, refreshTrigger }) => (
+                <TabsContent value={value} key={value}>
+                  <Component refreshTrigger={refreshTrigger} />
+                </TabsContent>
+              )
+            )}
+          </>
         </Tabs>
       </div>
     </PageContainer>

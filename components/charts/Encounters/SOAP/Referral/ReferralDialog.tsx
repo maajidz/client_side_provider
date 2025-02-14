@@ -267,7 +267,7 @@ const ReferralDialog = ({
                               <DialogTitle>Diagnoses</DialogTitle>
                               <DiagnosesClient
                                 onSelectionChange={handleSelectedDiagnoses}
-                                chartID={patientDetails.chart.id}
+                                chartID={patientDetails?.chart?.id}
                               />
                             </DialogHeader>
                           </DialogContent>

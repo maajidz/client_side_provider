@@ -12,6 +12,12 @@ const Tasks = () => {
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
     null
   );
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setRefreshTrigger((prev) => prev + 1);
+  };
 
   return (
     <PageContainer scrollable={true}>
@@ -28,13 +34,11 @@ const Tasks = () => {
           </DefaultButton>
           <TasksDialog
             tasksData={editData}
-            onClose={() => {
-              setIsDialogOpen(false);
-            }}
+            onClose={handleDialogClose}
             isOpen={isDialogOpen}
           />
         </div>
-        <ViewTasks />
+        <ViewTasks refreshTrigger={refreshTrigger}/>
       </div>
     </PageContainer>
   );
