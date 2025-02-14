@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/ui/data-table";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
@@ -52,8 +52,7 @@ function PastMedicalHistoryClient({
   if (loading) return <LoadingButton />;
 
   return (
-    <DataTable
-      searchKey="past"
+    <DefaultDataTable
       columns={columns()}
       data={data}
       pageNo={page}

@@ -52,7 +52,7 @@ export const columns = ({
       <div className="flex flex-col gap-1 cursor-pointer">
         <div>{row.getValue("drug_name")}</div>
         <div>
-          {row.original.dosages.map((dosage, index) => (
+          {row?.original?.dosages?.map((dosage, index) => (
             <div key={dosage?.id}>
               {index === 0 ? <></> : <span>,</span>}
               <span>

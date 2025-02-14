@@ -153,16 +153,16 @@ function AllergiesAndMedications({
               >
                 <div className="font-semibold">{prescription.drug_name}</div>
                 <>
-                  {prescription.dosages.map((dosage) => (
-                    <div key={dosage.id}>
-                      Dosage: {dosage.duration_quantity} {dosage.dosage_unit}{" "}
+                  {prescription?.dosages?.map((dosage) => (
+                    <div key={dosage?.id}>
+                      Dosage: {dosage?.duration_quantity} {dosage.dosage_unit}{" "}
                       {dosage.route}
                     </div>
                   ))}
                 </>
                 <p>
                   Frequency:{" "}
-                  {prescription.dosages.map((dosage) => dosage.frequency)}
+                  {prescription?.dosages?.map((dosage) => dosage.frequency)}
                 </p>
                 <p>Days of Supply: {prescription.days_of_supply}</p>
               </div>

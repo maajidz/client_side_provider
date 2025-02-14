@@ -1,6 +1,6 @@
 "use client";
 
-import { DataTable } from "@/components/ui/data-table";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
@@ -68,8 +68,7 @@ export const ChartsClient = () => {
       <Separator />
 
       {chartList?.response && (
-        <DataTable
-          searchKey="name"
+        <DefaultDataTable
           columns={columns(handleRowClick)}
           data={chartList.response}
           pageNo={page}

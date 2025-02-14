@@ -1,6 +1,5 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Dialog,
   DialogContent,
@@ -38,6 +37,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import formStyles from "@/components/formStyles.module.css";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface PharmacyDialogInterface {
   isOpen: boolean;
@@ -288,8 +288,7 @@ function PharmacyDialog({
               <p>No pharmacies found.</p>
             ) : (
               <div className="mt-6">
-                <DataTable
-                  searchKey="pharmacy"
+                <DefaultDataTable
                   columns={columns(handleAdd)}
                   data={paginatedData}
                   pageNo={currentPage}

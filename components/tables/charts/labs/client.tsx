@@ -1,6 +1,6 @@
 "use client";
 
-import { DataTable } from "@/components/ui/data-table";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { columns, LabResultsInterface } from "./columns";
 import { useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
@@ -54,8 +54,7 @@ export const LabResultsClient = () => {
   return (
     <>
       {userResponse && (
-        <DataTable
-          searchKey="labResults"
+        <DefaultDataTable
           columns={columns()}
           data={mockData}
           pageNo={pageNo}
