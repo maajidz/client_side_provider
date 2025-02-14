@@ -144,7 +144,6 @@ function DocumentsClient() {
   return (
     <div className="space-y-4">
       <FilterDocuments
-        documentsData={documentsData}
         userInfo={userInfo}
         providersData={providersList}
         onSearch={handleSearch}

@@ -65,6 +65,9 @@ export const getImageResults = async ({
 }) => {
   const queryParams = new URLSearchParams();
 
+  if (userDetailsId) {
+    queryParams.append("userDetailsId", userDetailsId);
+  }
   if (page) {
     queryParams.append("page", page.toString());
   }
@@ -77,7 +80,7 @@ export const getImageResults = async ({
 
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/images/results/${providerId}/${userDetailsId}/?${queryParams}`,
+    url: `/provider/images/results/${providerId}?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },

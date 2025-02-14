@@ -75,10 +75,10 @@ const ViewTasks = ({refreshTrigger}: {refreshTrigger: number}) => {
     setFilters((prev) => ({
       ...prev,
 
-      status: values.status || "",
-      category: values.category || "",
-      priority: values.priority || "",
-      userDetailsId: values.userDetailsId || "",
+      status: values.status ==="all" ? "" : values.status || "",
+      category: values.category ==="all" ? "" : values.category || "",
+      priority: values.priority ==="all" ? "" : values.priority || "",
+      userDetailsId: values.userDetailsId ==="all" ? "" : values.userDetailsId || "",
     }));
 
     setPage(1);
@@ -213,6 +213,7 @@ const ViewTasks = ({refreshTrigger}: {refreshTrigger: number}) => {
                         <SelectValue placeholder="Select Status" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
                         {status.map((status) => (
                           <SelectItem key={status.value} value={status.value}>
                             {status.label}
@@ -240,6 +241,7 @@ const ViewTasks = ({refreshTrigger}: {refreshTrigger: number}) => {
                         <SelectValue placeholder="Choose Priority" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
                         {priority.map((priority) => (
                           <SelectItem value={priority} key={priority}>
                             {priority}

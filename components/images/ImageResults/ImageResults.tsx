@@ -26,7 +26,8 @@ import LoadingButton from "@/components/LoadingButton";
 import { getImageResults } from "@/services/imageResultServices";
 import { ImageResultResponseInterface } from "@/types/imageResults";
 import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { fetchUserDataResponse } from "@/services/userServices";
+import { UserData } from "@/types/userInterface";
 
 function ImageResults() {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -34,6 +35,13 @@ function ImageResults() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  // Patient State
+  const [patientData, setPatientData] = useState<UserData[]>([]);
+
+  // Search State
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof filterImageResultsSchema>>({
     resolver: zodResolver(filterImageResultsSchema),
@@ -43,9 +51,7 @@ function ImageResults() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof filterImageResultsSchema>) {
-    console.log(values);
-  }
+  const filters = form.watch();
 
   const fetchImageResultsList = useCallback(
     async (page: number) => {
@@ -55,9 +61,10 @@ function ImageResults() {
         if (providerDetails) {
           const response = await getImageResults({
             providerId: providerDetails.providerId,
-            userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
-            limit: limit,
-            page: page,
+            userDetailsId: filters.name,
+            status: filters.status === "all" ? "" : filters.status,
+            limit,
+            page,
           });
           if (response) {
             setResultList(response);
@@ -71,12 +78,34 @@ function ImageResults() {
         setLoading(false);
       }
     },
-    [providerDetails]
+    [filters.name, filters.status, providerDetails]
   );
+
+  // GET Patients' Data
+  const fetchPatientData = useCallback(async (currentPage: number) => {
+    setLoading(true);
+    try {
+      const response = await fetchUserDataResponse({ pageNo: currentPage });
+      if (response) {
+        setPatientData(response.data);
+      }
+    } catch (err) {
+      console.error("Error fetching user data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchImageResultsList(page);
-  }, [page, fetchImageResultsList]);
+    fetchPatientData(page);
+  }, [page, fetchImageResultsList, fetchPatientData]);
+
+  const filteredPatients = patientData.filter((patient) =>
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   if (loading) {
     return <LoadingButton />;
@@ -85,10 +114,7 @@ function ImageResults() {
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
-        >
+        <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           <FormField
             control={form.control}
             name="status"
@@ -104,6 +130,7 @@ function ImageResults() {
                       <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
                       <SelectItem value="signed">Signed</SelectItem>
                       <SelectItem value="unsigned">Unsigned</SelectItem>
                     </SelectContent>
@@ -121,16 +148,51 @@ function ImageResults() {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Search Patient" {...field} />
+                  <div className="relative">
+                    <Input
+                      placeholder="Search Patient "
+                      value={searchTerm}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setSearchTerm(value);
+                        setVisibleSearchList(true);
+
+                        if (!value) {
+                          field.onChange("");
+                        }
+                      }}
+                    />
+                    {searchTerm && visibleSearchList && (
+                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                        {filteredPatients.length > 0 ? (
+                          filteredPatients.map((patient) => (
+                            <div
+                              key={patient.id}
+                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                              onClick={() => {
+                                field.onChange(patient.id);
+                                setSearchTerm(
+                                  `${patient.user.firstName} ${patient.user.lastName}`
+                                );
+                                setVisibleSearchList(false);
+                              }}
+                            >
+                              {`${patient.user.firstName} ${patient.user.lastName}`}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="px-4 py-2 text-gray-500">
+                            No results found
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          <div className="flex items-end">
-            <SubmitButton label="Search" />
-          </div>
         </form>
       </Form>
       <div className="py-5">

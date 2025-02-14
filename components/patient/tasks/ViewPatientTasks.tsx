@@ -77,9 +77,9 @@ const ViewPatientTasks = ({
     setFilters((prev) => ({
       ...prev,
 
-      status: values.status || "",
-      category: values.category || "",
-      priority: values.priority || "",
+      status: values.status ==="all" ? "" : values.status || "",
+      category: values.category ==="all" ? "" : values.category || "",
+      priority: values.priority ==="all" ? "" : values.priority || "",
     }));
 
     setPage(1);
@@ -163,6 +163,7 @@ const ViewPatientTasks = ({
                         <SelectValue placeholder="Choose Category" />
                       </SelectTrigger>
                       <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
                         {categoryOptions.map((category) => (
                           <SelectItem
                             key={category.value}
@@ -193,6 +194,7 @@ const ViewPatientTasks = ({
                         <SelectValue placeholder="Select Status" />
                       </SelectTrigger>
                       <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
                         {status.map((status) => (
                           <SelectItem key={status.value} value={status.value}>
                             {status.label}
@@ -220,6 +222,7 @@ const ViewPatientTasks = ({
                         <SelectValue placeholder="Choose Priority" />
                       </SelectTrigger>
                       <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
                         {priority.map((priority) => (
                           <SelectItem value={priority} key={priority}>
                             {priority}

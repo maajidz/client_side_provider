@@ -115,13 +115,10 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
 
 
   function onSubmit(values: z.infer<typeof vaccineSearchParams>) {
-    // if (values.providerId === "all") {
-    //   filterValues.providerId = "";
-    // }
 
     setFilters({
-      providerId: values.providerId || "",
-      status: values.status || "",
+      providerId: values.providerId ==="all" ? "" : values.providerId || "",
+      status: values.status ==="all" ? "" : values.status || "",
     });
     setPageNo(1);
   }
