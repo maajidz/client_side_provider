@@ -50,7 +50,7 @@ export const getDocumentsData = async ({
   if (status) queryParams.append("status", status);
 
   const response = await ApiFetch({
-    url: `/provider/documents/all/${userDetailsId}?${queryParams.toString()}`,
+    url: `/provider/documents/all/${userDetailsId}?${queryParams}`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",

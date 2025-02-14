@@ -1,6 +1,5 @@
 "use client";
 
-import { DocumentsInterface } from "@/types/documentsInterface";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,14 +25,12 @@ import { searchParamsForDocumentsSchema } from "@/schema/documentsSchema";
 import { useState } from "react";
 
 interface FilterDocumentsProps {
-  documentsData: DocumentsInterface[];
   userInfo: UserData[];
   providersData: FetchProviderList[];
   onSearch: (data: z.infer<typeof searchParamsForDocumentsSchema>) => void;
 }
 
 function FilterDocuments({
-  documentsData,
   userInfo,
   providersData,
   onSearch,
@@ -185,15 +182,12 @@ function FilterDocuments({
                     <SelectItem value="all" className="cursor-pointer">
                       All
                     </SelectItem>
-                    {documentsData.map((document) => (
-                      <SelectItem
-                        key={document.documentId}
-                        value={document.status}
-                        className="cursor-pointer"
-                      >
-                        {document.status.toUpperCase()}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="completed" className="cursor-pointer">
+                      Completed
+                    </SelectItem>
+                    <SelectItem value="pending" className="cursor-pointer">
+                      Pending
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
