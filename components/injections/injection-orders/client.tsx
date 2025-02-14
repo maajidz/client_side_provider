@@ -31,6 +31,14 @@ import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
 
+export const status = [
+  { value: "Pending", label: "Pending" },
+  { value: "Inprogress", label: "In Progress" },
+  { value: "Completed", label: "Completed" },
+  { value: "Cancelled", label: "Cancelled" },
+];
+
+
 function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
   const [injectionsData, setInjectionsData] = useState<InjectionsInterface[]>(
     []
@@ -166,18 +174,11 @@ function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
   }, [filters, fetchInjectionsData, refreshTrigger, pageNo]);
 
   function onSubmit(values: z.infer<typeof injectionsSearchParams>) {
-    if (values.userDetailsId === "all") {
-      form.setValue("userDetailsId", "");
-    }
-
-    if (values.providerId === "all") {
-      form.setValue("providerId", "");
-    }
-
     setFilters({
-      providerId: values.providerId || "",
-      userDetailsId: values.userDetailsId || "",
-      status: values.status || "",
+      providerId: values.providerId === "all" ? "" : values.providerId || "",
+      userDetailsId:
+        values.userDetailsId === "all" ? "" : values.userDetailsId || "",
+      status: values.status === "all" ? "" : values.status || "",
     });
     setPageNo(1);
   }
@@ -199,7 +200,10 @@ function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
               render={({ field }) => (
                 <FormItem className="flex items-center">
                   <FormControl>
-                    <Select defaultValue={field.value} onValueChange={field.onChange}>
+                    <Select
+                      defaultValue={field.value}
+                      onValueChange={field.onChange}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Filter by Ordered by" />
                       </SelectTrigger>
@@ -239,7 +243,10 @@ function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
               render={({ field }) => (
                 <FormItem className="flex items-center">
                   <FormControl>
-                    <Select defaultValue={field.value} onValueChange={field.onChange}>
+                    <Select
+                      defaultValue={field.value}
+                      onValueChange={field.onChange}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Filter by Status" />
                       </SelectTrigger>
@@ -247,19 +254,9 @@ function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
                         <SelectItem value="all" className="cursor-pointer">
                           All
                         </SelectItem>
-                        {Array.from(
-                          new Set(
-                            injectionsData?.map((injection) =>
-                              injection?.status.toLowerCase()
-                            )
-                          )
-                        ).map((status) => (
-                          <SelectItem
-                            key={status}
-                            value={status}
-                            className="cursor-pointer"
-                          >
-                            {status}
+                        {status.map((status) => (
+                          <SelectItem key={status.value} value={status.value}>
+                            {status.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
