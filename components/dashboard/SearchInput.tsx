@@ -106,55 +106,45 @@ function UserList({ users }: { users: UserData[] }) {
               <ExternalLink />
               Dashboard
             </Button>
-              <DropdownMenu>
-                  <DropdownMenuTrigger className="relative flex font-medium flex-row justify-center items-center text-sky-600 text-xs hover:bg-sky-100 px-2 rounded-md">
-                    New
-                    <ChevronDown className="mt-1" size={20} />
-                  </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {links.map((link) =>
-                    link.label === "Sticky" ? (
-                      <div className="flex flex-1 w-full" key={link.label}>
-                        <DropdownMenuItem
-                          className=" font-medium group hover:first:text-sky-600  hover:text-sky-600 flex flex-1 w-full"
-                          onClick={openStickyDialog}
-                        >
-                          {link.label} <PlusIcon className="text-sky-600  group-hover:ml-2  transition-all opacity-0 group-hover:opacity-100" size={16} />
-                        </DropdownMenuItem>
-                        <StickyNotesDialog
-                          chartId=""
-                          onClose={closeStickyDialog}
-                          isOpen={isStickyDialogOpen}
-                        />
-                      </div>
-                    ) : link.label === "Message" ? (
-                      <div className="flex flex-1 w-full" key={link.label}>
-                        <DropdownMenuItem
-                          className=" font-medium group hover:first:text-sky-600 hover:text-sky-600  flex flex-1 w-full"
-                          onClick={openMessageDialog}
-                        >
-                          {link.label} <PlusIcon  className="text-sky-600 group-hover:ml-2 transition-all opacity-0 group-hover:opacity-100" size={16} />
-                        </DropdownMenuItem>
-                        <MessagesDialog
-                          onClose={closeMessageDialog}
-                          isOpen={isMessageDialogOpen}
-                        />
-                      </div>
-                    ) : (
-                      <DropdownMenuItem
-                        className=" font-medium group hover:first:text-sky-600 hover:text-sky-600  flex flex-1 w-full"
-                        onClick={() =>
-                          router.push(
-                            `dashboard/provider/patient/${user.user.userDetailsId}/${link.href}`
-                          )
-                        }
-                      >
-                        {link.label} <PlusIcon  className="text-sky-600 group-hover:ml-2 transition-all opacity-0 group-hover:opacity-100" size={16} />
-                      </DropdownMenuItem>
-                    )
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+            <DropdownMenu>
+                <DropdownMenuTrigger className="relative flex font-medium flex-row justify-center items-center text-sky-600 text-xs hover:bg-sky-100 px-2 rounded-md">
+                  New
+                  <ChevronDown className="mt-1" />
+                </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {links.map((link) =>
+                  link.label === "Sticky" ? (
+                    <DropdownMenuItem
+                      key={link.label}
+                      className="font-medium group hover:first:text-sky-600 hover:text-sky-600  flex flex-1 w-full"
+                      onClick={openStickyDialog}
+                    >
+                      {link.label} <PlusIcon className="text-sky-600  group-hover:ml-2  transition-all opacity-0 group-hover:opacity-100" size={16} />
+                    </DropdownMenuItem>
+                  ) : link.label === "Message" ? (
+                    <DropdownMenuItem
+                      key={link.label}
+                      className="font-medium group hover:first:text-sky-600 hover:text-sky-600  flex flex-1 w-full"
+                      onClick={openMessageDialog}
+                    >
+                      {link.label} <PlusIcon className="text-sky-600  group-hover:ml-2  transition-all opacity-0 group-hover:opacity-100" size={16} />
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      key={link.label}
+                      className="font-medium group hover:first:text-sky-600 hover:text-sky-600  flex flex-1 w-full"
+                      onClick={() =>
+                        router.push(
+                          `dashboard/provider/patient/${user.user.userDetailsId}/${link.href}`
+                        )
+                      }
+                    >
+                      {link.label} <PlusIcon className="text-sky-600  group-hover:ml-2  transition-all opacity-0 group-hover:opacity-100" size={16} />
+                    </DropdownMenuItem>
+                  )
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       ))}
