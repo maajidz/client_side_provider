@@ -1,5 +1,6 @@
 "use client";
 
+import { DefaultDataTable } from "../custom_buttons/table/DefaultDataTable";
 import LoadingButton from "@/components/LoadingButton";
 import { getDocumentsData } from "@/services/documentsServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
@@ -9,7 +10,6 @@ import { DocumentsInterface } from "@/types/documentsInterface";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
-import { DataTable } from "../ui/data-table";
 import { useToast } from "@/hooks/use-toast";
 import { columns } from "./column";
 import FilterDocuments from "./FilterDocuments";
@@ -153,8 +153,7 @@ function DocumentsClient() {
         <LoadingButton />
       ) : (
         <>
-          <DataTable
-            searchKey="Documents"
+          <DefaultDataTable
             columns={columns()}
             data={paginatedData}
             pageNo={pageNo}

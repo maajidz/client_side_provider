@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/ui/data-table";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { Heading } from "@/components/ui/heading";
 import { columns, PrescriptionTableInterface } from "./column";
 import FilterPrescriptions from "./FilterPrescriptions";
@@ -83,8 +83,7 @@ function PrescriptionsClient() {
           onFilter={setPrescription}
         />
       </div>
-      <DataTable
-        searchKey="prescriptions"
+      <DefaultDataTable
         columns={columns()}
         data={prescriptionData}
         pageNo={1}

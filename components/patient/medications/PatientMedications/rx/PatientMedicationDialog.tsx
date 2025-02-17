@@ -57,7 +57,7 @@ const PatientMedicationDialog = ({
 
   // Chart State
   const chartId = useSelector((state: RootState) => state.user.chartId);
-
+  
   const form = useForm<z.infer<typeof prescriptionSchema>>({
     resolver: zodResolver(prescriptionSchema),
     defaultValues: {
@@ -116,7 +116,7 @@ const PatientMedicationDialog = ({
       };
       try {
         setLoading(true);
-        await createPrescriptions({ requestData: requestData });
+        await createPrescriptions({ requestData });
         setShowPrescriptionForm(!showPrescriptionForm);
         showToast({ toast, type: "success", message: "Saved!" });
       } catch (e) {
@@ -492,7 +492,7 @@ const PatientMedicationDialog = ({
                             Earliest Fill Date
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="" {...field} />
+                            <Input type="date" placeholder="" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

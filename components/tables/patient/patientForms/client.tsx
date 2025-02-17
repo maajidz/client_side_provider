@@ -1,5 +1,5 @@
 'use client';
-import { DataTable } from '@/components/ui/data-table';
+import { DefaultDataTable } from '@/components/custom_buttons/table/DefaultDataTable';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { columns } from './columns';
@@ -65,8 +65,7 @@ export const PatientFormClient = ({ userDetailsId }: { userDetailsId: string }) 
         </SelectContent>
       </Select>
       {response?.data && (
-        <DataTable
-          searchKey="name"
+        <DefaultDataTable
           columns={columns()}
           data={response?.data}
           pageNo={pageNo}

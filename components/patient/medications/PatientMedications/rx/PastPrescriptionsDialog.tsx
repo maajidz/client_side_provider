@@ -97,7 +97,7 @@ const PastPrescriptionsDialog = ({
                 Past Rx
               </span>
               <div className="flex flex-col gap-3">
-                {response && response?.prescriptions.length > 0 ? (
+                {response && response?.prescriptions?.length > 0 ? (
                   response.prescriptions.map((prescription) => (
                     <div
                       key={prescription.id}

@@ -6,7 +6,7 @@ import FamilyHistory from "./family-history/FamilyHistory";
 import PastMedicalHistory from "./past-medical-history/PastMedicalHistory";
 import ProceduresSurgeriesAndHospitalization from "./procedures/ProceduresSurgeriesAndHospitalization";
 import SocialHistory from "./social-history/SocialHistory";
-import ImplantedDevices from "./implanted_devices/ImplantedDevices";
+// import ImplantedDevices from "./implanted_devices/ImplantedDevices";
 
 interface MedicalHistoryProps {
   userDetailsId: string;
@@ -20,7 +20,7 @@ function MedicalHistory({ userDetailsId }: MedicalHistoryProps) {
         <PastMedicalHistory userDetailsId={userDetailsId} />
         <FamilyHistory userDetailsId={userDetailsId} />
         <SocialHistory userDetailsId={userDetailsId} />
-        <ImplantedDevices userDetailsId={userDetailsId} />
+        {/* <ImplantedDevices userDetailsId={userDetailsId} /> */}
       </div>
     </ScrollArea>
   );

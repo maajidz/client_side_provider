@@ -1,4 +1,3 @@
-import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
   FormControl,
@@ -27,6 +26,7 @@ import { z } from "zod";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 function ImageOrders() {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -159,8 +159,7 @@ function ImageOrders() {
         </Form>
         <div className="py-5">
           {orderList?.data && (
-            <DataTable
-              searchKey="id"
+            <DefaultDataTable
               columns={columns()}
               data={orderList?.data}
               pageNo={page}

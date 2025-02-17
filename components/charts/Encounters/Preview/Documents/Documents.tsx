@@ -1,5 +1,5 @@
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import LoadingButton from "@/components/LoadingButton";
-import { DataTable } from "@/components/ui/data-table";
 import { getDocumentsData } from "@/services/documentsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { DocumentsInterface } from "@/types/documentsInterface";
@@ -54,8 +54,7 @@ function Documents({ patientDetails }: { patientDetails: UserEncounterData }) {
     <>
       <div className="py-5">
         {paginatedData && (
-          <DataTable
-            searchKey="Documents"
+          <DefaultDataTable
             columns={columns()}
             data={paginatedData}
             pageNo={page}

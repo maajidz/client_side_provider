@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/ui/data-table";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import {
   Form,
   FormControl,
@@ -157,8 +157,7 @@ function LabOrders() {
         </Form>
         <div className="py-5">
           {orderList?.data && (
-            <DataTable
-              searchKey="id"
+            <DefaultDataTable
               columns={columns()}
               data={orderList?.data}
               pageNo={page}

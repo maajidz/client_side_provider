@@ -1,6 +1,6 @@
 'use client';
 
-import { DataTable } from '@/components/ui/data-table';
+import { DefaultDataTable } from '@/components/custom_buttons/table/DefaultDataTable';
 import { columns } from './columns'
 import { useEffect, useState } from 'react';
 import LoadingButton from '@/components/LoadingButton';
@@ -61,8 +61,7 @@ export const DiagnosesClient = ({ onSelectionChange, chartID }: {
   return (
     <>
       {prevDiagnosis && (
-        <DataTable
-          searchKey="name"
+        <DefaultDataTable
           columns={columns(handleRowSelection)}
           data={prevDiagnosis}
           pageNo={1}

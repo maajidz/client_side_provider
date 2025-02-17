@@ -1,6 +1,6 @@
-import { DataTable } from "@/components/ui/data-table";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { Heading } from "@/components/ui/heading";
-import { columns, eRxTableInterface, } from "./columns";
+import { columns, eRxTableInterface } from "./columns";
 
 const eRxData: eRxTableInterface[] = [
   {
@@ -61,8 +61,7 @@ function ERxClient() {
         description="A list of the electronic transmission of drug prescriptions directly to a pharmacy"
       />
 
-      <DataTable
-        searchKey="eRxSent"
+      <DefaultDataTable
         columns={columns()}
         data={eRxData}
         pageNo={1}

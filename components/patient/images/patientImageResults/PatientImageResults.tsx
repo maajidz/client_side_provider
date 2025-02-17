@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/ui/data-table";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import {
   Form,
   FormField,
@@ -118,8 +118,7 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
       </Form>
       <div className="py-5">
         {resultList?.data && (
-          <DataTable
-            searchKey="id"
+          <DefaultDataTable
             columns={columns()}
             data={resultList?.data}
             pageNo={page}

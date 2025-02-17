@@ -1,6 +1,7 @@
+import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 import PageContainer from "@/components/layout/page-container";
 import { Heading } from "@/components/ui/heading";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import PrescriptionsClient from "./prescriptions/client";
 import ERxClient from "./erx/client";
 import { useState } from "react";
@@ -17,11 +18,13 @@ function Prescription() {
         >
           <div className="flex items-center justify-between border-b border-gray-300 pb-2">
             <TabsList>
-              <TabsTrigger value="prescriptions">Prescriptions</TabsTrigger>
-              <TabsTrigger value="pharmacyRequests">
+              <CustomTabsTrigger value="prescriptions">
+                Prescriptions
+              </CustomTabsTrigger>
+              <CustomTabsTrigger value="pharmacyRequests">
                 Pharmacy Requests
-              </TabsTrigger>
-              <TabsTrigger value="eRxSent">eRx Sent</TabsTrigger>
+              </CustomTabsTrigger>
+              <CustomTabsTrigger value="eRxSent">eRx Sent</CustomTabsTrigger>
             </TabsList>
           </div>
           <TabsContent value="prescriptions">
@@ -40,4 +43,3 @@ function Prescription() {
 }
 
 export default Prescription;
-
