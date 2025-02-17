@@ -68,11 +68,11 @@ const RxPatientDetailsSection = ({
           <>
             <div className="capitalize text-gray-800">
               <span className="font-semibold">Name:</span>{" "}
-              {patientDetails?.user.firstName} {patientDetails?.user.lastName}
+              {patientDetails?.user?.firstName} {patientDetails?.user?.lastName}
             </div>
             <div>
               <span className="font-semibold">Patient ID:</span>{" "}
-              {patientDetails?.user.id}
+              {patientDetails?.user?.id}
             </div>
 
             <div className="flex gap-4 text-gray-600">
@@ -83,7 +83,7 @@ const RxPatientDetailsSection = ({
               <div>
                 <span className="font-semibold">DOB: </span>
                 {patientDetails?.dob
-                  ? new Date(patientDetails.dob).toLocaleDateString("en-UK", {
+                  ? new Date(patientDetails?.dob).toLocaleDateString("en-UK", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -97,11 +97,11 @@ const RxPatientDetailsSection = ({
             </div>
             <div>
               <span className="font-semibold">Phone No:</span>{" "}
-              {patientDetails?.user.phoneNumber}
+              {patientDetails?.user?.phoneNumber}
             </div>
             <div>
               <span className="font-semibold">Cell:</span>{" "}
-              {patientDetails?.user.phoneNumber}
+              {patientDetails?.user?.phoneNumber}
             </div>
             <div>
               <span className="font-semibold">Vitals:</span>{" "}

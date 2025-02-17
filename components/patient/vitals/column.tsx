@@ -92,7 +92,7 @@ export const columns = ({
     ),
   },
   {
-    header: "Action",
+    header: "",
     accessorKey: "id",
     cell: ({ row }) => (
       <div className="flex items-center gap-2 cursor-pointer">

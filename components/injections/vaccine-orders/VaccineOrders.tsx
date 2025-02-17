@@ -257,7 +257,7 @@ function VaccineOrders({
                     <FormLabel className="w-full">Vaccine</FormLabel>
                     <FormControl>
                       <Input
-                        value={field.value}
+                        value={field.value ?? ''}
                         placeholder="Search by vaccine name"
                         className="border rounded-md p-2 w-full text-gray-800"
                         onChange={field.onChange}

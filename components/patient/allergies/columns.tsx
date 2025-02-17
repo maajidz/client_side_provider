@@ -8,9 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { deleteAllergies } from "@/services/chartDetailsServices";
 import { AllergenResponseInterfae } from "@/types/allergyInterface";
+import { Ellipsis } from "lucide-react";
 
 const handleDeleteAllergy = async (
   allergyId: string,
@@ -130,7 +130,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <DotsVerticalIcon />
+            <Ellipsis />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
