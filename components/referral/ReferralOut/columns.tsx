@@ -12,14 +12,14 @@ export const columns = (): ColumnDef<TransferResponseData>[] => [
   },
   {
     accessorKey: "referringFromProviderID",
-    header: "Referring from provider ID",
+    header: "Referral from ",
     cell: ({ row }) => (
       <div className="cursor-pointer">{row.getValue("referringFromProviderID")}</div>
     ),
   },
   {
     accessorKey: "referringToProviderID",
-    header: "Referring to provider ID",
+    header: "Referral to",
     cell: ({ row }) => (
       <div className="cursor-pointer">{row.getValue("referringToProviderID")}</div>
     ),
