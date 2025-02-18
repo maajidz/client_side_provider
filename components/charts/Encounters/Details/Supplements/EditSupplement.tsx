@@ -36,6 +36,7 @@ import { Edit2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface EditSupplementProps {
   selectedSupplement: SupplementInterface;
@@ -128,59 +129,23 @@ function EditSupplement({
           <Edit2Icon color="#84012A" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[465px]">
         <DialogHeader>
           <DialogTitle>Edit Supplement</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col justify-center gap-5">
-              <FormField
-                control={form.control}
-                name="supplement"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
-                    <FormLabel>Supplement</FormLabel>
-                    <FormControl>
-                      <Input
-                        defaultValue={selectedSupplement.supplement}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="manufacturer"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
-                    <FormLabel className="w-fit">Manufacturer</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        defaultValue={selectedSupplement.manufacturer}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex justify-between">
+        <ScrollArea className="h-[30rem] max-h-[30rem] p-2.5">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex flex-col justify-center gap-5">
                 <FormField
                   control={form.control}
-                  name="fromDate"
+                  name="supplement"
                   render={({ field }) => (
                     <FormItem className="flex gap-2 items-center">
-                      <FormLabel>From Date:</FormLabel>
+                      <FormLabel>Supplement</FormLabel>
                       <FormControl>
                         <Input
-                          type="date"
-                          defaultValue={formatDate(
-                            selectedSupplement?.fromDate
-                          )}
+                          defaultValue={selectedSupplement.supplement}
                           onChange={field.onChange}
                         />
                       </FormControl>
@@ -190,14 +155,14 @@ function EditSupplement({
                 />
                 <FormField
                   control={form.control}
-                  name="toDate"
+                  name="manufacturer"
                   render={({ field }) => (
                     <FormItem className="flex gap-2 items-center">
-                      <FormLabel>To Date:</FormLabel>
+                      <FormLabel className="w-fit">Manufacturer</FormLabel>
                       <FormControl>
                         <Input
-                          type="date"
-                          defaultValue={formatDate(selectedSupplement?.toDate)}
+                          type="text"
+                          defaultValue={selectedSupplement.manufacturer}
                           onChange={field.onChange}
                         />
                       </FormControl>
@@ -205,115 +170,155 @@ function EditSupplement({
                     </FormItem>
                   )}
                 />
+                <div className="flex justify-between">
+                  <FormField
+                    control={form.control}
+                    name="fromDate"
+                    render={({ field }) => (
+                      <FormItem className="flex gap-2 items-center">
+                        <FormLabel>From Date:</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            defaultValue={formatDate(
+                              selectedSupplement?.fromDate
+                            )}
+                            onChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="toDate"
+                    render={({ field }) => (
+                      <FormItem className="flex gap-2 items-center">
+                        <FormLabel>To Date:</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            defaultValue={formatDate(
+                              selectedSupplement?.toDate
+                            )}
+                            onChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-2 items-center">
+                      <FormLabel className="w-fit">Status</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={selectedSupplement.status}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Choose Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Active">Active</SelectItem>
+                            <SelectItem value="Inactive">Inactive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dosage"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-2 justify-center items-center">
+                      <FormLabel>Dosage</FormLabel>
+                      <FormControl>
+                        <Input
+                          defaultValue={selectedSupplement.dosage}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="unit"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-2 justify-center items-center">
+                      <FormLabel className="w-fit">Unit</FormLabel>
+                      <FormControl>
+                        <Input
+                          defaultValue={selectedSupplement.unit}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="frequency"
+                  render={({ field }) => (
+                    <FormItem className="flex  gap-2 items-center">
+                      <FormLabel className="w-fit">Frequency</FormLabel>
+                      <FormControl>
+                        <Input
+                          defaultValue={selectedSupplement.frequency}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="intake_type"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-2 justify-center items-center">
+                      <FormLabel className="w-fit">Intake type</FormLabel>
+                      <FormControl>
+                        <Input
+                          defaultValue={selectedSupplement.intake_type}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="comments"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-2 justify-center items-center">
+                      <FormLabel>Comments</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          defaultValue={selectedSupplement.comments}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <SubmitButton label="Save" disabled={loading} />
               </div>
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 items-center">
-                    <FormLabel className="w-fit">Status</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={selectedSupplement.status}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Choose Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Active">Active</SelectItem>
-                          <SelectItem value="Inactive">Inactive</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="dosage"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 justify-center items-center">
-                    <FormLabel>Dosage</FormLabel>
-                    <FormControl>
-                      <Input
-                        defaultValue={selectedSupplement.dosage}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="unit"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 justify-center items-center">
-                    <FormLabel className="w-fit">Unit</FormLabel>
-                    <FormControl>
-                      <Input
-                        defaultValue={selectedSupplement.unit}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="frequency"
-                render={({ field }) => (
-                  <FormItem className="flex  gap-2 items-center">
-                    <FormLabel className="w-fit">Frequency</FormLabel>
-                    <FormControl>
-                      <Input
-                        defaultValue={selectedSupplement.frequency}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="intake_type"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 justify-center items-center">
-                    <FormLabel className="w-fit">Intake type</FormLabel>
-                    <FormControl>
-                      <Input
-                        defaultValue={selectedSupplement.intake_type}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="comments"
-                render={({ field }) => (
-                  <FormItem className="flex gap-2 justify-center items-center">
-                    <FormLabel>Comments</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        defaultValue={selectedSupplement.comments}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <SubmitButton label="Save" disabled={loading} />
-            </div>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

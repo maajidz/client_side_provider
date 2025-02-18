@@ -309,23 +309,23 @@ function AllergiesDialog({
             </table>
 
             <div className="flex justify-between">
-              <div className="w-full">
-                <GhostButton
-                  onClick={() =>
-                    append({
-                      type: "",
-                      Allergen: "",
-                      serverity: "Severe",
-                      observedOn: "",
-                      status: "Active",
-                      reactions: "",
-                    })
-                  }
-                >
-                  Add More
-                </GhostButton>
+              <GhostButton
+                onClick={() =>
+                  append({
+                    type: "",
+                    Allergen: "",
+                    serverity: "Severe",
+                    observedOn: "",
+                    status: "Active",
+                    reactions: "",
+                  })
+                }
+              >
+                Add More
+              </GhostButton>
+              <div className="w-fit">
+                <SubmitButton label="Save" />
               </div>
-              <SubmitButton label="Save" />
             </div>
           </form>
         </Form>

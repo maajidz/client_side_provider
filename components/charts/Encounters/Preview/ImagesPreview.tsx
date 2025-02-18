@@ -1,18 +1,17 @@
-import ImageResults from '@/components/images/ImageResults/ImageResults'
-import PageContainer from '@/components/layout/page-container'
-import React from 'react'
+import ImageResults from "@/components/images/ImageResults/ImageResults";
+import PageContainer from "@/components/layout/page-container";
 
-const ImagesPreview = () => {
-    return (
-        <PageContainer scrollable={true}>
-            <div className='flex flex-col gap-5'>
-                Image Results
-                <div className='flex flex-col gap-3 border-b'>
-                   <ImageResults />
-                </div>
-            </div>
-        </PageContainer>
-    )
-}
+const ImagesPreview = ({ userDetailsId }: { userDetailsId: string }) => {
+  return (
+    <PageContainer scrollable={true}>
+      <div className="flex flex-col gap-5">
+        Image Results
+        <div className="flex flex-col gap-3 border-b">
+          <ImageResults userDetailsId={userDetailsId} />
+        </div>
+      </div>
+    </PageContainer>
+  );
+};
 
-export default ImagesPreview
+export default ImagesPreview;

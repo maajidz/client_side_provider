@@ -57,9 +57,11 @@ const formatDate = (dateString: string) => {
 function EditTask({
   patientDetails,
   selectedTask,
+  onFetchTasks,
 }: {
   patientDetails: UserEncounterData;
   selectedTask: TasksResponseDataInterface;
+  onFetchTasks: () => Promise<void>;
 }) {
   const [showDueDate, setShowDueDate] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -144,6 +146,7 @@ function EditTask({
         });
       }
     } finally {
+      await onFetchTasks();
       setLoading(false);
       form.reset();
     }

@@ -1,60 +1,30 @@
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import {
-  deleteUserPharmacyData,
-  getUserPharmacyData,
-} from "@/services/chartDetailsServices";
-import { UserEncounterData } from "@/types/chartsInterface";
+import { deleteUserPharmacyData } from "@/services/chartDetailsServices";
 import { UserPharmacyInterface } from "@/types/pharmacyInterface";
 import { showToast } from "@/utils/utils";
 import { Trash2Icon } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 
 interface PharmacyListProps {
-  patientDetails: UserEncounterData;
+  error: string;
+  isLoading: boolean;
+  pharmacyData: UserPharmacyInterface | undefined;
+  fetchUserPharmacy: () => Promise<void>;
 }
 
-function PharmacyList({ patientDetails }: PharmacyListProps) {
-  // Data States
-  const [pharmacyData, setPharmacyData] = useState<UserPharmacyInterface>();
-
+function PharmacyList({
+  error,
+  isLoading,
+  pharmacyData,
+  fetchUserPharmacy,
+}: PharmacyListProps) {
   // Loading State
   const [loading, setLoading] = useState(false);
 
-  // Error State
-  const [error, setError] = useState("");
-
   // Toast State
   const { toast } = useToast();
-
-  // GET User Pharmacy
-  const fetchUserPharmacy = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const response = await getUserPharmacyData({
-        userDetailsId: patientDetails.userDetails.id,
-      });
-
-      if (response) {
-        setPharmacyData(response);
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError("Something went wrong");
-      } else {
-        setError("Something went wrong. Unknown error occurred.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [patientDetails.userDetails.id]);
-
-  // Effects
-  useEffect(() => {
-    fetchUserPharmacy();
-  }, [fetchUserPharmacy]);
 
   // DELETE User Pharmacy
   const handleDeleteUserPharmacy = async (pharmacyId: string) => {
@@ -77,11 +47,11 @@ function PharmacyList({ patientDetails }: PharmacyListProps) {
         });
     } finally {
       setLoading(false);
-      fetchUserPharmacy();
+      await fetchUserPharmacy();
     }
   };
 
-  if (loading) return <LoadingButton />;
+  if (loading || isLoading) return <LoadingButton />;
 
   if (error)
     return <div className="flex items-center justify-center">{error}</div>;
@@ -111,7 +81,8 @@ function PharmacyList({ patientDetails }: PharmacyListProps) {
             <span className="font-semibold">{pharmacyData?.address}</span>
             {" - "}
             <span>
-              {pharmacyData?.city}, {pharmacyData?.state}, {pharmacyData?.country}
+              {pharmacyData?.city}, {pharmacyData?.state},{" "}
+              {pharmacyData?.country}
             </span>
             {", "}
             <span>{pharmacyData?.zipCode}</span>
@@ -128,4 +99,3 @@ function PharmacyList({ patientDetails }: PharmacyListProps) {
 }
 
 export default PharmacyList;
-

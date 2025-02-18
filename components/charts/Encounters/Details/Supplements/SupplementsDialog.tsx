@@ -1,4 +1,5 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import formStyles from "@/components/formStyles.module.css";
 import LoadingButton from "@/components/LoadingButton";
 import { z } from "zod";
 import {
@@ -16,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -31,12 +33,10 @@ import {
   createSupplement,
   updateSupplement,
 } from "@/services/chartDetailsServices";
+import { SupplementInterface } from "@/types/supplementsInterface";
 import { showToast } from "@/utils/utils";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { SupplementInterface } from "@/types/supplementsInterface";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import formStyles from "@/components/formStyles.module.css";
 
 function SupplementsDialog({
   userDetailsId,
@@ -148,15 +148,15 @@ function SupplementsDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[465px]">
         <DialogHeader>
           <DialogTitle>
             {selectedSupplement ? "Edit Supplement" : "Add Supplement"}
           </DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <ScrollArea className="h-[30rem]">
+        <ScrollArea className="h-[30rem] max-h-[30rem] p-2.5">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className={formStyles.formBody}>
                 <FormField
                   control={form.control}
@@ -375,9 +375,9 @@ function SupplementsDialog({
                   disabled={loading}
                 />
               </div>
-            </ScrollArea>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

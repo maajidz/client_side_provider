@@ -42,18 +42,18 @@ const DetailsComponent = ({patientDetails}:{patientDetails: UserEncounterData}) 
                 </Popover>
             } />
             <FormLabels label='Facility' value='Pomegranate' />
-            <FormLabels label='Vist Type' value={
+            <FormLabels label='Visit Type' value={
                 <Select>
                     <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select vist type" defaultValue={patientDetails.visit_type}/>
+                        <SelectValue placeholder="Select visit type" defaultValue={patientDetails.visit_type}/>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectItem value="apple">Refill Wellness Vist</SelectItem>
+                            <SelectItem value="apple">Refill Wellness Visit</SelectItem>
                             <SelectItem value="banana">Asynchronous Refill Request</SelectItem>
                             <SelectItem value="blueberry">Dermatology Consultation</SelectItem>
                             <SelectItem value="grapes">Fitness Counselling</SelectItem>
-                            <SelectItem value="pineapple">Follow Up Vist</SelectItem>
+                            <SelectItem value="pineapple">Follow Up Visit</SelectItem>
                         </SelectGroup>
                     </SelectContent>
                 </Select>

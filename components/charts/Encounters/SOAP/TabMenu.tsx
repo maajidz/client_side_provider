@@ -59,7 +59,7 @@ const TabMenu = ({ patientDetails, onClose }: { patientDetails: UserEncounterDat
                     <DropdownMenuItem>Print Patient Summary</DropdownMenuItem>
                     <DropdownMenuItem>Print Chart Notes</DropdownMenuItem>
                     <DropdownMenuItem>Import Medical History</DropdownMenuItem>
-                    <DropdownMenuItem>Import Family Histoty</DropdownMenuItem>
+                    <DropdownMenuItem>Import Family History</DropdownMenuItem>
                     <DropdownMenuItem>Import Social History</DropdownMenuItem>
                     <DropdownMenuItem>Import Images</DropdownMenuItem>
                     <DropdownMenuItem>Reports</DropdownMenuItem>

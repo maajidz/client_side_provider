@@ -1,9 +1,8 @@
-import React from 'react'
+import CustomTabsTrigger from '@/components/custom_buttons/buttons/CustomTabsTrigger';
 import {
     Tabs,
     TabsContent,
     TabsList,
-    TabsTrigger,
 } from "@/components/ui/tabs"
 import DetailsComponent from '@/components/charts/Encounters/SOAP/DetailsComponent'
 import TabMenu from '@/components/charts/Encounters/SOAP/TabMenu'
@@ -18,8 +17,8 @@ const SOAPSection = ({encounterId, patientDetails, onClose}: {encounterId: strin
             <Tabs defaultValue="chartNotes" className="w-full">
                 <div className='flex  flex-row justify-between p-5 gap-4'>
                     <TabsList className="grid w-[500px] grid-cols-2">
-                        <TabsTrigger value="chartNotes">Chart Notes</TabsTrigger>
-                        <TabsTrigger value="mu">MU</TabsTrigger>
+                        <CustomTabsTrigger value="chartNotes">Chart Notes</CustomTabsTrigger>
+                        <CustomTabsTrigger value="mu">MU</CustomTabsTrigger>
                     </TabsList>
                     <TabMenu patientDetails={patientDetails} onClose={onClose} />
                 </div>

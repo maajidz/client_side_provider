@@ -2,59 +2,34 @@ import LoadingButton from "@/components/LoadingButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import {
-  deleteSupplement,
-  getSupplements,
-} from "@/services/chartDetailsServices";
+import { deleteSupplement } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { SupplementInterface } from "@/types/supplementsInterface";
 import { showToast } from "@/utils/utils";
-import { Trash2Icon } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
 import EditSupplement from "./EditSupplement";
+import { Trash2Icon } from "lucide-react";
+import { useState } from "react";
 
 interface SupplementListProps {
+  error: string;
+  isLoading: boolean;
   patientDetails: UserEncounterData;
+  supplementData: SupplementInterface[] | undefined;
+  fetchSupplements: () => Promise<void>;
 }
 
-function SupplementList({ patientDetails }: SupplementListProps) {
-  // Data States
-  const [supplementData, setSupplementData] = useState<SupplementInterface[]>();
-
+function SupplementList({
+  error,
+  isLoading,
+  patientDetails,
+  supplementData,
+  fetchSupplements,
+}: SupplementListProps) {
   // Loading State
   const [loading, setLoading] = useState(false);
 
-  // Error State
-  const [error, setError] = useState("");
-
   // Toast State
   const { toast } = useToast();
-
-  // GET Supplements
-  const fetchSupplements = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const response = await getSupplements({userDetailsId: patientDetails.userDetails.id});
-
-      if (response) {
-        setSupplementData(response.data);
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError("Something went wrong");
-      } else {
-        setError("Something went wrong. Unknown error occurred.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [patientDetails.userDetails.id]);
-
-  // Effects
-  useEffect(() => {
-    fetchSupplements();
-  }, [fetchSupplements]);
 
   // DELETE Supplement
   const handleDeleteSupplement = async (supplementId: string) => {
@@ -77,11 +52,11 @@ function SupplementList({ patientDetails }: SupplementListProps) {
         });
     } finally {
       setLoading(false);
-      fetchSupplements();
+      await fetchSupplements();
     }
   };
 
-  if (loading) return <LoadingButton />;
+  if (loading || isLoading) return <LoadingButton />;
 
   if (error)
     return <div className="flex items-center justify-center">{error}</div>;
@@ -143,4 +118,3 @@ function SupplementList({ patientDetails }: SupplementListProps) {
 }
 
 export default SupplementList;
-
