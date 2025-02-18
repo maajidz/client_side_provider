@@ -32,7 +32,11 @@ import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
-function LabResults() {
+interface ILabResultsProps {
+  userDetailsId?: string;
+}
+
+function LabResults({ userDetailsId }: ILabResultsProps) {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<LabResultsInterface>();
   const [page, setPage] = useState<number>(1);
@@ -52,7 +56,7 @@ function LabResults() {
   const [filters, setFilters] = useState({
     reviewer: providerDetails.providerId || "",
     status: "",
-    patient: "",
+    patient: userDetailsId ?? "",
   });
 
   // Loading State
@@ -239,58 +243,60 @@ function LabResults() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="Search Patient "
-                        value={searchTerm}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setSearchTerm(value);
-                          setVisibleSearchList(true);
+            {!userDetailsId && (
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder="Search Patient "
+                          value={searchTerm}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setSearchTerm(value);
+                            setVisibleSearchList(true);
 
-                          if (!value) {
-                            field.onChange("");
-                          }
-                        }}
-                      />
-                      {searchTerm && visibleSearchList && (
-                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                          {filteredPatients.length > 0 ? (
-                            filteredPatients.map((patient) => (
-                              <div
-                                key={patient.id}
-                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                onClick={() => {
-                                  field.onChange(patient.id);
-                                  setSearchTerm(
-                                    `${patient.user.firstName} ${patient.user.lastName}`
-                                  );
-                                  setVisibleSearchList(false);
-                                }}
-                              >
-                                {`${patient.user.firstName} ${patient.user.lastName}`}
+                            if (!value) {
+                              field.onChange("");
+                            }
+                          }}
+                        />
+                        {searchTerm && visibleSearchList && (
+                          <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                            {filteredPatients.length > 0 ? (
+                              filteredPatients.map((patient) => (
+                                <div
+                                  key={patient.id}
+                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                  onClick={() => {
+                                    field.onChange(patient.id);
+                                    setSearchTerm(
+                                      `${patient.user.firstName} ${patient.user.lastName}`
+                                    );
+                                    setVisibleSearchList(false);
+                                  }}
+                                >
+                                  {`${patient.user.firstName} ${patient.user.lastName}`}
+                                </div>
+                              ))
+                            ) : (
+                              <div className="px-4 py-2 text-gray-500">
+                                No results found
                               </div>
-                            ))
-                          ) : (
-                            <div className="px-4 py-2 text-gray-500">
-                              No results found
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <div className="flex items-end">
               <SubmitButton label="Search" />

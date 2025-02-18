@@ -50,6 +50,8 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
     try {
       const response = await getSocialHistory({
         userDetailsId: patientDetails.userDetails.id,
+        page: 1,
+        limit: 5,
       });
 
       if (response) {

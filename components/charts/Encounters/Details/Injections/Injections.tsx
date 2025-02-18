@@ -95,7 +95,7 @@ const Injections = ({
                 injectionsData={editData}
                 onClose={() => {
                   setIsDialogOpen(false);
-                  //   fetchFamilyHistory();
+                    fetchInjectionsData();
                 }}
                 isOpen={isDialogOpen}
               />

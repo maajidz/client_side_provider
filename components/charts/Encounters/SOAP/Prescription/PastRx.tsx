@@ -1,7 +1,7 @@
 import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -10,12 +10,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+// import { Button } from "@/components/ui/button";
+// import { ScrollArea } from "@/components/ui/scroll-area";
 import { FetchPrescription, UserEncounterData } from "@/types/chartsInterface";
 import { getPrescriptionsData } from "@/services/chartsServices";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import RxPatientDetailsSection from "./RxPatientDetailsSection";
+// import RxPatientDetailsSection from "./RxPatientDetailsSection";
 
 const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -56,14 +56,14 @@ const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[30rem] min-h-30 p-3">
+        {/* <ScrollArea className="h-[30rem] min-h-30 p-3"> */}
           <div className="flex flex-col p-2 gap-4">
             {/* Patient Details Section */}
-            <RxPatientDetailsSection
+            {/* <RxPatientDetailsSection
               userDetailsId={patientDetails.userDetails.id}
-            />
+            /> */}
             {/* Search & Add Rx Section */}
-            <div className="flex flex-col p-4 shadow-sm">
+            {/* <div className="flex flex-col p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-lg font-semibold text-gray-700">
                   Search & Add Rx
@@ -71,9 +71,9 @@ const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                 <Input
                   className="w-1/2rounded-md"
                   placeholder="Search for a drug..."
-                />
-              </div>
-              <div className="flex items-center text-sm text-gray-600">
+                /> */}
+              {/* </div> */}
+              {/* <div className="flex items-center text-sm text-gray-600">
                 <span>Please search for your drug. If not found,</span>
                 <Button
                   variant="ghost"
@@ -81,7 +81,7 @@ const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                 >
                   Add a custom drug
                 </Button>
-              </div>
+              </div> */}
             </div>
 
             {/* Past Rx Section */}
@@ -115,11 +115,11 @@ const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                 )}
               </div>
             </div>
-          </div>
+        {/* </div> */}
           <DialogFooter>
             <SubmitButton label="Save Changes" />
           </DialogFooter>
-        </ScrollArea>
+        {/* </ScrollArea> */}
       </DialogContent>
     </Dialog>
   );

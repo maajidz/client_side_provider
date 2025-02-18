@@ -40,6 +40,8 @@ const ProceduresSurgeriesAndHospitalization = ({
     try {
       const response = await getProcedureData({
         userDetailsId: patientDetails.userDetails.id,
+        page: 1,
+        limit: 5,
       });
       if (response) {
         setData(response);

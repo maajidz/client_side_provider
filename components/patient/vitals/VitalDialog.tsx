@@ -143,9 +143,9 @@ function VitalDialog({
                     <FormLabel className="w-fit">Date</FormLabel>
                     <FormControl>
                       <Input
-                        {...field}
                         type="date"
                         className="w-fit"
+                        value={field.value}
                         onChange={field.onChange}
                       />
                     </FormControl>
@@ -165,8 +165,8 @@ function VitalDialog({
                       <FormItem className={`${formStyles.formItem} w-full`}>
                         <FormControl>
                           <Input
-                            {...field}
                             type="number"
+                            value={field.value ?? ""}
                             onChange={(event) =>
                               field.onChange(event.target.valueAsNumber)
                             }
@@ -187,6 +187,7 @@ function VitalDialog({
                           <Input
                             {...field}
                             type="number"
+                            value={field.value ?? ""}
                             onChange={(event) =>
                               field.onChange(event.target.valueAsNumber)
                             }
@@ -212,6 +213,7 @@ function VitalDialog({
                           <Input
                             {...field}
                             type="number"
+                            value={field.value ?? ""}
                             onChange={(event) =>
                               field.onChange(event.target.valueAsNumber)
                             }
@@ -231,6 +233,7 @@ function VitalDialog({
                           <Input
                             {...field}
                             type="number"
+                            value={field.value ?? ""}
                             onChange={(event) =>
                               field.onChange(event.target.valueAsNumber)
                             }
@@ -256,6 +259,7 @@ function VitalDialog({
                         {...field}
                         type="number"
                         className="w-fit"
+                        value={field.value ?? ""}
                         onChange={(event) =>
                           field.onChange(event.target.valueAsNumber)
                         }
@@ -278,6 +282,7 @@ function VitalDialog({
                         <Input
                           {...field}
                           type="number"
+                          value={field.value ?? ""}
                           onChange={(event) =>
                             field.onChange(event.target.valueAsNumber)
                           }
@@ -300,6 +305,7 @@ function VitalDialog({
                         <Input
                           {...field}
                           type="number"
+                          value={field.value ?? ""}
                           onChange={(event) =>
                             field.onChange(event.target.valueAsNumber)
                           }

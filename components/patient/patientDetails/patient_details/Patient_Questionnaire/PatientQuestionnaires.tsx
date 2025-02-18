@@ -13,8 +13,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { generateQuestionnairePDF } from "./generateQuestionnairePDF";
+import { Ellipsis } from "lucide-react";
 
 const PatientQuestionnaires = ({
   userDetailsId,
@@ -129,7 +129,7 @@ const PatientQuestionnaires = ({
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="border border-[#D9D9D9] p-2 rounded-md">
-                    <DotsVerticalIcon />
+                    <Ellipsis />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem>Delete</DropdownMenuItem>

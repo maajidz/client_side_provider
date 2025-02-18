@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteHistoricalVaccine } from "@/services/chartDetailsServices";
 import { HistoricalVaccineInterface } from "@/types/chartsInterface";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
+import { Ellipsis } from "lucide-react";
 
 const handleDeleteVaccine = async (
   vaccineId: string,
@@ -93,7 +93,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <DotsHorizontalIcon />
+            <Ellipsis />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

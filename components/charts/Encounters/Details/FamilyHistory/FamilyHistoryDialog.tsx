@@ -172,7 +172,7 @@ function FamilyHistoryDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <ScrollArea>
+            <ScrollArea className="h-[30rem] max-h-[30rem] p-2.5">
               <div className={formStyles.formBody}>
                 <FormField
                   control={form.control}
@@ -283,7 +283,9 @@ function FamilyHistoryDialog({
                           value={customProblem}
                           onChange={(e) => setCustomProblem(e.target.value)}
                         />
-                        <GhostButton onClick={addCustomProblem} >Add</GhostButton>
+                        <GhostButton onClick={addCustomProblem}>
+                          Add
+                        </GhostButton>
                       </div>
                       <FormMessage />
                     </FormItem>

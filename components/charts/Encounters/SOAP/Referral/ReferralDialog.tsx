@@ -99,6 +99,8 @@ const ReferralDialog = ({
     }
   };
 
+  console.log(patientDetails);
+
   if (loading) {
     <div>
       <LoadingButton />

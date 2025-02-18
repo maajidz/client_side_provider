@@ -6,10 +6,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { UserEncounterData } from "@/types/chartsInterface";
+import { UserPharmacyInterface } from "@/types/pharmacyInterface";
+import { getUserPharmacyData } from "@/services/chartDetailsServices";
 import PharmacyDialog from "./PharmacyDialog";
 import PharmacyList from "./PharmacyList";
 import { PlusCircle } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface PharmacyProps {
   patientDetails: UserEncounterData;
@@ -18,6 +20,43 @@ interface PharmacyProps {
 const Pharmacy = ({ patientDetails }: PharmacyProps) => {
   // Dialog State
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Data States
+  const [pharmacyData, setPharmacyData] = useState<UserPharmacyInterface>();
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
+  // Error State
+  const [error, setError] = useState("");
+
+  // GET User Pharmacy
+  const fetchUserPharmacy = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getUserPharmacyData({
+        userDetailsId: patientDetails.userDetails.id,
+      });
+
+      if (response) {
+        setPharmacyData(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        setError("Something went wrong");
+      } else {
+        setError("Something went wrong. Unknown error occurred.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [patientDetails.userDetails.id]);
+
+  // Effects
+  useEffect(() => {
+    fetchUserPharmacy();
+  }, [fetchUserPharmacy]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -31,11 +70,19 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
             <PharmacyDialog
               isOpen={isDialogOpen}
               userDetailsId={patientDetails.userDetails.id}
-              onClose={() => setIsDialogOpen(false)}
+              onClose={() => {
+                setIsDialogOpen(false);
+                fetchUserPharmacy();
+              }}
             />
           </div>
           <AccordionContent className="sm:max-w-4xl">
-            <PharmacyList patientDetails={patientDetails} />
+            <PharmacyList
+              error={error}
+              isLoading={loading}
+              pharmacyData={pharmacyData}
+              fetchUserPharmacy={fetchUserPharmacy}
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

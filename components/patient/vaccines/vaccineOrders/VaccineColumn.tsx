@@ -6,8 +6,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteVaccineOrder } from "@/services/injectionsServices";
 import { VaccinesInterface } from "@/types/injectionsInterface";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
+import { Ellipsis } from "lucide-react";
 
 const handleDeleteVaccineOrder = async (
   vaccineOrderId: string,
@@ -87,7 +87,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <DotsHorizontalIcon />
+            <Ellipsis />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem

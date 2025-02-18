@@ -100,6 +100,7 @@ const Allergies = ({
               userDetailsId={patientDetails.userDetails.id}
               onClose={() => {
                 setIsDialogOpen(false);
+                fetchAllergies();
               }}
               isOpen={isDialogOpen}
             />

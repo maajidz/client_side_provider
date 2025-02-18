@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -159,7 +158,7 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
           <DialogTitle>Add Lab Orders</DialogTitle>
-          <DialogDescription>
+          <>
             <div className="flex justify-between items-center">
               <div className="font-normal text-black">Choose Labs</div>
               {!showNewLab && (
@@ -169,11 +168,11 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
                   }}
                 >
                   <PlusIcon />
-                  <div>New Lab</div>
+                  <span>New Lab</span>
                 </DefaultButton>
               )}
             </div>
-          </DialogDescription>
+          </>
         </DialogHeader>
         {loadingLabs ? (
           <LoadingButton />

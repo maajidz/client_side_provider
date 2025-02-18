@@ -70,7 +70,11 @@ function TasksList({
             <div className="flex justify-between items-center">
               <h5 className="text-lg font-semibold">{task?.category}</h5>
               <div className="flex items-center">
-                <EditTask patientDetails={patientDetails} selectedTask={task} />
+                <EditTask
+                  patientDetails={patientDetails}
+                  selectedTask={task}
+                  onFetchTasks={onFetchTasks}
+                />
                 <Button
                   variant="ghost"
                   onClick={() => {

@@ -9,9 +9,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { deleteTask, updateTaskStatus } from "@/services/chartDetailsServices";
 import generateTasksPDF from "../patient/tasks/generateTasksPDF";
+import { Ellipsis } from "lucide-react";
 
 const handleTasksDelete = async (
   taskId: string,
@@ -156,7 +156,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <DotsHorizontalIcon />
+            <Ellipsis />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
