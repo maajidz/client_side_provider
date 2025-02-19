@@ -33,7 +33,13 @@ import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 
-const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
+const ViewInjectionOrders = ({
+  userDetailsId,
+  refreshTrigger,
+}: {
+  userDetailsId: string;
+  refreshTrigger: number;
+}) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<InjectionsInterface[]>([]);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
@@ -79,8 +85,8 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   function onSubmit(values: z.infer<typeof injectionsSearchParams>) {
     setFilters((prev) => ({
       ...prev,
-      status: values.status ==="all" ? "" : values.status || "",
-      providerId: values.providerId ==="all" ? "" : values.providerId || "",
+      status: values.status === "all" ? "" : values.status || "",
+      providerId: values.providerId === "all" ? "" : values.providerId || "",
     }));
 
     setPage(1);
@@ -120,7 +126,7 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
 
   useEffect(() => {
     fetchInjectionsData(page, userDetailsId);
-  }, [page, fetchInjectionsData, userDetailsId]);
+  }, [page, fetchInjectionsData, userDetailsId, refreshTrigger]);
 
   if (loading) {
     return <LoadingButton />;
@@ -141,7 +147,7 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
                 <FormLabel>Provider</FormLabel>
                 <FormControl>
                   <Select
-                  defaultValue={field.value}
+                    defaultValue={field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
                       const selected = ownersList.find(
