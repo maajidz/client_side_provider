@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Heading } from "@/components/ui/heading";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import { UserData, UserResponseInterface } from "@/types/userInterface";
