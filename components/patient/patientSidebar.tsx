@@ -19,14 +19,13 @@ export default function PatientSidebar({
   return (
     <aside
       className={cn(
-        `relative flex-none transition-[width] duration-500 my-1 rounded-r-md bg-[#84012A]`,
+        `relative flex-none duration-500 bg-white text-gray-600`,
         className
       )}
     >
       <>
-        <div className="h-5"></div>
-        <ScrollArea className="h-[75vh] w-48 ">
-          <div className="p-4">
+        <ScrollArea className="h-[75vh]">
+          <div className="">
             <PatientNav items={items} />
           </div>
         </ScrollArea>

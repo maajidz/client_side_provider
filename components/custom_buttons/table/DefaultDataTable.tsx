@@ -54,14 +54,16 @@ export function DefaultDataTable<TData, TValue>({
 
   return (
     <>
-      <ScrollArea className="h-[calc(80vh-220px)] rounded-md border md:h-[calc(80dvh-200px)]">
+      <ScrollArea className="h-full rounded-md border">
         <Table className="relative">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                    className='px-4 py-2'
+                    key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -78,11 +80,14 @@ export function DefaultDataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  className='hover:text-sky-600 hover:bg-sky-50/50 hover:cursor-pointer font-medium'
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className=' hover:cursor-pointer hover:text-blue-600'>
+                    <TableCell
+                    className='p-4'
+                    key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

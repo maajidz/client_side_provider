@@ -16,11 +16,9 @@ export default function ProviderLayout({
   return (
     <div className="relative flex h-dvh">
       <Sidebar />
-      <main className="w-full flex-1 overflow-hidden">
-        <div className="absolute -top-[4.7rem] left-40 flex items-start pt-6 px-6">
-          <div className="bg-white rounded-full">
+      <main className="flex-1 overflow-hidden flex flex gap-6 flex-col p-8 items-center">
+        <div className="flex w-full">
             <SearchInput />
-          </div>
         </div>
         {children}
       </main>

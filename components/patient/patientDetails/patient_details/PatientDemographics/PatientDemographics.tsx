@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import styles from "./patient.module.css";
 import BasicInformation from "./BasicInformation";
 import ContactDetails from "./ContactDetails";
+import { Button } from "@/components/ui/button";
 // import PHRRegistration from "./PHRRegistration";
 // import PatientId from "./PatientId";
 // import EmergencyContact from "./EmergencyContact";
@@ -46,19 +47,20 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
     <>
       {loading && <LoadingButton />}
       {response && (
-        <div className="flex flex-col gap-2 p-4">
+        <div className="flex flex-col gap-2">
           {editPatient ? (
             <EditPatientBody patientDetails={response} />
           ) : (
-            <div className="flex flex-col gap-2 p-4">
+            <div className="flex flex-col gap-2">
               <div className="flex justify-end">
-                <DefaultButton
+                <Button
+                  variant="secondary"
                   onClick={() => {
                     setEditPatient(true);
                   }}
                 >
                   Edit Patient
-                </DefaultButton>
+                </Button>
               </div>
               <ScrollArea className="h-[calc(80vh-220px)] md:h-[calc(80dvh-200px)]">
                 <div className={styles.infoContainer}>

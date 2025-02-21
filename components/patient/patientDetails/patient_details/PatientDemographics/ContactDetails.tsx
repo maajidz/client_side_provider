@@ -10,8 +10,8 @@ const ContactDetails = ({
   return (
     <div className={styles.infoBox}>
       <div className="flex flex-col gap-6">
-        <div className="font-semibold text-2xl">Contact Details</div>
-        <div className="flex flex-col gap-6">
+        <div className="font-semibold text-xs text-gray-600 uppercase tracking-wider">Contact Details</div>
+        <div className="flex flex-col gap-4">
           <div>
             <div className={styles.labelText}>Address</div>
             <div className={styles.valueText}>{patientDetails?.location ? patientDetails?.location: 'N/A'}</div>

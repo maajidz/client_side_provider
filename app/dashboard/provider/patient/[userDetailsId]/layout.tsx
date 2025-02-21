@@ -21,11 +21,11 @@ export default function PatientDashboardLayout({
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full gap-4">
       <PatientHeader userId={userDetailsId} />
       <div className="flex">
         <PatientSidebar userDetailsId={userDetailsId} />
-        <main className="w-full flex-1 h-[80%] ">
+        <main className="w-full flex-1 ">
           <Toaster />
           <Header />
           {children}
