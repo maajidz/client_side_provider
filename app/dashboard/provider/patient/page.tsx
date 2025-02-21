@@ -9,11 +9,9 @@ const breadcrumbItems = [
 ];
 export default function Patients() {
   return (
-    <PageContainer scrollable={true}>
-      <div className="space-y-4">
+    <PageContainer>
         <Breadcrumbs items={breadcrumbItems} />
         <PatientClient />
-      </div>
     </PageContainer>
   );
 }
