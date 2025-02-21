@@ -8,11 +8,14 @@ import styles from "./patient.module.css";
 import LoadingButton from "../../LoadingButton";
 import PatientLabelDetails from "./patientLabelDetails";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
 const PatientHeader = ({ userId }: { userId: string }) => {
   const [response, setResponse] = useState<PatientDetails>();
   const [loading, setLoading] = useState(false);
   const [age, setAge] = useState<number>();
+
+  const router = useRouter();
 
   const dispatch = useDispatch();
 
@@ -38,7 +41,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             email: userData.user.email ?? "",
             firstName: userData.user.firstName ?? "",
             lastName: userData.user.lastName ?? "",
-            phoneNumber: userData.user.phoneNumber ?? ""
+            phoneNumber: userData.user.phoneNumber ?? "",
           })
         );
       }
@@ -62,7 +65,14 @@ const PatientHeader = ({ userId }: { userId: string }) => {
   }
 
   return (
-    <div className="flex flex-row w-full items-center">
+    <div
+      className="flex flex-row w-full items-center"
+      onClick={() =>
+        router.push(
+          `dashboard/provider/patient/${response?.user.userDetailsId}/patientDetails`
+        )
+      }
+    >
       <div className={styles.infoContainer}>
         <div className={`${styles.infoBox} bg-[#EDF9F3] capitalize`}>
           {response &&
@@ -104,15 +114,17 @@ const PatientHeader = ({ userId }: { userId: string }) => {
               <PatientLabelDetails
                 label="Weight:"
                 value={
-                  response && response.vitals
-                    ? `${response?.vitals[response.vitals.length - 1]?.weightLbs}lbs ${response?.vitals[0]?.weightOzs}ozs`
+                  response && response?.vitals
+                    ? `${
+                        response?.vitals[response.vitals.length - 1]?.weightLbs
+                      }lbs ${response?.vitals[0]?.weightOzs}ozs`
                     : "N/A"
                 }
               />
               <PatientLabelDetails
                 label="BMI:"
                 value={
-                  response && response.vitals[0].BMI
+                  response && response?.vitals[0]?.BMI
                     ? `${response?.vitals[0]?.BMI}`
                     : "N/A"
                 }
