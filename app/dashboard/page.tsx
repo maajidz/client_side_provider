@@ -13,7 +13,7 @@ export default function Page() {
   const router = useRouter();
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-col max-w-5xl items-center gap-3 w-full">
+      <div className="flex flex-col max-w-5xl items-center gap-3 w-full self-center">
         <div className="flex w-full gap-2 items-end py-8 justify-between">
           <SearchInput />
           <Button

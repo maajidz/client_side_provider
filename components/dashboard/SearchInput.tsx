@@ -50,7 +50,7 @@ function UserList({ users }: { users: UserData[] }) {
     // { label: "Patient Due", href: `/` },
   ];
   return (
-    <div className="absolute top-14 left-0 shadow-md rounded-lg space-y-2 w-full p-2 bg-white">
+    <div className="absolute top-14 left-0 shadow-md rounded-lg space-y-2 w-full p-2 bg-white z-50">
       {users.map((user) => (
         <div
           onClick={() =>
@@ -217,7 +217,7 @@ export function SearchInput() {
   return (
     <div className="relative flex flex-col space-y-4 flex-1">
       <div className="flex flex-col relative w-full">
-        <div className="flex flex-col w-full relative justify-center gap-1">
+        <div className="flex flex-col w-full relative justify-center gap-2">
           <Label className="text-xs text-gray-700 font-medium" htmlFor="email">
             Search for patients
           </Label>
@@ -240,7 +240,7 @@ export function SearchInput() {
       </div>
       <div className="absolute w-full flex justify-center">
         {loading && (
-          <p className="absolute bg-white p-2 rounded shadow-lg">Loading...</p>
+          <p className="absolute top-14 left-0 shadow-md rounded-lg text-md text-gray-500 space-y-2 w-full p-4 bg-white">Loading...</p>
         )}
         {!selectedUser && userData.length > 0 ? (
           <UserList users={userData} />
@@ -248,7 +248,7 @@ export function SearchInput() {
           !selectedUser &&
           !loading &&
           searchTerm && (
-            <p className="absolute bg-white p-2 rounded shadow-lg">
+            <p className="absolute top-14 left-0 shadow-md rounded-lg text-md text-gray-500 space-y-2 w-full p-4 bg-white">
               No results found.
             </p>
           )

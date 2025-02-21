@@ -61,7 +61,6 @@ export const PatientClient = () => {
           Add Patient
         </DefaultButton>
       </div>
-      <Separator />
       {userResponse && (
         <DefaultDataTable
           columns={columns(handleRowClick)}

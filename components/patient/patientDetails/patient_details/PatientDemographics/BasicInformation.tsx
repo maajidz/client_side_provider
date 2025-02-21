@@ -19,9 +19,9 @@ const BasicInformation = ({
 
   return (
     <div className={styles.infoBox}>
-      <div className="flex flex-col gap-6">
-        <div className="font-semibold text-2xl">Basic Information</div>
-        <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
+        <div className="font-semibold text-xs text-gray-600 uppercase tracking-wider ">Basic Information</div>
+        <div className="flex flex-col gap-4">
           <div>
             <div className={styles.labelText}>First Name</div>
             <div className={`${styles.valueText} capitalize`}>
