@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import LoadingButton from "../../../../LoadingButton";
 import { PatientDetails } from "@/types/userInterface";
 import { fetchUserEssentials } from "@/services/userServices";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+// import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import EditPatientBody from "../../../add_patient/EditPatientBody";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import styles from "./patient.module.css";

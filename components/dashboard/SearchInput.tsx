@@ -179,6 +179,23 @@ function UserList({ users }: { users: UserData[] }) {
   );
 }
 
+const UserCardShimmer = () => {
+  return (
+    <div className="flex px-4 py-3 animate-pulse bg-gray-100 flex-row items-center absolute top-14 left-0 shadow-md rounded-lg space-y-2 w-full p-2 z-50">
+      <div className="flex gap-3 items-center w-full">
+        <div className="h-14 w-14 bg-gray-300 rounded-full"></div>
+        <div className="flex flex-col gap-2 w-full">
+          <div className="h-4 w-32 bg-gray-300 rounded-md"></div>
+          <div className="flex gap-2 text-gray-600 text-xs w-full">
+            <div className="h-6 w-20 bg-gray-300 rounded-md"></div>
+            <div className="h-6 w-24 bg-gray-300 rounded-md"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export function SearchInput() {
   const [searchTerm, setSearchTerm] = useState("");
   const [userData, setUserData] = useState<UserData[]>([]);
@@ -228,7 +245,7 @@ export function SearchInput() {
                 setSearchTerm(e.target.value);
                 setSelectedUser(null);
               }}
-              placeholder="eg. Frederick Norman or PMG567378..."
+              placeholder="eg. Frederick Norman or PAT567378..."
               className="w-full h-11 focus-visible:ring-pink-100 focus-visible:ring-2 focus-visible:border-pink-300 hover:border-gray-300 peer"
             />
             <SearchIcon
@@ -239,15 +256,14 @@ export function SearchInput() {
         </div>
       </div>
       <div className="absolute w-full flex justify-center">
-        {loading && (
-          <p className="absolute top-14 left-0 shadow-md rounded-lg text-md text-gray-500 space-y-2 w-full p-4 bg-white">Loading...</p>
-        )}
+        {loading && <UserCardShimmer />}
         {!selectedUser && userData.length > 0 ? (
           <UserList users={userData} />
         ) : (
           !selectedUser &&
           !loading &&
-          searchTerm && (
+          userData.length === 0 &&
+          searchTerm.length > 1 && (
             <p className="absolute top-14 left-0 shadow-md rounded-lg text-md text-gray-500 space-y-2 w-full p-4 bg-white">
               No results found.
             </p>
