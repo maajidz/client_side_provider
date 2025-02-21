@@ -53,6 +53,11 @@ function UserList({ users }: { users: UserData[] }) {
     <div className="absolute top-14 left-0 shadow-md rounded-lg space-y-2 w-full p-2 bg-white z-50">
       {users.map((user) => (
         <div
+          onClick={() =>
+            router.push(
+              `dashboard/provider/patient/${user.user.userDetailsId}/patientDetails`
+            )
+          }
           key={user.id}
           className="flex rounded-md px-4 py-3 hover:cursor-pointer hover:bg-blue-50 flex-row items-center group transition-all duration-400"
         >
@@ -102,15 +107,16 @@ function UserList({ users }: { users: UserData[] }) {
                 router.push(
                   `dashboard/provider/patient/${user.user.userDetailsId}/patientDetails`
                 )
-              }>
+              }
+            >
               <ExternalLink />
               Dashboard
             </Button>
             <DropdownMenu>
-                <DropdownMenuTrigger className="relative flex font-medium flex-row justify-center items-center text-sky-600 text-xs hover:bg-sky-100 px-2 rounded-md">
-                  New
-                  <ChevronDown size={18} className="mt-1" />
-                </DropdownMenuTrigger>
+              <DropdownMenuTrigger className="relative flex font-medium flex-row justify-center items-center text-sky-600 text-xs hover:bg-sky-100 px-2 rounded-md">
+                New
+                <ChevronDown className="mt-1" />
+              </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {links.map((link) =>
                   link.label === "Sticky" ? (
@@ -119,7 +125,11 @@ function UserList({ users }: { users: UserData[] }) {
                       className="font-medium group hover:first:text-sky-600 hover:text-sky-600  flex flex-1 w-full"
                       onClick={openStickyDialog}
                     >
-                      {link.label} <PlusIcon className="text-sky-600  group-hover:ml-2  transition-all opacity-0 group-hover:opacity-100" size={16} />
+                      {link.label}{" "}
+                      <PlusIcon
+                        className="text-sky-600  group-hover:ml-2  transition-all opacity-0 group-hover:opacity-100"
+                        size={16}
+                      />
                     </DropdownMenuItem>
                   ) : link.label === "Message" ? (
                     <DropdownMenuItem
@@ -127,7 +137,11 @@ function UserList({ users }: { users: UserData[] }) {
                       className="font-medium group hover:first:text-sky-600 hover:text-sky-600  flex flex-1 w-full"
                       onClick={openMessageDialog}
                     >
-                      {link.label} <PlusIcon className="text-sky-600  group-hover:ml-2  transition-all opacity-0 group-hover:opacity-100" size={16} />
+                      {link.label}{" "}
+                      <PlusIcon
+                        className="text-sky-600  group-hover:ml-2  transition-all opacity-0 group-hover:opacity-100"
+                        size={16}
+                      />
                     </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem
@@ -139,7 +153,11 @@ function UserList({ users }: { users: UserData[] }) {
                         )
                       }
                     >
-                      {link.label} <PlusIcon className="text-sky-600  group-hover:ml-2  transition-all opacity-0 group-hover:opacity-100" size={16} />
+                      {link.label}{" "}
+                      <PlusIcon
+                        className="text-sky-600  group-hover:ml-2  transition-all opacity-0 group-hover:opacity-100"
+                        size={16}
+                      />
                     </DropdownMenuItem>
                   )
                 )}
