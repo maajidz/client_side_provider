@@ -18,7 +18,7 @@ export default function PageContainer({
           {children}
         </div>
       )} */}
-      <div className="flex flex-1 w-full h-full flex-col pl-8">
+      <div className="flex flex-1 w-full h-full flex-col pl-8 gap-6">
         {children}
       </div>
     </>

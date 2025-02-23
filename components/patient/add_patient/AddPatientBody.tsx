@@ -154,21 +154,18 @@ const AddPatientBody = () => {
     <div>
       <Form {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-5">
-            <div className="flex justify-end">
-              <SubmitButton label="Add" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
+          <div className="flex flex-col bg-gray-50/50 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 p-6">
+              <div className="flex flex-col gap-6 w-full rounded-lg">
                 <div className="font-medium text-[#84012A]">
                   Basic Information
                 </div>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-6">
                   <FormField
                     control={methods.control}
                     name="firstName"
                     render={({ field }) => (
-                      <FormItem className="flex items-center">
+                      <FormItem className="flex items-center flex-col">
                         <FormLabel className="w-full">First Name:</FormLabel>
                         <FormControl>
                           <Input
@@ -176,7 +173,7 @@ const AddPatientBody = () => {
                             placeholder="First Name"
                             inputMode="text"
                             {...field}
-                            className="font-normal text-base capitalize "
+                            className="font-normal capitalize"
                           />
                         </FormControl>
                         <FormMessage />
@@ -187,7 +184,7 @@ const AddPatientBody = () => {
                     control={methods.control}
                     name="lastName"
                     render={({ field }) => (
-                      <FormItem className="flex items-center">
+                      <FormItem className="flex items-center flex-col">
                         <FormLabel className="w-full">Last Name:</FormLabel>
                         <FormControl>
                           <Input
@@ -202,17 +199,18 @@ const AddPatientBody = () => {
                       </FormItem>
                     )}
                   />
+                  <div className="flex flex-row gap-2">
                   <FormField
                     control={methods.control}
                     name="dob"
                     render={({ field }) => (
-                      <FormItem className="flex items-center">
+                      <FormItem className="flex items-center flex-col flex-1">
                         <FormLabel className="w-full">DOB:</FormLabel>
                         <FormControl>
                           <Input
                             type="date"
                             {...field}
-                            className="text-center  justify-center "
+                            className="text-left justify-center cursor-pointer "
                           />
                         </FormControl>
                         <FormMessage />
@@ -223,7 +221,7 @@ const AddPatientBody = () => {
                     control={methods.control}
                     name="gender"
                     render={({ field }) => (
-                      <FormItem className="flex items-center">
+                      <FormItem className="flex items-center flex-col flex-1">
                         <FormLabel className="w-full">Birth Gender:</FormLabel>
                         <FormControl>
                           <Select
@@ -246,18 +244,19 @@ const AddPatientBody = () => {
                       </FormItem>
                     )}
                   />
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
+              <div className="flex flex-col gap-6 w-full rounded-lg">
                 <div className="font-medium text-[#84012A]">
                   Contact Details
                 </div>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-6">
                   <FormField
                     control={methods.control}
                     name="state"
                     render={({ field }) => (
-                      <FormItem className="flex items-center">
+                      <FormItem className="flex items-center flex-col">
                         <FormLabel className="w-full">State:</FormLabel>
                         <FormControl>
                           <Select
@@ -294,7 +293,7 @@ const AddPatientBody = () => {
                     control={methods.control}
                     name="phoneNumber"
                     render={({ field }) => (
-                      <FormItem className="flex items-center">
+                      <FormItem className="flex items-center flex-col">
                         <FormLabel className="w-full">Phone Number:</FormLabel>
                         <FormControl>
                           <Input
@@ -316,7 +315,7 @@ const AddPatientBody = () => {
                     control={methods.control}
                     name="email"
                     render={({ field }) => (
-                      <FormItem className="flex items-center">
+                      <FormItem className="flex items-center flex-col">
                         <FormLabel className="w-full">Email:</FormLabel>
                         <FormControl>
                           <Input
@@ -332,89 +331,140 @@ const AddPatientBody = () => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
+              <div className="flex flex-col gap-6 w-full rounded-lg">
                 <div className="font-medium text-[#84012A]">
                   Other Information
                 </div>
-                <div className="flex flex-col gap-3">
-                  <div className="text-sm font-medium">Height:</div>
-                  <div className="flex gap-1">
-                    {heightUnit === "cm" && (
-                      <div>
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-2">
+                    <FormLabel className="w-full">Height:</FormLabel>
+                    <div className="flex gap-1">
+                      {heightUnit === "cm" && (
+                        <div>
+                          <FormField
+                            control={methods.control}
+                            name="height.value"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    inputMode="numeric"
+                                    placeholder="eg 175"
+                                    value={field.value}
+                                    maxLength={2}
+                                    onChange={(e) =>
+                                      field.onChange(e.target.value)
+                                    }
+                                    className="font-normal text-base flex-1 flex"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      )}
+                      {heightUnit === "feet" && (
+                        <div className="flex gap-6">
+                          <FormField
+                            control={methods.control}
+                            name="height.feet"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    placeholder="eg 5"
+                                    value={field.value}
+                                    maxLength={2}
+                                    onChange={(e) =>
+                                      field.onChange(e.target.value)
+                                    }
+                                    className="font-normal text-base flex-1 flex"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={methods.control}
+                            name="height.inches"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    placeholder="eg 11"
+                                    value={field.value}
+                                    maxLength={2}
+                                    onChange={(e) =>
+                                      field.onChange(e.target.value)
+                                    }
+                                    className="font-normal text-base flex-1 flex"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      )}
+                      <div className="">
                         <FormField
                           control={methods.control}
-                          name="height.value"
+                          name="height.unit"
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Input
-                                  type="number"
-                                  inputMode="numeric"
-                                  placeholder="cm"
+                                <Select
                                   value={field.value}
-                                  maxLength={2}
-                                  onChange={(e) =>
-                                    field.onChange(e.target.value)
-                                  }
-                                  className="font-normal text-base"
-                                />
+                                  onValueChange={(value: string) => {
+                                    field.onChange(value);
+                                    handleUnitChange(value);
+                                  }}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select unit" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="feet">Feet</SelectItem>
+                                    <SelectItem value="cm">cm</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </FormControl>
-                              <FormMessage />
                             </FormItem>
                           )}
                         />
                       </div>
-                    )}
-                    {heightUnit === "feet" && (
-                      <div className="flex gap-3">
-                        <FormField
-                          control={methods.control}
-                          name="height.feet"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  placeholder="Feet"
-                                  value={field.value}
-                                  maxLength={2}
-                                  onChange={(e) =>
-                                    field.onChange(e.target.value)
-                                  }
-                                  className="font-normal text-base"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={methods.control}
-                          name="height.inches"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  placeholder="Inches"
-                                  value={field.value}
-                                  maxLength={2}
-                                  onChange={(e) =>
-                                    field.onChange(e.target.value)
-                                  }
-                                  className="font-normal text-base"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    )}
-                    <div className="md:w-[256px] lg:w-[256px] md:px-3 lg:px-3 px-1">
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <FormLabel className="w-full">Weight:</FormLabel>
+                    <div className="flex gap-2">
                       <FormField
                         control={methods.control}
-                        name="height.unit"
+                        name="weight.value"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder="Weight"
+                                {...field}
+                                value={field.value}
+                                onChange={(e) => field.onChange(e.target.value)}
+                                className="font-normal text-base flex-1"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={methods.control}
+                        name="weight.units"
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
@@ -422,72 +472,26 @@ const AddPatientBody = () => {
                                 value={field.value}
                                 onValueChange={(value: string) => {
                                   field.onChange(value);
-                                  handleUnitChange(value);
                                 }}
                               >
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select unit" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="feet">Feet</SelectItem>
-                                  <SelectItem value="cm">cm</SelectItem>
+                                  <SelectItem value="kg">Kilograms</SelectItem>
+                                  <SelectItem value="Pounds">Pounds</SelectItem>
                                 </SelectContent>
                               </Select>
                             </FormControl>
+                            <FormMessage />
                           </FormItem>
                         )}
                       />
                     </div>
                   </div>
-                  <div className="text-sm font-medium">Weight:</div>
-                  <div className="flex  gap-2">
-                    <FormField
-                      control={methods.control}
-                      name="weight.value"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Weight"
-                              {...field}
-                              value={field.value}
-                              onChange={(e) => field.onChange(e.target.value)}
-                              className="font-normal text-base"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={methods.control}
-                      name="weight.units"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={(value: string) => {
-                                field.onChange(value);
-                              }}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select unit" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="kg">Kilograms</SelectItem>
-                                <SelectItem value="Pounds">Pounds</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
                 </div>
               </div>
+
               {/* <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
                 <div className="font-medium text-[#84012A]">
                   Additional Information
@@ -919,6 +923,9 @@ const AddPatientBody = () => {
                   />
                 </div>
               </div> */}
+            <div className="flex justify-end w-full">
+                <SubmitButton label="Add" />
+            </div>
             </div>
           </div>
         </form>

@@ -56,9 +56,9 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex justify-between items-center p-4 text-lg font-semibold rounded-md bg-[#f0f0f0]">
+      <div className="flex gap-4 items-center text-lg font-semibold">
         <span>Past Medical History</span>
-        <GhostButton onClick={() => setIsOpen(true)}>Add </GhostButton>
+        <Button variant="ghost" onClick={() => setIsOpen(true)}>Add</Button>
         <PastMedicalHistoryDialog
           userDetailsId={userDetailsId}
           isOpen={isOpen}
@@ -68,8 +68,7 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
           }}
         />
       </div>
-      <ScrollArea className="h-[12.5rem] min-h-10">
-        <div className="flex flex-1 flex-col p-3 border rounded-lg m-3">
+        <div className="flex flex-1 flex-col p-3 border rounded-lg">
           <div className="flex items-center justify-end space-x-2 py-4">
             <div className="text-sm text-muted-foreground">
               Page {page} of {totalPages}
@@ -114,7 +113,6 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
             ))
           )}
         </div>
-      </ScrollArea>
     </div>
   );
 }

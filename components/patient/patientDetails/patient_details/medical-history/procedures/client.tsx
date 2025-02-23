@@ -5,6 +5,7 @@ import LoadingButton from "@/components/LoadingButton";
 import { ProceduresInterface } from "@/types/procedureInterface";
 import { columns } from "./column";
 import { Dispatch, SetStateAction } from "react";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface ProceduresSurgeriesAndHospitalizationClientProps {
   data: ProceduresInterface[];
@@ -24,7 +25,7 @@ function ProceduresSurgeriesAndHospitalizationClient({
   if (loading) return <LoadingButton />;
 
   return (
-    <CustomDataTable
+    <DefaultDataTable
       columns={columns()}
       data={data || []}
       pageNo={pageNo}

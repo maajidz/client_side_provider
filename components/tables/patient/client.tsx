@@ -10,6 +10,8 @@ import { UserData, UserResponseInterface } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { Search } from "lucide-react";
+import { SearchInput } from "@/components/dashboard/SearchInput";
 
 export const PatientClient = () => {
   const [response, setResponse] = useState<UserResponseInterface>();

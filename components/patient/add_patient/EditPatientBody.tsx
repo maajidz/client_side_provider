@@ -182,7 +182,6 @@ const EditPatientBody = ({
   }
   return (
     <div>
-      <ScrollArea className={cn("h-[calc(80dvh-52px)]")}>
         <Form {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-5 pb-48">
@@ -971,7 +970,6 @@ const EditPatientBody = ({
           }}
           isOpen={isDialogOpen}
         />
-      </ScrollArea>
     </div>
   );
 };

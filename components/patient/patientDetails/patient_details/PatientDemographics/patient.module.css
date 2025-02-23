@@ -8,15 +8,7 @@
 
 
 .infoBox {
-    display: flex;
-    flex: 1 1 0%;
-    flex-direction: column;
-    border-width: 2px;
-    padding: 1.15rem;
-    border-radius: 1rem;
-    width: 100%;
-    min-width: 25%;
-    border-color: #D5D5D5;
+
 }
 
 .labelText{

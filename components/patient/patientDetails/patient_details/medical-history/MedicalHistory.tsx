@@ -14,15 +14,13 @@ interface MedicalHistoryProps {
 
 function MedicalHistory({ userDetailsId }: MedicalHistoryProps) {
   return (
-    <ScrollArea className={cn("h-[calc(60dvh-52px)]")}>
-      <div className="flex flex-col gap-5 my-5">
+      <div className="flex flex-col gap-5 my-5 overflow-y-scroll h-[calc(100dvh-12rem)]">
         <ProceduresSurgeriesAndHospitalization userDetailsId={userDetailsId} />
         <PastMedicalHistory userDetailsId={userDetailsId} />
         <FamilyHistory userDetailsId={userDetailsId} />
         <SocialHistory userDetailsId={userDetailsId} />
         {/* <ImplantedDevices userDetailsId={userDetailsId} /> */}
       </div>
-    </ScrollArea>
   );
 }
 

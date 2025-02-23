@@ -5,6 +5,7 @@ import { getFamilyHistoryData } from "@/services/chartDetailsServices";
 import { FamilyHistoryResponseInterface } from "@/types/familyHistoryInterface";
 import FamilyHistoryClient from "./client";
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface FamilyHistoryProps {
   userDetailsId: string;
@@ -54,9 +55,9 @@ function FamilyHistory({ userDetailsId }: FamilyHistoryProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex justify-between items-center p-4 text-lg font-semibold rounded-md bg-[#f0f0f0]">
+      <div className="flex gap-4 items-center text-lg font-semibold">
         <span>Family History</span>
-        <GhostButton onClick={() => setIsOpen(true)}>Add </GhostButton>
+        <Button variant="ghost" onClick={() => setIsOpen(true)}>Add </Button>
         <FamilyHistoryDialog
           userDetailsId={userDetailsId}
           isOpen={isOpen}
@@ -66,7 +67,6 @@ function FamilyHistory({ userDetailsId }: FamilyHistoryProps) {
           }}
         />
       </div>
-      <ScrollArea className="h-[12.5rem] min-h-10">
         <FamilyHistoryClient
           data={data}
           loading={loading}
@@ -74,7 +74,6 @@ function FamilyHistory({ userDetailsId }: FamilyHistoryProps) {
           totalPages={totalPages}
           onSetPageNo={setPage}
         />
-      </ScrollArea>
     </div>
   );
 }

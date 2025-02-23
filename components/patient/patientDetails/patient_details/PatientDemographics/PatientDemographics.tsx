@@ -62,8 +62,7 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
                   Edit Patient
                 </Button>
               </div>
-              <ScrollArea className="h-[calc(80vh-220px)] md:h-[calc(80dvh-200px)]">
-                <div className={styles.infoContainer}>
+                <div className="flex flex-1 flex-row gap-4">
                   <BasicInformation patientDetails={response} />
                   <ContactDetails patientDetails={response} />
                   {/* <PHRRegistration patientDetails={response} />
@@ -72,7 +71,6 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
                   <PatientPreferences patientDetails={response} />
                   <AdditionalInformation patientDetails={response} /> */}
                 </div>
-              </ScrollArea>
             </div>
           )}
         </div>

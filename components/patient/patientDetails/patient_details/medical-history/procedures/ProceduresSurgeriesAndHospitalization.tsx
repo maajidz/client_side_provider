@@ -7,6 +7,10 @@ import { getProcedureData } from "@/services/chartDetailsServices";
 import { ProceduresInterface } from "@/types/procedureInterface";
 import ProceduresSurgeriesAndHospitalizationClient from "./client";
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { columns } from "./column";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { Ghost } from "lucide-react";
 
 interface ProceduresSurgeriesAndHospitalizationProps {
   userDetailsId: string;
@@ -57,9 +61,9 @@ function ProceduresSurgeriesAndHospitalization({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex justify-between items-center p-4 text-lg font-semibold rounded-md bg-[#f0f0f0]">
+      <div className="flex gap-4 items-center text-lg font-semibold">
         <span>Procedures, Surgeries and Hospitalization</span>
-        <GhostButton onClick={() => setIsOpen(true)}> Add </GhostButton>
+        <Button variant="ghost" onClick={() => setIsOpen(true)}> Add </Button>
         <ProceduresSurgeriesAndHospitalizationDialog
           isOpen={isOpen}
           onClose={() => {
@@ -68,16 +72,14 @@ function ProceduresSurgeriesAndHospitalization({
           }}
           userDetailsId={userDetailsId}
         />
-      </div>
-      <ScrollArea className="h-[12.5rem] min-h-10">
-        <ProceduresSurgeriesAndHospitalizationClient
-          data={data}
-          loading={loading}
-          pageNo={page}
-          totalPages={totalPages}
-          onSetPageNo={setPage}
-        />
-      </ScrollArea>
+      <DefaultDataTable
+        columns={columns()}
+        data={data || []}
+        pageNo={page}
+        totalPages={totalPages}
+        onPageChange={(newPage) => setPage(newPage)}
+      />
+    </div>
     </div>
   );
 }
