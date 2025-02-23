@@ -29,8 +29,6 @@ import { createNewPatient } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import PatientConfirmationScreen from "./PatientConfirmationScreen";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
 
 const EditPatientBody = ({
   patientDetails,

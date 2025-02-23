@@ -45,10 +45,10 @@ const InHouseCareTeam = () => {
     handleInHouseCareTeamSearch,
   ]);
 
-  const handleInHouseCareSelect = (user: FetchProviderList) => {
-    setSelectedInHouseCareTeam(user);
-    setProviders([]);
-  };
+  // const handleInHouseCareSelect = (user: FetchProviderList) => {
+  //   setSelectedInHouseCareTeam(user);
+  //   setProviders([]);
+  // };
 
   return (
     <div className="bg-gray-50 p-6 rounded-lg flex-1 gap-6 flex-col flex">

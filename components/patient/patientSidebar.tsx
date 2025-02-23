@@ -19,7 +19,7 @@ export default function PatientSidebar({
   return (
     <aside
       className={cn(
-        `relative flex-none duration-500 bg-white text-gray-600`,
+        `relative flex-none duration-500 text-gray-600`,
         className
       )}
     >

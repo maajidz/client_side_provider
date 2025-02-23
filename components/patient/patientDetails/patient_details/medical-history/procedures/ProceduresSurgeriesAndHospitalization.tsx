@@ -1,16 +1,16 @@
 "use client";
 
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
+
 import ProceduresSurgeriesAndHospitalizationDialog from "@/components/charts/Encounters/Details/ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalizationDialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { getProcedureData } from "@/services/chartDetailsServices";
 import { ProceduresInterface } from "@/types/procedureInterface";
-import ProceduresSurgeriesAndHospitalizationClient from "./client";
+
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { columns } from "./column";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import { Ghost } from "lucide-react";
+
 
 interface ProceduresSurgeriesAndHospitalizationProps {
   userDetailsId: string;
@@ -61,17 +61,19 @@ function ProceduresSurgeriesAndHospitalization({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex gap-4 items-center text-lg font-semibold">
-        <span>Procedures, Surgeries and Hospitalization</span>
-        <Button variant="ghost" onClick={() => setIsOpen(true)}> Add </Button>
-        <ProceduresSurgeriesAndHospitalizationDialog
-          isOpen={isOpen}
-          onClose={() => {
-            setIsOpen(false);
-            fetchProcedures();
-          }}
-          userDetailsId={userDetailsId}
-        />
+      <div className="flex gap-4 text-lg font-semibold flex-col">
+        <div className="flex flex-row items-center gap-4">
+          <span>Procedures, Surgeries and Hospitalization</span>
+          <Button variant="ghost" onClick={() => setIsOpen(true)}> Add </Button>
+          <ProceduresSurgeriesAndHospitalizationDialog
+            isOpen={isOpen}
+            onClose={() => {
+              setIsOpen(false);
+              fetchProcedures();
+            }}
+            userDetailsId={userDetailsId}
+          />
+        </div>
       <DefaultDataTable
         columns={columns()}
         data={data || []}

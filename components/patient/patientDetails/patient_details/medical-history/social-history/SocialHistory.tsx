@@ -1,7 +1,6 @@
 import SocialHistoryDialog from "@/components/charts/Encounters/Details/SocialHistory/SocialHistoryDialog";
 import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import LoadingButton from "@/components/LoadingButton";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { SocialHistoryInterface } from "@/types/socialHistoryInterface";
 import { getSocialHistory } from "@/services/socialHistoryServices";
 import { useCallback, useEffect, useState } from "react";

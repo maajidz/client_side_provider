@@ -72,10 +72,10 @@ export function PatientAppointmentClient({
   }
 
   return (
-    <PageContainer scrollable={true}>
+    <div className="flex flex-col gap-6">
       <div className="flex justify-end">
         <Button
-          variant={"outline"}
+          variant="link"
           className="border-[#84012A] text-[#84012A] hover:text-[#84012A]"
           onClick={() =>
             generateAppointmentPDF({ appointmentData: userAppointment })
@@ -85,7 +85,6 @@ export function PatientAppointmentClient({
         </Button>
       </div>
       {userAppointment.length > 0 ? (
-        <div className="space-y-4">
           <DefaultDataTable
             columns={columns(handleRowClick)}
             data={userAppointment}
@@ -93,7 +92,6 @@ export function PatientAppointmentClient({
             totalPages={totalPages}
             onPageChange={(newPage: number) => setPageNo(newPage)}
           />
-        </div>
       ) : (
         <div className="flex flex-col justify-center items-center justify-items-center pt-20">
           User hasn&apos;t booked any appointment
@@ -105,6 +103,6 @@ export function PatientAppointmentClient({
         appointmentsData={editData}
         isOpen={isDialogOpen}
       />
-    </PageContainer>
+    </div>
   );
 }

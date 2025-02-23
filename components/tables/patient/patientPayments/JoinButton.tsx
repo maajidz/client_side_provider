@@ -1,5 +1,5 @@
 
-import DefaultButton from '@/components/custom_buttons/buttons/DefaultButton';
+import { Button } from '@/components/ui/button';
 import React from 'react'
 
 const JoinButton = ({appointmentLink}: {appointmentLink: string}) => {
@@ -7,9 +7,9 @@ const JoinButton = ({appointmentLink}: {appointmentLink: string}) => {
         window.open(appointmentLink, '_blank'); // Open the link in a new tab
     };
     return (
-        <DefaultButton onClick={handleJoinClick}>
+        <Button onClick={handleJoinClick}>
             Join
-        </DefaultButton>
+        </Button>
     )
 }
 

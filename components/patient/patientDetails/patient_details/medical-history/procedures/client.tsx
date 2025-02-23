@@ -1,6 +1,5 @@
 "use client";
 
-import { CustomDataTable } from "@/components/custom_buttons/table/CustomDataTable";
 import LoadingButton from "@/components/LoadingButton";
 import { ProceduresInterface } from "@/types/procedureInterface";
 import { columns } from "./column";
