@@ -1,4 +1,3 @@
-import { CustomDataTable } from "@/components/custom_buttons/table/CustomDataTable";
 import LoadingButton from "@/components/LoadingButton";
 import { FamilyHistoryResponseInterface } from "@/types/familyHistoryInterface";
 import { columns } from "./column";

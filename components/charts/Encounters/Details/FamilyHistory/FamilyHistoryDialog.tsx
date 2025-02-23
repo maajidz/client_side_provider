@@ -44,8 +44,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import formStyles from "@/components/formStyles.module.css";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 
 function FamilyHistoryDialog({
@@ -172,13 +170,12 @@ function FamilyHistoryDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <ScrollArea className="h-[30rem] max-h-[30rem] p-2.5">
-              <div className={formStyles.formBody}>
+              <div className="flex flex-col gap-6">
                 <FormField
                   control={form.control}
                   name="relationship"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel className="w-fit">Relationship</FormLabel>
                       <FormControl>
                         <Select
@@ -206,7 +203,7 @@ function FamilyHistoryDialog({
                   control={form.control}
                   name="deceased"
                   render={({ field }) => (
-                    <FormItem className="flex items-center space-x-2">
+                    <FormItem className="flex">
                       <FormLabel className="mt-2">Deceased</FormLabel>
                       <FormControl>
                         <Checkbox
@@ -221,7 +218,7 @@ function FamilyHistoryDialog({
                   control={form.control}
                   name="age"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Age</FormLabel>
                       <FormControl>
                         <Input
@@ -246,11 +243,11 @@ function FamilyHistoryDialog({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Active Problems</FormLabel>
-                      <div className="space-y-2">
+                      <div className="flex flex-col gap-1">
                         {activeProblemOptions.map((item) => (
                           <FormItem
                             key={item.id}
-                            className="flex items-center space-x-2"
+                            className="flex-row items-start h-fit"
                           >
                             <FormControl>
                               <Checkbox
@@ -295,7 +292,7 @@ function FamilyHistoryDialog({
                   control={form.control}
                   name="comments"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Comments</FormLabel>
                       <FormControl>
                         <Textarea {...field} />
@@ -313,7 +310,6 @@ function FamilyHistoryDialog({
                   </div>
                 </DialogFooter>
               </div>
-            </ScrollArea>
           </form>
         </Form>
       </DialogContent>

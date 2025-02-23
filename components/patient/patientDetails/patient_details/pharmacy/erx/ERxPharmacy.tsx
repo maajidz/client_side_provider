@@ -1,6 +1,5 @@
 "use client";
 
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import PharmacyDialog from "@/components/charts/Encounters/Details/Pharmacy/PharmacyDialog";
 import ERxPharmacyTable from "./ERxPharmacyTable";
 import { useState } from "react";

@@ -64,16 +64,14 @@ export function DefaultDataTable<TData, TValue>({
             variant="outline"
             size="sm"
             onClick={() => onPageChange(pageNo - 1)}
-            disabled={pageNo <= 1}
-          >
+            disabled={pageNo <= 1}>
             Previous
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => onPageChange(pageNo+1)}
-            disabled={pageNo >= totalPages}
-          >
+            disabled={pageNo >= totalPages}>
             Next
           </Button>
         </div>
@@ -106,8 +104,7 @@ export function DefaultDataTable<TData, TValue>({
                 <TableRow
                   className='hover:text-sky-600 hover:bg-sky-50/50 hover:cursor-pointer font-medium'
                   key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
+                  data-state={row.getIsSelected() && 'selected'}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                     className='p-4'

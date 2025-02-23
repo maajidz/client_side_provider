@@ -24,8 +24,7 @@ import { CreatePastMedicalHistoryType } from "@/services/pastMedicalHistoryInter
 import { createPastMedicalHistory } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import formStyles from "@/components/formStyles.module.css";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 
 interface PastMedicalHistoryDialogProps {
   isOpen: boolean;
@@ -97,14 +96,12 @@ function PastMedicalHistoryDialog({
           <DialogTitle>Add Past Medical History</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <ScrollArea className="max-h-[30rem] h-auto">
-              <div className={formStyles.formBody}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
                 <FormField
                   control={form.control}
                   name="notes"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel className="w-fit">Note</FormLabel>
                       <FormControl>
                         <Textarea {...field} />
@@ -117,7 +114,7 @@ function PastMedicalHistoryDialog({
                   control={form.control}
                   name="glp_refill_note_practice"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>GLP Refill Note Practice - PMH</FormLabel>
                       <FormControl>
                         <Textarea {...field} />
@@ -127,8 +124,6 @@ function PastMedicalHistoryDialog({
                   )}
                 />
                 <SubmitButton label="Save" />
-              </div>
-            </ScrollArea>
           </form>
         </Form>
       </DialogContent>

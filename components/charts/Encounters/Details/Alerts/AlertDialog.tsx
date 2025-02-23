@@ -37,7 +37,6 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertTypeInterface } from "@/types/alertInterface";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const AlertDialog = ({
@@ -146,13 +145,13 @@ const AlertDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <ScrollArea className="max-h-[30rem] h-auto">
-              <div className={formStyles.formBody}>
+            <ScrollArea className="max-h-[90dvh] h-auto">
+              <div className="flex flex-col gap-6">
                 <FormField
                   control={form.control}
                   name="alertName"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Alert Name</FormLabel>
                       <FormControl>
                         <Select
@@ -179,10 +178,10 @@ const AlertDialog = ({
                   control={form.control}
                   name="alertDescription"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Alert Description</FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea className="resize-none" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

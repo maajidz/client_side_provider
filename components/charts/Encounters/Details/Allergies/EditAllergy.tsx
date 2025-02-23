@@ -32,7 +32,7 @@ import { showToast } from "@/utils/utils";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { Button } from "@/components/ui/button";
 
 interface EditAllergyProps {
   selectedAllergy?: AllergenResponseInterfae;
@@ -288,7 +288,7 @@ function EditAllergy({
               </tbody>
             </table>
             <div className="flex flex-row-reverse gap-4">
-              <SubmitButton label="Edit" />
+              <Button>Update</Button>
             </div>
           </form>
         </Form>

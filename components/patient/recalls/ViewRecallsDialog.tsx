@@ -31,33 +31,33 @@ function ViewRecallDialog({
         <DialogHeader>
           <DialogTitle>View Recalls</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col items-start gap-3 p-4 w-full max-w-md">
-          <div className="flex justify-between w-full text-center">
-            <span>Recall Type:</span>
+        <div className="grid md:grid-cols-2 flex-col items-start gap-6 w-full max-w-md font-medium">
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium text-gray-600">Recall Type:</span>
             <span>{selectedRecallData?.type}</span>
           </div>
-          <div className="flex justify-between w-full text-center">
-            <span>Notes:</span>
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium text-gray-600">Notes:</span>
             <span>{selectedRecallData?.notes}</span>
           </div>
-          <div className="flex justify-between w-full text-center">
-            <span>Due Date:</span>
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium text-gray-600">Due Date:</span>
             <span>
               {selectedRecallData?.due_date_period ?? ""}{" "}
               {selectedRecallData?.due_date_value ?? ""}{" "}
               {selectedRecallData?.due_date_unit ?? ""}
             </span>
           </div>
-          <div className="flex justify-between w-full text-center">
-            <span>Provider:</span>
+          <div className="flex flex-col gap-1">
+            <span  className="text-sm font-medium text-gray-600">Provider:</span>
             <span>[Provider Name]</span>
           </div>
-          <div className="flex justify-between w-full text-center">
-            <span>Status:</span>
+          <div className="flex flex-col gap-1">
+            <span  className="text-sm font-medium text-gray-600">Status:</span>
             <span>[Status]</span>
           </div>
-          <div className="flex justify-between w-full text-center">
-            <span>Visit Date:</span>
+          <div className="flex flex-col gap-1">
+            <span  className="text-sm font-medium text-gray-600">Visit Date:</span>
             <span>[Visit Date]</span>
           </div>
         </div>

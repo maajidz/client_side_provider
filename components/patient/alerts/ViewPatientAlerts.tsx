@@ -1,5 +1,4 @@
 import AlertDialog from "@/components/charts/Encounters/Details/Alerts/AlertDialog";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import LoadingButton from "@/components/LoadingButton";
 import { useToast } from "@/components/ui/use-toast";
 import { getAlertData } from "@/services/chartDetailsServices";
@@ -9,6 +8,8 @@ import { columns } from "./columns";
 import { PlusIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 
 const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
   const [page, setPage] = useState<number>(1);
@@ -54,16 +55,17 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex justify-end">
-        <DefaultButton
+    <div className="flex flex-col gap-6">
+      <div className="flex justify-between items-center">
+        <Heading title="Alerts"/>
+        <Button
           onClick={() => {
             setIsDialogOpen((prev) => ({ ...prev, create: true }));
           }}
         >
           <PlusIcon />
           Alerts
-        </DefaultButton>
+        </Button>
         <AlertDialog
           userDetailsId={userDetailsId}
           onClose={() => {
@@ -73,7 +75,7 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
           isOpen={isDialogOpen.create}
         />
       </div>
-      <div className="space-y-3">
+      <div className="flex flex-col gap-6">
         {data?.data && (
           <DefaultDataTable
             columns={columns({

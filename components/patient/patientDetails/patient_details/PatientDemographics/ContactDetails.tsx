@@ -1,6 +1,5 @@
 import { PatientDetails } from "@/types/userInterface";
 import React from "react";
-import styles from "./patient.module.css";
 
 const ContactDetails = ({
   patientDetails,

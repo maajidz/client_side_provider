@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { showToast } from "@/utils/utils";
 import InjectionsDialog from "@/components/charts/Encounters/Details/Injections/InjectionsDialog";
 import { PlusIcon } from "lucide-react";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 
 const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
   const [editData, setEditData] = useState<InjectionsData | null>(null);
@@ -72,8 +71,9 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
+    <div className="flex flex-col gap-6 mt-6">
       <div className="flex justify-end">
-        <DefaultButton
+        <Button
           onClick={() => {
             setEditData(null);
             setIsDialogOpen(true);
@@ -81,7 +81,7 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
         >
             <PlusIcon />
             Injections
-        </DefaultButton>
+        </Button>
         <InjectionsDialog
           userDetailsId={userDetailsId}
           injectionsData={editData}
@@ -92,14 +92,14 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
           }}
         />
       </div>
-      <div className="flex flex-col gap-3 m-5">
+      <div className="flex flex-col gap-3">
         {injectionsData ? (
           injectionsData?.data.map((injections) => (
             <div
               key={injections.id}
               className="flex flex-row justify-between border rounded-md w-full p-3"
             >
-              <div>
+              <div className="flex flex-col gap-4">
                 <FormLabels label={injections.injection_name} value="" />
                 <FormLabels
                   label="Intake"
@@ -147,6 +147,7 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
         ) : (
           <div> No data </div>
         )}
+      </div>
       </div>
     </>
   );

@@ -3,11 +3,11 @@ import PageContainer from "@/components/layout/page-container";
 import PatientAppointments from "@/components/patient/appointments/PatientAppointments";
 import { useParams } from "next/navigation";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/dashboard" },
-  { title: "Patients", link: "/dashboard/provider/patient" },
-  { title: "Appointments", link: "" },
-];
+// const breadcrumbItems = [
+//   { title: "Dashboard", link: "/dashboard" },
+//   { title: "Patients", link: "/dashboard/provider/patient" },
+//   { title: "Appointments", link: "" },
+// ];
 
 function Page() {
   const { userDetailsId } = useParams();

@@ -35,8 +35,6 @@ import { useToast } from "@/hooks/use-toast";
 import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import formStyles from "@/components/formStyles.module.css";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ProceduresSurgeriesAndHospitalizationDialog = ({
   userDetailsId,
@@ -146,16 +144,18 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
           <DialogTitle>
             {procedureData ? "Update Procedure" : "Add Procedure"}
           </DialogTitle>
+          {/* <DialogDescription>
+            Make changes to your profile here. Click save when you're done.
+          </DialogDescription> */}
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <ScrollArea className="max-h-[30rem] h-auto">
-              <div className={formStyles.formBody}>
+              <div className="flex flex-col gap-6">
                 <FormField
                   control={form.control}
                   name="type"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel className="w-fit">Type</FormLabel>
                       <FormControl>
                         <Select
@@ -185,7 +185,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                   control={form.control}
                   name="name"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel className="w-fit">Name</FormLabel>
                       <FormControl>
                         <Input {...field} />
@@ -194,11 +194,12 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                     </FormItem>
                   )}
                 />
+                <div className="flex gap-2">
                 <FormField
                   control={form.control}
                   name="fromDate"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem>
                       <FormLabel>From Date:</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
@@ -211,7 +212,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                   control={form.control}
                   name="toDate"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>To Date:</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
@@ -220,11 +221,12 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                     </FormItem>
                   )}
                 />
+                </div>
                 <FormField
                   control={form.control}
                   name="notes"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Notes</FormLabel>
                       <FormControl>
                         <Textarea {...field} />
@@ -235,7 +237,6 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                 />
                 <SubmitButton label="Save" />
               </div>
-            </ScrollArea>
           </form>
         </Form>
       </DialogContent>

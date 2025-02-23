@@ -1,6 +1,5 @@
 import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import formStyles from "@/components/formStyles.module.css";
 import {
   Dialog,
   DialogContent,
@@ -133,29 +132,28 @@ export default function AddDiagnosesDialog({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className={formStyles.formBody}
           >
             <ScrollArea className="max-h-[30rem] h-auto">
-              <table className="w-full border-collapse">
+              <table className=" table-auto">
                 <thead>
-                  <tr className="text-left font-semibold border-b">
-                    <th className="px-3 py-2">Diagnosis</th>
-                    <th className="px-3 py-2">ICD Code</th>
-                    <th className="px-3 py-2">From Date</th>
-                    <th className="px-3 py-2">To Date</th>
-                    <th className="px-3 py-2">Status</th>
-                    <th className="px-3 py-2">Notes</th>
+                  <tr className="text-left font-medium">
+                    <th className="">Diagnosis</th>
+                    <th className="indent-2">ICD Code</th>
+                    <th className="indent-2">From Date</th>
+                    <th className="indent-2">To Date</th>
+                    <th className="indent-2">Status</th>
+                    <th className="indent-2">Notes</th>
                   </tr>
                 </thead>
-                <tbody className="space-y-2">
+                <tbody  >
                   {fields.map((field, index) => (
-                    <tr key={field.id} className="space-x-4">
-                      <td className="p-2">
+                    <tr key={field.id}  >
+                      <td  >
                         <FormField
                           control={form.control}
                           name={`diagnoses.${index}.diagnosis_name`}
                           render={({ field }) => (
-                            <FormItem className={formStyles.formItem}>
+                            <FormItem>
                               <Input
                                 {...field}
                                 placeholder="Search by name or code"
@@ -167,12 +165,12 @@ export default function AddDiagnosesDialog({
                         />
                       </td>
 
-                      <td className="p-2">
+                      <td className="">
                         <FormField
                           control={form.control}
                           name={`diagnoses.${index}.ICD_Code`}
                           render={({ field }) => (
-                            <FormItem className={formStyles.formItem}>
+                            <FormItem className="m-2">
                               <FormControl>
                                 <Input {...field} value={field.value} />
                               </FormControl>
@@ -182,12 +180,12 @@ export default function AddDiagnosesDialog({
                         />
                       </td>
 
-                      <td className="p-2">
+                      <td className="">
                         <FormField
                           control={form.control}
                           name={`diagnoses.${index}.fromDate`}
                           render={({ field }) => (
-                            <FormItem className={formStyles.formItem}>
+                            <FormItem className="m-2">
                               <Input
                                 {...field}
                                 type="date"
@@ -199,12 +197,12 @@ export default function AddDiagnosesDialog({
                         />
                       </td>
 
-                      <td className="p-2">
+                      <td className="">
                         <FormField
                           control={form.control}
                           name={`diagnoses.${index}.toDate`}
                           render={({ field }) => (
-                            <FormItem className={formStyles.formItem}>
+                            <FormItem className="m-2">
                               <FormControl>
                                 <Input
                                   {...field}
@@ -218,12 +216,12 @@ export default function AddDiagnosesDialog({
                         />
                       </td>
 
-                      <td className="p-2">
+                      <td className="">
                         <FormField
                           control={form.control}
                           name={`diagnoses.${index}.status`}
                           render={({ field }) => (
-                            <FormItem className={formStyles.formItem}>
+                            <FormItem className="m-2">
                               <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
@@ -246,12 +244,12 @@ export default function AddDiagnosesDialog({
                         />
                       </td>
 
-                      <td className="p-2">
+                      <td className="">
                         <FormField
                           control={form.control}
                           name={`diagnoses.${index}.notes`}
                           render={({ field }) => (
-                            <FormItem className={formStyles.formItem}>
+                            <FormItem className="m-2">
                               <FormControl>
                                 <Input {...field} value={field.value} />
                               </FormControl>
@@ -261,7 +259,7 @@ export default function AddDiagnosesDialog({
                       </td>
 
                       {fields.length > 1 && (
-                        <td className="p-2">
+                        <td className="">
                           <Button
                             type="button"
                             variant="ghost"

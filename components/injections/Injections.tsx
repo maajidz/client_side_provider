@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import CustomTabsTrigger from "../custom_buttons/buttons/CustomTabsTrigger";
 import DefaultButton from "../custom_buttons/buttons/DefaultButton";
 import { PlusIcon } from "lucide-react";
+import { Button } from "../ui/button";
 
 function Injections() {
   const [activeTab, setActiveTab] = useState("injectionOrders");
@@ -61,14 +62,14 @@ function Injections() {
             </TabsList>
             {activeTab === "injectionOrders" ? (
               <>
-                <DefaultButton
+                <Button
                   onClick={() => {
                     setIsInjectionDialogOpen(true);
                   }}
                 >
                   <PlusIcon />
                   <div>Injection Order</div>
-                </DefaultButton>
+                </Button>
                 <InjectionOrders
                   isOpen={isInjectionDialogOpen}
                   onClose={handleInjectionDialogClose}

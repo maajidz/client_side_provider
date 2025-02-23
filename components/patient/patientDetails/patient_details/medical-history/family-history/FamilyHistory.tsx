@@ -1,6 +1,4 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import FamilyHistoryDialog from "@/components/charts/Encounters/Details/FamilyHistory/FamilyHistoryDialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { getFamilyHistoryData } from "@/services/chartDetailsServices";
 import { FamilyHistoryResponseInterface } from "@/types/familyHistoryInterface";
 import FamilyHistoryClient from "./client";

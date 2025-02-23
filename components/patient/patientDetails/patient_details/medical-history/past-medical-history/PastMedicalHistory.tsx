@@ -1,8 +1,6 @@
 import LoadingButton from "@/components/LoadingButton";
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import PastMedicalHistoryDialog from "@/components/charts/Encounters/Details/PastMedicalHistory/PastMedicalHistoryDialog";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { getPastMedicalHistory } from "@/services/chartDetailsServices";
 import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
 import { useCallback, useEffect, useState } from "react";

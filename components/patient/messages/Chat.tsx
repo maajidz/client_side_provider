@@ -3,19 +3,16 @@ import { Message, UserMessagesInterface } from "@/types/messageInterface";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-import messageStyles from "./messages.module.css";
 import { formatSentAt } from "@/utils/dateUtils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User } from "lucide-react";
+import { SendHorizonalIcon } from "lucide-react";
 import { fetchMessages } from "@/services/messageService";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
-import { Separator } from "@/components/ui/separator";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import LoadingButton from "@/components/LoadingButton";
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
+import { Button } from "@/components/ui/button";
 
 export default function ChatPage({
   userId,
@@ -169,74 +166,76 @@ export default function ChatPage({
 
   return (
     <div className="flex flex-col gap-8 h-full ">
-      <div className={`flex justify-between`}>
-        <div className="text-[#84012A] font-semibold text-base capitalize">
+      <div className="flex justify-between">
+        <div className="font-semibold text-base capitalize">
           {userDetails.firstName} {userDetails.lastName}
         </div>
       </div>
-      <Separator />
-      <ScrollArea className="h-[30vh]">
+      <div className="flex h-[10vh] flex-grow flex-col">
+      <ScrollArea className="h-[10vh] flex flex-grow border-t border-gray-100">
         <div className="flex flex-col flex-1 gap-6">
           {loading && (
             <div className="h-4">
               <LoadingButton />
             </div>
           )}
-            <GhostButton onClick={() => setPage((prev) => prev + 1)}>
+            <Button variant="link" onClick={() => setPage((prev) => prev + 1)}>
               {" "}
               Load More Messages
-            </GhostButton>
+            </Button>
           {messages.map((msg) => (
             <div
               key={msg.id}
-              className={`flex ${
+              className={`flex items-start ${
                 msg.senderID === userId ? "flex-row-reverse" : ""
               } gap-2`}
             >
               <Avatar
-                className={`flex h-10 w-10 rounded-full border ${
-                  msg.senderID === userId ? "border-2 border-[#FFE7E7]" : ""
+                className={`flex h-8 w-8 rounded-full ${
+                  msg.senderID === userId ? "" : ""
                 }`}
               >
-                <AvatarImage src="" />
+                <AvatarImage src="" className="border-2 border-[#FFE7E7]"/>
                 <AvatarFallback className="text-[#84012A] bg-[#FFE7E7] p-1">
-                  <User />
+                  <span className="text-xs font-semibold">AF</span>
                 </AvatarFallback>
               </Avatar>
+              <div className="flex flex-col gap-1">
+              <div className="flex flex-col text-sm font-normal">
               <div
                 className={`${
                   msg.senderID === userId
-                    ? messageStyles.senderMessageBody
-                    : messageStyles.recieverMessageBody
+                    ? "flex w-fit rounded-full bg-rose-950 text-rose-100 p-3 pl-4 pr-4"
+                    : "flex w-fit rounded-full bg-gray-300/50 text-gray-900 p-3 pl-4 pr-4"
                 }`}
               >
-                <div className={messageStyles.messageBody}>
-                  <div className={messageStyles.message}>{msg.content}</div>
-                  <div
-                    className={`${
-                      msg.senderID === userId
-                        ? messageStyles.senderTimeStamp
-                        : messageStyles.recieverTimeStamp
-                    }`}
-                  >
-                    {formatSentAt(msg.sentAt)}
-                  </div>
-                </div>
+              <div className="inline">{msg.content}</div>
               </div>
               {/* <div ref={chatEndRef} /> */}
+            </div>
+            <div
+              className={`${
+                msg.senderID === userId
+                  ? "text-[10px] font-medium text-gray-400 self-end"
+                  : "text-[10px] font-medium text-gray-400 self-end"
+              }`}>
+                    {formatSentAt(msg.sentAt)}
+            </div>
+            </div>
             </div>
           ))}
           <div ref={endOfMessagesRef} />
         </div>
       </ScrollArea>
-      <div className={messageStyles.sendButtonContainer}>
+      <div className="flex flex-row gap-3 border-t pt-6 border-gray-100 items-start">
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
           className="resize-none"
         />
-        <DefaultButton onClick={() => handleSendMessage()}>Send</DefaultButton>
+        <Button onClick={() => handleSendMessage()}>Send<SendHorizonalIcon type=""/></Button>
+      </div>
       </div>
     </div>
   );

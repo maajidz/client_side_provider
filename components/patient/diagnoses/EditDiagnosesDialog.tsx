@@ -37,7 +37,6 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import formStyles from "@/components/formStyles.module.css";
 
 interface EditDiagnosisDialogProps {
   isOpen: boolean;
@@ -142,12 +141,13 @@ export default function EditDiagnosisDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="h-[30rem]">
+      <DialogContent className="max-h-[90dvh] h-auto">
         <DialogHeader>
           <DialogTitle>Edit Diagnosis</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="max-h-[30rem] h-auto">
-          <table className="w-full border rounded-md p-3">
+        <ScrollArea className="max-h-[30rem] h-auto flex gap-6 flex-col">
+          <div className="flex flex-col gap-6">
+          <table className="w-full border rounded-md">
             <thead>
               <tr className="border-b bg-[#eeeeee] ">
                 <th className="px-3 py-2 text-left">Code Type</th>
@@ -171,12 +171,13 @@ export default function EditDiagnosisDialog({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               {/* From Date */}
-              <div className={formStyles.formBody}>
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-row gap-2 items-end">
                 <FormField
                   control={form.control}
                   name="fromDate"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <label>From Date</label>
                       <FormControl>
                         <Input type="date" {...field} />
@@ -191,7 +192,7 @@ export default function EditDiagnosisDialog({
                   control={form.control}
                   name="toDate"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>To Date</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
@@ -199,13 +200,14 @@ export default function EditDiagnosisDialog({
                     </FormItem>
                   )}
                 />
+                </div>
 
                 {/* Status */}
                 <FormField
                   control={form.control}
                   name="status"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Select Status</FormLabel>
                       <Select
                         onValueChange={field.onChange}
@@ -238,7 +240,7 @@ export default function EditDiagnosisDialog({
                   control={form.control}
                   name="notes"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Notes</FormLabel>
                       <FormControl>
                         <Textarea
@@ -269,6 +271,7 @@ export default function EditDiagnosisDialog({
               </div>
             </form>
           </Form>
+          </div>
         </ScrollArea>
       </DialogContent>
     </Dialog>

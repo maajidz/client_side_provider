@@ -3,6 +3,7 @@ import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -36,7 +37,6 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Button } from "@/components/ui/button";
-import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Load Editor dynamically to prevent SSR issues
@@ -157,18 +157,18 @@ function SocialHistoryDialog({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <ScrollArea className="max-h-[30rem] h-auto">
-              <div className={formStyles.formBody}>
+              <div>
                 <FormField
                   control={form.control}
                   name="content"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <div className="flex flex-col gap-2 border rounded-lg p-2">
+                        <div className="flex flex-col gap-2 border rounded-lg">
                           <Editor
                             editorState={editorState}
                             wrapperClassName="demo-wrapper"
-                            editorClassName="demo-editor"
+                            editorClassName="demo-editor pl-4 pr-4"
                             onEditorStateChange={(newState) => {
                               setEditorState(newState);
                               field.onChange(
@@ -204,7 +204,12 @@ function SocialHistoryDialog({
                     </FormItem>
                   )}
                 />
-                <div className="flex items-end justify-end gap-2 w-full">
+              </div>
+            </ScrollArea>
+          </form>
+        </Form>
+        <DialogFooter>
+        <div className="flex items-end justify-end gap-2 w-full">
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -215,11 +220,8 @@ function SocialHistoryDialog({
                     Cancel
                   </Button>
                   <SubmitButton label="Save" disabled={loading} />
-                </div>
-              </div>
-            </ScrollArea>
-          </form>
-        </Form>
+        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

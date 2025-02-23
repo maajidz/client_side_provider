@@ -1,4 +1,3 @@
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import {
   Form,
   FormField,
@@ -14,6 +13,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Heading } from "@/components/ui/heading";
 import { RootState } from "@/store/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -35,6 +35,7 @@ import { PlusIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { Button } from "@/components/ui/button";
 
 const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -95,15 +96,16 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-      <div className="flex justify-end">
-        <DefaultButton
+      <div className="flex justify-between">
+        <Heading title="Recalls" />
+        <Button
           onClick={() => {
             setIsDialogOpen((prev) => ({ ...prev, create: true }));
           }}
         >
           <PlusIcon />
           Recalls
-        </DefaultButton>
+        </Button>
         <RecallsDialog
           userDetailsId={userDetailsId}
           onClose={() => {
@@ -114,12 +116,12 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
         />
       </div>
       <Form {...form}>
-        <form className="flex gap-5">
+        <form className="flex gap-2 w-fit">
           <FormField
             control={form.control}
             name="type"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="">
                 <FormLabel className="w-fit">Type</FormLabel>
                 <FormControl>
                   <Select
@@ -179,7 +181,7 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
       </Form>
 
       {/* Results Table */}
-      <div className="space-y-3 py-5">
+      <div className="flex gap-6 flex-col">
         {loading ? (
           <LoadingButton />
         ) : (

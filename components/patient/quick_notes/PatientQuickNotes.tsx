@@ -6,7 +6,9 @@ import QuickNotesDialog from "./QuickNotesDialog";
 import ViewPatientQuickNotes from "./ViewPatientQuickNotes";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
+
 
 const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
   // Dialog State
@@ -57,15 +59,16 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-      <div className="flex justify-end">
-        <DefaultButton
+      <div className="flex justify-between">
+        <Heading title="Quick Notes" />
+        <Button
           onClick={() => {
             setIsDialogOpen(true);
           }}
         >
             <PlusIcon />
             Note
-        </DefaultButton>
+        </Button>
         <QuickNotesDialog
           userDetailsId={userDetailsId}
           isOpen={isDialogOpen}

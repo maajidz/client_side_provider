@@ -83,7 +83,7 @@ const InHouseCareTeam = () => {
                 <div
                   key={user.id}
                   className="border-2 border-gray-300 rounded-lg p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleInHouseCareTeamSelect(user)}
+                  // onClick={() => handleInHouseCareTeamSearch(user)}
                 >
                   <div className="text-[#84012A] text-base font-medium">
                     {user.firstName} {user.lastName}

@@ -214,7 +214,7 @@ function InjectionOrders({
           <LoadingButton />
         ) : (
           <Form {...form}>
-            <ScrollArea className="h-[30rem]">
+            <ScrollArea className="h-max-[80dvh] h-auto">
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className={formStyles.formBody}>
                   {!userDetailsId && (
@@ -222,7 +222,7 @@ function InjectionOrders({
                       control={form.control}
                       name="userDetailsId"
                       render={({ field }) => (
-                        <FormItem className={formStyles.formItem}>
+                        <FormItem >
                           <FormLabel>Patient</FormLabel>
                           <FormControl>
                             <div className="relative">
@@ -270,7 +270,7 @@ function InjectionOrders({
                     control={form.control}
                     name="injection_name"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel>Injection</FormLabel>
                         <FormControl>
                           <Input
@@ -286,7 +286,7 @@ function InjectionOrders({
                     control={form.control}
                     name="providerId"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel>Ordered By</FormLabel>
                         <FormControl>
                           <Select
@@ -321,14 +321,14 @@ function InjectionOrders({
                       </FormItem>
                     )}
                   />
-                  <div className={formStyles.formItem}>
-                    <div>Dosage</div>
-                    <div className="flex gap-3">
+                  <div >
+                    <div className="flex gap-3 items-end">
                       <FormField
                         control={form.control}
                         name="dosage.dosage_quantity"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem >
+                          <FormLabel>Dosage</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
@@ -373,7 +373,7 @@ function InjectionOrders({
                     control={form.control}
                     name="frequency"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel className="w-full">Frequency</FormLabel>
                         <FormControl>
                           <Select
@@ -400,14 +400,14 @@ function InjectionOrders({
                       </FormItem>
                     )}
                   />
-                  <div className={formStyles.formItem}>
-                    <div>Period</div>
-                    <div className="flex gap-3">
+                  <div >
+                    <div className="flex gap-3 items-end">
                       <FormField
                         control={form.control}
                         name="period.period_number"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem >
+                          <FormLabel className="w-full">Period</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
@@ -455,7 +455,7 @@ function InjectionOrders({
                     control={form.control}
                     name="parental_route"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel className="w-full">Parental Route</FormLabel>
                         <FormControl>
                           <Select
@@ -483,7 +483,7 @@ function InjectionOrders({
                     control={form.control}
                     name="note_to_nurse"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel className="w-full">Note to Nurse</FormLabel>
                         <FormControl>
                           <Textarea
@@ -499,7 +499,7 @@ function InjectionOrders({
                     control={form.control}
                     name="comments"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel className="w-full">Comments</FormLabel>
                         <FormControl>
                           <Textarea

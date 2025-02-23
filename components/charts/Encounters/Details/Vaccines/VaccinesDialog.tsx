@@ -41,7 +41,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
-import formStyles from "@/components/formStyles.module.css";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -153,7 +152,7 @@ function VaccinesDialog({
 
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] flex flex-col gap-6">
         <DialogHeader>
           <DialogTitle>
             {vaccinesData ? "Edit Vaccine" : "Add vaccine"}
@@ -161,12 +160,12 @@ function VaccinesDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className={formStyles.formBody}>
+            <div className="flex flex-col gap-6">
               <FormField
                 control={form.control}
                 name="vaccine_name"
                 render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
+                  <FormItem >
                     <FormLabel>Vaccine</FormLabel>
                     <FormControl>
                       <Input {...field} />
@@ -179,7 +178,7 @@ function VaccinesDialog({
                 control={form.control}
                 name="in_series"
                 render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
+                  <FormItem >
                     <FormLabel className="w-fit"># in Series</FormLabel>
                     <FormControl>
                       <Input {...field} />
@@ -192,7 +191,7 @@ function VaccinesDialog({
                 control={form.control}
                 name="date"
                 render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
+                  <FormItem >
                     <FormLabel>From Date:</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} className="w-fit" />
@@ -205,7 +204,7 @@ function VaccinesDialog({
                 control={form.control}
                 name="source"
                 render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
+                  <FormItem >
                     <FormLabel className="w-fit">Source</FormLabel>
                     <FormControl>
                       <Select
@@ -230,7 +229,7 @@ function VaccinesDialog({
                 control={form.control}
                 name="notes"
                 render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
+                  <FormItem >
                     <FormLabel>Notes</FormLabel>
                     <FormControl>
                       <Textarea {...field} />

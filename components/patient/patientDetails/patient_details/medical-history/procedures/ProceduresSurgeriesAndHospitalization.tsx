@@ -23,7 +23,7 @@ function ProceduresSurgeriesAndHospitalization({
   const [data, setData] = useState<ProceduresInterface[]>([]);
 
   // Loading State
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   // Pagination Data
   const itemsPerPage = 3;

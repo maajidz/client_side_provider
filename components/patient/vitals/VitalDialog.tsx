@@ -27,7 +27,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
-import formStyles from "@/components/formStyles.module.css";
 
 interface VitalsDialogProps {
   isOpen: boolean;
@@ -139,7 +138,7 @@ function VitalDialog({
                 control={form.control}
                 name="dateTime"
                 render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
+                  <FormItem >
                     <FormLabel className="w-fit">Date</FormLabel>
                     <FormControl>
                       <Input
@@ -155,15 +154,16 @@ function VitalDialog({
               />
 
               {/* Weight */}
-              <div className={formStyles.formItem}>
-                <div>Weight</div>
+              <div className="flex flex-col gap-1">
                 <div className="flex gap-3 w-full items-end">
                   <FormField
                     control={form.control}
                     name="weightLbs"
                     render={({ field }) => (
-                      <FormItem className={`${formStyles.formItem} w-full`}>
+                      <FormItem className="w-full">
+                      <FormLabel className="w-fit">Weight</FormLabel>
                         <FormControl>
+                          <div className="relative">
                           <Input
                             type="number"
                             value={field.value ?? ""}
@@ -171,19 +171,20 @@ function VitalDialog({
                               field.onChange(event.target.valueAsNumber)
                             }
                           />
+                          <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">lbs</span>
+                          </div>
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <span>lbs</span>
                   <FormField
                     control={form.control}
                     name="weightOzs"
                     render={({ field }) => (
-                      <FormItem className={`${formStyles.formItem} w-full`}>
+                      <FormItem className="w-full">
                         <FormControl>
+                          <div className="relative">
                           <Input
                             {...field}
                             type="number"
@@ -192,24 +193,21 @@ function VitalDialog({
                               field.onChange(event.target.valueAsNumber)
                             }
                           />
+                          <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">ozs</span>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <span>ozs</span>
-                </div>
-              </div>
-
-              <div className={formStyles.formItem}>
-                <div>Height</div>
-                <div className="flex gap-3 w-full items-end">
                   <FormField
                     control={form.control}
                     name="heightFeets"
                     render={({ field }) => (
-                      <FormItem className={`${formStyles.formItem} w-full`}>
+                      <FormItem className="w-full">
+                      <FormLabel className="w-fit">Height</FormLabel>
                         <FormControl>
+                          <div className="relative">
                           <Input
                             {...field}
                             type="number"
@@ -218,18 +216,20 @@ function VitalDialog({
                               field.onChange(event.target.valueAsNumber)
                             }
                           />
+                        <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">feet</span>
+                        </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <span>feet</span>
                   <FormField
                     control={form.control}
                     name="heightInches"
                     render={({ field }) => (
-                      <FormItem className={`${formStyles.formItem} w-full`}>
+                      <FormItem className="w-full">
                         <FormControl>
+                          <div className="relative">
                           <Input
                             {...field}
                             type="number"
@@ -238,12 +238,13 @@ function VitalDialog({
                               field.onChange(event.target.valueAsNumber)
                             }
                           />
+                          <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">inches</span>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <span>inches</span>
                 </div>
               </div>
 
@@ -252,7 +253,7 @@ function VitalDialog({
                 control={form.control}
                 name="BMI"
                 render={({ field }) => (
-                  <FormItem className={formStyles.formItem}>
+                  <FormItem >
                     <FormLabel>BMI</FormLabel>
                     <FormControl>
                       <Input
@@ -276,9 +277,10 @@ function VitalDialog({
                   control={form.control}
                   name="startingWeight"
                   render={({ field }) => (
-                    <FormItem className={`${formStyles.formItem} w-full`}>
+                    <FormItem className="w-full">
                       <FormLabel>Starting Weight</FormLabel>
                       <FormControl>
+                        <div className="relative">
                         <Input
                           {...field}
                           type="number"
@@ -287,21 +289,23 @@ function VitalDialog({
                             field.onChange(event.target.valueAsNumber)
                           }
                         />
+                        <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">lbs</span>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <span>lbs</span>
 
                 {/* Goal Weight */}
                 <FormField
                   control={form.control}
                   name="goalWeight"
                   render={({ field }) => (
-                    <FormItem className={`${formStyles.formItem} w-full`}>
+                    <FormItem className="w-full">
                       <FormLabel>Goal Weight</FormLabel>
                       <FormControl>
+                        <div className="relative">
                         <Input
                           {...field}
                           type="number"
@@ -310,12 +314,13 @@ function VitalDialog({
                             field.onChange(event.target.valueAsNumber)
                           }
                         />
+                        <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">lbs</span>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <span>lbs</span>
               </div>
               <DialogFooter>
                 <div className="flex justify-end gap-2 w-fit">

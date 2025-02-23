@@ -7,8 +7,9 @@ import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import VitalDialog from "./VitalDialog";
 import { PlusIcon } from "lucide-react";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 
 const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   // Vitals State
@@ -65,16 +66,17 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-      <div className="flex justify-end mb-3">
-        <DefaultButton
+      <div className="flex justify-between">
+        <Heading title="Vitals" />
+        <Button
           onClick={() => {
             setEditData(undefined);
             setIsDialogOpen(true);
           }}
         >
-          <PlusIcon />
           Add Vitals
-        </DefaultButton>
+          <PlusIcon />
+        </Button>
         <VitalDialog
           isOpen={isDialogOpen}
           vitalsData={editData}
@@ -82,7 +84,7 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
           onClose={handleDialogClose}
         />
       </div>
-      <div className="space-y-3">
+      <div className="flex flex-col gap-6">
         <DefaultDataTable
           columns={columns({
             fetchVitalsData,

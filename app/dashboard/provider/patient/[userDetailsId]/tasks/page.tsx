@@ -2,7 +2,6 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
 import PatientTasks from "@/components/patient/tasks/PatientTasks";
-import { Heading } from "@/components/ui/heading";
 import { useParams } from "next/navigation";
 
 const breadcrumbItems = [
@@ -21,7 +20,7 @@ function Page() {
     <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
-        <Heading title="Tasks" description="" />
+        {/* <Heading title="Tasks" description="" /> */}
       </div>
       <PatientTasks userDetailsId={userDetailsId} />
     </PageContainer>

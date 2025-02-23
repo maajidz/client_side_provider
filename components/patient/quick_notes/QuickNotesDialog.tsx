@@ -1,8 +1,8 @@
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -27,8 +27,8 @@ import {
   createQuickNote,
   updateQuickNotes,
 } from "@/services/quickNotesServices";
-import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 const QuickNotesDialog = ({
   userDetailsId,
@@ -120,20 +120,20 @@ const QuickNotesDialog = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <ScrollArea className="max-h-[30rem] h-auto">
-              <div className={formStyles.formBody}>
+              <div >
                 <FormField
                   control={form.control}
                   name="notes"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea {...field} className="resize-none" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <SubmitButton label="Save" />
+                <DialogFooter><Button>Save</Button></DialogFooter>
               </div>
             </ScrollArea>
           </form>
