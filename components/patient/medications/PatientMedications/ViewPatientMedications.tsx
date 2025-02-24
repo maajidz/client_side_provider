@@ -38,7 +38,10 @@ const ViewPatientMedications = ({
             limit: itemsPerPage,
           });
           if (response) {
-            setResultList(response.data);
+            const filteredData = response.data.filter(
+              (prescription: PrescriptionDataInterface | null) => prescription !== null
+            );
+            setResultList(filteredData);
             setTotalPages(Math.ceil(response.totalCount / itemsPerPage));
           }
           setLoading(false);
