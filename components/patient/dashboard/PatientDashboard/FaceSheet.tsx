@@ -66,14 +66,14 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               href="allergies"
               userDetailsId={userDetailsId}
             />
-            {userData?.allergies && userData.allergies.length > 0 ? (
+            {userData?.allergies && userData?.allergies?.length > 0 ? (
               userData?.allergies.map((allergies, index) => (
                 <div
                   className={`${styles.infoTextLabel} text-[#fb6e52]`}
-                  key={allergies.id}
+                  key={allergies?.id}
                 >
                   {index === 0 ? "" : ","}
-                  {allergies.Allergen}
+                  {allergies?.Allergen}
                 </div>
               ))
             ) : (
@@ -150,13 +150,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                   </div>
                   <div className={styles.subContainer}>
                     {userDashboardData?.medicalHistory ? (
-                      <div key={userDashboardData?.medicalHistory.id}>
+                      <div key={userDashboardData?.medicalHistory?.id}>
                         <div
                           className={`${styles.sectionLabel} text-[#444444]`}
                         >
                           Medical History Recorded on{" "}
                           {new Date(
-                            userDashboardData?.medicalHistory.updatedAt
+                            userDashboardData?.medicalHistory?.updatedAt
                           ).toLocaleDateString("en-US", {
                             month: "short",
                             day: "2-digit",
@@ -172,7 +172,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                         />
                         <FaceSheetLabels
                           label="Notes:"
-                          value={userDashboardData?.medicalHistory.notes}
+                          value={userDashboardData?.medicalHistory?.notes}
                         />
                       </div>
                     ) : (
@@ -186,13 +186,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                   </div>
                   <div className="flex flex-col gap-3">
                     {userDashboardData?.familyHistory ? (
-                      <div key={userDashboardData?.familyHistory.id}>
+                      <div key={userDashboardData?.familyHistory?.id}>
                         <div
                           className={`${styles.sectionLabel} text-[#444444]`}
                         >
                           Family History Recorded on{" "}
                           {new Date(
-                            userDashboardData?.familyHistory.updatedAt
+                            userDashboardData?.familyHistory?.updatedAt
                           ).toLocaleDateString("en-US", {
                             month: "short",
                             day: "2-digit",
@@ -201,11 +201,11 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                         </div>
                         <FaceSheetLabels
                           label="Relationship/Deceased:"
-                          value={userDashboardData?.familyHistory.relationship}
+                          value={userDashboardData?.familyHistory?.relationship}
                         />
                         <FaceSheetLabels
                           label="Age:"
-                          value={userDashboardData?.familyHistory?.age.toString()}
+                          value={userDashboardData?.familyHistory?.age?.toString()}
                         />
                       </div>
                     ) : (
@@ -219,13 +219,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                   </div>
                   <div className="flex flex-col gap-3">
                     {userDashboardData?.socialHistories ? (
-                      <div key={userDashboardData?.socialHistories.id}>
+                      <div key={userDashboardData?.socialHistories?.id}>
                         <div
                           className={`${styles.sectionLabel} text-[#444444]`}
                         >
                           Social History Recorded on{" "}
                           {new Date(
-                            userDashboardData?.socialHistories.updatedAt
+                            userDashboardData?.socialHistories?.updatedAt
                           ).toLocaleDateString("en-US", {
                             month: "short",
                             day: "2-digit",
@@ -235,7 +235,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                         <div
                           className={styles.infoTextLabel}
                           dangerouslySetInnerHTML={{
-                            __html: userDashboardData?.socialHistories.content,
+                            __html: userDashboardData?.socialHistories?.content,
                           }}
                         />
                       </div>
@@ -255,19 +255,22 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             />
             <div className={styles.subContainer}>
               {userDashboardData?.supplements ? (
-                  <div key={userDashboardData?.supplements.id} className={styles.dataContainer}>
-                    <div className={`${styles.infoTextLabel}`}>
-                      {userDashboardData?.supplements.supplement} {""}
-                      {userDashboardData?.supplements.manufacturer} {""}
-                      {userDashboardData?.supplements.dosage} {""}
-                      {userDashboardData?.supplements.unit}{" "}
-                    </div>
-                    <div className={styles.infoSub}>
-                      {userDashboardData?.supplements.frequency}, {""}
-                      {userDashboardData?.supplements.intake_type}
-                      {""}
-                    </div>
+                <div
+                  key={userDashboardData?.supplements?.id}
+                  className={styles.dataContainer}
+                >
+                  <div className={`${styles.infoTextLabel}`}>
+                    {userDashboardData?.supplements?.supplement} {""}
+                    {userDashboardData?.supplements?.manufacturer} {""}
+                    {userDashboardData?.supplements?.dosage} {""}
+                    {userDashboardData?.supplements?.unit}{" "}
                   </div>
+                  <div className={styles.infoSub}>
+                    {userDashboardData?.supplements?.frequency}, {""}
+                    {userDashboardData?.supplements?.intake_type}
+                    {""}
+                  </div>
+                </div>
               ) : (
                 <NoDataRecorded />
               )}
@@ -282,13 +285,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             <ScrollArea className="h-[12.5rem] min-h-10">
               <div className={styles.section}>
                 {userData?.vitals ? (
-                  userData?.vitals.reverse().map((vitals) => (
+                  userData?.vitals?.reverse().map((vitals) => (
                     <div
                       key={vitals.id}
                       className={`${styles.subContainer} bg-[#F5F5F5] p-2 rounded`}
                     >
                       <div className={styles.infoSub}>
-                        {new Date(vitals.dateTime).toLocaleDateString("en-US", {
+                        {new Date(vitals?.dateTime).toLocaleDateString("en-US", {
                           month: "short",
                           day: "2-digit",
                           year: "numeric",
@@ -296,13 +299,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                       </div>
                       <FaceSheetLabels
                         label="Weight:"
-                        value={`${vitals.weightLbs} lbs ${vitals.weightOzs} ozs`}
+                        value={`${vitals?.weightLbs} lbs ${vitals?.weightOzs} ozs`}
                       />
                       <FaceSheetLabels
                         label="Height:"
-                        value={`${vitals.heightFeets} ' ${vitals.heightInches}`}
+                        value={`${vitals?.heightFeets} ' ${vitals?.heightInches}`}
                       />
-                      <FaceSheetLabels label="BMI:" value={`${vitals.BMI}`} />
+                      <FaceSheetLabels label="BMI:" value={`${vitals?.BMI}`} />
                     </div>
                   ))
                 ) : (
@@ -320,14 +323,14 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             {userDashboardData?.injections ? (
               <div className="flex flex-col gap-3">
                 <div
-                  key={userDashboardData?.injections.id}
+                  key={userDashboardData?.injections?.id}
                   className={`${styles.subContainer} bg-[#F5F5F5] p-2 rounded`}
                 >
                   <FaceSheetLabels
                     label="Injection Name:"
                     value={
                       userDashboardData?.injections?.injection_name
-                        ? userDashboardData?.injections.injection_name
+                        ? userDashboardData?.injections?.injection_name
                         : "N/A"
                     }
                   />
@@ -335,7 +338,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                     label="Dosage:"
                     value={
                       userDashboardData?.injections?.dosage_quantity
-                        ? `${userDashboardData?.injections.dosage_quantity} ${userDashboardData?.injections.dosage_unit}`
+                        ? `${userDashboardData?.injections?.dosage_quantity} ${userDashboardData?.injections.dosage_unit}`
                         : "N/A"
                     }
                   />
@@ -361,7 +364,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                     label="Comments:"
                     value={
                       userDashboardData?.injections?.comments
-                        ? userDashboardData?.injections.comments
+                        ? userDashboardData?.injections?.comments
                         : "N/A"
                     }
                   />
@@ -384,7 +387,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                   className={styles.dataContainer}
                 >
                   <div className={`${styles.infoTextLabel}`}>
-                    {userDashboardData?.labResults.files.map((image) => (
+                    {userDashboardData?.labResults?.files.map((image) => (
                       <Button
                         className="p-0"
                         key={image}
@@ -399,7 +402,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                   </div>
                   <div className={styles.infoSub}>
                     {new Date(
-                      userDashboardData?.labResults.dateTime
+                      userDashboardData?.labResults?.dateTime
                     ).toLocaleDateString("en-US", {
                       month: "short",
                       day: "2-digit",
@@ -440,15 +443,15 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             <div className={styles.subContainer}>
               {userDashboardData?.vaccines ? (
                 <div
-                  key={userDashboardData?.vaccines.id}
+                  key={userDashboardData?.vaccines?.id}
                   className={styles.dataContainer}
                 >
                   <div className={`${styles.infoTextLabel}`}>
-                    {userDashboardData?.vaccines.vaccine_name}
+                    {userDashboardData?.vaccines?.vaccine_name}
                   </div>
                   <div className={styles.infoSub}>
                     {new Date(
-                      userDashboardData?.vaccines.createdAt
+                      userDashboardData?.vaccines?.createdAt
                     ).toLocaleDateString("en-US", {
                       month: "short",
                       day: "2-digit",
@@ -470,13 +473,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             <div className={styles.subContainer}>
               {userData?.encounter ? (
                 userData?.encounter.map((visit) => (
-                  <div key={visit.id} className={styles.dataContainer}>
+                  <div key={visit?.id} className={styles.dataContainer}>
                     <div className={`${styles.infoTextLabel}`}>
-                      {visit.providerID} {""}
+                      {visit?.providerID} {""}
                       {""} {visit.mode}
                     </div>
                     <div className={styles.infoSub}>
-                      {new Date(visit.date).toLocaleDateString("en-US", {
+                      {new Date(visit?.date).toLocaleDateString("en-US", {
                         month: "short",
                         day: "2-digit",
                         year: "numeric",
@@ -527,35 +530,40 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             <ScrollArea className="h-[12.5rem] min-h-10">
               <div className={styles.subContainer}>
                 {userDashboardData?.documents ? (
-                    <div key={userDashboardData?.documents.id} className={styles.dataContainer}>
-                      <div className={`${styles.infoTextLabel}`}>
-                        {userDashboardData?.documents.documents.map((image) => (
-                          <Button
-                            key={image}
-                            className="p-0"
-                            variant={"link"}
-                            onClick={() => {
-                              window.open(image, "_blank");
-                            }}
-                          >
-                            {image.split("/")[4]}
-                          </Button>
-                        ))}
-                      </div>
-                      <div className={styles.infoSub}>
-                        {new Date(userDashboardData?.documents.date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "2-digit",
-                          year: "numeric",
-                        })}
-                      </div>
+                  <div
+                    key={userDashboardData?.documents.id}
+                    className={styles.dataContainer}
+                  >
+                    <div className={`${styles.infoTextLabel}`}>
+                      {userDashboardData?.documents?.documents.map((image) => (
+                        <Button
+                          key={image}
+                          className="p-0"
+                          variant={"link"}
+                          onClick={() => {
+                            window.open(image, "_blank");
+                          }}
+                        >
+                          {image.split("/")[4]}
+                        </Button>
+                      ))}
                     </div>
+                    <div className={styles.infoSub}>
+                      {new Date(
+                        userDashboardData?.documents?.date
+                      ).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
+                    </div>
+                  </div>
                 ) : (
                   <NoDataRecorded />
                 )}
               </div>
             </ScrollArea>
-          </div> 
+          </div>
         </div>
       </ScrollArea>
     </>
