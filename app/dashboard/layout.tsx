@@ -5,6 +5,7 @@ import imageUrl from "@/public/images/Logo_Red.svg";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import AuthComponent from "@/components/AuthComponent";
 
 export const metadata: Metadata = {
   title: "Provider - Join Pomegaranate",
@@ -27,7 +28,7 @@ export default function DashboardLayout({
           </Link>
           <AccountIcon />
         </div>
-        {children}
+        <AuthComponent>{children}</AuthComponent>
       </main>
     </div>
   );

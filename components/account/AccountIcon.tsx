@@ -4,8 +4,10 @@ import { RootState } from "@/store/store";
 import { User } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DefaultButton from "../custom_buttons/buttons/DefaultButton";
+import { useRouter } from "next/navigation";
+import { resetLoginData } from "@/store/slices/loginSlice";
 
 function AccountIcon() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -13,6 +15,9 @@ function AccountIcon() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const providerDetails = useSelector((state: RootState) => state.login);
+
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleShowDropdown = () => {
     setShowDropdown((prev) => !prev);
@@ -72,7 +77,14 @@ function AccountIcon() {
             </div>
           </div>
           <div className="flex justify-end gap-3">
-            <DefaultButton>Sign Out</DefaultButton>
+            <DefaultButton
+              onClick={() => {
+                dispatch(resetLoginData());
+                router.push("/");
+              }}
+            >
+              Sign Out
+            </DefaultButton>
           </div>
         </div>
       )}
@@ -81,4 +93,3 @@ function AccountIcon() {
 }
 
 export default AccountIcon;
-

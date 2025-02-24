@@ -32,8 +32,9 @@ const loginSlice = createSlice({
     setLoginData: (state, action: PayloadAction<Partial<LoginState>>) => {
       return { ...state, ...action.payload };
     },
+    resetLoginData: () => initialState,
   },
 });
 
-export const { setLoginData } = loginSlice.actions;
+export const { setLoginData, resetLoginData } = loginSlice.actions;
 export default loginSlice.reducer;
