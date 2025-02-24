@@ -47,7 +47,7 @@ export const columns = (
     id: "status",
     header: "Status",
     cell: ({ row }) => (
-      <Badge className="bg-white border-[#84012A] border-2 text-[#84012A] hover:bg-white">
+      <Badge variant="success">
         {row.original.status}
       </Badge>
     ),

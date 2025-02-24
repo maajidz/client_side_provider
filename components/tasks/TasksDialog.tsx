@@ -407,6 +407,7 @@ const TasksDialog = ({
                         <h4 className="text-lg font-semibold">
                           Date and Reminder Settings
                         </h4>
+                      <div className="flex flex-row">
                         <FormField
                           control={form.control}
                           name="dueDate"
@@ -459,6 +460,7 @@ const TasksDialog = ({
                             </FormItem>
                           )}
                         />
+                        </div>
                       </div>
                     </>
                   )}

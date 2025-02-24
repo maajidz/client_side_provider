@@ -1,10 +1,11 @@
 import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import { Button } from "@/components/ui/button";
 import { PatientAppointmentClient } from "@/components/tables/patient/patientAppointments/client";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { AppointmentsDialog } from "./AppointmentsDialog";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
+import { Heading } from "@/components/ui/heading";
 
 interface PatientAppointmentTab {
   value: string;
@@ -48,17 +49,20 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-6">
       <div className="flex justify-end">
-        <DefaultButton
-          aria-label="Create New Appointment"
-          onClick={() => {
-            setIsDialogOpen(true);
-          }}
-        >
-          <PlusIcon />
-          New Appointment
-        </DefaultButton>
+        <div className="flex justify-between items-center flex-1">
+          <Heading title="Appointments" description="" />
+          <Button
+            aria-label="Create New Appointment"
+            onClick={() => {
+              setIsDialogOpen(true);
+            }}
+          >
+            <PlusIcon />
+            New Appointment
+          </Button>
+        </div>
 
         <AppointmentsDialog
           userDetailsId={userDetailsId}
@@ -66,7 +70,7 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
           isOpen={isDialogOpen}
         />
       </div>
-      <Tabs defaultValue="upcoming" className="">
+      <Tabs defaultValue="upcoming" className="flex gap-3 flex-col">
         <TabsList className="flex gap-3 w-full">
           {patientAppointmentsTab.map((tab) => (
             <CustomTabsTrigger value={tab.value} key={tab.value}>

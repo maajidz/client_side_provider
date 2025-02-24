@@ -5,7 +5,6 @@ import { showToast } from "@/utils/utils";
 import { columns } from "./columns";
 import QuickNotesDialog from "./QuickNotesDialog";
 import { useState } from "react";
-import PageContainer from "@/components/layout/page-container";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface ViewPatientNotesProps {
@@ -46,8 +45,8 @@ const ViewPatientQuickNotes = ({
   }
 
   return (
-    <PageContainer scrollable={true}>
-      <div className="space-y-3">
+    <div>
+      <div className="flex flex-col gap-6">
         {data && (
           <DefaultDataTable
             columns={columns({
@@ -77,7 +76,7 @@ const ViewPatientQuickNotes = ({
           onFetchQuickNotes={fetchQuickNotes}
         />
       </div>
-    </PageContainer>
+    </div>
   );
 };
 

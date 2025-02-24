@@ -3,6 +3,7 @@ import React from "react";
 import ViewInjections from "./injections/ViewInjections";
 import PatientInjectionOrders from "./InjectionOrders/PatientInjectionOrders";
 import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
+import { Heading } from "@/components/ui/heading";
 
 const PatientInjections = ({ userDetailsId }: { userDetailsId: string }) => {
   const patientInjectionsTab = [
@@ -15,6 +16,8 @@ const PatientInjections = ({ userDetailsId }: { userDetailsId: string }) => {
   ];
   return (
     <>
+    <div className="flex flex-col gap-6 mb-6">
+      <Heading title="Injections"/>
       <Tabs defaultValue="injections" className="">
         <TabsList className="flex gap-3 w-full">
           {patientInjectionsTab.map((tab) => (
@@ -29,6 +32,7 @@ const PatientInjections = ({ userDetailsId }: { userDetailsId: string }) => {
           </TabsContent>
         ))}
       </Tabs>
+      </div>
     </>
   );
 };

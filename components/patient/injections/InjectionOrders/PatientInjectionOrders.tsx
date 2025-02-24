@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import ViewInjectionOrders from "./ViewInjectionOrders";
 import InjectionOrders from "@/components/injections/injection-orders/InjectionOrders";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { PlusIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const PatientInjectionOrders = ({
   userDetailsId,
@@ -20,16 +20,16 @@ const PatientInjectionOrders = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-3">
+    <div className="w-full flex flex-col">
       <div className="flex justify-end">
-        <DefaultButton
+        <Button
           onClick={() => {
             setIsInjectionDialogOpen(true);
           }}
         >
           <PlusIcon />
-          <div>Injection Order</div>
-        </DefaultButton>
+          Injection Order
+        </Button>
         <InjectionOrders
           isOpen={isInjectionDialogOpen}
           onClose={() => handleInjectionDialogClose()}

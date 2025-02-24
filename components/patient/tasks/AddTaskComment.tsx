@@ -135,7 +135,7 @@ function AddTaskComment({
                     <FormItem className={formStyles.formItem}>
                       <FormLabel>Comments</FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea {...field} className="md:min-h-24 md:min-w-96"/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

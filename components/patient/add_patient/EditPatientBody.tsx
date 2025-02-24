@@ -29,8 +29,6 @@ import { createNewPatient } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import PatientConfirmationScreen from "./PatientConfirmationScreen";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
 
 const EditPatientBody = ({
   patientDetails,
@@ -182,13 +180,9 @@ const EditPatientBody = ({
   }
   return (
     <div>
-      <ScrollArea className={cn("h-[calc(80dvh-52px)]")}>
         <Form {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-5 pb-48">
-              <div className="flex justify-end">
-                <SubmitButton label="Edit" />
-              </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
                   <div className="font-medium text-[#84012A]">
@@ -962,6 +956,9 @@ const EditPatientBody = ({
                   </div>
                 </div> */}
               </div>
+              <div className="flex self-end">
+                <SubmitButton label="Update" />
+              </div>
             </div>
           </form>
         </Form>
@@ -971,7 +968,6 @@ const EditPatientBody = ({
           }}
           isOpen={isDialogOpen}
         />
-      </ScrollArea>
     </div>
   );
 };

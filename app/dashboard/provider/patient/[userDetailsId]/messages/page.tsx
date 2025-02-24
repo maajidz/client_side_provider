@@ -1,14 +1,12 @@
 "use client";
-import { Breadcrumbs } from "@/components/breadcrumbs";
 import PatientMessages from "@/components/patient/messages/PatientMessages";
-import { Heading } from "@/components/ui/heading";
 import { useParams } from "next/navigation";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/dashboard" },
-  { title: "Patients", link: "/dashboard/provider/patient" },
-  { title: "Messages", link: "" },
-];
+// const breadcrumbItems = [
+//   { title: "Dashboard", link: "/dashboard" },
+//   { title: "Patients", link: "/dashboard/provider/patient" },
+//   { title: "Messages", link: "" },
+// ];
 function Page() {
   const { userDetailsId } = useParams();
 
@@ -17,11 +15,11 @@ function Page() {
   }
   return (
     <>
-      <div className="flex flex-1 flex-col p-4 gap-4">
-        <div className="flex flex-1 gap-4 flex-col">
-          <Breadcrumbs items={breadcrumbItems} />
-          <Heading title="Messages" description="" />
-        </div>
+      <div className="flex flex-1 w-full h-full flex-col gap-6 rounded-xl p-6 bg-white">
+        {/* <div className="flex flex-1 gap-4 flex-col"> */}
+          {/* <Breadcrumbs items={breadcrumbItems} /> */}
+          {/* <Heading title="Messages" description="" /> */}
+        {/* </div> */}
         <PatientMessages userDetailsId={userDetailsId} />
       </div>
     </>

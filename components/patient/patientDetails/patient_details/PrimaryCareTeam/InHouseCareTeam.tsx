@@ -45,23 +45,27 @@ const InHouseCareTeam = () => {
     handleInHouseCareTeamSearch,
   ]);
 
-  const handleInHouseCareSelect = (user: FetchProviderList) => {
-    setSelectedInHouseCareTeam(user);
-    setProviders([]);
-  };
+  // const handleInHouseCareSelect = (user: FetchProviderList) => {
+  //   setSelectedInHouseCareTeam(user);
+  //   setProviders([]);
+  // };
 
   return (
-    <div className={styles.infoBox}>
-      <div className={styles.infoBoxLabel}>In House Care Team</div>
-      <div>
-        <Input
-          value={searchInHouseCareTeam}
-          onChange={(e) => {
-            setSearchInHouseCareTeam(e.target.value);
-            setSelectedInHouseCareTeam(null);
-          }}
-          placeholder="Search providers..."
-        />
+    <div className="bg-gray-50 p-6 rounded-lg flex-1 gap-6 flex-col flex">
+      <div className=" flex flex-col gap-1">
+      <div className="font-semibold text-xs pb-2 text-gray-600 uppercase tracking-wider ">In House Care Team</div>
+      {/* {selectedInHouseCareTeam ? <div>Edit </div> :  */}
+        <div>
+          <Input
+            value={searchInHouseCareTeam}
+            className="bg-white"
+            onChange={(e) => {
+              setSearchInHouseCareTeam(e.target.value);
+              setSelectedInHouseCareTeam(null);
+            }}
+            placeholder="Search providers..."
+          />
+        </div>
       </div>
 
       {/* Loading State */}
@@ -71,32 +75,36 @@ const InHouseCareTeam = () => {
         </div>
       )}
 
-      <div className="relative w-full">
-        {!selectedInHouseCareTeam && providers.length > 0 ? (
-          <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg z-10">
-            {providers.map((user) => (
-              <div
-                key={user.id}
-                className="border-2 border-gray-300 rounded-lg p-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleInHouseCareSelect(user)}
-              >
-                <div className="text-[#84012A] text-base font-medium">
-                  {user.firstName} {user.lastName}
+      {!loading && searchInHouseCareTeam && (
+        <div className="relative w-full">
+          {!selectedInHouseCareTeam && providers.length > 0 ? (
+            <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg z-10">
+              {providers.map((user) => (
+                <div
+                  key={user.id}
+                  className="border-2 border-gray-300 rounded-lg p-2 hover:bg-gray-100 cursor-pointer"
+                  // onClick={() => handleInHouseCareTeamSearch(user)}
+                >
+                  <div className="text-[#84012A] text-base font-medium">
+                    {user.firstName} {user.lastName}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          !selectedInHouseCareTeam &&
-          !loading &&
-          searchInHouseCareTeam && (
-            <p className="absolute bg-white p-2 rounded shadow-lg">
-              No results found.
-            </p>
-          )
-        )}
+              ))}
+            </div>
+          ) : (
+            // No Results Found
+            !selectedInHouseCareTeam && (
+              <p className="absolute bg-white p-2 rounded shadow-lg">
+                No results found.
+              </p>
+            )
+          )}
+        </div>
+      )}
+
+      <div className={styles.physicianDetailsBox}>
+      {/* <div>“{careTeam?.inHouseCareTeam.NameOfPhysician}</div> */}
       </div>
-      {/* <div>{careTeam?.primaryCarePhysician.NameOfPhysician}</div> */}
     </div>
   );
 };

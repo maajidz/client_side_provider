@@ -20,7 +20,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
-import formStyles from "@/components/formStyles.module.css";
 import {
   Select,
   SelectContent,
@@ -29,9 +28,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { status } from "@/constants/data";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
+import { Button } from "@/components/ui/button";
 
 const ViewInjectionOrders = ({
   userDetailsId,
@@ -133,17 +132,16 @@ const ViewInjectionOrders = ({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-6">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className={formStyles.formFilterBody}
-        >
+          className="flex flex-row gap-2 w-fit">
           <FormField
             control={form.control}
             name="providerId"
             render={({ field }) => (
-              <FormItem className={formStyles.formFilterItem}>
+              <FormItem >
                 <FormLabel>Provider</FormLabel>
                 <FormControl>
                   <Select
@@ -180,7 +178,7 @@ const ViewInjectionOrders = ({
             control={form.control}
             name="status"
             render={({ field }) => (
-              <FormItem className={formStyles.formFilterItem}>
+              <FormItem >
                 <FormLabel>Status</FormLabel>
                 <FormControl>
                   <Select
@@ -204,8 +202,8 @@ const ViewInjectionOrders = ({
               </FormItem>
             )}
           />
-          <div className="flex items-end w-full">
-            <SubmitButton label="Search" />
+          <div className="flex items-end">
+            <Button variant={"secondary"}>Search</Button>
           </div>
         </form>
       </Form>

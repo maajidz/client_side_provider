@@ -1,8 +1,8 @@
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import HistoricalVaccinesClient from "./vaccine-table/client";
-import PageContainer from "@/components/layout/page-container";
 import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 import PatientVaccineOrders from "./vaccineOrders/PatientVaccineOrders";
+import { Heading } from "@/components/ui/heading";
 
 const PatientVaccines = ({ userDetailsId }: { userDetailsId: string }) => {
   const patientVaccineTab = [
@@ -19,8 +19,10 @@ const PatientVaccines = ({ userDetailsId }: { userDetailsId: string }) => {
   ];
 
   return (
-    <PageContainer scrollable={true}>
       <Tabs defaultValue="vaccines" className="">
+        <div className="mb-6">
+        <Heading title="Vaccines" />
+        </div>
         <TabsList className="flex gap-3 w-full">
           {patientVaccineTab.map((tab) => (
             <CustomTabsTrigger value={tab.value} key={tab.value}>
@@ -34,7 +36,6 @@ const PatientVaccines = ({ userDetailsId }: { userDetailsId: string }) => {
           </TabsContent>
         ))}
       </Tabs>
-    </PageContainer>
   );
 };
 

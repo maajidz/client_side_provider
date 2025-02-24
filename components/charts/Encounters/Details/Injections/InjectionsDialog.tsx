@@ -162,15 +162,15 @@ const InjectionsDialog = ({
             {injectionsData ? "Edit Injections" : "Add Injections"}
           </DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[30rem]">
+        <ScrollArea className="h-[80dvh]">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className={formStyles.formBody}>
+              <div  className="flex flex-col gap-6">
                 <FormField
                   control={form.control}
                   name="injection_name"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Name</FormLabel>
                       <FormControl>
                         <Input
@@ -182,14 +182,14 @@ const InjectionsDialog = ({
                     </FormItem>
                   )}
                 />
-                <div className={formStyles.formItem}>
-                  <div>Dosage</div>
-                  <div className="flex gap-3">
+                <div >
+                  <div className="flex gap-3 items-end">
                     <FormField
                       control={form.control}
                       name="dosage_quantity"
                       render={({ field }) => (
-                        <FormItem className={formStyles.formItem}>
+                        <FormItem >
+                          <FormLabel>Dosage</FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -233,7 +233,7 @@ const InjectionsDialog = ({
                   control={form.control}
                   name="frequency"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Frequency</FormLabel>
                       <FormControl>
                         <Select
@@ -260,14 +260,14 @@ const InjectionsDialog = ({
                     </FormItem>
                   )}
                 />
-                <div className={formStyles.formItem}>
-                  <div>Period</div>
-                  <div className="flex gap-3">
+                <div >
+                  <div className="flex gap-3 items-end">
                     <FormField
                       control={form.control}
                       name="period_number"
                       render={({ field }) => (
-                        <FormItem className={formStyles.formItem}>
+                        <FormItem >
+                          <FormLabel>Period</FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -312,7 +312,7 @@ const InjectionsDialog = ({
                   control={form.control}
                   name="parental_route"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Parenteral Route</FormLabel>
                       <FormControl>
                         <Select
@@ -340,7 +340,7 @@ const InjectionsDialog = ({
                   control={form.control}
                   name="site"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Site</FormLabel>
                       <FormControl>
                         <Select
@@ -364,7 +364,7 @@ const InjectionsDialog = ({
                   control={form.control}
                   name="lot_number"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Lot number</FormLabel>
                       <FormControl>
                         <Input
@@ -383,7 +383,7 @@ const InjectionsDialog = ({
                   control={form.control}
                   name="expiration_date"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Expiration Date</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} className="w-fit" />
@@ -397,7 +397,7 @@ const InjectionsDialog = ({
                     control={form.control}
                     name="administered_date"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel>Administered Date</FormLabel>
                         <FormControl>
                           <Input type="date" {...field} />
@@ -424,7 +424,7 @@ const InjectionsDialog = ({
                   control={form.control}
                   name="note_to_nurse"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Note to nurse</FormLabel>
                       <FormControl>
                         <Textarea {...field} />
@@ -437,7 +437,7 @@ const InjectionsDialog = ({
                   control={form.control}
                   name="comments"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Comments</FormLabel>
                       <FormControl>
                         <Textarea {...field} />

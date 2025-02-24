@@ -36,7 +36,6 @@ import { UserAppointmentInterface } from "@/types/userInterface";
 import FormLabels from "@/components/custom_buttons/FormLabels";
 import { CreateUserAppointmentsInterface } from "@/types/appointments";
 import { createUserAppointments } from "@/services/providerAppointments";
-import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
@@ -235,14 +234,16 @@ export function AppointmentsDialog({
         <DialogHeader>
           <DialogTitle className="capitalize">
             {appointmentsData
-              ? `Edit Appointment for ${appointmentsData.patientName}`
-              : `New Appointment for ${userData?.firstName}
+              ? `Edit Appointment - ${appointmentsData.patientName}`
+              : `New Appointment - ${userData?.firstName}
             ${userData?.lastName}`}
           </DialogTitle>
+          {/* <DialogDescription>New Appointment</DialogDescription> */}
+
         </DialogHeader>
-        <ScrollArea className="max-h-[30rem] h-auto w-auto">
-          <div className={formStyles.formBody}>
-            <div className="flex flex-col gap-2 px-3">
+        <ScrollArea className="max-h-[calc(100dvh-6rem)] h-fit w-auto">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2 p-4 bg-gray-50 rounded-lg **:text-xs ">
               <FormLabels
                 label="Email"
                 value={
@@ -269,8 +270,7 @@ export function AppointmentsDialog({
               />
             </div>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className={formStyles.formBody}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
                   {/* {appointmentsData ? (
                     <FormLabels
                       label="Provider:"
@@ -281,7 +281,7 @@ export function AppointmentsDialog({
                       control={form.control}
                       name="providerId"
                       render={({ field }) => (
-                        <FormItem className={formStyles.formItem}>
+                        <FormItem >
                           <FormLabel>Provider</FormLabel>
                           <Select
                             defaultValue={field.value}
@@ -318,7 +318,7 @@ export function AppointmentsDialog({
                     control={form.control}
                     name="status"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem>
                         <FormLabel>Status</FormLabel>
                         <Select
                           onValueChange={field.onChange}
@@ -355,7 +355,7 @@ export function AppointmentsDialog({
                         control={form.control}
                         name="dateOfAppointment"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem >
                             <FormLabel>Date</FormLabel>
                             <Input
                               type="date"
@@ -384,7 +384,7 @@ export function AppointmentsDialog({
                         control={form.control}
                         name="timeOfAppointment"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem >
                             <FormLabel className="w-28">Time Slot</FormLabel>
                             {/* <Input
                                 type="time"
@@ -418,7 +418,7 @@ export function AppointmentsDialog({
                                     {availability.isAvailable? "Yes": "No"}
                                   </SelectItem>
                                 )): (
-                                  <div>No slots available for {selectedDate}. Select a different date.</div>
+                                  <div className="text-sm text-gray-500 font-medium p-2">No slots available for {selectedDate}. Select a different date.</div>
                                 )}
                               </SelectContent>
                             </Select>
@@ -432,7 +432,7 @@ export function AppointmentsDialog({
                     control={form.control}
                     name="reason"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel>Reason</FormLabel>
                         <Textarea {...field} onChange={field.onChange} />
                         <FormMessage />
@@ -443,14 +443,13 @@ export function AppointmentsDialog({
                     control={form.control}
                     name="additionalText"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel>Message to Patient</FormLabel>
                         <Textarea {...field} onChange={field.onChange} />
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                </div>
                 <div className="flex gap-3 justify-between w-full">
                   <Button
                     type="button"

@@ -1,5 +1,4 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import formStyles from "@/components/formStyles.module.css";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -186,13 +185,13 @@ const EditPatientTaskDialog = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-5">
-              <ScrollArea className="h-96">
-                <div className="flex flex-col gap-5 p-4">
+              <ScrollArea className="max-h-[90dvh] h-auto">
+                <div className="flex flex-col gap-5">
                   <FormField
                     control={form.control}
                     name="category"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel className="w-fit">Category</FormLabel>
                         <FormControl>
                           <Select
@@ -222,7 +221,7 @@ const EditPatientTaskDialog = ({
                     control={form.control}
                     name="task"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel>Task</FormLabel>
                         <FormControl>
                           <Textarea {...field} />
@@ -235,7 +234,7 @@ const EditPatientTaskDialog = ({
                     control={form.control}
                     name="owner"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel className="w-fit">Owner</FormLabel>
                         <FormControl>
                           <Select
@@ -268,7 +267,7 @@ const EditPatientTaskDialog = ({
                     control={form.control}
                     name="priority"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel>Priority</FormLabel>
                         <FormControl>
                           <Select
@@ -387,7 +386,7 @@ const EditPatientTaskDialog = ({
                     control={form.control}
                     name="comments"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem >
                         <FormLabel>Comments</FormLabel>
                         <FormControl>
                           <Textarea {...field} />

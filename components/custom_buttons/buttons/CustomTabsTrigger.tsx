@@ -12,9 +12,9 @@ const CustomTabsTrigger = ({
 }) => {
   return (
     <TabsTrigger
-      className="w-full text-[#90A4AE] font-normal data-[state=active]:text-[#84012A] 
+      className="w-full text-gray-600 font-normal data-[state=active]:text-[#84012A] 
           data-[state=active]:shadow-md data-[state=active]:shadow-[#FFE7E7] 
-          data-[state=active]:border-[#FFE7E7]"
+          data-[state=active]:border-[#FFE7E7] font-medium"
       value={value}
       onClick={onClick}
     >

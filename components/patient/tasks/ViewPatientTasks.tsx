@@ -32,9 +32,9 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AddTaskComment from "./AddTaskComment";
 import EditPatientTaskDialog from "./EditPatientTaskDialog";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import formStyles from "@/components/formStyles.module.css";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 const ViewPatientTasks = ({
   userDetailsId,
@@ -142,17 +142,17 @@ const ViewPatientTasks = ({
 
   return (
     <>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-6">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className={formStyles.formFilterBody}
+            className="flex gap-2 flex-row"
           >
             <FormField
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
+                <FormItem className="flex flex-1">
                   <FormLabel className="w-fit">Category</FormLabel>
                   <FormControl>
                     <Select
@@ -183,7 +183,7 @@ const ViewPatientTasks = ({
               control={form.control}
               name="status"
               render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
+                <FormItem className="flex flex-1">
                   <FormLabel>Status</FormLabel>
                   <FormControl>
                     <Select
@@ -211,7 +211,7 @@ const ViewPatientTasks = ({
               control={form.control}
               name="priority"
               render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
+                <FormItem className="flex flex-1">
                   <FormLabel>Priority</FormLabel>
                   <FormControl>
                     <Select
@@ -234,13 +234,13 @@ const ViewPatientTasks = ({
                 </FormItem>
               )}
             />
-            <div className="flex items-end w-full">
-              <SubmitButton label="Search" />
+            <div className="flex items-end">
+              <Button variant={"secondary"}>Search <Search/></Button>
             </div>
           </form>
         </Form>
         {/* Results Table */}
-        <div className="space-y-3">
+        <div className="flex gap-6 flex-col">
           {resultList?.data && (
             <DefaultDataTable
               columns={columns({

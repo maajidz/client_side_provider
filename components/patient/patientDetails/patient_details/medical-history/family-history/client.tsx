@@ -1,8 +1,8 @@
-import { CustomDataTable } from "@/components/custom_buttons/table/CustomDataTable";
 import LoadingButton from "@/components/LoadingButton";
 import { FamilyHistoryResponseInterface } from "@/types/familyHistoryInterface";
 import { columns } from "./column";
 import { Dispatch, SetStateAction } from "react";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface FamilyHistoryClientProps {
   data: FamilyHistoryResponseInterface[];
@@ -22,7 +22,7 @@ function FamilyHistoryClient({
   if (loading) return <LoadingButton />;
 
   return (
-    <CustomDataTable
+    <DefaultDataTable
       columns={columns()}
       data={data || []}
       pageNo={pageNo}

@@ -1,6 +1,5 @@
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { fetchUserQuestionnaire } from "@/services/formServices";
 import { QuestionnaireInterface } from "@/types/formInterface";
 import React, { useCallback, useEffect, useState } from "react";
@@ -96,18 +95,7 @@ const PatientQuestionnaires = ({
   }, [getUserQuestionnaire, page, limit]);
 
   return (
-    <Tabs defaultValue={type} className="flex gap-4">
-      <TabsList className="flex flex-col gap-4 h-full p-2 rounded-lg border ">
-        {patientQuestionnaireTab.map((tab) => (
-          <CustomTabsTrigger
-            value={tab.value}
-            key={tab.value}
-            onClick={() => setType(tab.value)}
-          >
-            {tab.label}
-          </CustomTabsTrigger>
-        ))}
-      </TabsList>
+    <Tabs defaultValue={type} className="flex gap-4 bg-white">
       <div className={styles.questionnaireContainer}>
         {patientQuestionnaireTab.map((tab) => (
           <TabsContent value={tab.value} key={tab.value}>
@@ -136,8 +124,18 @@ const PatientQuestionnaires = ({
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
+              <TabsList className="flex w-fit flex-row gap-4 rounded-lg border bg-white border-none self-end">
+                {patientQuestionnaireTab.map((tab) => (
+                  <CustomTabsTrigger
+                    value={tab.value}
+                    key={tab.value}
+                    onClick={() => setType(tab.value)}
+                  >
+                    {tab.label}
+                  </CustomTabsTrigger>
+                ))}
+              </TabsList>
               <div className={styles.infoContainer}>
-                <ScrollArea className="h-[calc(70vh-220px)] md:h-[calc(70dvh-200px)]">
                   <div className={styles.detailsContainer}>
                     {resultList?.data?.map((result) => (
                       <div key={result.id} className="flex flex-col">
@@ -150,7 +148,6 @@ const PatientQuestionnaires = ({
                       </div>
                     ))}
                   </div>
-                </ScrollArea>
                 <div className="flex items-center justify-end space-x-2 py-4">
                   <div className="text-sm text-muted-foreground">
                     Page {page} of {totalPages}

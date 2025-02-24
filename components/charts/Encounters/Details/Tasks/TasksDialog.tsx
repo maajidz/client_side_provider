@@ -43,7 +43,6 @@ import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { categoryOptions, priority, reminderOptions } from "@/constants/data";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import formStyles from "@/components/formStyles.module.css";
 
 function TasksDialog({
   isOpen,
@@ -180,15 +179,15 @@ function TasksDialog({
         <DialogHeader>
           <DialogTitle>{tasksData ? "Edit Task" : "Add Task"}</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="max-h-[30rem] h-auto">
+        <ScrollArea className="max-h-[90dvh] h-auto">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className={formStyles.formBody}>
+              <div className="flex flex-col gap-6">
                 <FormField
                   control={form.control}
                   name="category"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem>
                       <FormLabel className="w-fit">Category</FormLabel>
                       <FormControl>
                         <Select
@@ -218,7 +217,7 @@ function TasksDialog({
                   control={form.control}
                   name="task"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem className="">
                       <FormLabel>Task</FormLabel>
                       <FormControl>
                         <Textarea {...field} />
@@ -231,7 +230,7 @@ function TasksDialog({
                   control={form.control}
                   name="owner"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem className="">
                       <FormLabel className="w-fit">Owner</FormLabel>
                       <FormControl>
                         <Select
@@ -263,7 +262,7 @@ function TasksDialog({
                   control={form.control}
                   name="priority"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem className="">
                       <FormLabel>Priority</FormLabel>
                       <FormControl>
                         <Select
@@ -307,13 +306,14 @@ function TasksDialog({
                   <>
                     <div className="space-y-4 border-t pt-4">
                       <h4 className="text-lg font-semibold">
-                        Date and Reminder Settings
+                        Date and Reminder Settingssdfsdf
                       </h4>
+                      <div className="flex flex-row gap-2">
                       <FormField
                         control={form.control}
                         name="dueDate"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem className="">
                             <FormLabel>From Date:</FormLabel>
                             <FormControl>
                               <Input type="date" {...field} />
@@ -372,6 +372,7 @@ function TasksDialog({
                           );
                         }}
                       />
+                      </div>
                     </div>
                   </>
                 )}
@@ -379,7 +380,7 @@ function TasksDialog({
                   control={form.control}
                   name="comments"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem className="">
                       <FormLabel>Comments</FormLabel>
                       <FormControl>
                         <Textarea {...field} />

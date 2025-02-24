@@ -1,15 +1,13 @@
 'use client'
-import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
 import PatientAppointments from "@/components/patient/appointments/PatientAppointments";
-import { Heading } from "@/components/ui/heading";
 import { useParams } from "next/navigation";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/dashboard" },
-  { title: "Patients", link: "/dashboard/provider/patient" },
-  { title: "Appointments", link: "" },
-];
+// const breadcrumbItems = [
+//   { title: "Dashboard", link: "/dashboard" },
+//   { title: "Patients", link: "/dashboard/provider/patient" },
+//   { title: "Appointments", link: "" },
+// ];
 
 function Page() {
   const { userDetailsId } = useParams();
@@ -20,11 +18,8 @@ function Page() {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="space-y-4">
-        <Breadcrumbs items={breadcrumbItems} />
-        <Heading title="Appointments" description="" />
-      </div>
-      <PatientAppointments userDetailsId={userDetailsId} />
+        {/* <Breadcrumbs items={breadcrumbItems} /> */}
+        <PatientAppointments userDetailsId={userDetailsId} />
     </PageContainer>
   );
 }

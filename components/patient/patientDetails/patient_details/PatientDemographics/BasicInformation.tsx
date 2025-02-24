@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./patient.module.css";
 import { PatientDetails } from "@/types/userInterface";
 
 const BasicInformation = ({
@@ -18,25 +17,25 @@ const BasicInformation = ({
   };
 
   return (
-    <div className={styles.infoBox}>
+    <div className="bg-gray-50 p-6 rounded-lg flex-1">
       <div className="flex flex-col gap-4">
-        <div className="font-semibold text-xs text-gray-600 uppercase tracking-wider ">Basic Information</div>
-        <div className="flex flex-col gap-4">
-          <div>
-            <div className={styles.labelText}>First Name</div>
-            <div className={`${styles.valueText} capitalize`}>
+        <div className="font-semibold text-xs pb-2 text-gray-600 uppercase tracking-wider ">Basic Information</div>
+        <div className="flex flex-col gap-6">
+          <div className="flex gap-1 flex-col">
+            <div className="text-xs font-medium text-gray-500 gap-1">First Name</div>
+            <div className={"font-medium capitalize"}>
               {patientDetails?.user?.firstName ? patientDetails?.user?.firstName: 'N/A'}
             </div>
           </div>
-          <div>
-            <div className={styles.labelText}>Last Name</div>
-            <div className={`${styles.valueText} capitalize`}>
+          <div className="flex gap-1 flex-col">
+            <div className="text-xs font-medium text-gray-500 gap-1">Last Name</div>
+            <div className="font-medium capitalize">
               {patientDetails?.user?.lastName? patientDetails?.user?.lastName : 'N/A'}
             </div>
           </div>
-          <div className="flex flex-col">
-            <div className={styles.labelText}>DOB | Age</div>
-            <div className={styles.valueText}>
+          <div className="flex gap-1 flex-col">
+            <div className="text-xs font-medium text-gray-500 gap-1">DOB | Age</div>
+            <div className="font-medium capitalize">
               {formatDate(patientDetails?.dob, {
                 year: "numeric",
                 month: "2-digit",
@@ -45,9 +44,9 @@ const BasicInformation = ({
               | years
             </div>
           </div>
-          <div>
-            <div className={styles.labelText}>Birth Sex</div>
-            <div className={styles.valueText}>{patientDetails?.gender ? patientDetails?.gender : 'N/A'}</div>
+          <div className="flex gap-1 flex-col">
+            <div className="text-xs font-medium text-gray-500">Birth Sex</div>
+            <div className="font-medium capitalize">{patientDetails?.gender ? patientDetails?.gender : 'N/A'}</div>
           </div>
         </div>
       </div>

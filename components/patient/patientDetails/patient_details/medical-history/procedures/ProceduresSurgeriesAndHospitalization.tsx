@@ -1,12 +1,16 @@
 "use client";
 
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
+
 import ProceduresSurgeriesAndHospitalizationDialog from "@/components/charts/Encounters/Details/ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalizationDialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { getProcedureData } from "@/services/chartDetailsServices";
 import { ProceduresInterface } from "@/types/procedureInterface";
-import ProceduresSurgeriesAndHospitalizationClient from "./client";
+
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { columns } from "./column";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+
 
 interface ProceduresSurgeriesAndHospitalizationProps {
   userDetailsId: string;
@@ -19,7 +23,7 @@ function ProceduresSurgeriesAndHospitalization({
   const [data, setData] = useState<ProceduresInterface[]>([]);
 
   // Loading State
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   // Pagination Data
   const itemsPerPage = 3;
@@ -57,27 +61,27 @@ function ProceduresSurgeriesAndHospitalization({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex justify-between items-center p-4 text-lg font-semibold rounded-md bg-[#f0f0f0]">
-        <span>Procedures, Surgeries and Hospitalization</span>
-        <GhostButton onClick={() => setIsOpen(true)}> Add </GhostButton>
-        <ProceduresSurgeriesAndHospitalizationDialog
-          isOpen={isOpen}
-          onClose={() => {
-            setIsOpen(false);
-            fetchProcedures();
-          }}
-          userDetailsId={userDetailsId}
-        />
-      </div>
-      <ScrollArea className="h-[12.5rem] min-h-10">
-        <ProceduresSurgeriesAndHospitalizationClient
-          data={data}
-          loading={loading}
-          pageNo={page}
-          totalPages={totalPages}
-          onSetPageNo={setPage}
-        />
-      </ScrollArea>
+      <div className="flex gap-4 text-lg font-semibold flex-col">
+        <div className="flex flex-row items-center gap-4">
+          <span>Procedures, Surgeries and Hospitalization</span>
+          <Button variant="ghost" onClick={() => setIsOpen(true)}> Add </Button>
+          <ProceduresSurgeriesAndHospitalizationDialog
+            isOpen={isOpen}
+            onClose={() => {
+              setIsOpen(false);
+              fetchProcedures();
+            }}
+            userDetailsId={userDetailsId}
+          />
+        </div>
+      <DefaultDataTable
+        columns={columns()}
+        data={data || []}
+        pageNo={page}
+        totalPages={totalPages}
+        onPageChange={(newPage) => setPage(newPage)}
+      />
+    </div>
     </div>
   );
 }

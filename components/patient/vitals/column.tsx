@@ -114,9 +114,8 @@ export const columns = ({
               providerId: row.original.providerId,
               userDetailsId: row.original.userDetailsId,
             });
-          }}
-        >
-          <Edit2Icon color="#84012A" />
+          }}>
+          <Edit2Icon className="text-gray-500" />
         </Button>
         <Button
           variant="outline"
@@ -128,9 +127,8 @@ export const columns = ({
               showToast,
               fetchVitalsData
             );
-          }}
-        >
-          <Trash2Icon color="#84012A" />
+          }}>
+          <Trash2Icon className="text-gray-500" />
         </Button>
       </div>
     ),

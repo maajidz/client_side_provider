@@ -59,18 +59,21 @@ const PrimaryCarePhysician = ({
   };
 
   return (
-    <div className={styles.infoBox}>
-      <div className={styles.infoBoxLabel}>Primary Care Physician</div>
+    <div className="bg-gray-50 p-6 rounded-lg flex-1 gap-6 flex-col flex">
+      <div className=" flex flex-col gap-1">
+      <div className="font-semibold text-xs pb-2 text-gray-600 uppercase tracking-wider ">Primary Care Physician</div>
       {/* {selectedPrimaryCarePhysician ? <div>Edit </div> :  */}
-      <div>
-        <Input
-          value={searchPrimaryCarePhysician}
-          onChange={(e) => {
-            setSearchPrimaryCarePhysician(e.target.value);
-            setSelectedPrimaryCarePhysician(null);
-          }}
-          placeholder="Search providers..."
-        />
+        <div>
+          <Input
+            value={searchPrimaryCarePhysician}
+            className="bg-white"
+            onChange={(e) => {
+              setSearchPrimaryCarePhysician(e.target.value);
+              setSelectedPrimaryCarePhysician(null);
+            }}
+            placeholder="Search providers..."
+          />
+        </div>
       </div>
 
       {/* Loading State */}
@@ -109,7 +112,7 @@ const PrimaryCarePhysician = ({
 
       <div className={styles.physicianDetailsBox}>
         <PhysicianData
-          label="Name of Physician"
+          label="Assigned Physician"
           value={careTeam?.primaryCarePhysician.NameOfPhysician || ""}
         />
       </div>
@@ -121,9 +124,9 @@ export default PrimaryCarePhysician;
 
 const PhysicianData = ({ label, value }: { label: string; value: string }) => {
   return (
-    <div>
-      <div className={styles.labelText}>{label}</div>
-      <div className={`${styles.valueText} flex items-center justify-between gap-2`}>
+    <div className="flex gap-1 flex-col">
+      <div className="text-xs font-medium text-gray-500 ">{label}</div>
+      <div className="flex items-center justify-between gap-2 font-semibold">
         {value}
         <Button variant="ghost">
           <Trash2Icon color="#84012A" />

@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Heading } from "@/components/ui/heading";
-// import { Separator } from "@/components/ui/separator";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import { UserData, UserResponseInterface } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+
 
 export const PatientClient = () => {
   const [response, setResponse] = useState<UserResponseInterface>();

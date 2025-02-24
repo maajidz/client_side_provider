@@ -2,8 +2,9 @@
 import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
+import { Heading } from "@/components/ui/heading";
 import ViewPatientTasks from "./ViewPatientTasks";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import { Button } from "@/components/ui/button";
 
 const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -16,15 +17,18 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-      <div className="flex justify-end mb-3">
-        <DefaultButton
-          onClick={() => {
-            setIsDialogOpen(true);
-          }}
-        >
+      <div className="flex">
+        <div className="flex flex-1 justify-between items-center">
+          <Heading title="Tasks" />
+          <Button
+            onClick={() => {
+              setIsDialogOpen(true);
+            }}
+          >
           <PlusIcon />
-          Tasks
-        </DefaultButton>
+          New Task
+          </Button>
+        </div>
         <TasksDialog
           userDetailsId={userDetailsId}
           onClose={handleDialogClose}

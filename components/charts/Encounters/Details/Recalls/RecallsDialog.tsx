@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -38,8 +38,8 @@ import {
   updateRecallsData,
 } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
-import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 
 const RecallsDialog = ({
   userDetailsId,
@@ -148,13 +148,13 @@ const RecallsDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <ScrollArea className="max-h-[30rem] h-auto">
-              <div className={formStyles.formBody}>
+            <ScrollArea>
+              <div className="max-h-[90dvh] h-auto flex flex-col items-start gap-6">
                 <FormField
                   control={form.control}
                   name="type"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Type</FormLabel>
                       <FormControl>
                         <Select
@@ -178,25 +178,12 @@ const RecallsDialog = ({
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
-                      <FormLabel>Notes</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Add notes here..." {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 <div className="flex gap-2">
                   <FormField
                     control={form.control}
                     name="dueDate.period"
                     render={({ field }) => (
-                      <FormItem className={`${formStyles.formItem} w-1/3`}>
+                      <FormItem className="w-1/3">
                         <FormLabel>Due Date</FormLabel>
                         <FormControl>
                           <Select
@@ -220,7 +207,7 @@ const RecallsDialog = ({
                     control={form.control}
                     name="dueDate.value"
                     render={({ field }) => (
-                      <FormItem className={`${formStyles.formItem} w-1/3`}>
+                      <FormItem className="w-1/3">
                         <FormLabel>Value</FormLabel>
                         <FormControl>
                           <Input
@@ -240,7 +227,7 @@ const RecallsDialog = ({
                     control={form.control}
                     name="dueDate.unit"
                     render={({ field }) => (
-                      <FormItem className={`${formStyles.formItem} w-1/3`}>
+                      <FormItem className="w-1/3">
                         <FormLabel>Unit</FormLabel>
                         <FormControl>
                           <Select
@@ -268,7 +255,7 @@ const RecallsDialog = ({
                   control={form.control}
                   name="provider"
                   render={({ field }) => (
-                    <FormItem className={formStyles.formItem}>
+                    <FormItem >
                       <FormLabel>Provider</FormLabel>
                       <FormControl>
                         <Input {...field} />
@@ -283,7 +270,7 @@ const RecallsDialog = ({
                   control={form.control}
                   name="sendAutoReminders"
                   render={({ field }) => (
-                    <FormItem className="flex items-center gap-2">
+                    <FormItem className="flex flex-row items-center gap-2">
                       <FormControl>
                         <Checkbox
                           checked={field.value}
@@ -294,18 +281,33 @@ const RecallsDialog = ({
                     </FormItem>
                   )}
                 />
-                <div className="flex justify-end">
-                  <div className="flex  gap-2 w-fit">
-                    <Button variant="outline" type="button" onClick={onClose}>
-                      Cancel
-                    </Button>
-                    <SubmitButton label="Add" />
-                  </div>
-                </div>
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-1 w-full">
+                      <FormLabel>Notes</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Add notes here..." {...field} className="resize-none"/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </ScrollArea>
           </form>
         </Form>
+        <DialogFooter>
+        <div className="flex w-full justify-end">
+                  <div className="flex  gap-2 w-fit">
+                    <Button variant="outline" onClick={onClose}>
+                      Cancel
+                    </Button>
+                    <Button>Add</Button>
+                  </div>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
