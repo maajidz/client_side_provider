@@ -8,6 +8,7 @@ import EditPatientBody from "../../../add_patient/EditPatientBody";
 import BasicInformation from "./BasicInformation";
 import ContactDetails from "./ContactDetails";
 import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
 // import PHRRegistration from "./PHRRegistration";
 // import PatientId from "./PatientId";
 // import EmergencyContact from "./EmergencyContact";
@@ -44,18 +45,19 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
     <>
       {loading && <LoadingButton />}
       {response && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           {editPatient ? (
             <EditPatientBody patientDetails={response} />
           ) : (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-6">
               <div className="flex justify-end">
                 <Button
-                  variant="secondary"
+                  variant="greyghost"
                   onClick={() => {
                     setEditPatient(true);
                   }}
                 >
+                  <Pencil/>
                   Edit Patient
                 </Button>
               </div>

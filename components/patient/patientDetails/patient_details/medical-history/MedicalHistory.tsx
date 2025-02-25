@@ -13,7 +13,7 @@ interface MedicalHistoryProps {
 
 function MedicalHistory({ userDetailsId }: MedicalHistoryProps) {
   return (
-      <div className="flex flex-col gap-5 my-5 overflow-y-scroll h-[calc(100dvh-12rem)]">
+      <div className="flex flex-col gap-8 my-5 overflow-y-scroll h-[calc(100dvh-12rem)]">
         <ProceduresSurgeriesAndHospitalization userDetailsId={userDetailsId} />
         <PastMedicalHistory userDetailsId={userDetailsId} />
         <FamilyHistory userDetailsId={userDetailsId} />

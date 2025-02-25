@@ -31,8 +31,8 @@ const patientDetailsTab = [
 
 const PatientDetails = ({ userId }: { userId: string }) => {
   return (
-    <Tabs defaultValue="demographics" className="gap-4">
-      <TabsList className="flex gap-3 w-full">
+    <Tabs defaultValue="demographics">
+      <TabsList>
         {patientDetailsTab.map((tab) => (
           <CustomTabsTrigger value={tab.value} key={tab.value}>
             {tab.label}

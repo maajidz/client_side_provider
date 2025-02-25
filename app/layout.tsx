@@ -41,7 +41,7 @@ export default function RootLayout({
       >
         <ReduxProvider>
           <Toaster />
-          <div>{children}</div>
+          <div className=" w-full">{children}</div>
         </ReduxProvider>
       </body>
     </html>

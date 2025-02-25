@@ -1,5 +1,4 @@
 import SocialHistoryDialog from "@/components/charts/Encounters/Details/SocialHistory/SocialHistoryDialog";
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import LoadingButton from "@/components/LoadingButton";
 import { SocialHistoryInterface } from "@/types/socialHistoryInterface";
 import { getSocialHistory } from "@/services/socialHistoryServices";
@@ -53,22 +52,14 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
   }, [fetchSocialHistory]);
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex gap-4 items-center text-lg font-semibold">
-        <span>Social History</span>
-        <GhostButton onClick={() => setIsOpen(true)}>Add </GhostButton>
-        <SocialHistoryDialog
-          userDetailsId={userDetailsId}
-          isOpen={isOpen}
-          onClose={() => {
-            setIsOpen(false);
-            fetchSocialHistory();
-          }}
-        />
-      </div>
-        <div className="flex flex-1 flex-col p-2 border rounded-lg">
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <div className="text-sm text-muted-foreground">
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between flex-1">
+        <div className="flex flex-row items-center gap-2">
+          <span className="font-bold text-lg">Social History</span>
+          <Button variant={"ghost"} onClick={() => setIsOpen(true)}>Add </Button>
+        </div>
+        <div className="flex items-center gap-2">
+            <div className="text-sm text-gray-400 font-semibold">
               Page {page} of {totalPages}
             </div>
             <div className="space-x-2">
@@ -90,6 +81,16 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
               </Button>
             </div>
           </div>
+        <SocialHistoryDialog
+          userDetailsId={userDetailsId}
+          isOpen={isOpen}
+          onClose={() => {
+            setIsOpen(false);
+            fetchSocialHistory();
+          }}
+        />
+      </div>
+        <div className="flex flex-1 flex-col p-2 border rounded-lg">
           {loading ? (
             <LoadingButton />
           ) : (

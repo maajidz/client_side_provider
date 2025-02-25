@@ -25,7 +25,6 @@ import { columns } from "../../../lab/LabResults/columns";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import PageContainer from "@/components/layout/page-container";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface ResultRecordsProps {
@@ -128,13 +127,12 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
   }
 
   return (
-    <PageContainer scrollable={true}>
-      <div>
+      <div className="flex flex-col gap-6">
         {/* Search Form */}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+            className="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4"
           >
             <FormField
               control={form.control}
@@ -216,7 +214,7 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
         </Form>
 
         {/* Results Table */}
-        <div className="py-5">
+        <div className="flex flex-col gap-6">
           {resultList?.results && (
             <DefaultDataTable
               columns={columns()}
@@ -228,7 +226,6 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
           )}
         </div>
       </div>
-    </PageContainer>
   );
 }
 

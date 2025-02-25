@@ -8,6 +8,7 @@ import { AppointmentsDialog } from "@/components/patient/appointments/Appointmen
 import { Button } from "@/components/ui/button";
 import generateAppointmentPDF from "@/components/patient/appointments/generateAppointmentPdf";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { Printer } from "lucide-react";
 
 export function PatientAppointmentClient({
   userDetailsId,
@@ -74,12 +75,12 @@ export function PatientAppointmentClient({
     <div className="flex flex-col gap-6">
       <div className="flex justify-end">
         <Button
-          variant="link"
-          className="border-[#84012A] text-[#84012A] hover:text-[#84012A]"
+          variant="greyghost"
           onClick={() =>
             generateAppointmentPDF({ appointmentData: userAppointment })
           }
         >
+          <Printer/>
           Print
         </Button>
       </div>

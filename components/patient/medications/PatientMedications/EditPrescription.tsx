@@ -152,7 +152,7 @@ function EditPrescription({
             className="flex flex-col gap-4"
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <div className="flex flex-col gap-4 p-2 text-sm">
+            <div className="flex flex-col gap-4 text-sm">
               <div className="flex items-center gap-3">
                 <span className="font-medium">Drug:</span>
                 <span className="font-semibold">
@@ -174,25 +174,25 @@ function EditPrescription({
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center gap-3">
+              </div>
+              <div className="flex items-center gap-3">
                   <span className="font-medium">Days of Supply:</span>
                   <span className="font-semibold">
                     {selectedPrescription?.days_of_supply ?? ""}
                   </span>
                 </div>
-              </div>
-              <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
                   <span className="font-medium">Refills:</span>
                   <span className="font-semibold">
                     {selectedPrescription?.additional_refills ?? ""}
                   </span>
                 </div>
+              <div className="flex justify-between">
                 <FormField
                   control={form.control}
                   name="dispense_as_written"
                   render={({ field }) => (
-                    <FormItem className="flex items-center gap-3">
+                    <FormItem className="flex gap-3">
                       <FormLabel className="font-medium">
                         Dispense As Written
                       </FormLabel>
@@ -213,12 +213,12 @@ function EditPrescription({
                   {selectedPrescription?.note_to_Pharmacy ?? ""}
                 </span>
               </div>
-              <div className="flex items-center justify-between w-full">
+              <div className="flex gap-2">
                 <FormField
                   control={form.control}
                   name="fromDate"
                   render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
+                    <FormItem className="flex gap-2">
                       <FormLabel className="font-medium">From Date</FormLabel>
                       <FormControl>
                         <Input {...field} type="date" className="w-fit" />
@@ -231,7 +231,7 @@ function EditPrescription({
                   control={form.control}
                   name="toDate"
                   render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
+                    <FormItem className="flex gap-2">
                       <FormLabel className="font-medium">To Date</FormLabel>
                       <FormControl>
                         <Input

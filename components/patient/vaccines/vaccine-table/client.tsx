@@ -71,7 +71,7 @@ const HistoricalVaccinesClient = ({
   }
 
   return (
-    <div className="flex flex-col gap-6 mt-6">
+    <div className="flex flex-col gap-6">
       <div className="flex justify-end">
         <Button
           onClick={() => {

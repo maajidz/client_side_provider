@@ -17,7 +17,7 @@ export function ReduxProvider({ children }: { children: React.ReactNode }) {
     <Provider store={store}>
       {isMounted ? (
         <PersistGate loading={null} persistor={persistor}>
-          {children}
+          <div className="flex flex-1 h-full w-full">{children}</div>
         </PersistGate>
       ) : (
         children

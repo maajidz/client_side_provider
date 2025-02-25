@@ -25,7 +25,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 // import { useSelector } from "react-redux";
 import { z } from "zod";
-import PageContainer from "@/components/layout/page-container";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 interface OrderRecordsProps {
@@ -88,7 +87,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
   }
 
   return (
-    <PageContainer scrollable={true}>
+    <div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -159,7 +158,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
           />
         )}
       </div>
-    </PageContainer>
+    </div>
   );
 }
 

@@ -10,7 +10,6 @@ import { fetchMessages } from "@/services/messageService";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 
@@ -165,14 +164,14 @@ export default function ChatPage({
   };
 
   return (
-    <div className="flex flex-col gap-8 h-full ">
+    <div className="flex flex-col gap-4 h-full ">
       <div className="flex justify-between">
         <div className="font-semibold text-base capitalize">
           {userDetails.firstName} {userDetails.lastName}
         </div>
       </div>
-      <div className="flex h-[10vh] flex-grow flex-col">
-      <ScrollArea className="h-[10vh] flex flex-grow border-t border-gray-100">
+      <div className="flex flex-grow flex-col">
+      <div className="h-[1vh] flex flex-grow border-t overflow-auto border-gray-100">
         <div className="flex flex-col flex-1 gap-6">
           {loading && (
             <div className="h-4">
@@ -196,7 +195,7 @@ export default function ChatPage({
                 }`}
               >
                 <AvatarImage src="" className="border-2 border-[#FFE7E7]"/>
-                <AvatarFallback className="text-[#84012A] bg-[#FFE7E7] p-1">
+                <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
                   <span className="text-xs font-semibold">AF</span>
                 </AvatarFallback>
               </Avatar>
@@ -206,7 +205,7 @@ export default function ChatPage({
                 className={`${
                   msg.senderID === userId
                     ? "flex w-fit rounded-full bg-rose-950 text-rose-100 p-3 pl-4 pr-4"
-                    : "flex w-fit rounded-full bg-gray-300/50 text-gray-900 p-3 pl-4 pr-4"
+                    : "flex w-fit rounded-full bg-[#F3EFF0] font-medium text-gray-900 p-3 pl-4 pr-4"
                 }`}
               >
               <div className="inline">{msg.content}</div>
@@ -226,7 +225,8 @@ export default function ChatPage({
           ))}
           <div ref={endOfMessagesRef} />
         </div>
-      </ScrollArea>
+      </div>
+      </div>
       <div className="flex flex-row gap-3 border-t pt-6 border-gray-100 items-start">
         <Textarea
           value={input}
@@ -235,7 +235,6 @@ export default function ChatPage({
           className="resize-none"
         />
         <Button onClick={() => handleSendMessage()}>Send<SendHorizonalIcon type=""/></Button>
-      </div>
       </div>
     </div>
   );

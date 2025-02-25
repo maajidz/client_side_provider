@@ -35,7 +35,7 @@ export function DashboardNav({
   console.log('isActive', isMobileNav, isMinimized);
 
   return (
-    <nav className="grid items-start gap-2">
+    <nav className="flex flex-col flex-1 h-full items-start gap-2">
       <TooltipProvider>
         {items.map((item, index) => {
           const Icon = Icons[item.icon || 'arrowRight'];
@@ -46,18 +46,18 @@ export function DashboardNav({
                   <Link
                     href={item.disabled ? '/' : item.href}
                     className={cn(
-                      'flex items-center gap-2 overflow-hidden rounded-md py-2 text-accent text-sm font-medium hover:bg-accent hover:text-[#84012A]',
-                      path === item.href ? 'bg-accent text-[#84012A]' : 'transparent',
+                      'h-10 w-10 text-[#7D7177] hover:cursor-pointer transition-all hover:text-[#84012A] flex justify-center overflow-hidden rounded-md hover:bg-[#E9DFE9] text-sm font-medium items-center',
+                      path === item.href ? 'bg-accent text-[#7D7177]' : 'transparent',
                       item.disabled && 'cursor-not-allowed opacity-80'
                     )}
                     onClick={() => {
                       if (setOpen) setOpen(false);
                     }}
                   >
-                    <Icon className={`ml-3 size-5 flex-none`} />
+                    <Icon className={`size-5`} />
 
                     {isMobileNav || (!isMinimized && !isMobileNav) ? (
-                      <span className="mr-2 truncate">{item.title}</span>
+                      ""
                     ) : (
                       ''
                     )}

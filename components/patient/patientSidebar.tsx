@@ -2,7 +2,6 @@
 import React from "react";
 import { patientItems } from "@/constants/data";
 import { PatientNav } from "./patientNav";
-import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 type patientSidebarProps = {
@@ -24,11 +23,9 @@ export default function PatientSidebar({
       )}
     >
       <>
-        <ScrollArea className="h-[75vh]">
-          <div className="">
+        <div className="h-[70dvh] flex pr-4 flex-1 flex-grow overflow-auto">
             <PatientNav items={items} />
-          </div>
-        </ScrollArea>
+        </div>
       </>
     </aside>
   );

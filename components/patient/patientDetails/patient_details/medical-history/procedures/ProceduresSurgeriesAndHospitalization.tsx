@@ -2,12 +2,9 @@
 
 
 import ProceduresSurgeriesAndHospitalizationDialog from "@/components/charts/Encounters/Details/ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalizationDialog";
-
 import { getProcedureData } from "@/services/chartDetailsServices";
 import { ProceduresInterface } from "@/types/procedureInterface";
-
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { columns } from "./column";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
@@ -63,8 +60,6 @@ function ProceduresSurgeriesAndHospitalization({
     <div className="flex flex-col gap-2">
       <div className="flex gap-4 text-lg font-semibold flex-col">
         <div className="flex flex-row items-center gap-4">
-          <span>Procedures, Surgeries and Hospitalization</span>
-          <Button variant="ghost" onClick={() => setIsOpen(true)}> Add </Button>
           <ProceduresSurgeriesAndHospitalizationDialog
             isOpen={isOpen}
             onClose={() => {
