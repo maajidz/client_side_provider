@@ -19,9 +19,9 @@ const PatientVaccines = ({ userDetailsId }: { userDetailsId: string }) => {
   ];
 
   return (
-      <Tabs defaultValue="vaccines" className="">
+      <Tabs defaultValue="vaccines" className="flex gap-6 flex-col">
         <div className="mb-6">
-        <Heading title="Vaccines" />
+          <Heading title="Vaccines" />
         </div>
         <TabsList className="flex gap-3 w-full">
           {patientVaccineTab.map((tab) => (

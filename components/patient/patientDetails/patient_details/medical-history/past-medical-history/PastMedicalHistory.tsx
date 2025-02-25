@@ -1,5 +1,4 @@
 import LoadingButton from "@/components/LoadingButton";
-import PastMedicalHistoryDialog from "@/components/charts/Encounters/Details/PastMedicalHistory/PastMedicalHistoryDialog";
 import { Button } from "@/components/ui/button";
 import { getPastMedicalHistory } from "@/services/chartDetailsServices";
 import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
@@ -22,7 +21,7 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
   const [totalPages, setTotalPages] = useState(1);
 
   // Dialog State
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
   // GET Past Medical History Data
   const fetchPastMedicalHistory = useCallback(async () => {
@@ -53,57 +52,59 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
   }, [fetchPastMedicalHistory]);
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex gap-4 items-center text-lg font-semibold">
-        <span>Past Medical History</span>
-        <Button variant="ghost" onClick={() => setIsOpen(true)}>Add</Button>
-        <PastMedicalHistoryDialog
+    <div className="flex flex-col gap-6">
+        {/* <PastMedicalHistoryDialog
           userDetailsId={userDetailsId}
           isOpen={isOpen}
           onClose={() => {
             setIsOpen(false);
             fetchPastMedicalHistory();
           }}
-        />
-      </div>
-        <div className="flex flex-1 flex-col p-3 border rounded-lg">
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <div className="text-sm text-muted-foreground">
-              Page {page} of {totalPages}
+        /> */}
+        <div className="flex flex-1 flex-col gap-4">
+          <div className="flex flex-row justify-between items-center">
+            <div className='flex flex-row gap-2 items-center'>
+              <span className='font-bold text-lg'>Past Medical History</span>
+              <Button variant="ghost"> Add </Button>
             </div>
-            <div className="space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page - 1)}
-                disabled={page <= 1}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page + 1)}
-                disabled={page >= totalPages}
-              >
-                Next
-              </Button>
+            <div className="flex items-center justify-end gap-2">
+              <div className="text-sm text-gray-400 font-semibold">
+                Page {page} of {totalPages}
+              </div>
+              <div className="space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(page - 1)}
+                  disabled={page <= 1}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(page + 1)}
+                  disabled={page >= totalPages}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
           </div>
           {loading ? (
             <LoadingButton />
           ) : (
             data.map((history) => (
-              <div className="flex flex-col gap-3" key={history.id}>
-                <div className="font-semibold text-large">
-                  Past Medical History on{" "}
+              <div className="flex flex-col gap-3  border rounded-lg p-4" key={history.id}>
+                <div className="font-semibold text-sm">
+                  {" "}
                   {new Date(history.createdAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "2-digit",
                     year: "numeric",
-                  })}{" "}
+                  })}{" "} by Dr. Maria Shah
                 </div>
-                <div>
+                <div className="text-sm">
                   <div>{history.notes}</div>
                   <div>{history.glp_refill_note_practice}</div>
                 </div>

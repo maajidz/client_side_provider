@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DefaultButton from "../custom_buttons/buttons/DefaultButton";
 import { useRouter } from "next/navigation";
 import { resetLoginData } from "@/store/slices/loginSlice";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
 function AccountIcon() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -43,17 +44,17 @@ function AccountIcon() {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <User
-        color="#84012A"
-        className="w-8 h-8 p-2 rounded-full cursor-pointer bg-white border-2 border-pink-100"
-        onClick={handleShowDropdown}
-      />
+    <Avatar
+        className="w-10 h-10 rounded-md cursor-pointer border-2 border-[#E9DFE9]"
+        onClick={handleShowDropdown}>
+      <AvatarImage src="https://i.pravatar.cc/150?img=3" />
+    </Avatar>
       {showDropdown && (
-        <div className="flex flex-col gap-6 absolute right-0 translate-x-[-5%] mt-2 w-[450px] px-4 py-[1.125rem] bg-white shadow-lg rounded-2xl z-10">
+        <div className="flex flex-col gap-6 absolute left-0 bottom-0 translate-x-[10%] mt-2 w-[450px] p-4 bg-white shadow-lg rounded-xl z-50">
           <div className="flex items-center gap-3">
             <User
               color="#84012A"
-              className="flex gap-2.5 w-8 h-8 p-1.5 rounded-full cursor-pointer bg-[#FFE7E7]"
+              className="flex gap-2.5 w-8 h-8 p-1.5 rounded-full cursor-pointer"
             />
             <div className="flex flex-col gap-2">
               <span className="text-base font-medium text-[#84012a]">

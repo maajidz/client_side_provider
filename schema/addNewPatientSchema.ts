@@ -45,3 +45,38 @@ export const addNewPatientSchema = z.object({
   // source: z.string().optional(),
   // specific_source: z.string().optional()
 });
+
+export const basicInformationSchema = z.object({
+  firstName: z.string().min(2, "First Name must be at least 2 characters."),
+  lastName: z.string().min(2, "Last Name must be at least 2 characters."),
+  dob: z.string({ required_error: "A date of birth is required." }),
+  gender: z.string().nonempty(),
+});
+
+export const patientContactSchema = z.object({
+  height: z.union([
+    z.object({
+      unit: z.literal("feet"),
+      feet: z.string().min(1, "Height in feet is required"),
+      inches: z.string().min(0, "Height in inches is required"),
+    }),
+    z.object({
+      unit: z.literal("cm"),
+      value: z.string().min(2, "Height in cm is required"),
+    }),
+  ]),
+  weight: z.object({
+    value: z.string().min(1, "Weight is required."),
+    units: z.enum(["kg", "Pounds"]),
+  }),
+  phoneNumber: z.string().refine(
+    (num) => {
+      return num.length >= 10 && /^\d{10,}$/.test(num);
+    },
+    {
+      message: "Invalid phone number format. At least 10 digits are required.",
+    }
+  ),
+  state: z.string().min(1, "Select a state"),
+  email: z.string().min(1, "Email Requires"),
+});

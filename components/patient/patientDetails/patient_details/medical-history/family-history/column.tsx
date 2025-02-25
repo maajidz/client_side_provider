@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { FamilyHistoryResponseInterface } from "@/types/familyHistoryInterface";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -23,14 +24,14 @@ export const columns = (): ColumnDef<FamilyHistoryResponseInterface>[] => [
       const { activeProblems } = row.original;
 
       return (
-        <div className="cursor-pointer">
+        <div className="flex gap-2 cursor-pointer">
           {activeProblems.map((problem) => (
-            <span
+            <Badge
               key={problem.id}
-              className="px-2 py-1 bg-[#ffe7e7] text-sm rounded-md m-1 inline-block text-[#84012A]"
+              variant="default"
             >
               {problem.name}
-            </span>
+            </Badge>
           ))}
         </div>
       );

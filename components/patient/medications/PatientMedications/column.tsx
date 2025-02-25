@@ -47,10 +47,10 @@ export const columns = ({
 }): ColumnDef<PrescriptionDataInterface>[] => [
   {
     accessorKey: "drug_name",
-    header: "Drug Name",
+    header: "Prescription",
     cell: ({ row }) => (
       <div className="flex flex-col gap-1 cursor-pointer">
-        <div>{row.getValue("drug_name")}</div>
+        <div className="text-sm font-semibold">{row.getValue("drug_name")}</div>
         <div>
           {row?.original?.dosages?.map((dosage, index) => (
             <div key={dosage?.id}>

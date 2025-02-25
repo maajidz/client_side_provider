@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import ViewVaccineOrders from "./ViewVaccineOrders";
 import VaccineOrders from "@/components/injections/vaccine-orders/VaccineOrders";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { PlusIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const PatientVaccineOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const [isVaccineDialogOpen, setIsVaccineDialogOpen] =
@@ -11,14 +11,14 @@ const PatientVaccineOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <div className="w-full">
       <div className="flex justify-end">
-        <DefaultButton
+        <Button
           onClick={() => {
             setIsVaccineDialogOpen(true);
           }}
         >
           <PlusIcon />
           <div>Vaccine Order</div>
-        </DefaultButton>
+        </Button>
         <VaccineOrders
           onClose={() => setIsVaccineDialogOpen(false)}
           isOpen={isVaccineDialogOpen}
