@@ -8,10 +8,22 @@ import LoadingButton from "../../LoadingButton";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Calendar1, DollarSign, FileHeart, HistoryIcon, WeightIcon } from "lucide-react";
+import {
+  Calendar1,
+  DollarSign,
+  FileHeart,
+  HistoryIcon,
+  WeightIcon,
+} from "lucide-react";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
@@ -88,16 +100,31 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             <div className="flex flex-row gap-2">
               <Avatar className="flex h-11 w-11 items-center justify-center border">
                 <AvatarImage src="/avatars/02.png" alt="Avatar" />
-                <AvatarFallback>JL</AvatarFallback>
+                <AvatarFallback>
+                  {response?.user.firstName?.charAt(0)}
+                  {response?.user.lastName?.charAt(0)}
+                </AvatarFallback>
               </Avatar>
               <div className="flex flex-col gap-1">
-                <CardTitle>{response && response.user && (response.user.firstName || response.user.lastName) ? `${response?.user?.firstName} ${response?.user?.lastName}` : "N/A"}</CardTitle>
-                <CardDescription>{response && (response.gender || age) ? `${response?.gender} / ${age}` : "N/A"}</CardDescription>
+                <CardTitle>
+                  {response &&
+                  response.user &&
+                  (response.user.firstName || response.user.lastName)
+                    ? `${response?.user?.firstName} ${response?.user?.lastName}`
+                    : "N/A"}
+                </CardTitle>
+                <CardDescription>
+                  {response && (response.gender || age)
+                    ? `${response?.gender} / ${age}`
+                    : "N/A"}
+                </CardDescription>
               </div>
             </div>
             <div className="flex flex-col items-end text-sm font-medium gap-2">
               <span className="text-gray-500">PID</span>
-              <span className="text-gray-900">{response?.patientId ? response.patientId : "N/A"}</span>
+              <span className="text-gray-900">
+                {response?.patientId ? response.patientId : "N/A"}
+              </span>
             </div>
           </CardHeader>
         </Card>
@@ -107,17 +134,14 @@ const PatientHeader = ({ userId }: { userId: string }) => {
           </CardHeader>
           <CardContent className="flex gap-2">
             {response && response.allergies
-                ? response.allergies.map((allergy, index) => (
-                    <Badge
-                      variant={"destructive"}
-                      key={allergy.id}
-                    >
-                      {index === 0 ? "" : ""}
-                      {allergy.Allergen}
-                    </Badge>
-                  ))
-                : "N/A"}
-            </CardContent>
+              ? response.allergies.map((allergy, index) => (
+                  <Badge variant={"destructive"} key={allergy.id}>
+                    {index === 0 ? "" : ""}
+                    {allergy.Allergen}
+                  </Badge>
+                ))
+              : "N/A"}
+          </CardContent>
         </Card>
         <Card>
           <CardHeader>
@@ -125,12 +149,22 @@ const PatientHeader = ({ userId }: { userId: string }) => {
           </CardHeader>
           <CardContent className="flex gap-2 text-sm font-medium">
             <Badge variant={"ghost"}>
-              <WeightIcon size={16} className="text-gray-500"/>
-              <span>{ response && response?.vitals ? `${ response?.vitals[response.vitals.length - 1]?.weightLbs }lbs ${response?.vitals[0]?.weightOzs}ozs` : "N/A" }</span>
+              <WeightIcon size={16} className="text-gray-500" />
+              <span>
+                {response && response?.vitals
+                  ? `${
+                      response?.vitals[response.vitals.length - 1]?.weightLbs
+                    }lbs ${response?.vitals[0]?.weightOzs}ozs`
+                  : "N/A"}
+              </span>
             </Badge>
             <Badge variant={"ghost"}>
-              <FileHeart size={16} className="text-gray-500"/>
-              <span>{ response && response?.vitals[0]?.BMI ? `${response?.vitals[0]?.BMI}` : "N/A" }</span>
+              <FileHeart size={16} className="text-gray-500" />
+              <span>
+                {response && response?.vitals[0]?.BMI
+                  ? `${response?.vitals[0]?.BMI}`
+                  : "N/A"}
+              </span>
             </Badge>
           </CardContent>
         </Card>
@@ -139,8 +173,25 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             <CardTitle>Visits</CardTitle>
           </CardHeader>
           <CardContent className="flex gap-2 text-sm font-medium items-start flex-row">
-            <Badge variant={"ghost"}><HistoryIcon size={16}/>Last:<span>Feb 12, 2025</span></Badge>
-            <Badge variant={"ghost"}><Calendar1 size={16}/>Next:<span>Mar 04, 2025</span></Badge>
+            <Badge variant={"ghost"}>
+              <HistoryIcon size={16} />
+              Last:
+              <span>
+                {response &&
+                  new Date(
+                    response.encounter[response.encounter.length - 1].date
+                  ).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                  })}
+              </span>
+            </Badge>
+            <Badge variant={"ghost"}>
+              <Calendar1 size={16} />
+              Next: N/A
+              {/* <span>Mar 04, 2025</span> */}
+            </Badge>
           </CardContent>
         </Card>
         <Card>
@@ -148,17 +199,19 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             <CardTitle>Wallet</CardTitle>
           </CardHeader>
           <CardContent className="flex gap-1 text-sm font-medium items-center">
-            <DollarSign size={16} className="text-gray-500"/>
-            <span>{response && response?.wallet ? response.wallet : "N/A"}</span>
+            <DollarSign size={16} className="text-gray-500" />
+            <span>
+              {response && response?.wallet ? response.wallet : "N/A"}
+            </span>
           </CardContent>
         </Card>
-
       </div>
     </div>
   );
 };
 
-{/*
+{
+  /*
 <div className={`${styles.infoBox}  bg-[#FFFFEA]`}>
 <div className="flex flex-col gap-3">
   <PatientLabelDetails
@@ -172,6 +225,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
     label="Wallet:"
     value={response && response?.wallet ? response.wallet : "N/A"}
   />
-  </div> */}
+  </div> */
+}
 
 export default PatientHeader;

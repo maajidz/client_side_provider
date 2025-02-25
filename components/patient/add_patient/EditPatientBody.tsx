@@ -32,11 +32,14 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import PatientConfirmationScreen from "./PatientConfirmationScreen";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 const EditPatientBody = ({
   patientDetails,
+  setEditPatient,
 }: {
   patientDetails: PatientDetails;
+  setEditPatient: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -183,353 +186,338 @@ const EditPatientBody = ({
   }
   return (
     <ScrollArea className="h-[60dvh] flex flex-grow">
-        <Form {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="flex gap-6 flex-col">
-                <FormSectionVert>
-                {/* <div className="font-bold text-sm text-gray-500">Basic Information</div> */}
-                  <FormSectionHor>
-                    <FormField
-                      control={methods.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="w-full">First Name:</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="text"
-                              placeholder="First Name"
-                              inputMode="text"
-                              {...field}
-                              className="font-normal text-base capitalize "
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={methods.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="w-full">Last Name:</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="text"
-                              placeholder="Last Name"
-                              inputMode="text"
-                              {...field}
-                              className="font-normal text-base capitalize"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={methods.control}
-                      name="dob"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="w-full">DOB:</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="date"
-                              {...field}
-                              className="text-center  justify-center "
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={methods.control}
-                      name="gender"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="w-full">
-                            Birth Gender:
-                          </FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={(value: string) =>
-                                field.onChange(value)
-                              }
-                            >
-                              <SelectTrigger className="">
-                                <SelectValue placeholder="Select here" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="Male">Male</SelectItem>
-                                <SelectItem value="Female">Female</SelectItem>
-                                <SelectItem value="Other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    </FormSectionHor>
-                    </FormSectionVert>
-                  <FormSectionVert>
-                  {/* <div className="font-bold text-sm text-gray-500">Contact Details</div> */}
-                  <FormSectionHor>
-                    <FormField
-                      control={methods.control}
-                      name="state"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="w-full">State:</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={(value: string) =>
-                                field.onChange(value)
-                              }
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select here" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <Input
-                                  type="text"
-                                  placeholder="Search states..."
-                                  value={search}
-                                  onChange={(e) => setSearch(e.target.value)}
-                                  className="p-2 w-full -b -gray-300"
-                                  autoFocus={true}
-                                />
-                                {filteredStates.map((state) => (
-                                  <SelectItem
-                                    key={state.name}
-                                    value={state.name}
-                                  >
-                                    {state.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={methods.control}
-                      name="phoneNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="w-full">
-                            Phone Number:
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Contact Number"
-                              inputMode="tel"
-                              value={field.value}
-                              onChange={(e) =>
-                                field.onChange(e.currentTarget.value)
-                              }
-                              className="font-normal text-base"
-                              autoFocus={true}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={methods.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="w-full">Email:</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Email"
-                              type="email"
-                              {...field}
-                              className="font-normal text-base"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    </FormSectionHor>
-                    </FormSectionVert>
-                    <FormSectionVert>
-                    
-                  {/* <div className="font-bold text-sm text-gray-500">Other Information</div> */}
-                    <div className="flex gap-4 items-end">
-                    <div className="flex flex-row items-end gap-2">
-                      {heightUnit === "cm" && (
-                          <FormField
-                            control={methods.control}
-                            name="height.value"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Height:</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    inputMode="numeric"
-                                    placeholder="cm"
-                                    value={field.value}
-                                    maxLength={2}
-                                    onChange={(e) =>
-                                      field.onChange(e.target.value)
-                                    }
-                                    className="font-normal text-base"
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                      )}
-                      {heightUnit === "feet" && (
-                        <div className="flex flex-row">
-                          <FormField
-                            control={methods.control}
-                            name="height.feet"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    placeholder="Feet"
-                                    value={field.value}
-                                    maxLength={2}
-                                    onChange={(e) =>
-                                      field.onChange(e.target.value)
-                                    }
-                                    className="font-normal text-base"
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={methods.control}
-                            name="height.inches"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    placeholder="Inches"
-                                    value={field.value}
-                                    maxLength={2}
-                                    onChange={(e) =>
-                                      field.onChange(e.target.value)
-                                    }
-                                    className="font-normal text-base"
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      )}
-                        <FormField
-                          control={methods.control}
-                          name="height.unit"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Select
-                                  value={field.value}
-                                  onValueChange={(value: string) => {
-                                    field.onChange(value);
-                                    handleUnitChange(value);
-                                  }}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select unit" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="feet">Feet</SelectItem>
-                                    <SelectItem value="cm">cm</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                    </div>
-                    <div className="flex gap-2 items-end">
-                      <FormField
-                        control={methods.control}
-                        name="weight.value"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Weight:</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="Weight"
-                                {...field}
-                                value={field.value}
-                                onChange={(e) => field.onChange(e.target.value)}
-                                className="font-normal text-base"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+      <Form {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(onSubmit)}
+          className="flex gap-6 flex-col"
+        >
+          <FormSectionVert>
+            {/* <div className="font-bold text-sm text-gray-500">Basic Information</div> */}
+            <FormSectionHor>
+              <FormField
+                control={methods.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="w-full">First Name:</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="First Name"
+                        inputMode="text"
+                        {...field}
+                        className="font-normal text-base capitalize "
                       />
-                      <FormField
-                        control={methods.control}
-                        name="weight.units"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Select
-                                value={field.value}
-                                onValueChange={(value: string) => {
-                                  field.onChange(value);
-                                }}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select unit" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="kg">Kilograms</SelectItem>
-                                  <SelectItem value="Pounds">Pounds</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={methods.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="w-full">Last Name:</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Last Name"
+                        inputMode="text"
+                        {...field}
+                        className="font-normal text-base capitalize"
                       />
-                    </div>  
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={methods.control}
+                name="dob"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="w-full">DOB:</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        className="text-center  justify-center "
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={methods.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="w-full">Birth Gender:</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value: string) => field.onChange(value)}
+                      >
+                        <SelectTrigger className="">
+                          <SelectValue placeholder="Select here" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Male">Male</SelectItem>
+                          <SelectItem value="Female">Female</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormSectionHor>
+          </FormSectionVert>
+          <FormSectionVert>
+            {/* <div className="font-bold text-sm text-gray-500">Contact Details</div> */}
+            <FormSectionHor>
+              <FormField
+                control={methods.control}
+                name="state"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="w-full">State:</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value: string) => field.onChange(value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select here" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <Input
+                            type="text"
+                            placeholder="Search states..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="p-2 w-full -b -gray-300"
+                            autoFocus={true}
+                          />
+                          {filteredStates.map((state) => (
+                            <SelectItem key={state.name} value={state.name}>
+                              {state.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={methods.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="w-full">Phone Number:</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Contact Number"
+                        inputMode="tel"
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.currentTarget.value)}
+                        className="font-normal text-base"
+                        autoFocus={true}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={methods.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="w-full">Email:</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Email"
+                        type="email"
+                        {...field}
+                        className="font-normal text-base"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormSectionHor>
+          </FormSectionVert>
+          <FormSectionVert>
+            {/* <div className="font-bold text-sm text-gray-500">Other Information</div> */}
+            <div className="flex gap-4 items-end">
+              <div className="flex flex-row items-end gap-2">
+                {heightUnit === "cm" && (
+                  <FormField
+                    control={methods.control}
+                    name="height.value"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Height:</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            inputMode="numeric"
+                            placeholder="cm"
+                            value={field.value}
+                            maxLength={2}
+                            onChange={(e) => field.onChange(e.target.value)}
+                            className="font-normal text-base"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                {heightUnit === "feet" && (
+                  <div className="flex flex-row">
+                    <FormField
+                      control={methods.control}
+                      name="height.feet"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="Feet"
+                              value={field.value}
+                              maxLength={2}
+                              onChange={(e) => field.onChange(e.target.value)}
+                              className="font-normal text-base"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={methods.control}
+                      name="height.inches"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="Inches"
+                              value={field.value}
+                              maxLength={2}
+                              onChange={(e) => field.onChange(e.target.value)}
+                              className="font-normal text-base"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                  </FormSectionVert>
-
-                <div className="flex self-end">
-                <SubmitButton label="Update" />
+                )}
+                <FormField
+                  control={methods.control}
+                  name="height.unit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={(value: string) => {
+                            field.onChange(value);
+                            handleUnitChange(value);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="feet">Feet</SelectItem>
+                            <SelectItem value="cm">cm</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               </div>
+              <div className="flex gap-2 items-end">
+                <FormField
+                  control={methods.control}
+                  name="weight.value"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Weight:</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Weight"
+                          {...field}
+                          value={field.value}
+                          onChange={(e) => field.onChange(e.target.value)}
+                          className="font-normal text-base"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={methods.control}
+                  name="weight.units"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={(value: string) => {
+                            field.onChange(value);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="kg">Kilograms</SelectItem>
+                            <SelectItem value="Pounds">Pounds</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </FormSectionVert>
 
-          </form>
-        </Form>
-        <PatientConfirmationScreen
-          onClose={() => {
-            setIsDialogOpen(false);
-          }}
-          isOpen={isDialogOpen}
-        />
+          <div className="flex self-end gap-5">
+            <Button variant={"outline"} onClick={() => setEditPatient(false)}>
+              Cancel
+            </Button>
+            <SubmitButton label="Update" />
+          </div>
+        </form>
+      </Form>
+      <PatientConfirmationScreen
+        onClose={() => {
+          setIsDialogOpen(false);
+        }}
+        isOpen={isDialogOpen}
+      />
     </ScrollArea>
-                
   );
 };
-{/* <div className="flex flex-col gap-5  p-5 w-full rounded-lg">
+{
+  /* <div className="flex flex-col gap-5  p-5 w-full rounded-lg">
                   <div className="font-medium text-[#84012A]">
                     Additional Information
                   </div>
@@ -963,6 +951,7 @@ const EditPatientBody = ({
                       )}
                     />
                   </div>
-                </div> */}
+                </div> */
+}
 
 export default EditPatientBody;

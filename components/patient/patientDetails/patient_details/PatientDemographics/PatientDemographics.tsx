@@ -47,7 +47,7 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
       {response && (
         <div className="flex flex-col">
           {editPatient ? (
-            <EditPatientBody patientDetails={response} />
+            <EditPatientBody patientDetails={response} setEditPatient={setEditPatient} />
           ) : (
             <div className="flex flex-col gap-6">
               <div className="flex justify-end">
