@@ -3,7 +3,6 @@ import { getFamilyHistoryData } from "@/services/chartDetailsServices";
 import { FamilyHistoryResponseInterface } from "@/types/familyHistoryInterface";
 import FamilyHistoryClient from "./client";
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 
 interface FamilyHistoryProps {
   userDetailsId: string;
@@ -54,8 +53,6 @@ function FamilyHistory({ userDetailsId }: FamilyHistoryProps) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-4 items-center text-lg font-semibold">
-        <span>Family History</span>
-        <Button variant="ghost" onClick={() => setIsOpen(true)}>Add </Button>
         <FamilyHistoryDialog
           userDetailsId={userDetailsId}
           isOpen={isOpen}

@@ -13,8 +13,9 @@ const badgeVariants = cva(
         secondary:
           "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive:
-          "inline-flex items-center rounded-2xl bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/10 ring-inset",
+          "inline-flex items-center rounded-2xl bg-red-50 px-2 py-1 text-xs font-medium text-rose-900 ring-1 ring-red-600/10 ring-inset",
         outline: "text-foreground",
+        ghost: "bg-white border-0 hover:bg-gray-100 hover:text-gray-800",
         warning: "inline-flex items-center rounded-2xl bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-yellow-600/20 ring-inset",
         success: "inline-flex items-center rounded-2xl bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset",
       },
@@ -31,7 +32,7 @@ export interface BadgeProps
 
 function Badge({ className, variant, ...props }: BadgeProps) {
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <div className={cn(badgeVariants({ variant }), className, "w-fit flex flex-row items-center gap-1 rounded-2xl px-2 py-1 text-xs font-medium hover:cursor-pointer")} {...props} />
   )
 }
 

@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { generateQuestionnairePDF } from "./generateQuestionnairePDF";
-import { Ellipsis } from "lucide-react";
+import { Copy, Ellipsis, FileUp } from "lucide-react";
 
 const PatientQuestionnaires = ({
   userDetailsId,
@@ -98,12 +98,11 @@ const PatientQuestionnaires = ({
     <Tabs defaultValue={type} className="flex gap-4 bg-white">
       <div className={styles.questionnaireContainer}>
         {patientQuestionnaireTab.map((tab) => (
-          <TabsContent value={tab.value} key={tab.value}>
+          <TabsContent value={tab.value} key={tab.value} className="flex flex-col gap-4">
             {loading && <LoadingButton />}
-            <div className={styles.questionnaireContainer}>
               <div className={styles.buttonContainer}>
-                <Button variant={"outline"} onClick={handleCopyContent}>
-                  Copy Content
+                <Button variant={"outline"} onClick={handleCopyContent} className="p-3">
+                  <Copy/>
                 </Button>
                 <Button
                   variant={"outline"}
@@ -113,10 +112,11 @@ const PatientQuestionnaires = ({
                     }
                   }}
                 >
-                  Export as Pdf
+                  <FileUp/>
+                  Export Pdf
                 </Button>
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="border border-[#D9D9D9] p-2 rounded-md">
+                  <DropdownMenuTrigger className="border border-[#D9D9D9] px-2 h-9 items-center rounded-md">
                     <Ellipsis />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
@@ -124,17 +124,42 @@ const PatientQuestionnaires = ({
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <TabsList className="flex w-fit flex-row gap-4 rounded-lg border bg-white border-none self-end">
-                {patientQuestionnaireTab.map((tab) => (
-                  <CustomTabsTrigger
-                    value={tab.value}
-                    key={tab.value}
-                    onClick={() => setType(tab.value)}
-                  >
-                    {tab.label}
-                  </CustomTabsTrigger>
-                ))}
-              </TabsList>
+              <div className="flex flex-row justify-between items-center">
+                <TabsList className="flex w-fit flex-row gap-4 rounded-lg border bg-white border-none self-end">
+                  {patientQuestionnaireTab.map((tab) => (
+                    <CustomTabsTrigger
+                      value={tab.value}
+                      key={tab.value}
+                      onClick={() => setType(tab.value)}
+                    >
+                      {tab.label}
+                    </CustomTabsTrigger>
+                  ))}
+                </TabsList>
+                <div className="flex items-center justify-end gap-2">
+                    <div className="text-sm text-muted-foreground">
+                      Page {page} of {totalPages}
+                    </div>
+                    <div className="space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage(page - 1)}
+                        disabled={page <= 1}
+                      >
+                        Previous
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage(page + 1)}
+                        disabled={page >= totalPages}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+              </div>
               <div className={styles.infoContainer}>
                   <div className={styles.detailsContainer}>
                     {resultList?.data?.map((result) => (
@@ -148,31 +173,8 @@ const PatientQuestionnaires = ({
                       </div>
                     ))}
                   </div>
-                <div className="flex items-center justify-end space-x-2 py-4">
-                  <div className="text-sm text-muted-foreground">
-                    Page {page} of {totalPages}
-                  </div>
-                  <div className="space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page - 1)}
-                      disabled={page <= 1}
-                    >
-                      Previous
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page + 1)}
-                      disabled={page >= totalPages}
-                    >
-                      Next
-                    </Button>
-                  </div>
-                </div>
               </div>
-            </div>
+
           </TabsContent>
         ))}
       </div>

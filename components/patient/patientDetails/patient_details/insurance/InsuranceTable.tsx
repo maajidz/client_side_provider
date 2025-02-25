@@ -78,7 +78,7 @@ function InsuranceTable({
 
   return (
     <>
-      <Table className="border rounded-lg">
+      <Table className="">
         <TableHeader>
           <TableRow>
             <TableHead>Type</TableHead>

@@ -12,6 +12,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormSectionHor,
+  FormSectionVert,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/LoadingButton";
@@ -29,6 +31,7 @@ import { createNewPatient } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import PatientConfirmationScreen from "./PatientConfirmationScreen";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const EditPatientBody = ({
   patientDetails,
@@ -179,21 +182,17 @@ const EditPatientBody = ({
     return <LoadingButton />;
   }
   return (
-    <div>
+    <ScrollArea className="h-[60dvh] flex flex-grow">
         <Form {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-5 pb-48">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
-                  <div className="font-medium text-[#84012A]">
-                    Basic Information
-                  </div>
-                  <div className="flex flex-col gap-3">
+          <form onSubmit={methods.handleSubmit(onSubmit)} className="flex gap-6 flex-col">
+                <FormSectionVert>
+                {/* <div className="font-bold text-sm text-gray-500">Basic Information</div> */}
+                  <FormSectionHor>
                     <FormField
                       control={methods.control}
                       name="firstName"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">First Name:</FormLabel>
                           <FormControl>
                             <Input
@@ -212,7 +211,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="lastName"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">Last Name:</FormLabel>
                           <FormControl>
                             <Input
@@ -231,7 +230,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="dob"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">DOB:</FormLabel>
                           <FormControl>
                             <Input
@@ -248,7 +247,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="gender"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Birth Gender:
                           </FormLabel>
@@ -273,18 +272,16 @@ const EditPatientBody = ({
                         </FormItem>
                       )}
                     />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
-                  <div className="font-medium text-[#84012A]">
-                    Contact Details
-                  </div>
-                  <div className="flex flex-col gap-3">
+                    </FormSectionHor>
+                    </FormSectionVert>
+                  <FormSectionVert>
+                  {/* <div className="font-bold text-sm text-gray-500">Contact Details</div> */}
+                  <FormSectionHor>
                     <FormField
                       control={methods.control}
                       name="state"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">State:</FormLabel>
                           <FormControl>
                             <Select
@@ -302,7 +299,7 @@ const EditPatientBody = ({
                                   placeholder="Search states..."
                                   value={search}
                                   onChange={(e) => setSearch(e.target.value)}
-                                  className="p-2 w-full border-b border-gray-300"
+                                  className="p-2 w-full -b -gray-300"
                                   autoFocus={true}
                                 />
                                 {filteredStates.map((state) => (
@@ -324,7 +321,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="phoneNumber"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Phone Number:
                           </FormLabel>
@@ -348,7 +345,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="email"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">Email:</FormLabel>
                           <FormControl>
                             <Input
@@ -362,22 +359,20 @@ const EditPatientBody = ({
                         </FormItem>
                       )}
                     />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
-                  <div className="font-medium text-[#84012A]">
-                    Other Information
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <div className="text-sm font-medium">Height:</div>
-                    <div className="flex gap-1">
+                    </FormSectionHor>
+                    </FormSectionVert>
+                    <FormSectionVert>
+                    
+                  {/* <div className="font-bold text-sm text-gray-500">Other Information</div> */}
+                    <div className="flex gap-4 items-end">
+                    <div className="flex flex-row items-end gap-2">
                       {heightUnit === "cm" && (
-                        <div>
                           <FormField
                             control={methods.control}
                             name="height.value"
                             render={({ field }) => (
                               <FormItem>
+                                <FormLabel>Height:</FormLabel>
                                 <FormControl>
                                   <Input
                                     type="number"
@@ -395,10 +390,9 @@ const EditPatientBody = ({
                               </FormItem>
                             )}
                           />
-                        </div>
                       )}
                       {heightUnit === "feet" && (
-                        <div className="flex gap-3">
+                        <div className="flex flex-row">
                           <FormField
                             control={methods.control}
                             name="height.feet"
@@ -443,7 +437,6 @@ const EditPatientBody = ({
                           />
                         </div>
                       )}
-                      <div className="md:w-[256px] lg:w-[256px] md:px-3 lg:px-3 px-1">
                         <FormField
                           control={methods.control}
                           name="height.unit"
@@ -469,15 +462,14 @@ const EditPatientBody = ({
                             </FormItem>
                           )}
                         />
-                      </div>
                     </div>
-                    <div className="text-sm font-medium">Weight:</div>
-                    <div className="flex  gap-2">
+                    <div className="flex gap-2 items-end">
                       <FormField
                         control={methods.control}
                         name="weight.value"
                         render={({ field }) => (
                           <FormItem>
+                            <FormLabel>Weight:</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
@@ -517,10 +509,27 @@ const EditPatientBody = ({
                           </FormItem>
                         )}
                       />
-                    </div>
+                    </div>  
                   </div>
-                </div>
-                {/* <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
+                  </FormSectionVert>
+
+                <div className="flex self-end">
+                <SubmitButton label="Update" />
+              </div>
+
+          </form>
+        </Form>
+        <PatientConfirmationScreen
+          onClose={() => {
+            setIsDialogOpen(false);
+          }}
+          isOpen={isDialogOpen}
+        />
+    </ScrollArea>
+                
+  );
+};
+{/* <div className="flex flex-col gap-5  p-5 w-full rounded-lg">
                   <div className="font-medium text-[#84012A]">
                     Additional Information
                   </div>
@@ -529,7 +538,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="category"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">Category:</FormLabel>
                           <FormControl>
                             <Input
@@ -548,7 +557,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="blood_group"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">Blood Group:</FormLabel>
                           <FormControl>
                             <Input
@@ -567,7 +576,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="language"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">Language:</FormLabel>
                           <FormControl>
                             <Select
@@ -593,7 +602,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="race"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">Race:</FormLabel>
                           <FormControl>
                             <Select
@@ -619,7 +628,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="smoking_status"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Smoking status:
                           </FormLabel>
@@ -669,7 +678,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="martial_status"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Martial Status:
                           </FormLabel>
@@ -698,7 +707,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="employment_status"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Employment Status:
                           </FormLabel>
@@ -737,7 +746,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="sexual_orientation"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Sexual Orientation:
                           </FormLabel>
@@ -771,7 +780,7 @@ const EditPatientBody = ({
                     />
                   </div>
                 </div>
-                <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
+                <div className="flex flex-col gap-5  p-5 w-full rounded-lg">
                   <div className="font-medium text-[#84012A]">
                     Emergency Contact
                   </div>
@@ -780,7 +789,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="emergency_contact_name"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Emergency Contact Name:
                           </FormLabel>
@@ -801,7 +810,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="emergency_contact_number"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Emergency Contact Number:
                           </FormLabel>
@@ -820,14 +829,14 @@ const EditPatientBody = ({
                     />
                   </div>
                 </div>
-                <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
+                <div className="flex flex-col gap-5  p-5 w-full rounded-lg">
                   <div className="font-medium text-[#84012A]">Patient IDs</div>
                   <div className="flex flex-col gap-3">
                     <FormField
                       control={methods.control}
                       name="emergency_contact_name"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Emergency Contact Name:
                           </FormLabel>
@@ -848,7 +857,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="emergency_contact_number"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Emergency Contact Number:
                           </FormLabel>
@@ -867,7 +876,7 @@ const EditPatientBody = ({
                     />
                   </div>
                 </div>
-                <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
+                <div className="flex flex-col gap-5  p-5 w-full rounded-lg">
                   <div className="font-medium text-[#84012A]">
                     Patient Preferences
                   </div>
@@ -876,7 +885,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="preferred_communication"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Preferred Communication:
                           </FormLabel>
@@ -895,7 +904,7 @@ const EditPatientBody = ({
                     />
                   </div>
                 </div>
-                <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
+                <div className="flex flex-col gap-5  p-5 w-full rounded-lg">
                   <div className="font-medium text-[#84012A]">
                     How did you hear about us
                   </div>
@@ -904,7 +913,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="source"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">Source:</FormLabel>
                           <FormControl>
                             <Select
@@ -930,7 +939,7 @@ const EditPatientBody = ({
                       control={methods.control}
                       name="specific_source"
                       render={({ field }) => (
-                        <FormItem className="flex items-center">
+                        <FormItem>
                           <FormLabel className="w-full">
                             Specific source:
                           </FormLabel>
@@ -955,21 +964,5 @@ const EditPatientBody = ({
                     />
                   </div>
                 </div> */}
-              </div>
-              <div className="flex self-end">
-                <SubmitButton label="Update" />
-              </div>
-            </div>
-          </form>
-        </Form>
-        <PatientConfirmationScreen
-          onClose={() => {
-            setIsDialogOpen(false);
-          }}
-          isOpen={isDialogOpen}
-        />
-    </div>
-  );
-};
 
 export default EditPatientBody;

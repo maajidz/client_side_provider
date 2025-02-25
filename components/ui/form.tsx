@@ -95,7 +95,7 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={cn(error && "text-destructive", className)}
+      className={cn(error && "", className)}
       htmlFor={formItemId}
       {...props}
     />
@@ -142,6 +142,35 @@ const FormDescription = React.forwardRef<
 })
 FormDescription.displayName = "FormDescription"
 
+const FormSectionHor = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn("flex flex-row gap-2", className)}
+      {...props}
+    />
+  )
+})
+FormSectionHor.displayName = "FormSectionHor"
+
+const FormSectionVert = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn("flex flex-col gap-", className)}
+      {...props}
+    />
+  )
+})
+FormSectionVert.displayName = "FormSectionVert"
+
+
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
@@ -157,7 +186,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-sm font-medium text-destructive", className)}
+      className={cn("text-xs font-medium text-red-500", className)}
       {...props}
     >
       {body}
@@ -173,6 +202,8 @@ export {
   FormLabel,
   FormControl,
   FormDescription,
+  FormSectionHor,
+  FormSectionVert,
   FormMessage,
   FormField,
 }

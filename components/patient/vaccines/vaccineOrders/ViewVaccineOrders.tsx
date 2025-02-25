@@ -27,8 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import formStyles from "@/components/formStyles.module.css";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { Button } from "@/components/ui/button";
 
 function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   // Data State
@@ -131,19 +130,18 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   if (loading) return <LoadingButton />;
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-1 flex-row gap-3 items-center w-full">
+    <div className="flex flex-col gap-6">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className={`w-full ${formStyles.formFilterBody}`}
+            className="flex flex-row gap-2"
           >
             {/* Ordered By Filter */}
             <FormField
               control={form.control}
               name="providerId"
               render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
+                <FormItem>
                   <FormLabel>Ordered By</FormLabel>
                   <FormControl>
                     <Select
@@ -187,7 +185,7 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
               control={form.control}
               name="status"
               render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
+                <FormItem >
                   <FormLabel>Status</FormLabel>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
@@ -219,11 +217,10 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
               )}
             />
             <div className="flex items-end">
-              <SubmitButton label="Search" />
+              <Button variant={"secondary"}>Search</Button>
             </div>
           </form>
         </Form>
-      </div>
       <DefaultDataTable
         columns={columns({
           setLoading,

@@ -2,35 +2,27 @@
 import React from 'react';
 import { DashboardNav } from '@/components/dashboard-nav';
 import { navItems } from '@/constants/data';
-import { cn } from '@/lib/utils';
+import AccountIcon from '../account/AccountIcon';
+import Link from 'next/link';
+import imageUrl from "@/public/images/logo_initial.svg";
+import Image from "next/image";
 
-type SidebarProps = {
-  className?: string;
-};
+// type SidebarProps = {
+//   className?: string;
+// };
 
-export default function Sidebar({ className }: SidebarProps) {
+export default function Sidebar() {
 
   return (
     <aside
-      className={cn(
-        `relative  hidden h-screen flex-none border-r bg-[#84012A] transition-[width] duration-500 md:block w-[72px]`,
-        className
-      )}
-    >
-      {/* <ChevronLeft
-        className={cn(
-          'absolute -right-3 top-10 z-50  cursor-pointer rounded-full border-2 border-[#84012A] bg-[#FFF] text-3xl text-[#84012A]',
-          isMinimized && 'rotate-180'
-        )}
-        onClick={handleToggle}
-      /> */}
-      <div className="space-y-4 py-4">
-        <div className="px-3 py-2">
-          <div className="mt-3 space-y-1">
-            <DashboardNav items={navItems} />
-          </div>
-        </div>
+      className="flex relative h-full flex-col transition-[width] duration-500 items-center justify-between w-[72px] py-12">
+      <div className='flex flex-1 items-center flex-col gap-6'>
+        <Link href={"/dashboard"}>
+          <Image src={imageUrl} alt={"logo"} height={24} priority />
+        </Link>
+        <DashboardNav items={navItems} />
       </div>
+      <AccountIcon />
     </aside>
   );
 }

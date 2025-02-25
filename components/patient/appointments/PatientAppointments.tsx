@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { AppointmentsDialog } from "./AppointmentsDialog";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
-import { Heading } from "@/components/ui/heading";
 
 interface PatientAppointmentTab {
   value: string;
@@ -49,35 +48,32 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex justify-end">
-        <div className="flex justify-between items-center flex-1">
-          <Heading title="Appointments" description="" />
-          <Button
-            aria-label="Create New Appointment"
-            onClick={() => {
-              setIsDialogOpen(true);
-            }}
-          >
-            <PlusIcon />
-            New Appointment
-          </Button>
-        </div>
-
+    <div className="flex flex-1 flex-col gap-6">
         <AppointmentsDialog
           userDetailsId={userDetailsId}
           onClose={handleDialogClose}
           isOpen={isDialogOpen}
         />
-      </div>
-      <Tabs defaultValue="upcoming" className="flex gap-3 flex-col">
-        <TabsList className="flex gap-3 w-full">
-          {patientAppointmentsTab.map((tab) => (
-            <CustomTabsTrigger value={tab.value} key={tab.value}>
-              {tab.label}
-            </CustomTabsTrigger>
-          ))}
-        </TabsList>
+      <div className="flex flex-1">
+      <Tabs defaultValue="upcoming" className="flex w-full flex-col">
+        <div className="flex flex-row justify-between gap-6 items-center">
+          <TabsList className="flex gap-2 w-fit">
+            {patientAppointmentsTab.map((tab) => (
+              <CustomTabsTrigger value={tab.value} key={tab.value}>
+                {tab.label}
+              </CustomTabsTrigger>
+            ))}
+          </TabsList>
+          <Button
+                aria-label="Create New Appointment"
+                onClick={() => {
+                  setIsDialogOpen(true);
+                }}
+              >
+                <PlusIcon />
+                New Appointment
+          </Button>
+        </div>
         {patientAppointmentsTab.map(
           ({ value, component: Component, status }) => (
             <TabsContent value={value} key={value}>
@@ -90,6 +86,7 @@ const PatientAppointments = ({ userDetailsId }: { userDetailsId: string }) => {
           )
         )}
       </Tabs>
+      </div>
     </div>
   );
 };

@@ -54,28 +54,34 @@ export function DefaultDataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center justify-end space-x-2">
-        <div className="text-sm text-muted-foreground">
-          Page {pageNo} of {totalPages}
-          {/* {table.getPageCount()} */}
+      <div className="flex flex-row items-center justify-between">
+        <div className='flex flex-row gap-2 items-center'>
+          <span className='font-bold text-lg'>Procedures, Surgeries and Hospitalization</span>
+          <Button variant="ghost"> Add </Button>
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPageChange(pageNo - 1)}
-            disabled={pageNo <= 1}>
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPageChange(pageNo+1)}
-            disabled={pageNo >= totalPages}>
-            Next
-          </Button>
+        <div className='flex flex-row text-sm items-center gap-2'>
+          <div className='text-gray-400'>
+            Page {pageNo} of {totalPages}
+            {/* {table.getPageCount()} */}
+          </div>
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(pageNo - 1)}
+              disabled={pageNo <= 1}>
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(pageNo+1)}
+              disabled={pageNo >= totalPages}>
+              Next
+            </Button>
+          </div>
+          </div>
         </div>
-      </div>
       <ScrollArea className="h-full rounded-md border">
         <Table className="relative">
           <TableHeader>
