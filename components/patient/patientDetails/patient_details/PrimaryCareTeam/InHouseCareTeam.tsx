@@ -51,9 +51,9 @@ const InHouseCareTeam = () => {
   // };
 
   return (
-    <div className="bg-gray-50 p-6 rounded-lg flex-1 gap-6 flex-col flex">
+    <div className="border-gray-100 border group p-6 flex-1 rounded-lg">
       <div className=" flex flex-col gap-1">
-      <div className="font-semibold text-xs pb-2 text-gray-600 uppercase tracking-wider ">In House Care Team</div>
+      <div className="font-semibold text-xs pb-2 text-gray-600">In House Care Team</div>
       {/* {selectedInHouseCareTeam ? <div>Edit </div> :  */}
         <div>
           <Input

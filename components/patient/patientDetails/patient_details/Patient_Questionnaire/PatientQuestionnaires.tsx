@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { generateQuestionnairePDF } from "./generateQuestionnairePDF";
 import { Copy, Ellipsis, FileUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const PatientQuestionnaires = ({
   userDetailsId,
@@ -100,32 +101,8 @@ const PatientQuestionnaires = ({
         {patientQuestionnaireTab.map((tab) => (
           <TabsContent value={tab.value} key={tab.value} className="flex flex-col gap-4">
             {loading && <LoadingButton />}
-              <div className={styles.buttonContainer}>
-                <Button variant={"outline"} onClick={handleCopyContent} className="p-3">
-                  <Copy/>
-                </Button>
-                <Button
-                  variant={"outline"}
-                  onClick={() => {
-                    if (resultList?.data) {
-                      generateQuestionnairePDF({ data: resultList.data });
-                    }
-                  }}
-                >
-                  <FileUp/>
-                  Export Pdf
-                </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="border border-[#D9D9D9] px-2 h-9 items-center rounded-md">
-                    <Ellipsis />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
               <div className="flex flex-row justify-between items-center">
-                <TabsList className="flex w-fit flex-row gap-4 rounded-lg border bg-white border-none self-end">
+                <TabsList className="pl-4 flex w-fit flex-row gap-4 rounded-lg border bg-white border-none self-end">
                   {patientQuestionnaireTab.map((tab) => (
                     <CustomTabsTrigger
                       value={tab.value}
@@ -160,7 +137,30 @@ const PatientQuestionnaires = ({
                     </div>
                   </div>
               </div>
-              <div className={styles.infoContainer}>
+              <div className={cn(styles.infoContainer,"group")}>
+                <div className={cn(styles.buttonContainer, "absolute invisible right-4 group-hover:visible")}>
+                  <Button variant={"outline"} onClick={handleCopyContent} className="p-3">
+                    <Copy/>
+                  </Button>
+                  <Button className="p-3"
+                    variant={"outline"}
+                    onClick={() => {
+                      if (resultList?.data) {
+                        generateQuestionnairePDF({ data: resultList.data });
+                      }
+                    }}
+                  >
+                    <FileUp/>
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="border border-[#D9D9D9] px-2 h-9 items-center rounded-md">
+                      <Ellipsis />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem>Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
                   <div className={styles.detailsContainer}>
                     {resultList?.data?.map((result) => (
                       <div key={result.id} className="flex flex-col">

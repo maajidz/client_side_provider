@@ -154,7 +154,7 @@ const AddPatientBody = () => {
     <div>
       <Form {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <div className="flex flex-col bg-gray-50/50 rounded-lg">
+          <div className="flex flex-col border border-gray-100 rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10 p-6">
               <div className="flex flex-col gap-6 w-full rounded-lg">
                 <div className="font-medium text-[#84012A]">

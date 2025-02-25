@@ -96,15 +96,15 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
           ) : (
             data.map((history) => (
               <div className="flex flex-col gap-3  border rounded-lg p-4" key={history.id}>
-                <div className="font-semibold text-large">
-                  Past Medical History on{" "}
+                <div className="font-semibold text-sm">
+                  {" "}
                   {new Date(history.createdAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "2-digit",
                     year: "numeric",
-                  })}{" "}
+                  })}{" "} by Dr. Maria Shah
                 </div>
-                <div>
+                <div className="text-sm">
                   <div>{history.notes}</div>
                   <div>{history.glp_refill_note_practice}</div>
                 </div>
