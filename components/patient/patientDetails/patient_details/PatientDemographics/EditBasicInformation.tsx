@@ -68,48 +68,53 @@ const EditBasicInformation = ({
   const onSubmit = async (data: z.infer<typeof basicInformationSchema>) => {
     setLoading(true);
 
-    const requestData: CreateUser = {
-      user: {
-        email: patientDetails.user.email ? patientDetails.user.email : "",
-        firstName: data.firstName,
-        lastName: data.lastName,
-        phoneNumber: patientDetails.user.phoneNumber
-          ? patientDetails.user.phoneNumber
-          : "",
-      },
-      userDetails: {
-        dob: data.dob,
-        height: patientDetails.height,
-        heightType: patientDetails.heightType,
-        weight: patientDetails.weight,
-        weightType: patientDetails.weightType,
-        location: patientDetails.location,
-        gender: data.gender,
-      },
-    };
+    if (patientDetails) {
+      const requestData: CreateUser = {
+        user: {
+          email: patientDetails.user.email ? patientDetails.user.email : "",
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phoneNumber: patientDetails.user.phoneNumber
+            ? patientDetails.user.phoneNumber
+            : "",
+        },
+        userDetails: {
+          dob: data.dob,
+          height: patientDetails.height,
+          heightType: patientDetails.heightType,
+          weight: patientDetails.weight,
+          weightType: patientDetails.weightType,
+          location: patientDetails.location,
+          gender: data.gender,
+        },
+      };
 
-    try {
-      const response = await updateExistingPatient({
-        requestData,
-        userId: patientDetails.id,
-      });
-      if (response) {
+      try {
+        if (patientDetails.user.id) {
+          const response = await updateExistingPatient({
+            requestData,
+            userId: patientDetails.user.id,
+          });
+          if (response) {
+            showToast({
+              toast,
+              type: "success",
+              message: `Patient updated successfully`,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
         showToast({
           toast,
-          type: "success",
-          message: `Patient updated successfully`,
+          type: "error",
+          message: `Error while updating Patient`,
         });
+      } finally {
+        setLoading(false);
+        methods.reset();
+        setEditPatient(false);
       }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      showToast({
-        toast,
-        type: "error",
-        message: `Error while updating Patient`,
-      });
-    } finally {
-      setLoading(false);
-      methods.reset();
     }
   };
 

@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  patientContactSchema,
-} from "@/schema/addNewPatientSchema";
+import { patientContactSchema } from "@/schema/addNewPatientSchema";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -92,55 +90,60 @@ const EditContactDetails = ({
   }, [patientDetails, methods]);
 
   const onSubmit = async (data: z.infer<typeof patientContactSchema>) => {
-    setLoading(true);
+    if (patientDetails) {
+      setLoading(true);
 
-    const requestData: CreateUser = {
-      user: {
-        email: data.email,
-        firstName: patientDetails.user.firstName
-          ? patientDetails.user.firstName
-          : "",
-        lastName: patientDetails.user.lastName
-          ? patientDetails.user.lastName
-          : "",
-        phoneNumber: data.phoneNumber,
-      },
-      userDetails: {
-        dob: patientDetails.dob ? patientDetails.dob : "",
-        height:
-          data.height.unit === "cm"
-            ? Number(data.height.value)
-            : Number(data.height.feet),
-        heightType: data.height.unit,
-        weight: Number(data.weight.value),
-        weightType: data.weight.units,
-        location: data.state,
-        gender: patientDetails.gender ? patientDetails.gender : "",
-      },
-    };
+      const requestData: CreateUser = {
+        user: {
+          email: data.email,
+          firstName: patientDetails.user.firstName
+            ? patientDetails.user.firstName
+            : "",
+          lastName: patientDetails.user.lastName
+            ? patientDetails.user.lastName
+            : "",
+          phoneNumber: data.phoneNumber,
+        },
+        userDetails: {
+          dob: patientDetails.dob ? patientDetails.dob : "",
+          height:
+            data.height.unit === "cm"
+              ? Number(data.height.value)
+              : Number(data.height.feet),
+          heightType: data.height.unit,
+          weight: Number(data.weight.value),
+          weightType: data.weight.units,
+          location: data.state,
+          gender: patientDetails.gender ? patientDetails.gender : "",
+        },
+      };
 
-    try {
-      const response = await updateExistingPatient({
-        requestData,
-        userId: patientDetails.id,
-      });
-      if (response) {
+      try {
+        if (patientDetails.user.id) {
+          const response = await updateExistingPatient({
+            requestData,
+            userId: patientDetails.user.id,
+          });
+          if (response) {
+            showToast({
+              toast,
+              type: "success",
+              message: `Patient updated successfully`,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
         showToast({
           toast,
-          type: "success",
-          message: `Patient added successfully`,
+          type: "error",
+          message: `Error while updating Patient`,
         });
+      } finally {
+        setLoading(false);
+        methods.reset();
+        setEditPatient(false)
       }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      showToast({
-        toast,
-        type: "error",
-        message: `Error while creating Patient`,
-      });
-    } finally {
-      setLoading(false);
-      methods.reset();
     }
   };
 
