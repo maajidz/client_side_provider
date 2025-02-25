@@ -16,6 +16,7 @@
 .infoContainer {
     display: flex;
     flex: 1 1 0%;
+    position: relative;
     flex-direction: column;
     border: 1px solid #90A4AE47;
     padding: 1.5rem;

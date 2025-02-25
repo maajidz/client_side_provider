@@ -59,11 +59,11 @@ const PrimaryCarePhysician = ({
   };
 
   return (
-    <div className="bg-gray-50 p-6 rounded-lg flex-1 gap-6 flex-col flex">
+    <div className="border-gray-100 border flex gap-6 flex-col group p-6 flex-1 rounded-lg">
       <div className=" flex flex-col gap-1">
-      <div className="font-semibold text-xs pb-2 text-gray-600 uppercase tracking-wider ">Primary Care Physician</div>
+      <div className="font-semibold text-xs pb-2 text-gray-600">Primary Care Physician</div>
       {/* {selectedPrimaryCarePhysician ? <div>Edit </div> :  */}
-        <div>
+        <div className="relative">
           <Input
             value={searchPrimaryCarePhysician}
             className="bg-white"
@@ -73,8 +73,9 @@ const PrimaryCarePhysician = ({
             }}
             placeholder="Search providers..."
           />
-        </div>
-      </div>
+
+
+
 
       {/* Loading State */}
       {loading && (
@@ -84,9 +85,9 @@ const PrimaryCarePhysician = ({
       )}
 
       {!loading && searchPrimaryCarePhysician && (
-        <div className="relative w-full">
+        <div className="absolute w-full bottom-0">
           {!selectedPrimaryCarePhysician && providers.length > 0 ? (
-            <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg z-10">
+            <div className="mt-2 w-full bg-white shadow-lg rounded-lg z-10">
               {providers.map((user) => (
                 <div
                   key={user.id}
@@ -102,13 +103,19 @@ const PrimaryCarePhysician = ({
           ) : (
             // No Results Found
             !selectedPrimaryCarePhysician && (
-              <p className="absolute bg-white p-2 rounded shadow-lg">
+              <p className="absolute w-full bg-white p-2 text-xs rounded shadow-lg">
                 No results found.
               </p>
             )
           )}
         </div>
       )}
+
+
+
+        </div>
+      </div>
+
 
       <div className={styles.physicianDetailsBox}>
         <PhysicianData
@@ -126,7 +133,7 @@ const PhysicianData = ({ label, value }: { label: string; value: string }) => {
   return (
     <div className="flex gap-1 flex-col">
       <div className="text-xs font-medium text-gray-500 ">{label}</div>
-      <div className="flex items-center justify-between gap-2 font-semibold">
+      <div className="flex text-sm items-center justify-between gap-2 font-semibold">
         {value}
         <Button variant="ghost">
           <Trash2Icon color="#84012A" />

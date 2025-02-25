@@ -51,9 +51,9 @@ const ReferringPhysicianSelect = () => {
   };
 
   return (
-    <div className="bg-gray-50 p-6 rounded-lg flex-1 gap-6 flex-col flex">
+    <div className="border-gray-100 border group p-6 flex-1 rounded-lg">
       <div className=" flex flex-col gap-1">
-      <div className="font-semibold text-xs pb-2 text-gray-600 uppercase tracking-wider ">Referring Physician</div>
+      <div className="font-semibold text-xs pb-2 text-gray-600">Referring Physician</div>
       {/* {selectedReferringPhysician ? <div>Edit </div> :  */}
         <div>
           <Input
@@ -94,7 +94,7 @@ const ReferringPhysicianSelect = () => {
           ) : (
             // No Results Found
             !selectedReferringPhysician && (
-              <p className="absolute bg-white p-2 rounded shadow-lg">
+              <p className="absolute text-xs bg-white p-2 rounded shadow-lg">
                 No results found.
               </p>
             )
