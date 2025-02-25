@@ -61,6 +61,24 @@ export const createNewPatient = async ({
   return data;
 };
 
+export const updateExistingPatient = async ({
+  requestData,
+  userId
+}: {
+  requestData: CreateUser;
+  userId: string
+}) => {
+  const response = await ApiFetch({
+    method: "PATCH",
+    url: `/provider/patients/update/${userId}`,
+    data: requestData,
+  });
+  console.log(response.data);
+  const data = await response.data;
+  console.log(data);
+  return data;
+};
+
 export const fetchUserInfo = async ({
   userDetailsId,
 }: {

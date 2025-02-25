@@ -4,9 +4,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import LoadingButton from "../../../../LoadingButton";
 import { PatientDetails } from "@/types/userInterface";
 import { fetchUserEssentials } from "@/services/userServices";
-import EditPatientBody from "../../../add_patient/EditPatientBody";
 import BasicInformation from "./BasicInformation";
 import ContactDetails from "./ContactDetails";
+import EditBasicInformation from "./EditBasicInformation";
+import EditContactDetails from "./EditContactDetails";
 // import PHRRegistration from "./PHRRegistration";
 // import PatientId from "./PatientId";
 // import EmergencyContact from "./EmergencyContact";
@@ -16,6 +17,8 @@ import ContactDetails from "./ContactDetails";
 const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<PatientDetails>();
   const [editPatient, setEditPatient] = useState<boolean>(false);
+  const [editBasicPatientDetails, setBasicPatientDetails] =
+    useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
   const fetchAndSetResponse = useCallback(async () => {
@@ -44,18 +47,37 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
       {loading && <LoadingButton />}
       {response && (
         <div className="flex flex-col">
-            <EditPatientBody patientDetails={response} />
-            <div className="flex flex-col gap-6">
-                <div className="flex flex-1 flex-row gap-4">
-                  <BasicInformation patientDetails={response} />
-                  <ContactDetails patientDetails={response} />
-                  {/* <PHRRegistration patientDetails={response} />
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-1 flex-row gap-4">
+              {editBasicPatientDetails ? (
+                <EditBasicInformation
+                  patientDetails={response}
+                  setEditPatient={setBasicPatientDetails}
+                />
+              ) : (
+                <BasicInformation
+                  patientDetails={response}
+                  setEditPatient={setBasicPatientDetails}
+                />
+              )}
+              {editPatient ? (
+                <EditContactDetails
+                  patientDetails={response}
+                  setEditPatient={setEditPatient}
+                />
+              ) : (
+                <ContactDetails
+                  patientDetails={response}
+                  setEditPatient={setEditPatient}
+                />
+              )}
+              {/* <PHRRegistration patientDetails={response} />
                   <PatientId patientDetails={response} />
                   <EmergencyContact patientDetails={response} />
                   <PatientPreferences patientDetails={response} />
                   <AdditionalInformation patientDetails={response} /> */}
-                </div>
             </div>
+          </div>
         </div>
       )}
     </>

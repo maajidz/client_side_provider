@@ -36,10 +36,10 @@ import { Button } from "@/components/ui/button";
 
 const EditPatientBody = ({
   patientDetails,
-  // setEditPatient,
+  setEditPatient,
 }: {
   patientDetails: PatientDetails;
-  // setEditPatient: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditPatient: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -500,9 +500,9 @@ const EditPatientBody = ({
           </FormSectionVert>
 
           <div className="flex self-end gap-5">
-            {/* <Button variant={"outline"} onClick={() => setEditPatient(false)}>
+            <Button variant={"outline"} onClick={() => setEditPatient(false)}>
               Cancel
-            </Button> */}
+            </Button>
             <SubmitButton label="Update" />
           </div>
         </form>
