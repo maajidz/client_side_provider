@@ -12,6 +12,8 @@ import LoadingButton from "@/components/LoadingButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -60,34 +62,43 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
     <>
       <ScrollArea className="h-[65dvh]">
         <div className={styles.infoContent}>
-          <div className={styles.infoContainer}>
-            <TitleLinks
-              title="Allergies"
-              href="allergies"
-              userDetailsId={userDetailsId}
-            />
+          <Card>
+            <CardHeader>
+              <CardTitle>              
+                <TitleLinks
+                  title="Allergies"
+                  href="allergies"
+                  userDetailsId={userDetailsId}
+                />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
             {userData?.allergies && userData?.allergies?.length > 0 ? (
               userData?.allergies.map((allergies, index) => (
-                <div
-                  className={`${styles.infoTextLabel} text-[#fb6e52]`}
+                <Badge variant="destructive"
                   key={allergies?.id}
                 >
-                  {index === 0 ? "" : ","}
+                  {index === 0 ? "" : ""}
                   {allergies?.Allergen}
-                </div>
+                </Badge>
               ))
             ) : (
               <NoDataRecorded />
             )}
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>              
+              <TitleLinks
               title="Diagnoses"
               href="diagnoses"
-              userDetailsId={userDetailsId}
-            />
-            <div className={styles.subContainer}>
-              {userDashboardData?.diagnoses ? (
+              userDetailsId={userDetailsId}/>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
+            {userDashboardData?.diagnoses ? (
                 <div
                   key={userDashboardData?.diagnoses.id}
                   className={styles.dataContainer}
@@ -109,8 +120,9 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               ) : (
                 <NoDataRecorded />
               )}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+
           {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="Medications"
@@ -136,20 +148,20 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             </div>
           </div>  */}
-          <div className={styles.infoContainer}>
-            <TitleLinks
+
+
+          <Card>
+            <CardHeader>
+              <CardTitle>              
+              <TitleLinks
               title="History"
               href="patientDetails"
               userDetailsId={userDetailsId}
             />
-            <ScrollArea className="h-[12.5rem] min-h-10">
-              <div className={styles.section}>
-                <div className={styles.subContainer}>
-                  <div className={`${styles.sectionLabel} text-[#FF9504]`}>
-                    Past Medical History
-                  </div>
-                  <div className={styles.subContainer}>
-                    {userDashboardData?.medicalHistory ? (
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
+            {userDashboardData?.medicalHistory ? (
                       <div key={userDashboardData?.medicalHistory?.id}>
                         <div
                           className={`${styles.sectionLabel} text-[#444444]`}
@@ -178,13 +190,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                     ) : (
                       <NoDataRecorded />
                     )}
-                  </div>
-                </div>
-                <div className={styles.subContainer}>
-                  <div className={`${styles.sectionLabel} text-[#FF9504]`}>
-                    Family History
-                  </div>
-                  <div className="flex flex-col gap-3">
+
                     {userDashboardData?.familyHistory ? (
                       <div key={userDashboardData?.familyHistory?.id}>
                         <div
@@ -211,13 +217,9 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                     ) : (
                       <NoDataRecorded />
                     )}
-                  </div>
-                </div>
-                <div className={styles.subContainer}>
-                  <div className={`${styles.sectionLabel} text-[#FF9504]`}>
-                    Social History
-                  </div>
-                  <div className="flex flex-col gap-3">
+
+
+
                     {userDashboardData?.socialHistories ? (
                       <div key={userDashboardData?.socialHistories?.id}>
                         <div
@@ -242,19 +244,24 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                     ) : (
                       <NoDataRecorded />
                     )}
-                  </div>
-                </div>
-              </div>
-            </ScrollArea>
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks
+
+
+            </CardContent>
+          </Card>
+
+
+          <Card>
+            <CardHeader>
+              <CardTitle>              
+              <TitleLinks
               title="Supplements"
               href="medications"
               userDetailsId={userDetailsId}
             />
-            <div className={styles.subContainer}>
-              {userDashboardData?.supplements ? (
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
+            {userDashboardData?.supplements ? (
                 <div
                   key={userDashboardData?.supplements?.id}
                   className={styles.dataContainer}
@@ -274,52 +281,21 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               ) : (
                 <NoDataRecorded />
               )}
-            </div>
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks
-              title="Recent Vitals"
-              href="vitals"
-              userDetailsId={userDetailsId}
-            />
-            <ScrollArea className="h-[12.5rem] min-h-10">
-              <div className={styles.section}>
-                {userData?.vitals ? (
-                  userData?.vitals?.reverse().map((vitals) => (
-                    <div
-                      key={vitals.id}
-                      className={`${styles.subContainer} bg-[#F5F5F5] p-2 rounded`}
-                    >
-                      <div className={styles.infoSub}>
-                        {new Date(vitals?.dateTime).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "2-digit",
-                          year: "numeric",
-                        })}
-                      </div>
-                      <FaceSheetLabels
-                        label="Weight:"
-                        value={`${vitals?.weightLbs} lbs ${vitals?.weightOzs} ozs`}
-                      />
-                      <FaceSheetLabels
-                        label="Height:"
-                        value={`${vitals?.heightFeets} ' ${vitals?.heightInches}`}
-                      />
-                      <FaceSheetLabels label="BMI:" value={`${vitals?.BMI}`} />
-                    </div>
-                  ))
-                ) : (
-                  <NoDataRecorded />
-                )}
-              </div>
-            </ScrollArea>
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks
+            </CardContent>
+          </Card>
+
+
+          <Card>
+            <CardHeader>
+              <CardTitle>              
+              <TitleLinks
               title="Injections"
               href="injections"
               userDetailsId={userDetailsId}
             />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
             {userDashboardData?.injections ? (
               <div className="flex flex-col gap-3">
                 <div
@@ -373,15 +349,21 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             ) : (
               <NoDataRecorded />
             )}
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>              
+              <TitleLinks
               title="Latest Labs"
               href="lab_records"
               userDetailsId={userDetailsId}
             />
-            <div className={styles.subContainer}>
-              {userDashboardData?.labResults ? (
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
+            {userDashboardData?.labResults ? (
                 <div
                   key={userDashboardData?.labResults.id}
                   className={styles.dataContainer}
@@ -413,8 +395,9 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               ) : (
                 <NoDataRecorded />
               )}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+
           {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="Implanted Devices"
@@ -434,14 +417,21 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               <NoDataRecorded />
             )}
           </div>  */}
-          <div className={styles.infoContainer}>
-            <TitleLinks
+
+
+
+          <Card>
+            <CardHeader>
+              <CardTitle>              
+              <TitleLinks
               title="Vaccines"
               href="vaccines"
               userDetailsId={userDetailsId}
             />
-            <div className={styles.subContainer}>
-              {userDashboardData?.vaccines ? (
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
+            {userDashboardData?.vaccines ? (
                 <div
                   key={userDashboardData?.vaccines?.id}
                   className={styles.dataContainer}
@@ -462,16 +452,24 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               ) : (
                 <NoDataRecorded />
               )}
-            </div>
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks
+            </CardContent>
+          </Card>
+
+
+
+
+          <Card>
+            <CardHeader>
+              <CardTitle>              
+              <TitleLinks
               title="Past Visits"
               href="encounters"
               userDetailsId={userDetailsId}
             />
-            <div className={styles.subContainer}>
-              {userData?.encounter ? (
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
+            {userData?.encounter ? (
                 userData?.encounter.map((visit) => (
                   <div key={visit?.id} className={styles.dataContainer}>
                     <div className={`${styles.infoTextLabel}`}>
@@ -490,14 +488,24 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               ) : (
                 <NoDataRecorded />
               )}
-            </div>
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks
+            </CardContent>
+          </Card>
+
+
+
+
+
+          <Card>
+            <CardHeader>
+              <CardTitle>              
+              <TitleLinks
               title="Contact Details"
               href="patientDetails"
               userDetailsId={userDetailsId}
             />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
             {userData ? (
               <div>
                 <FaceSheetLabels
@@ -520,16 +528,25 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             ) : (
               <NoDataRecorded />
             )}
-          </div>
-          <div className={styles.infoContainer}>
-            <TitleLinks
+            </CardContent>
+          </Card>
+
+
+
+
+
+          <Card>
+            <CardHeader>
+              <CardTitle>              
+              <TitleLinks
               title="Documents"
               href="documents"
               userDetailsId={userDetailsId}
             />
-            <ScrollArea className="h-[12.5rem] min-h-10">
-              <div className={styles.subContainer}>
-                {userDashboardData?.documents ? (
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
+            {userDashboardData?.documents ? (
                   <div
                     key={userDashboardData?.documents.id}
                     className={styles.dataContainer}
@@ -561,9 +578,9 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 ) : (
                   <NoDataRecorded />
                 )}
-              </div>
-            </ScrollArea>
-          </div>
+            </CardContent>
+          </Card>
+
         </div>
       </ScrollArea>
     </>
@@ -602,9 +619,7 @@ const TitleLinks = ({
 }) => {
   return (
     <Link href={`/dashboard/provider/patient/${userDetailsId}/${href}`}>
-      <div
-        className={`${styles.infoLabel} hover:text-blue-600 hover:underline`}
-      >
+      <div>
         {title}
       </div>
     </Link>
