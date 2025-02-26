@@ -6,8 +6,8 @@ import { showToast } from "@/utils/utils";
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./patient_care_team.module.css";
 import PrimaryCarePhysician from "./PrimaryCarePhysician";
-import ReferringPhysicianSelect from "./ReferringPhysicianSelect";
-import InHouseCareTeam from "./InHouseCareTeam";
+// import ReferringPhysicianSelect from "./ReferringPhysicianSelect";
+// import InHouseCareTeam from "./InHouseCareTeam";
 
 const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -44,8 +44,8 @@ const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <div className={styles.infoContainer}>
       <PrimaryCarePhysician careTeam={careTeam? careTeam : null}/>
-      <ReferringPhysicianSelect />
-      <InHouseCareTeam />
+      {/* <ReferringPhysicianSelect />
+      <InHouseCareTeam /> */}
     </div>
   );
 };

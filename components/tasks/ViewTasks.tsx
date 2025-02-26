@@ -38,7 +38,7 @@ import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { DefaultDataTable } from "../custom_buttons/table/DefaultDataTable";
 
-const ViewTasks = ({refreshTrigger}: {refreshTrigger: number}) => {
+const ViewTasks = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
   const [loading, setLoading] = useState(true);
@@ -75,10 +75,11 @@ const ViewTasks = ({refreshTrigger}: {refreshTrigger: number}) => {
     setFilters((prev) => ({
       ...prev,
 
-      status: values.status ==="all" ? "" : values.status || "",
-      category: values.category ==="all" ? "" : values.category || "",
-      priority: values.priority ==="all" ? "" : values.priority || "",
-      userDetailsId: values.userDetailsId ==="all" ? "" : values.userDetailsId || "",
+      status: values.status === "all" ? "" : values.status || "",
+      category: values.category === "all" ? "" : values.category || "",
+      priority: values.priority === "all" ? "" : values.priority || "",
+      userDetailsId:
+        values.userDetailsId === "all" ? "" : values.userDetailsId || "",
     }));
 
     setPage(1);
@@ -147,7 +148,7 @@ const ViewTasks = ({refreshTrigger}: {refreshTrigger: number}) => {
 
   useEffect(() => {
     fetchTasksList(page);
-  }, [filters, fetchTasksList, page, refreshTrigger]);
+  }, [filters, fetchTasksList, page]);
 
   const handleEditDialogClose = () => {
     setIsDialogOpen(false);
@@ -310,6 +311,11 @@ const ViewTasks = ({refreshTrigger}: {refreshTrigger: number}) => {
         <div className="space-y-3">
           {resultList?.data && (
             <DefaultDataTable
+              title="Tasks"
+              onAddClick={() => {
+                setEditData(null);
+                setIsDialogOpen(true);
+              }}
               columns={columns({
                 setEditData,
                 setIsCommentDialogOpen: () => {},

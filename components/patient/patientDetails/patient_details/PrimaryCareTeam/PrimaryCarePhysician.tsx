@@ -120,7 +120,7 @@ const PrimaryCarePhysician = ({
       <div className={styles.physicianDetailsBox}>
         <PhysicianData
           label="Assigned Physician"
-          value={careTeam?.primaryCarePhysician.NameOfPhysician || ""}
+          value={careTeam?.primaryCarePhysician?.NameOfPhysician || ""}
         />
       </div>
     </div>

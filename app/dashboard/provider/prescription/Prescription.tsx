@@ -9,6 +9,22 @@ import { useState } from "react";
 function Prescription() {
   const [activeTab, setActiveTab] = useState("prescriptions");
 
+  const prescriptionTab = [
+    {
+      value: "onBoarding",
+      label: "Onboarding",
+    },
+    { value: "General-health", label: "General health" },
+    {
+      value: "Diabetes",
+      label: "Diabetes",
+    },
+    {
+      value: "cancel-subscription",
+      label: "Cancel Subscription",
+    },
+  ];
+
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-2">

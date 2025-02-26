@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,7 +46,13 @@ import LoadingButton from "../LoadingButton";
 import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 
-const CreateEncounterDialog = () => {
+const CreateEncounterDialog = ({
+  onClose,
+  isDialogOpen,
+}: {
+  onClose: () => void;
+  isDialogOpen: boolean;
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showEncounterForm, setShowEncounterForm] = useState<boolean>(false);
   const [patient, setPatient] = useState<string>("");
@@ -123,6 +128,9 @@ const CreateEncounterDialog = () => {
         }
       } catch (e) {
         console.log("Error", e);
+      } finally {
+        onClose();
+        methods.reset();
       }
     }
   };
@@ -136,10 +144,7 @@ const CreateEncounterDialog = () => {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger className="bg-[#84012A] hover:bg-[#555] text-white px-4 py-2 rounded-lg">
-        Encounter
-      </DialogTrigger>
+    <Dialog open={isDialogOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New Encounter</DialogTitle>

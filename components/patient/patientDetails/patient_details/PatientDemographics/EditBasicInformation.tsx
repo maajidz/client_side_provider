@@ -48,7 +48,7 @@ const EditBasicInformation = ({
       patientDetails,
       firstName: patientDetails.user.firstName || "",
       lastName: patientDetails.user.lastName || "",
-      dob: patientDetails.dob || String(new Date()),
+      dob: patientDetails.dob ? new Date(patientDetails.dob).toISOString().split("T")[0] : "",
       gender: patientDetails.gender || "",
     },
   });
@@ -59,7 +59,7 @@ const EditBasicInformation = ({
         patientDetails,
         firstName: patientDetails.user.firstName,
         lastName: patientDetails.user.lastName,
-        dob: patientDetails.dob,
+        dob: patientDetails.dob ? new Date(patientDetails.dob).toISOString().split("T")[0] : "",
         gender: patientDetails.gender,
       });
     }

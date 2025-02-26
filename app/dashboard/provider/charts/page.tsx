@@ -8,6 +8,7 @@ const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
   { title: "Charts", link: "/dashboard/provider/charts" },
 ];
+
 export default function Calendar() {
   return (
     <PageContainer scrollable={true}>
