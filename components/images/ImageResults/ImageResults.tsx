@@ -28,6 +28,7 @@ import { ImageResultResponseInterface } from "@/types/imageResults";
 import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
+import { useRouter } from "next/navigation";
 
 interface ImageResultsProps {
   userDetailsId?: string;
@@ -39,6 +40,8 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  const router = useRouter();
 
   // Patient State
   const [patientData, setPatientData] = useState<UserData[]>([]);
@@ -116,7 +119,7 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
   }
 
   return (
-    <>
+    <div className="space-y-4">
       <Form {...form}>
         <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           <FormField
@@ -201,18 +204,20 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
           )}
         </form>
       </Form>
-      <div className="py-5">
-        {resultList?.data && (
-          <DefaultDataTable
-            columns={columns()}
-            data={resultList?.data}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
-          />
-        )}
-      </div>
-    </>
+      {resultList?.data && (
+        <DefaultDataTable
+          title={"Image Results"}
+          onAddClick={() => {
+            router.push("/dashboard/provider/images/create_image_results");
+          }}
+          columns={columns()}
+          data={resultList?.data}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
+      )}
+    </div>
   );
 }
 

@@ -182,7 +182,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
               <span>
                 {response &&
                   new Date(
-                    response.encounter[response.encounter.length - 1].date
+                    response.encounter[response.encounter.length - 1]?.date
                   ).toLocaleDateString("en-US", {
                     month: "short",
                     day: "2-digit",

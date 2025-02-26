@@ -6,6 +6,7 @@ const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
   { title: "Injections", link: "/dashboard/provider/injections" },
 ];
+
 function InjectionsPage() {
   return (
     <PageContainer scrollable={true}>

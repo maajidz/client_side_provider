@@ -27,6 +27,7 @@ import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { useRouter } from "next/navigation";
 
 function ImageOrders() {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -34,6 +35,8 @@ function ImageOrders() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const router = useRouter();
+  
   const form = useForm<z.infer<typeof filterLabOrdersSchema>>({
     resolver: zodResolver(filterLabOrdersSchema),
     defaultValues: {
@@ -82,94 +85,94 @@ function ImageOrders() {
   }
 
   return (
-    <>
-      <div className="">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
-          >
-            <FormField
-              control={form.control}
-              name="orderedby"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ordered By</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Reviewer" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="reviewer1">Reviewer</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <div className="space-y-4">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+        >
+          <FormField
+            control={form.control}
+            name="orderedby"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ordered By</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Reviewer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="reviewer1">Reviewer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="signed">Signed</SelectItem>
-                        <SelectItem value="unsigned">Unsigned</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="signed">Signed</SelectItem>
+                      <SelectItem value="unsigned">Unsigned</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Search Patient" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Search Patient" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <div className="flex items-end">
-              <SubmitButton label="Search" />
-            </div>
-          </form>
-        </Form>
-        <div className="py-5">
-          {orderList?.data && (
-            <DefaultDataTable
-              columns={columns()}
-              data={orderList?.data}
-              pageNo={page}
-              totalPages={totalPages}
-              onPageChange={(newPage: number) => setPage(newPage)}
-            />
-          )}
-        </div>
-      </div>
-    </>
+          <div className="flex items-end">
+            <SubmitButton label="Search" />
+          </div>
+        </form>
+      </Form>
+      {orderList?.data && (
+        <DefaultDataTable
+          title={"Image Orders"}
+          onAddClick={() => {
+            router.push("/dashboard/provider/images/create_image_orders");
+          }}
+          columns={columns()}
+          data={orderList?.data}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
+      )}
+    </div>
   );
 }
 

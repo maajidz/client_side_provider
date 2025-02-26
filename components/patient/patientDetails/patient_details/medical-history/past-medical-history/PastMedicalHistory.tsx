@@ -1,8 +1,9 @@
-import LoadingButton from "@/components/LoadingButton";
-import { Button } from "@/components/ui/button";
+import PastMedicalHistoryDialog from "@/components/charts/Encounters/Details/PastMedicalHistory/PastMedicalHistoryDialog";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { getPastMedicalHistory } from "@/services/chartDetailsServices";
 import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
 import { useCallback, useEffect, useState } from "react";
+import { columns } from "./column";
 
 interface PastMedicalHistoryProps {
   userDetailsId: string;
@@ -11,6 +12,7 @@ interface PastMedicalHistoryProps {
 function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
   // Past Medical History State
   const [data, setData] = useState<PastMedicalHistoryInterface[]>([]);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -52,66 +54,34 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
   }, [fetchPastMedicalHistory]);
 
   return (
-    <div className="flex flex-col gap-6">
-        {/* <PastMedicalHistoryDialog
-          userDetailsId={userDetailsId}
-          isOpen={isOpen}
-          onClose={() => {
-            setIsOpen(false);
-            fetchPastMedicalHistory();
-          }}
-        /> */}
-        <div className="flex flex-1 flex-col gap-4">
-          <div className="flex flex-row justify-between items-center">
-            <div className='flex flex-row gap-2 items-center'>
-              <span className='font-bold text-lg'>Past Medical History</span>
-              <Button variant="ghost"> Add </Button>
-            </div>
-            <div className="flex items-center justify-end gap-2">
-              <div className="text-sm text-gray-400 font-semibold">
-                Page {page} of {totalPages}
-              </div>
-              <div className="space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setPage(page - 1)}
-                  disabled={page <= 1}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setPage(page + 1)}
-                  disabled={page >= totalPages}
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
-          </div>
-          {loading ? (
-            <LoadingButton />
-          ) : (
-            data.map((history) => (
-              <div className="flex flex-col gap-3  border rounded-lg p-4" key={history.id}>
-                <div className="font-semibold text-sm">
-                  {" "}
-                  {new Date(history.createdAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "2-digit",
-                    year: "numeric",
-                  })}{" "} by Dr. Maria Shah
-                </div>
-                <div className="text-sm">
-                  <div>{history.notes}</div>
-                  <div>{history.glp_refill_note_practice}</div>
-                </div>
-              </div>
-            ))
-          )}
+    <div className="flex flex-col gap-2">
+      <div className="flex gap-4 text-lg font-semibold flex-col">
+        <div className="flex flex-row items-center gap-4">
+          <PastMedicalHistoryDialog
+            userDetailsId={userDetailsId}
+            isOpen={isOpen}
+            onClose={() => {
+              setIsOpen(false);
+              fetchPastMedicalHistory();
+            }}
+          />
         </div>
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <DefaultDataTable
+            title="Past Medical History"
+            onAddClick={() => {
+              setIsOpen(true);
+            }}
+            columns={columns()}
+            data={data || []}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
+        )}
+      </div>
     </div>
   );
 }

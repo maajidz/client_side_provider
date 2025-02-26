@@ -31,6 +31,7 @@ import { fetchUserDataResponse } from "@/services/userServices";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { useRouter } from "next/navigation";
 
 interface ILabResultsProps {
   userDetailsId?: string;
@@ -41,6 +42,8 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
   const [resultList, setResultList] = useState<LabResultsInterface>();
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  const router = useRouter();
 
   // Patient State
   const [patientData, setPatientData] = useState<UserData[]>([]);
@@ -162,162 +165,159 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
   }
 
   return (
-    <>
-      <div>
-        {/* Search Form */}
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
-          >
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        {Array.from(
-                          new Set(
-                            resultList?.results.map((result) => result?.status)
-                          )
-                        ).map((status) => (
-                          <SelectItem key={status} value={status}>
-                            {status}
+    <div className="space-y-4">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+        >
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      {Array.from(
+                        new Set(
+                          resultList?.results.map((result) => result?.status)
+                        )
+                      ).map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {status}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="reviewer"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Reviewer</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Reviewer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {providersList
+                        .filter(
+                          (
+                            provider
+                          ): provider is typeof provider & {
+                            providerDetails: { id: string };
+                          } => Boolean(provider?.providerDetails?.id)
+                        )
+                        .map((provider) => (
+                          <SelectItem
+                            key={provider.providerDetails.id}
+                            value={provider.providerDetails.id}
+                            className="cursor-pointer"
+                          >
+                            {provider.firstName} {provider.lastName}
                           </SelectItem>
                         ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
+          {!userDetailsId && (
             <FormField
               control={form.control}
-              name="reviewer"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Reviewer</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Reviewer" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {providersList
-                          .filter(
-                            (
-                              provider
-                            ): provider is typeof provider & {
-                              providerDetails: { id: string };
-                            } => Boolean(provider?.providerDetails?.id)
-                          )
-                          .map((provider) => (
-                            <SelectItem
-                              key={provider.providerDetails.id}
-                              value={provider.providerDetails.id}
-                              className="cursor-pointer"
-                            >
-                              {provider.firstName} {provider.lastName}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="relative">
+                      <Input
+                        placeholder="Search Patient "
+                        value={searchTerm}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setSearchTerm(value);
+                          setVisibleSearchList(true);
+
+                          if (!value) {
+                            field.onChange("");
+                          }
+                        }}
+                      />
+                      {searchTerm && visibleSearchList && (
+                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                          {filteredPatients.length > 0 ? (
+                            filteredPatients.map((patient) => (
+                              <div
+                                key={patient.id}
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                onClick={() => {
+                                  field.onChange(patient.id);
+                                  setSearchTerm(
+                                    `${patient.user.firstName} ${patient.user.lastName}`
+                                  );
+                                  setVisibleSearchList(false);
+                                }}
+                              >
+                                {`${patient.user.firstName} ${patient.user.lastName}`}
+                              </div>
+                            ))
+                          ) : (
+                            <div className="px-4 py-2 text-gray-500">
+                              No results found
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            {!userDetailsId && (
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          placeholder="Search Patient "
-                          value={searchTerm}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            setSearchTerm(value);
-                            setVisibleSearchList(true);
-
-                            if (!value) {
-                              field.onChange("");
-                            }
-                          }}
-                        />
-                        {searchTerm && visibleSearchList && (
-                          <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                            {filteredPatients.length > 0 ? (
-                              filteredPatients.map((patient) => (
-                                <div
-                                  key={patient.id}
-                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                  onClick={() => {
-                                    field.onChange(patient.id);
-                                    setSearchTerm(
-                                      `${patient.user.firstName} ${patient.user.lastName}`
-                                    );
-                                    setVisibleSearchList(false);
-                                  }}
-                                >
-                                  {`${patient.user.firstName} ${patient.user.lastName}`}
-                                </div>
-                              ))
-                            ) : (
-                              <div className="px-4 py-2 text-gray-500">
-                                No results found
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            <div className="flex items-end">
-              <SubmitButton label="Search" />
-            </div>
-          </form>
-        </Form>
-
-        {/* Results Table */}
-        <div className="py-5">
-          {resultList?.results && (
-            <DefaultDataTable
-              columns={columns()}
-              data={resultList?.results}
-              pageNo={page}
-              totalPages={totalPages}
-              onPageChange={(newPage: number) => setPage(newPage)}
-            />
           )}
-        </div>
-      </div>
-    </>
+
+          <div className="flex items-end">
+            <SubmitButton label="Search" />
+          </div>
+        </form>
+      </Form>
+      {resultList?.results && (
+        <DefaultDataTable
+          title={"Labs Results"}
+          onAddClick={() => {
+            router.push("/dashboard/provider/labs/create_lab_results");
+          }}
+          columns={columns()}
+          data={resultList?.results}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
+      )}
+    </div>
   );
 }
 

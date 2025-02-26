@@ -31,13 +31,15 @@ import { fetchUserDataResponse } from "@/services/userServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import VaccineOrders from "./VaccineOrders";
 
-function VaccinesClient({ refreshTrigger }: { refreshTrigger: number }) {
+function VaccinesClient() {
   // Data State
   const [vaccinesData, setVaccinesData] = useState<VaccinesInterface[]>([]);
   const [patientData, setPatientData] = useState<UserData[]>([]);
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
-
+  const [isVaccineDialogOpen, setIsVaccineDialogOpen] =
+    useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
 
@@ -145,21 +147,23 @@ function VaccinesClient({ refreshTrigger }: { refreshTrigger: number }) {
 
   function onSubmit(values: z.infer<typeof vaccineSearchParams>) {
     setFilters({
-      providerId:
-        values.providerId === "all" ? "" : values.providerId || "",
+      providerId: values.providerId === "all" ? "" : values.providerId || "",
       userDetailsId:
-        values.userDetailsId === "all"
-          ? ""
-          : values.userDetailsId || "",
+        values.userDetailsId === "all" ? "" : values.userDetailsId || "",
       status: values.status === "all" ? "" : values.status || "",
     });
     setPageNo(1);
   }
 
+  const handleVaccineDialogClose = () => {
+    setIsVaccineDialogOpen(false);
+    fetchInjectionsData();
+  };
+
   // Effects
   useEffect(() => {
     fetchInjectionsData();
-  }, [fetchInjectionsData, refreshTrigger]);
+  }, [fetchInjectionsData]);
 
   if (loading) return <LoadingButton />;
 
@@ -313,6 +317,10 @@ function VaccinesClient({ refreshTrigger }: { refreshTrigger: number }) {
         /> */}
       </div>
       <DefaultDataTable
+        title={"Vaccine Orders"}
+        onAddClick={() => {
+          setIsVaccineDialogOpen(true);
+        }}
         columns={columns({
           setLoading,
           showToast: () =>
@@ -327,6 +335,10 @@ function VaccinesClient({ refreshTrigger }: { refreshTrigger: number }) {
         pageNo={pageNo}
         totalPages={totalPages}
         onPageChange={(newPage) => setPageNo(newPage)}
+      />
+      <VaccineOrders
+        isOpen={isVaccineDialogOpen}
+        onClose={handleVaccineDialogClose}
       />
     </div>
   );

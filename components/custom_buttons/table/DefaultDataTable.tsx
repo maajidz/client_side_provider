@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface DefaultDataTableProps<TData, TValue> {
-  title: string;
+  title?: React.ReactNode;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   pageNo: number;
@@ -59,11 +59,15 @@ export function DefaultDataTable<TData, TValue>({
     <>
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row gap-2 items-center">
-          <span className="font-bold text-lg">{title}</span>
-          <Button variant="ghost" onClick={onAddClick}>
-            {" "}
-            Add{" "}
-          </Button>
+          {title && (
+            <span className="font-bold text-lg">{title}</span>
+          )}
+          {onAddClick && (
+            <Button variant="ghost" onClick={onAddClick}>
+              {" "}
+              Add{" "}
+            </Button>
+          )}
         </div>
         <div className="flex flex-row text-sm items-center gap-2">
           <div className="text-gray-400">

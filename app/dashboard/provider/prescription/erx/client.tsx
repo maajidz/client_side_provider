@@ -56,12 +56,13 @@ const eRxData: eRxTableInterface[] = [
 function ERxClient() {
   return (
     <div className="space-y-4">
-      <Heading
-        title="eRx Sent"
-        description="A list of the electronic transmission of drug prescriptions directly to a pharmacy"
-      />
-
       <DefaultDataTable
+        title={
+          <Heading
+            title="eRx Sent"
+            description="A list of the electronic transmission of drug prescriptions directly to a pharmacy"
+          />
+        }
         columns={columns()}
         data={eRxData}
         pageNo={1}

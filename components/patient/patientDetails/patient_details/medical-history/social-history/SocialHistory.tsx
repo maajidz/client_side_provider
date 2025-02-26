@@ -56,31 +56,33 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
       <div className="flex justify-between flex-1">
         <div className="flex flex-row items-center gap-2">
           <span className="font-bold text-lg">Social History</span>
-          <Button variant={"ghost"} onClick={() => setIsOpen(true)}>Add </Button>
+          <Button variant={"ghost"} onClick={() => setIsOpen(true)}>
+            Add{" "}
+          </Button>
         </div>
         <div className="flex items-center gap-2">
-            <div className="text-sm text-gray-400 font-semibold">
-              Page {page} of {totalPages}
-            </div>
-            <div className="space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page - 1)}
-                disabled={page <= 1}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page + 1)}
-                disabled={page >= totalPages}
-              >
-                Next
-              </Button>
-            </div>
+          <div className="text-sm text-gray-400 font-semibold">
+            Page {page} of {totalPages}
           </div>
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(page - 1)}
+              disabled={page <= 1}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(page + 1)}
+              disabled={page >= totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
         <SocialHistoryDialog
           userDetailsId={userDetailsId}
           isOpen={isOpen}
@@ -90,28 +92,28 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
           }}
         />
       </div>
-        <div className="flex flex-1 flex-col p-2 border rounded-lg">
-          {loading ? (
-            <LoadingButton />
-          ) : (
-            socialHistory.map((history) => (
-              <div className="flex flex-col gap-3" key={history.id}>
-                <div className="font-semibold text-large">
-                  Social History recorded on{" "}
-                  {new Date(history.updatedAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "2-digit",
-                    year: "numeric",
-                  })}
-                </div>
-                <div
-                  key={history.id}
-                  dangerouslySetInnerHTML={{ __html: history.content }}
-                />
+      <div className="flex flex-1 flex-col p-2 border rounded-lg">
+        {loading ? (
+          <LoadingButton />
+        ) : (
+          socialHistory.map((history) => (
+            <div className="flex flex-col gap-3" key={history.id}>
+              <div className="font-semibold text-large">
+                Social History recorded on{" "}
+                {new Date(history.updatedAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "2-digit",
+                  year: "numeric",
+                })}
               </div>
-            ))
-          )}
-        </div>
+              <div
+                key={history.id}
+                dangerouslySetInnerHTML={{ __html: history.content }}
+              />
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }

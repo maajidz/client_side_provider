@@ -154,6 +154,7 @@ function DocumentsClient() {
       ) : (
         <>
           <DefaultDataTable
+            title="Document"
             columns={columns()}
             data={paginatedData}
             pageNo={pageNo}

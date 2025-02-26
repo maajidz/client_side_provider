@@ -72,11 +72,6 @@ function PrescriptionsClient() {
 
   return (
     <div className="space-y-4">
-      <Heading
-        title="Prescriptions"
-        description="A list of prescriptions assigned to the patients"
-      />
-
       <div className="space-y-4">
         <FilterPrescriptions
           prescriptions={mockData}
@@ -84,6 +79,12 @@ function PrescriptionsClient() {
         />
       </div>
       <DefaultDataTable
+        title={
+          <Heading
+            title="Prescriptions"
+            description="A list of prescriptions assigned to the patients"
+          />
+        }
         columns={columns()}
         data={prescriptionData}
         pageNo={1}

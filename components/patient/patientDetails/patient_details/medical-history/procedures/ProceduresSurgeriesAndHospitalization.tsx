@@ -69,7 +69,9 @@ function ProceduresSurgeriesAndHospitalization({
         </div>
         <DefaultDataTable
           title="Procedures, Surgeries and Hospitalization"
-          clickAddButton={setIsOpen}
+          onAddClick={() => {
+            setIsOpen(true);
+          }}
           columns={columns()}
           data={data || []}
           pageNo={page}

@@ -27,6 +27,7 @@ import { z } from "zod";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { useRouter } from "next/navigation";
 
 function LabOrders() {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -47,6 +48,8 @@ function LabOrders() {
     console.log(values);
   }
 
+  const router = useRouter();
+
   const fetchLabOrdersList = useCallback(
     async (page: number) => {
       try {
@@ -63,9 +66,10 @@ function LabOrders() {
             setTotalPages(Math.ceil(response.total / limit));
           }
         }
-        setLoading(false);
       } catch (e) {
         console.log("Error", e);
+      } finally {
+        setLoading(false);
       }
     },
     [providerDetails]
@@ -80,94 +84,98 @@ function LabOrders() {
   }
 
   return (
-    <>
-      <div className="">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
-          >
-            <FormField
-              control={form.control}
-              name="orderedby"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ordered By</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Reviewer" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="reviewer1">Reviewer</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <div className="space-y-4">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+        >
+          <FormField
+            control={form.control}
+            name="orderedby"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ordered By</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Reviewer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="reviewer1">Reviewer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="signed">Signed</SelectItem>
-                        <SelectItem value="unsigned">Unsigned</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="signed">Signed</SelectItem>
+                      <SelectItem value="unsigned">Unsigned</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Search Patient" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Search Patient" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <div className="flex items-end">
-              <SubmitButton label="Search" />
-            </div>
-          </form>
-        </Form>
-        <div className="py-5">
-          {orderList?.data && (
-            <DefaultDataTable
-              columns={columns()}
-              data={orderList?.data}
-              pageNo={page}
-              totalPages={totalPages}
-              onPageChange={(newPage: number) => setPage(newPage)}
-            />
-          )}
+          <div className="flex items-end">
+            <SubmitButton label="Search" />
+          </div>
+        </form>
+      </Form>
+      {orderList?.data ? (
+        <DefaultDataTable
+          title={"Labs Order"}
+          onAddClick={() => {
+            router.push("/dashboard/provider/labs/create_lab_orders");
+          }}
+          columns={columns()}
+          data={orderList?.data}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
+      ) : (
+        <div className="flex border rounded-md p-5 flex-row text-center h-32 w-full justify-between items-center">
+          No Lab Orders Found
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }
 
