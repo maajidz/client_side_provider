@@ -36,11 +36,11 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
     } finally {
       setLoading(false);
     }
-  }, [userDetailsId,editPatient, editBasicPatientDetails ]);
+  }, [userDetailsId]);
 
   useEffect(() => {
     fetchAndSetResponse();
-  }, [fetchAndSetResponse]);
+  }, [fetchAndSetResponse, editPatient, editBasicPatientDetails]);
 
   return (
     <>
