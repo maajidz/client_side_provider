@@ -30,6 +30,7 @@ import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
+import InjectionOrders from "./InjectionOrders";
 
 export const status = [
   { value: "Pending", label: "Pending" },
@@ -38,8 +39,9 @@ export const status = [
   { value: "Cancelled", label: "Cancelled" },
 ];
 
-
-function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
+function InjectionsClient() {
+  const [isInjectionDialogOpen, setIsInjectionDialogOpen] =
+    useState<boolean>(false);
   const [injectionsData, setInjectionsData] = useState<InjectionsInterface[]>(
     []
   );
@@ -171,7 +173,12 @@ function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
       filters.providerId,
       filters.userDetailsId
     );
-  }, [filters, fetchInjectionsData, refreshTrigger, pageNo]);
+  }, [filters, fetchInjectionsData, pageNo]);
+
+  const handleInjectionDialogClose = () => {
+    setIsInjectionDialogOpen(false);
+    fetchInjectionsData(pageNo);
+  };
 
   function onSubmit(values: z.infer<typeof injectionsSearchParams>) {
     setFilters({
@@ -186,146 +193,148 @@ function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
   if (loading) return <LoadingButton />;
 
   return (
-    <div className="space-y-2">
-      <div className="space-y-2">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
-          >
-            {/* Ordered By Filter */}
-            <FormField
-              control={form.control}
-              name="providerId"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormControl>
-                    <Select
-                      defaultValue={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by Ordered by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all" className="cursor-pointer">
-                          All
-                        </SelectItem>
-                        {providersList
-                          .filter(
-                            (
-                              provider
-                            ): provider is typeof provider & {
-                              providerDetails: { id: string };
-                            } => Boolean(provider?.providerDetails?.id)
-                          )
-                          .map((provider) => (
-                            <SelectItem
-                              key={provider.id}
-                              value={provider.providerDetails.id}
-                              className="cursor-pointer"
-                            >
-                              {provider.firstName} {provider.lastName}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-
-            {/* Status Filter */}
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormControl>
-                    <Select
-                      defaultValue={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all" className="cursor-pointer">
-                          All
-                        </SelectItem>
-                        {status.map((status) => (
-                          <SelectItem key={status.value} value={status.value}>
-                            {status.label}
+    <div className="space-y-4">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+        >
+          {/* Ordered By Filter */}
+          <FormField
+            control={form.control}
+            name="providerId"
+            render={({ field }) => (
+              <FormItem className="flex items-center">
+                <FormControl>
+                  <Select
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by Ordered by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all" className="cursor-pointer">
+                        All
+                      </SelectItem>
+                      {providersList
+                        .filter(
+                          (
+                            provider
+                          ): provider is typeof provider & {
+                            providerDetails: { id: string };
+                          } => Boolean(provider?.providerDetails?.id)
+                        )
+                        .map((provider) => (
+                          <SelectItem
+                            key={provider.id}
+                            value={provider.providerDetails.id}
+                            className="cursor-pointer"
+                          >
+                            {provider.firstName} {provider.lastName}
                           </SelectItem>
                         ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage className="text-red-500" />
+              </FormItem>
+            )}
+          />
 
-            {/* Patient Filter */}
-            <FormField
-              control={form.control}
-              name="userDetailsId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="Search Patient "
-                        value={searchTerm}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setSearchTerm(value);
-                          setVisibleSearchList(true);
+          {/* Status Filter */}
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem className="flex items-center">
+                <FormControl>
+                  <Select
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all" className="cursor-pointer">
+                        All
+                      </SelectItem>
+                      {status.map((status) => (
+                        <SelectItem key={status.value} value={status.value}>
+                          {status.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage className="text-red-500" />
+              </FormItem>
+            )}
+          />
 
-                          if (!value) {
-                            field.onChange("");
-                          }
-                        }}
-                      />
-                      {searchTerm && visibleSearchList && (
-                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                          {filteredPatients.length > 0 ? (
-                            filteredPatients.map((patient) => (
-                              <div
-                                key={patient.id}
-                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                onClick={() => {
-                                  field.onChange(patient.id);
-                                  setSearchTerm(
-                                    `${patient.user.firstName} ${patient.user.lastName}`
-                                  );
-                                  setVisibleSearchList(false);
-                                }}
-                              >
-                                {`${patient.user.firstName} ${patient.user.lastName}`}
-                              </div>
-                            ))
-                          ) : (
-                            <div className="px-4 py-2 text-gray-500">
-                              No results found
+          {/* Patient Filter */}
+          <FormField
+            control={form.control}
+            name="userDetailsId"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="relative">
+                    <Input
+                      placeholder="Search Patient "
+                      value={searchTerm}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setSearchTerm(value);
+                        setVisibleSearchList(true);
+
+                        if (!value) {
+                          field.onChange("");
+                        }
+                      }}
+                    />
+                    {searchTerm && visibleSearchList && (
+                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                        {filteredPatients.length > 0 ? (
+                          filteredPatients.map((patient) => (
+                            <div
+                              key={patient.id}
+                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                              onClick={() => {
+                                field.onChange(patient.id);
+                                setSearchTerm(
+                                  `${patient.user.firstName} ${patient.user.lastName}`
+                                );
+                                setVisibleSearchList(false);
+                              }}
+                            >
+                              {`${patient.user.firstName} ${patient.user.lastName}`}
                             </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex items-end">
-              <SubmitButton label="Search" />
-            </div>
-          </form>
-        </Form>
-      </div>
+                          ))
+                        ) : (
+                          <div className="px-4 py-2 text-gray-500">
+                            No results found
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex items-end">
+            <SubmitButton label="Search" />
+          </div>
+        </form>
+      </Form>
       <DefaultDataTable
+        title={"Injection Orders"}
+        onAddClick={() => {
+          setIsInjectionDialogOpen(true);
+        }}
         columns={columns({
           setLoading,
           showToast: () =>
@@ -340,6 +349,10 @@ function InjectionsClient({ refreshTrigger }: { refreshTrigger: number }) {
         pageNo={pageNo}
         totalPages={totalPages}
         onPageChange={(newPage) => setPageNo(newPage)}
+      />
+      <InjectionOrders
+        isOpen={isInjectionDialogOpen}
+        onClose={handleInjectionDialogClose}
       />
     </div>
   );

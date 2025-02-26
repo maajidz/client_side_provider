@@ -27,8 +27,7 @@ import {
 } from "@/types/insuranceInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DialogTrigger } from "@radix-ui/react-dialog";
-import { PlusIcon, UploadCloudIcon } from "lucide-react";
+import { UploadCloudIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -52,7 +51,6 @@ function InsuranceDialog({
   selectedInsurance,
   selectedIsInsured,
   setIsOpen,
-  setSelectedInsurance,
   setSelectedIsInsured,
   onFetchInsuranceData,
 }: InsuranceDialogProps) {
@@ -179,17 +177,6 @@ function InsuranceDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleIsDialogOpen}>
-      <DialogTrigger asChild>
-        <DefaultButton
-          onClick={() => {
-            setSelectedInsurance(undefined);
-            setIsOpen(true);
-          }}
-        >
-          <PlusIcon />
-          Insurance
-        </DefaultButton>
-      </DialogTrigger>
       <DialogContent className="flex flex-col gap-8 p-6 max-w-[880px] max-h-[828px] w-full rounded-2xl overflow-x-hidden">
         <DialogHeader>
           <DialogTitle>

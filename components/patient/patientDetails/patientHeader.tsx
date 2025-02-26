@@ -6,7 +6,7 @@ import { setUserId } from "@/store/slices/userSlice";
 import { calculateAge } from "@/utils/utils";
 import LoadingButton from "../../LoadingButton";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import {
   Card,
@@ -25,15 +25,18 @@ import {
   WeightIcon,
 } from "lucide-react";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/dashboard" },
-  { title: "Analytics", link: "/dashboard/provider/analytics" },
-];
-
 const PatientHeader = ({ userId }: { userId: string }) => {
   const [response, setResponse] = useState<PatientDetails>();
   const [loading, setLoading] = useState(false);
   const [age, setAge] = useState<number>();
+  const path = usePathname();
+
+  const breadcrumbItems = [
+    { title: "Dashboard", link: "/dashboard" },
+    { title: "Patients", link: "/dashboard/provider/patient" },
+    { title: `${path.split('/')[5]}`, link: `${path}` },
+  ];
+  
 
   const router = useRouter();
 
@@ -89,7 +92,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
       className="flex flex-col w-full gap-6"
       onClick={() =>
         router.push(
-          `dashboard/provider/patient/${response?.user.userDetailsId}/patientDetails`
+          `/dashboard/provider/patient/${userId}/patientDetails`
         )
       }
     >
@@ -179,7 +182,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
               <span>
                 {response &&
                   new Date(
-                    response.encounter[response.encounter.length - 1].date
+                    response.encounter[response.encounter.length - 1]?.date
                   ).toLocaleDateString("en-US", {
                     month: "short",
                     day: "2-digit",

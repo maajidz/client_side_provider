@@ -1,8 +1,9 @@
 import FamilyHistoryDialog from "@/components/charts/Encounters/Details/FamilyHistory/FamilyHistoryDialog";
 import { getFamilyHistoryData } from "@/services/chartDetailsServices";
 import { FamilyHistoryResponseInterface } from "@/types/familyHistoryInterface";
-import FamilyHistoryClient from "./client";
 import { useCallback, useEffect, useState } from "react";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { columns } from "./column";
 
 interface FamilyHistoryProps {
   userDetailsId: string;
@@ -52,23 +53,31 @@ function FamilyHistory({ userDetailsId }: FamilyHistoryProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex gap-4 items-center text-lg font-semibold">
-        <FamilyHistoryDialog
-          userDetailsId={userDetailsId}
-          isOpen={isOpen}
-          onClose={() => {
-            setIsOpen(false);
-            fetchFamilyHistory();
-          }}
-        />
+      <div className="flex gap-4 text-lg font-semibold flex-col">
+        <div className="flex flex-row items-center gap-4">
+          <FamilyHistoryDialog
+            userDetailsId={userDetailsId}
+            isOpen={isOpen}
+            onClose={() => {
+              setIsOpen(false);
+              fetchFamilyHistory();
+            }}
+          />
+        </div>
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <DefaultDataTable
+            title={"Family History"}
+            onAddClick={() => setIsOpen(true)}
+            columns={columns()}
+            data={data || []}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
+        )}
       </div>
-        <FamilyHistoryClient
-          data={data}
-          loading={loading}
-          pageNo={page}
-          totalPages={totalPages}
-          onSetPageNo={setPage}
-        />
     </div>
   );
 }

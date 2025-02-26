@@ -2,14 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Heading } from "@/components/ui/heading";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import { UserData, UserResponseInterface } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-
 
 export const PatientClient = () => {
   const [response, setResponse] = useState<UserResponseInterface>();
@@ -55,15 +52,17 @@ export const PatientClient = () => {
 
   return (
     <>
-      <div className="flex items-start justify-between">
+      {/* <div className="flex items-start justify-between">
         <Heading title={`Patients (${response?.total})`} description="" />
         <DefaultButton onClick={handleAddPatientClick}>
           Add Patient
         </DefaultButton>
-      </div>
+      </div> */}
       {userResponse && (
         <DefaultDataTable
           columns={columns(handleRowClick)}
+          onAddClick={handleAddPatientClick}
+          title={`Patients (${response?.total})`}
           data={userResponse}
           pageNo={pageNo}
           totalPages={totalPages}

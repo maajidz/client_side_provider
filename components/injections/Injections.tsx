@@ -3,45 +3,23 @@
 import PageContainer from "@/components/layout/page-container";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import InjectionsClient from "./injection-orders/client";
-import InjectionOrders from "./injection-orders/InjectionOrders";
 import VaccinesClient from "./vaccine-orders/client";
-import VaccineOrders from "./vaccine-orders/VaccineOrders";
 import React, { useState } from "react";
 import CustomTabsTrigger from "../custom_buttons/buttons/CustomTabsTrigger";
-import DefaultButton from "../custom_buttons/buttons/DefaultButton";
-import { PlusIcon } from "lucide-react";
-import { Button } from "../ui/button";
 
 function Injections() {
   const [activeTab, setActiveTab] = useState("injectionOrders");
-  const [isInjectionDialogOpen, setIsInjectionDialogOpen] = useState(false);
-  const [isVaccineDialogOpen, setIsVaccineDialogOpen] = useState(false);
-  const [injectionRefreshTrigger, setInjectionRefreshTrigger] =
-    useState<number>(0);
-  const [vaccineRefreshTrigger, setVaccineRefreshTrigger] = useState<number>(0);
-
-  const handleInjectionDialogClose = () => {
-    setIsInjectionDialogOpen(false);
-    setInjectionRefreshTrigger((prev) => prev + 1);
-  };
-
-  const handleVaccineDialogClose = () => {
-    setIsVaccineDialogOpen(false);
-    setVaccineRefreshTrigger((prev) => prev + 1);
-  };
 
   const injectionsTab = [
     {
       value: "injectionOrders",
       label: "Injection Orders",
-      component: InjectionsClient,
-      refreshTrigger: injectionRefreshTrigger,
+      component: InjectionsClient
     },
     {
       value: "vaccineOrders",
       label: "Vaccine Orders",
-      component: VaccinesClient,
-      refreshTrigger: vaccineRefreshTrigger,
+      component: VaccinesClient
     },
   ];
 
@@ -60,43 +38,12 @@ function Injections() {
                 </CustomTabsTrigger>
               ))}
             </TabsList>
-            {activeTab === "injectionOrders" ? (
-              <>
-                <Button
-                  onClick={() => {
-                    setIsInjectionDialogOpen(true);
-                  }}
-                >
-                  <PlusIcon />
-                  <div>Injection Order</div>
-                </Button>
-                <InjectionOrders
-                  isOpen={isInjectionDialogOpen}
-                  onClose={handleInjectionDialogClose}
-                />
-              </>
-            ) : (
-              <>
-                <DefaultButton
-                  onClick={() => {
-                    setIsVaccineDialogOpen(true);
-                  }}
-                >
-                  <PlusIcon />
-                  <div>Vaccine Order</div>
-                </DefaultButton>
-                <VaccineOrders
-                  isOpen={isVaccineDialogOpen}
-                  onClose={handleVaccineDialogClose}
-                />
-              </>
-            )}
           </div>
           <>
             {injectionsTab.map(
-              ({ value, component: Component, refreshTrigger }) => (
+              ({ value, component: Component }) => (
                 <TabsContent value={value} key={value}>
-                  <Component refreshTrigger={refreshTrigger} />
+                  <Component />
                 </TabsContent>
               )
             )}

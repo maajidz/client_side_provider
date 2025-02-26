@@ -28,7 +28,7 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItemProps[] }) {
               <BreadcrumbSeparator/>
             )}
             {index === items.length - 1 && (
-              <BreadcrumbPage>{item.title}</BreadcrumbPage>
+              <BreadcrumbPage className='capitalize'>{item.title}</BreadcrumbPage>
             )}
           </Fragment>
         ))}

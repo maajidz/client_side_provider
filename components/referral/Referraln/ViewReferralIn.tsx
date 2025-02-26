@@ -28,9 +28,12 @@ import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataT
 import formStyles from "@/components/formStyles.module.css";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
+import ReferralInDialog from "./ReferralInDialog";
 
-const ViewReferralIn = ({ refreshTrigger }: { refreshTrigger: number }) => {
+const ViewReferralIn = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [isReferralInDialogOpen, setIsReferralInDialogOpen] =
+    useState<boolean>(false);
   const [resultList, setResultList] = useState<TransferResponseData[]>([]);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [loading, setLoading] = useState(false);
@@ -90,7 +93,7 @@ const ViewReferralIn = ({ refreshTrigger }: { refreshTrigger: number }) => {
         const response = await getTransferData({
           id: providerDetails.providerId,
           idType: "Referring to ProviderID",
-          status: filters.responseStatus ?? ""
+          status: filters.responseStatus ?? "",
         });
         if (response) {
           setResultList(response);
@@ -105,51 +108,54 @@ const ViewReferralIn = ({ refreshTrigger }: { refreshTrigger: number }) => {
 
   useEffect(() => {
     fetchReferralsList();
-  }, [fetchReferralsList, refreshTrigger]);
+  }, [fetchReferralsList]);
+
+  const handleReferralInDialogClose = () => {
+    setIsReferralInDialogOpen(false);
+    fetchReferralsList();
+  };
 
   if (loading) {
     return <LoadingButton />;
   }
 
   return (
-    <>
-      <div className="flex flex-col gap-3">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className={formStyles.formFilterBody}
-          >
-            {/* Referral To Filter */}
-            <FormField
-              control={form.control}
-              name="referralTo"
-              render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by Referral To" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        {ownersList.map((owner) => (
-                          <SelectItem
-                            key={owner.id}
-                            value={owner.providerDetails?.id || owner.id}
-                          >
-                            {owner.firstName} {owner.lastName}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
+    <div className="space-y-4">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={formStyles.formFilterBody}
+        >
+          <FormField
+            control={form.control}
+            name="referralTo"
+            render={({ field }) => (
+              <FormItem className={formStyles.formFilterItem}>
+                <FormControl>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by Referral To" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      {ownersList.map((owner) => (
+                        <SelectItem
+                          key={owner.id}
+                          value={owner.providerDetails?.id || owner.id}
+                        >
+                          {owner.firstName} {owner.lastName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage className="text-red-500" />
+              </FormItem>
+            )}
+          />
 
-            {/* Referral From Filter */}
-            {/* <FormField
+          {/* Referral From Filter */}
+          {/* <FormField
               control={form.control}
               name="referralFrom"
               render={({ field }) => (
@@ -174,8 +180,8 @@ const ViewReferralIn = ({ refreshTrigger }: { refreshTrigger: number }) => {
               )}
             /> */}
 
-            {/* Selected Referral From Provider Filter */}
-            {/* <FormField
+          {/* Selected Referral From Provider Filter */}
+          {/* <FormField
               control={form.control}
               name="referralProviderId"
               render={({ field }) => {
@@ -205,72 +211,76 @@ const ViewReferralIn = ({ refreshTrigger }: { refreshTrigger: number }) => {
               }}
             /> */}
 
-            {/* Request Status Filter */}
-            <FormField
-              control={form.control}
-              name="requestStatus"
-              render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
-                  <FormControl>
-                    <Select
-                      defaultValue={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by Request Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all" className="cursor-pointer">
-                          All
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-
-            {/* Response Status Filter */}
-            <FormField
-              control={form.control}
-              name="responseStatus"
-              render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by Response Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all" className="cursor-pointer">
-                          All
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex items-end pb-2">
-              <SubmitButton label="Search" />
-            </div>
-          </form>
-        </Form>
-
-        {resultList && (
-          <DefaultDataTable
-            columns={columns()}
-            data={resultList}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
+          {/* Request Status Filter */}
+          <FormField
+            control={form.control}
+            name="requestStatus"
+            render={({ field }) => (
+              <FormItem className={formStyles.formFilterItem}>
+                <FormControl>
+                  <Select
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by Request Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all" className="cursor-pointer">
+                        All
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage className="text-red-500" />
+              </FormItem>
+            )}
           />
-        )}
-      </div>
-    </>
+
+          {/* Response Status Filter */}
+          <FormField
+            control={form.control}
+            name="responseStatus"
+            render={({ field }) => (
+              <FormItem className={formStyles.formFilterItem}>
+                <FormControl>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by Response Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all" className="cursor-pointer">
+                        All
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage className="text-red-500" />
+              </FormItem>
+            )}
+          />
+
+          <div className="flex items-end pb-2">
+            <SubmitButton label="Search" />
+          </div>
+        </form>
+      </Form>
+
+      {resultList && (
+        <DefaultDataTable
+          title={"Referral In"}
+          columns={columns()}
+          data={resultList}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
+      )}
+      <ReferralInDialog
+        onClose={handleReferralInDialogClose}
+        isOpen={isReferralInDialogOpen}
+      />
+    </div>
   );
 };
 

@@ -1,8 +1,8 @@
 "use client";
 
 import { patientContactSchema } from "@/schema/addNewPatientSchema";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import React, { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -48,14 +48,12 @@ const EditContactDetails = ({
     resolver: zodResolver(patientContactSchema),
     defaultValues: {
       patientDetails,
-      height: { unit: "cm", value: "" } as z.infer<
-        typeof patientContactSchema.shape.height
-      >,
-      weight: { units: "kg", value: "" } as z.infer<
-        typeof patientContactSchema.shape.weight
-      >,
       phoneNumber: patientDetails.user.phoneNumber || "",
-      state: patientDetails.location || "",
+      address: patientDetails?.location.split(",")[0] ?? "",
+      city: patientDetails?.location.split(",")[1] ?? "",
+      state: patientDetails?.location.split(",")[2] ?? "",
+      country: patientDetails?.location.split(",")[3] ?? "",
+      zipCode: patientDetails?.location.split(",")[4] ?? "",
       gender: patientDetails.gender || "",
       email: patientDetails.user.email || "",
     },
@@ -66,26 +64,15 @@ const EditContactDetails = ({
       methods.reset({
         patientDetails,
         phoneNumber: patientDetails.user.phoneNumber,
-        state: patientDetails.location,
         gender: patientDetails.gender,
         email: patientDetails.user.email,
+        address: patientDetails.location.split(",")[0],
+        city: patientDetails.location.split(",")[1],
+        state: patientDetails.location.split(",")[2],
+        country: patientDetails.location.split(",")[3],
+        zipCode: patientDetails.location.split(",")[4],
       });
-      if (patientDetails.heightType === "cm") {
-        methods.setValue(
-          "height.unit",
-          patientDetails.heightType as "feet" | "cm"
-        );
-        methods.setValue("height.value", patientDetails.height.toString());
-      } else {
-        methods.setValue(
-          "height.unit",
-          patientDetails.heightType as "feet" | "cm"
-        );
-        methods.setValue("height.feet", patientDetails.height.toString());
-      }
-      if (patientDetails.weightType === "kg") {
-        methods.setValue("weight.value", patientDetails.weight.toString());
-      }
+      methods.setValue("state", patientDetails.location.split(",")[2] ?? "");
     }
   }, [patientDetails, methods]);
 
@@ -106,14 +93,11 @@ const EditContactDetails = ({
         },
         userDetails: {
           dob: patientDetails.dob ? patientDetails.dob : "",
-          height:
-            data.height.unit === "cm"
-              ? Number(data.height.value)
-              : Number(data.height.feet),
-          heightType: data.height.unit,
-          weight: Number(data.weight.value),
-          weightType: data.weight.units,
-          location: data.state,
+          height: patientDetails.height,
+          heightType: patientDetails.heightType,
+          weight: patientDetails.weight,
+          weightType: patientDetails.weightType,
+          location: `${data.address}, ${data.city}, ${data.state}, ${data.country}, ${data.zipCode}`,
           gender: patientDetails.gender ? patientDetails.gender : "",
         },
       };
@@ -142,7 +126,7 @@ const EditContactDetails = ({
       } finally {
         setLoading(false);
         methods.reset();
-        setEditPatient(false)
+        setEditPatient(false);
       }
     }
   };
@@ -152,22 +136,6 @@ const EditContactDetails = ({
       state.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [search]);
-
-  const heightUnit = useWatch({
-    name: "height.unit",
-    control: methods.control,
-  });
-
-  const handleUnitChange = useCallback(
-    (value: string) => {
-      if (value === "feet") {
-        methods.setValue("height", { unit: "feet", feet: "", inches: "" });
-      } else {
-        methods.setValue("height", { unit: "cm", value: "" });
-      }
-    },
-    [methods]
-  );
 
   if (loading) {
     return <LoadingButton />;
@@ -184,6 +152,21 @@ const EditContactDetails = ({
             <FormSectionHor>
               <FormField
                 control={methods.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem className="w-64">
+                    <FormLabel className="text-[#344054] font-medium text-sm">
+                      Address
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={methods.control}
                 name="state"
                 render={({ field }) => (
                   <FormItem>
@@ -191,7 +174,8 @@ const EditContactDetails = ({
                     <FormControl>
                       <Select
                         value={field.value}
-                        onValueChange={(value: string) => field.onChange(value)}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select here" />
@@ -217,6 +201,55 @@ const EditContactDetails = ({
                   </FormItem>
                 )}
               />
+            </FormSectionHor>
+            <FormSectionHor>
+              <FormField
+                control={methods.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem className="w-64">
+                    <FormLabel className="text-[#344054] font-medium text-sm">
+                      City
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={methods.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem className="w-64">
+                    <FormLabel className="text-[#344054] font-medium text-sm">
+                      Country
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={methods.control}
+                name="zipCode"
+                render={({ field }) => (
+                  <FormItem className="w-64">
+                    <FormLabel className="text-[#344054] font-medium text-sm">
+                      Zipcode
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormSectionHor>
+            <FormSectionHor>
               <FormField
                 control={methods.control}
                 name="phoneNumber"
@@ -257,151 +290,6 @@ const EditContactDetails = ({
               />
             </FormSectionHor>
           </FormSectionVert>
-          <FormSectionVert>
-            {/* <div className="font-bold text-sm text-gray-500">Other Information</div> */}
-            <div className="flex gap-4 items-end">
-              <div className="flex flex-row items-end gap-2">
-                {heightUnit === "cm" && (
-                  <FormField
-                    control={methods.control}
-                    name="height.value"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Height:</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            inputMode="numeric"
-                            placeholder="cm"
-                            value={field.value}
-                            maxLength={2}
-                            onChange={(e) => field.onChange(e.target.value)}
-                            className="font-normal text-base"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-                {heightUnit === "feet" && (
-                  <div className="flex flex-row">
-                    <FormField
-                      control={methods.control}
-                      name="height.feet"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Feet"
-                              value={field.value}
-                              maxLength={2}
-                              onChange={(e) => field.onChange(e.target.value)}
-                              className="font-normal text-base"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={methods.control}
-                      name="height.inches"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Inches"
-                              value={field.value}
-                              maxLength={2}
-                              onChange={(e) => field.onChange(e.target.value)}
-                              className="font-normal text-base"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-                <FormField
-                  control={methods.control}
-                  name="height.unit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Select
-                          value={field.value}
-                          onValueChange={(value: string) => {
-                            field.onChange(value);
-                            handleUnitChange(value);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select unit" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="feet">Feet</SelectItem>
-                            <SelectItem value="cm">cm</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex gap-2 items-end">
-                <FormField
-                  control={methods.control}
-                  name="weight.value"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Weight:</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Weight"
-                          {...field}
-                          value={field.value}
-                          onChange={(e) => field.onChange(e.target.value)}
-                          className="font-normal text-base"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={methods.control}
-                  name="weight.units"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Select
-                          value={field.value}
-                          onValueChange={(value: string) => {
-                            field.onChange(value);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select unit" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="kg">Kilograms</SelectItem>
-                            <SelectItem value="Pounds">Pounds</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-          </FormSectionVert>
-
           <div className="flex self-end gap-5">
             <Button variant={"outline"} onClick={() => setEditPatient(false)}>
               Cancel

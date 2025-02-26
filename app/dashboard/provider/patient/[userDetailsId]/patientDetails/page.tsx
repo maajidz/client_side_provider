@@ -10,21 +10,8 @@ function Page() {
     return <div>Error: User details ID not found</div>;
   }
 
-  // const breadcrumbItems = [
-  //   { title: "Dashboard", link: "/dashboard" },
-  //   { title: "Patients", link: "/dashboard/provider/patient" },
-  //   {
-  //     title: "Patient Details",
-  //     link: `/dashboard/provider/patient/${userDetailsId}/patientDetails`,
-  //   },
-  // ];
-
   return (
     <PageContainer scrollable={true}>
-      {/* <div className="space-y-4">
-        <Breadcrumbs items={breadcrumbItems} />
-        <Heading title="Patient Details" description="" />
-      </div> */}
       <PatientDetails userId={userDetailsId} />
     </PageContainer>
   );

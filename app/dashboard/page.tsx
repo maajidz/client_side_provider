@@ -8,53 +8,64 @@ import { navItems } from "@/constants/data";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import imageUrl from "@/public/images/Logo_Red.svg";
+import Image from "next/image";
+import AccountIcon from "@/components/account/AccountIcon";
 
 export default function DashboardPage() {
   const router = useRouter();
   return (
-    <PageContainer scrollable={true}>
-      <div className="flex flex-col max-w-5xl items-center gap-3 w-full self-center">
-        <div className="flex w-full gap-2 items-end py-8 justify-between">
-          <SearchInput />
-          <Button
-            variant="outline"
-            onClick={() =>
-              router.push("/dashboard/provider/patient/add_patient")
-            }
-            className="h-11 text-gray-600 font-semibold"
-          >
-            Add Patient
-            <Plus size={20} className="" />
-          </Button>
-        </div>
-        <div className="grid grid-cols-3 gap-3 justify-center items-center w-full">
-          {navItems.map((item, index) => {
-            const Icon = item.icon && Icons[item.icon as keyof typeof Icons];
-            const BadgeIcon =
-              item.badgeIcon && Icons[item.badgeIcon as keyof typeof Icons];
-            return (
-              <Link key={index} href={`${item.href}`}>
-                <div className="flex flex-col gap-3 justify-center border border-gray-200 px-6 rounded-lg w-full h-24 text-gray-900 hover:bg-pink-50 hover:border-pink-200 hover:text-[#84012a] hover:shadow-sm hover:shadow-pink-100 transition-all">
-                  {Icon && <Icon className="" />}
-                  <div className="flex justify-between">
-                    <div className="text-md font-semibold">{item.title}</div>
-                    <div className="flex rounded-3xl bg-green-100 w-fit text-green-700 flex-row items-center font-semibold text-[.7rem] pl-2 pr-3 py-1 gap-1">
-                      {BadgeIcon && (
-                        <BadgeIcon
-                          size={14}
-                          strokeWidth={3}
-                          className={`${item.badgeColor}`}
-                        />
-                      )}
-                      {item.badgeLabel}
+    <main className="w-full h-screen flex-1 overflow-hidden bg-gray-100">
+      <div className="flex justify-between items-center px-11 h-16">
+        <Link href={"/dashboard"}>
+          <Image src={imageUrl} alt={"logo"} height={24} priority />
+        </Link>
+        <AccountIcon />
+      </div>
+      <PageContainer scrollable={true}>
+        <div className="flex flex-col max-w-5xl items-center gap-3 w-full self-center">
+          <div className="flex w-full gap-2 items-end py-8 justify-between">
+            <SearchInput />
+            <Button
+              variant="outline"
+              onClick={() =>
+                router.push("/dashboard/provider/patient/add_patient")
+              }
+              className="h-11 text-gray-600 font-semibold"
+            >
+              Add Patient
+              <Plus size={20} className="" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-3 gap-3 justify-center items-center w-full">
+            {navItems.map((item, index) => {
+              const Icon = item.icon && Icons[item.icon as keyof typeof Icons];
+              const BadgeIcon =
+                item.badgeIcon && Icons[item.badgeIcon as keyof typeof Icons];
+              return (
+                <Link key={index} href={`${item.href}`}>
+                  <div className="flex flex-col gap-3 justify-center border border-gray-200 px-6 rounded-lg w-full h-24 text-gray-900 hover:bg-pink-50 hover:border-pink-200 hover:text-[#84012a] hover:shadow-sm hover:shadow-pink-100 transition-all">
+                    {Icon && <Icon className="" />}
+                    <div className="flex justify-between">
+                      <div className="text-md font-semibold">{item.title}</div>
+                      <div className="flex rounded-3xl bg-green-100 w-fit text-green-700 flex-row items-center font-semibold text-[.7rem] pl-2 pr-3 py-1 gap-1">
+                        {BadgeIcon && (
+                          <BadgeIcon
+                            size={14}
+                            strokeWidth={3}
+                            className={`${item.badgeColor}`}
+                          />
+                        )}
+                        {item.badgeLabel}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            );
-          })}
+                </Link>
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </PageContainer>
+      </PageContainer>
+    </main>
   );
 }

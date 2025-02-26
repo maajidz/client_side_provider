@@ -54,21 +54,6 @@ export const basicInformationSchema = z.object({
 });
 
 export const patientContactSchema = z.object({
-  height: z.union([
-    z.object({
-      unit: z.literal("feet"),
-      feet: z.string().min(1, "Height in feet is required"),
-      inches: z.string().min(0, "Height in inches is required"),
-    }),
-    z.object({
-      unit: z.literal("cm"),
-      value: z.string().min(2, "Height in cm is required"),
-    }),
-  ]),
-  weight: z.object({
-    value: z.string().min(1, "Weight is required."),
-    units: z.enum(["kg", "Pounds"]),
-  }),
   phoneNumber: z.string().refine(
     (num) => {
       return num.length >= 10 && /^\d{10,}$/.test(num);
@@ -77,6 +62,10 @@ export const patientContactSchema = z.object({
       message: "Invalid phone number format. At least 10 digits are required.",
     }
   ),
-  state: z.string().min(1, "Select a state"),
   email: z.string().min(1, "Email Requires"),
+  address: z.string().min(1, { message: "Address is required" }),
+  state: z.string().optional(),
+  city: z.string().optional(),
+  country: z.string().optional(),
+  zipCode: z.string().optional(),
 });

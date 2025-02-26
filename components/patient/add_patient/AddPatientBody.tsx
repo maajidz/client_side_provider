@@ -29,11 +29,15 @@ import { createNewPatient } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import PatientConfirmationScreen from "./PatientConfirmationScreen";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const AddPatientBody = () => {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
+
+  const router = useRouter();
 
   const { toast } = useToast();
 
@@ -200,50 +204,52 @@ const AddPatientBody = () => {
                     )}
                   />
                   <div className="flex flex-row gap-2">
-                  <FormField
-                    control={methods.control}
-                    name="dob"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center flex-col flex-1">
-                        <FormLabel className="w-full">DOB:</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="date"
-                            {...field}
-                            className="text-left justify-center cursor-pointer "
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={methods.control}
-                    name="gender"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center flex-col flex-1">
-                        <FormLabel className="w-full">Birth Gender:</FormLabel>
-                        <FormControl>
-                          <Select
-                            value={field.value}
-                            onValueChange={(value: string) =>
-                              field.onChange(value)
-                            }
-                          >
-                            <SelectTrigger className="">
-                              <SelectValue placeholder="Select here" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Male">Male</SelectItem>
-                              <SelectItem value="Female">Female</SelectItem>
-                              <SelectItem value="Other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      control={methods.control}
+                      name="dob"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center flex-col flex-1">
+                          <FormLabel className="w-full">DOB:</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="date"
+                              {...field}
+                              className="text-left justify-center cursor-pointer "
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={methods.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center flex-col flex-1">
+                          <FormLabel className="w-full">
+                            Birth Gender:
+                          </FormLabel>
+                          <FormControl>
+                            <Select
+                              value={field.value}
+                              onValueChange={(value: string) =>
+                                field.onChange(value)
+                              }
+                            >
+                              <SelectTrigger className="">
+                                <SelectValue placeholder="Select here" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Male">Male</SelectItem>
+                                <SelectItem value="Female">Female</SelectItem>
+                                <SelectItem value="Other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </div>
               </div>
@@ -491,8 +497,33 @@ const AddPatientBody = () => {
                   </div>
                 </div>
               </div>
+              <div className="flex flex-row justify-between gap-4 w-full">
+                <Button
+                  className="w-full"
+                  variant={"outline"}
+                  onClick={() => router.push('/dashboard/provider/patient')}
+                >
+                  Cancel
+                </Button>
+                <SubmitButton label="Add" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </Form>
+      <PatientConfirmationScreen
+        onClose={() => {
+          setIsDialogOpen(false);
+        }}
+        isOpen={isDialogOpen}
+      />
+    </div>
+  );
+};
 
-              {/* <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
+export default AddPatientBody;
+
+  {/* <div className="flex flex-col gap-5 border p-5 w-full rounded-lg">
                 <div className="font-medium text-[#84012A]">
                   Additional Information
                 </div>
@@ -923,21 +954,3 @@ const AddPatientBody = () => {
                   />
                 </div>
               </div> */}
-            <div className="flex justify-end w-full">
-                <SubmitButton label="Add" />
-            </div>
-            </div>
-          </div>
-        </form>
-      </Form>
-      <PatientConfirmationScreen
-        onClose={() => {
-          setIsDialogOpen(false);
-        }}
-        isOpen={isDialogOpen}
-      />
-    </div>
-  );
-};
-
-export default AddPatientBody;

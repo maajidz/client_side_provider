@@ -4,38 +4,48 @@ import { Heading } from "@/components/ui/heading";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import PrescriptionsClient from "./prescriptions/client";
 import ERxClient from "./erx/client";
-import { useState } from "react";
+
+const prescriptionTab = [
+  {
+    value: "prescriptions",
+    label: "Prescriptions",
+    component: PrescriptionsClient,
+  },
+  {
+    value: "pharmacyRequests",
+    label: "Pharmacy Requests",
+    component: null,
+  },
+  {
+    value: "eRxSent",
+    label: "eRx Sent",
+    component: ERxClient,
+  },
+];
 
 function Prescription() {
-  const [activeTab, setActiveTab] = useState("prescriptions");
-
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-2">
-        <Tabs
-          defaultValue={activeTab}
-          onValueChange={(value) => setActiveTab(value)}
-        >
+        <Tabs defaultValue="prescriptions">
           <div className="flex items-center justify-between border-b border-gray-300 pb-2">
             <TabsList>
-              <CustomTabsTrigger value="prescriptions">
-                Prescriptions
-              </CustomTabsTrigger>
-              <CustomTabsTrigger value="pharmacyRequests">
-                Pharmacy Requests
-              </CustomTabsTrigger>
-              <CustomTabsTrigger value="eRxSent">eRx Sent</CustomTabsTrigger>
+              {prescriptionTab.map((tabs) => (
+                <CustomTabsTrigger value={tabs.value} key={tabs.value}>
+                  {tabs.label}
+                </CustomTabsTrigger>
+              ))}
             </TabsList>
           </div>
-          <TabsContent value="prescriptions">
-            <PrescriptionsClient />
-          </TabsContent>
-          <TabsContent value="pharmacyRequests">
-            <Heading title="Pharmacy Requests" description="" />
-          </TabsContent>
-          <TabsContent value="eRxSent">
-            <ERxClient />
-          </TabsContent>
+          {prescriptionTab.map(({ value, component: Component, label }) => (
+            <TabsContent value={value} key={value}>
+              {Component ? (
+                <Component />
+              ) : (
+                <Heading title={label} description="" />
+              )}
+            </TabsContent>
+          ))}
         </Tabs>
       </div>
     </PageContainer>

@@ -1,51 +1,43 @@
 "use client";
 
 import PageContainer from "@/components/layout/page-container";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { PlusIcon } from "lucide-react";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import ImageResults from "./ImageResults/ImageResults";
 import ImageOrders from "./ImageOrders/ImageOrders";
-import DefaultButton from "../custom_buttons/buttons/DefaultButton";
+import CustomTabsTrigger from "../custom_buttons/buttons/CustomTabsTrigger";
+
+const imageTab = [
+  {
+    value: "imageResults",
+    label: "Image Results",
+    component: ImageResults,
+  },
+  {
+    value: "imageOrders",
+    label: "Image Orders",
+    component: ImageOrders,
+  },
+];
 
 function Images() {
-  const [activeTab, setActiveTab] = useState("imageResults");
-  const router = useRouter();
-
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-4">
-        <Tabs
-          defaultValue="imageResults"
-          onValueChange={(value) => setActiveTab(value)}
-        >
-          <div className="flex flex-row justify-between gap-10">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="imageResults">Image Results</TabsTrigger>
-              <TabsTrigger value="imageOrders">Image Orders</TabsTrigger>
+        <Tabs defaultValue="imageResults">
+          <div className="flex items-center justify-between border-b border-gray-300 pb-2">
+            <TabsList>
+              {imageTab.map((tabs) => (
+                <CustomTabsTrigger value={tabs.value} key={tabs.value}>
+                  {tabs.label}
+                </CustomTabsTrigger>
+              ))}
             </TabsList>
-            <DefaultButton
-              onClick={() =>
-                router.push(
-                  activeTab === "imageResults"
-                    ? "/dashboard/provider/images/create_image_results"
-                    : "/dashboard/provider/images/create_image_orders"
-                )
-              }
-            >
-                <PlusIcon />
-                {activeTab === "imageResults"
-                  ? "Image Results"
-                  : "Image Orders"}
-            </DefaultButton>
           </div>
-          <TabsContent value="imageResults">
-            <ImageResults />
-          </TabsContent>
-          <TabsContent value="imageOrders">
-            <ImageOrders />
-          </TabsContent>
+          {imageTab.map(({ value, component: Component }) => (
+            <TabsContent value={value} key={value}>
+              <Component />
+            </TabsContent>
+          ))}
         </Tabs>
       </div>
     </PageContainer>

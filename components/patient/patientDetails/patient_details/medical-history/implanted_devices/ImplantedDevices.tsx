@@ -1,10 +1,10 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { fetchPatientImplantedDevice } from "@/services/implantedDevices";
 import { Device } from "@/types/implantedDevices";
-import ImplantedDevicesClient from "./ImplantedDevicesClient";
 import ImplantedDevicesDialog from "./ImplantedDevicesDialog";
 import { useCallback, useEffect, useState } from "react";
+import { columns } from "./columns";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const ImplantedDevices = ({ userDetailsId }: { userDetailsId: string }) => {
   // Dialog State
@@ -47,27 +47,32 @@ const ImplantedDevices = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex justify-between items-center p-4 text-lg font-semibold rounded-md bg-[#f0f0f0]">
-        <span>Implanted Devices</span>
-        <GhostButton onClick={() => setIsOpen(true)}>Add </GhostButton>
-        <ImplantedDevicesDialog
-          isOpen={isOpen}
-          onClose={() => {
-            setIsOpen(false);
-            fetchDevices();
-          }}
-          userDetailsId={userDetailsId}
-        />
-      </div>
+      <ImplantedDevicesDialog
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          fetchDevices();
+        }}
+        userDetailsId={userDetailsId}
+      />
       <ScrollArea className="h-[12.5rem] min-h-10">
-        <div></div>
-        <ImplantedDevicesClient
-          data={data}
-          loading={loading}
-          pageNo={page}
-          totalPages={totalPages}
-          onSetPageNo={setPage}
-        />
+        <div className="space-y-4">
+          {loading ? (
+            <div>Loading...</div>
+          ) : (
+            <DefaultDataTable
+              title={"Implanted Devices"}
+              onAddClick={() => {
+                setIsOpen(true);
+              }}
+              columns={columns()}
+              data={data || []}
+              pageNo={page}
+              totalPages={totalPages}
+              onPageChange={(newPage) => setPage(newPage)}
+            />
+          )}
+        </div>
       </ScrollArea>
     </div>
   );

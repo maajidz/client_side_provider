@@ -1,13 +1,11 @@
 "use client";
 
-
 import ProceduresSurgeriesAndHospitalizationDialog from "@/components/charts/Encounters/Details/ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalizationDialog";
 import { getProcedureData } from "@/services/chartDetailsServices";
 import { ProceduresInterface } from "@/types/procedureInterface";
 import { useCallback, useEffect, useState } from "react";
 import { columns } from "./column";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-
 
 interface ProceduresSurgeriesAndHospitalizationProps {
   userDetailsId: string;
@@ -69,14 +67,18 @@ function ProceduresSurgeriesAndHospitalization({
             userDetailsId={userDetailsId}
           />
         </div>
-      <DefaultDataTable
-        columns={columns()}
-        data={data || []}
-        pageNo={page}
-        totalPages={totalPages}
-        onPageChange={(newPage) => setPage(newPage)}
-      />
-    </div>
+        <DefaultDataTable
+          title="Procedures, Surgeries and Hospitalization"
+          onAddClick={() => {
+            setIsOpen(true);
+          }}
+          columns={columns()}
+          data={data || []}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+      </div>
     </div>
   );
 }

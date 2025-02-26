@@ -1,8 +1,6 @@
 "use client";
 
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import { Heading } from "@/components/ui/heading";
-import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { columns } from "./columns";
 import { useSelector } from "react-redux";
@@ -15,8 +13,9 @@ import LoadingButton from "@/components/LoadingButton";
 
 export const ChartsClient = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [chartList, setChartList] = useState<EncounterInterface>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
@@ -62,13 +61,20 @@ export const ChartsClient = () => {
   return (
     <>
       <div className="flex items-start justify-between">
-        <Heading title={`Chart Notes`} description="" />
-        <CreateEncounterDialog />
+        <CreateEncounterDialog
+          isDialogOpen={isDialogOpen}
+          onClose={() => {
+            setIsDialogOpen(false);
+          }}
+        />
       </div>
-      <Separator />
 
       {chartList?.response && (
         <DefaultDataTable
+          onAddClick={() => {
+            setIsDialogOpen(true);
+          }}
+          title="Chart Notes"
           columns={columns(handleRowClick)}
           data={chartList.response}
           pageNo={page}

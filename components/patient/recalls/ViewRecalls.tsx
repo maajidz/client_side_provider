@@ -13,7 +13,6 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Heading } from "@/components/ui/heading";
 import { RootState } from "@/store/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -31,11 +30,9 @@ import RecallsDialog from "@/components/charts/Encounters/Details/Recalls/Recall
 import { filterRecallsSchema } from "@/schema/recallFormSchema";
 import { columns } from "./columns";
 import ViewRecallDialog from "./ViewRecallsDialog";
-import { PlusIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import { Button } from "@/components/ui/button";
 
 const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -96,25 +93,14 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-      <div className="flex justify-between">
-        <Heading title="Recalls" />
-        <Button
-          onClick={() => {
-            setIsDialogOpen((prev) => ({ ...prev, create: true }));
-          }}
-        >
-          <PlusIcon />
-          Recalls
-        </Button>
-        <RecallsDialog
-          userDetailsId={userDetailsId}
-          onClose={() => {
-            setIsDialogOpen((prev) => ({ ...prev, create: false }));
-            fetchRecalls();
-          }}
-          isOpen={isDialogOpen.create}
-        />
-      </div>
+      <RecallsDialog
+        userDetailsId={userDetailsId}
+        onClose={() => {
+          setIsDialogOpen((prev) => ({ ...prev, create: false }));
+          fetchRecalls();
+        }}
+        isOpen={isDialogOpen.create}
+      />
       <Form {...form}>
         <form className="flex gap-2 w-fit">
           <FormField
@@ -187,6 +173,10 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
         ) : (
           resultList?.data && (
             <DefaultDataTable
+              title={"Patient Recalls"}
+              onAddClick={() => {
+                setIsDialogOpen((prev) => ({ ...prev, create: true }));
+              }}
               columns={columns({
                 setEditData,
                 setIsDialogOpen,
