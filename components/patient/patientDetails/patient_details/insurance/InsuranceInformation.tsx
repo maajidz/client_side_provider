@@ -3,8 +3,12 @@ import { isInsured } from "@/constants/data";
 import { getInsuranceData } from "@/services/insuranceServices";
 import { InsuranceResponse } from "@/types/insuranceInterface";
 import InsuranceDialog from "./InsuranceDialog";
-import InsuranceTable from "./InsuranceTable";
 import React, { useCallback, useEffect, useState } from "react";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { columns } from "./column";
+import { showToast } from "@/utils/utils";
+import { useToast } from "@/hooks/use-toast";
+import AddOrViewNotes from "./actions/AddOrViewNotes";
 
 interface InsuranceInformationProps {
   userDetailsId: string;
@@ -13,6 +17,7 @@ interface InsuranceInformationProps {
 const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
   // Insurance State
   const [insuranceData, setInsuranceData] = useState<InsuranceResponse>();
+  const [isOpenNotesDialog, setIsOpenNotesDialog] = useState(false);
 
   // Is Insured State
   const [selectedIsInsured, setSelectedIsInsured] = useState(
@@ -26,6 +31,8 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
 
   // Loading State
   const [loading, setLoading] = useState(true);
+
+  const { toast } = useToast();
 
   // Dialog State
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -76,11 +83,32 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
           onFetchInsuranceData={fetchInsuranceData}
         />
       </div>
-      <InsuranceTable
-        insuranceData={insuranceData}
-        setIsDialogOpen={setIsDialogOpen}
-        setSelectedInsurance={setSelectedInsurance}
-        onFetchInsuranceData={fetchInsuranceData}
+      <DefaultDataTable
+        title={"Insurance"}
+        onAddClick={() => {
+          setIsDialogOpen(true);
+        }}
+        pageNo={1}
+        totalPages={1}
+        onPageChange={() => {}}
+        columns={columns({
+          setIsDialogOpen,
+          setSelectedInsurance: () => setSelectedInsurance(insuranceData),
+          setLoading,
+          showToast: () =>
+            showToast({
+              toast,
+              type: "success",
+              message: "Deleted successfully",
+            }),
+          fetchInsuranceData: () => fetchInsuranceData(),
+          setIsOpenNotesDialog,
+        })}
+        data={insuranceData ? [insuranceData] : []}
+      />
+      <AddOrViewNotes
+        isOpen={isOpenNotesDialog}
+        onSetIsOpenNotesDialog={setIsOpenNotesDialog}
       />
     </div>
   );

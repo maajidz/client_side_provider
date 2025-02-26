@@ -35,13 +35,12 @@ import EditPatientTaskDialog from "./EditPatientTaskDialog";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
 
 const ViewPatientTasks = ({
-  userDetailsId,
-  refreshTrigger,
+  userDetailsId
 }: {
   userDetailsId: string;
-  refreshTrigger: number;
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
@@ -50,6 +49,7 @@ const ViewPatientTasks = ({
   const limit = 5;
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [isCommentDialogOpen, setIsCommentDialogOpen] =
     useState<boolean>(false);
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
@@ -77,9 +77,9 @@ const ViewPatientTasks = ({
     setFilters((prev) => ({
       ...prev,
 
-      status: values.status ==="all" ? "" : values.status || "",
-      category: values.category ==="all" ? "" : values.category || "",
-      priority: values.priority ==="all" ? "" : values.priority || "",
+      status: values.status === "all" ? "" : values.status || "",
+      category: values.category === "all" ? "" : values.category || "",
+      priority: values.priority === "all" ? "" : values.priority || "",
     }));
 
     setPage(1);
@@ -122,7 +122,7 @@ const ViewPatientTasks = ({
 
   useEffect(() => {
     fetchTasksList(page, userDetailsId);
-  }, [page, fetchTasksList, userDetailsId, refreshTrigger]);
+  }, [page, fetchTasksList, userDetailsId]);
 
   if (loading) {
     return <LoadingButton />;
@@ -135,8 +135,13 @@ const ViewPatientTasks = ({
   };
 
   const handleEditDialogClose = () => {
-    setIsDialogOpen(false);
+    setIsEditDialogOpen(false);
     setEditData(null);
+    fetchTasksList(page, userDetailsId);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
     fetchTasksList(page, userDetailsId);
   };
 
@@ -163,7 +168,7 @@ const ViewPatientTasks = ({
                         <SelectValue placeholder="Choose Category" />
                       </SelectTrigger>
                       <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="all">All</SelectItem>
                         {categoryOptions.map((category) => (
                           <SelectItem
                             key={category.value}
@@ -194,7 +199,7 @@ const ViewPatientTasks = ({
                         <SelectValue placeholder="Select Status" />
                       </SelectTrigger>
                       <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="all">All</SelectItem>
                         {status.map((status) => (
                           <SelectItem key={status.value} value={status.value}>
                             {status.label}
@@ -222,7 +227,7 @@ const ViewPatientTasks = ({
                         <SelectValue placeholder="Choose Priority" />
                       </SelectTrigger>
                       <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="all">All</SelectItem>
                         {priority.map((priority) => (
                           <SelectItem value={priority} key={priority}>
                             {priority}
@@ -235,14 +240,23 @@ const ViewPatientTasks = ({
               )}
             />
             <div className="flex items-end">
-              <Button variant={"secondary"}>Search <Search/></Button>
+              <Button variant={"secondary"}>
+                Search <Search />
+              </Button>
             </div>
           </form>
         </Form>
         {/* Results Table */}
         <div className="flex gap-6 flex-col">
+          <TasksDialog
+            userDetailsId={userDetailsId}
+            onClose={handleDialogClose}
+            isOpen={isDialogOpen}
+          />
           {resultList?.data && (
             <DefaultDataTable
+              title={"Patient Tasks"}
+              onAddClick={()=> setIsDialogOpen(true)}
               columns={columns({
                 setEditData,
                 setIsDialogOpen,
@@ -273,7 +287,7 @@ const ViewPatientTasks = ({
           <EditPatientTaskDialog
             tasksData={editData}
             userDetailsId={userDetailsId}
-            isOpen={isDialogOpen}
+            isOpen={isEditDialogOpen}
             onClose={handleEditDialogClose}
             onFetchTasks={fetchTasksList}
           />

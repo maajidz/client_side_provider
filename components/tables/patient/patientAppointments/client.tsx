@@ -13,11 +13,11 @@ import { Printer } from "lucide-react";
 export function PatientAppointmentClient({
   userDetailsId,
   status,
-  refreshTrigger
+  label,
 }: {
   userDetailsId: string;
   status: string[];
-  refreshTrigger: number;
+  label: string;
 }) {
   const [userAppointment, setuserAppointment] = useState<
     UserAppointmentInterface[]
@@ -50,18 +50,18 @@ export function PatientAppointmentClient({
 
   useEffect(() => {
     fetchAppointments();
-  }, [fetchAppointments, refreshTrigger]);
+  }, [fetchAppointments]);
 
   const handleRowClick = (appointmentData: UserAppointmentInterface) => {
     setEditData(appointmentData);
     setIsDialogOpen(true);
   };
 
-  const handleDialogClose= () => {
+  const handleDialogClose = () => {
     setIsDialogOpen(false);
     setEditData(null);
     fetchAppointments();
-  }
+  };
 
   if (loading) {
     return (
@@ -73,30 +73,41 @@ export function PatientAppointmentClient({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-end">
-        <Button
-          variant="greyghost"
-          onClick={() =>
-            generateAppointmentPDF({ appointmentData: userAppointment })
-          }
-        >
-          <Printer/>
-          Print
-        </Button>
-      </div>
-      {userAppointment.length > 0 ? (
-          <DefaultDataTable
-            columns={columns(handleRowClick)}
-            data={userAppointment}
-            pageNo={pageNo}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPageNo(newPage)}
-          />
-      ) : (
+      <AppointmentsDialog
+        userDetailsId={userDetailsId}
+        onClose={handleDialogClose}
+        isOpen={isDialogOpen}
+      />
+      {/* {userAppointment.length > 0 ? ( */}
+      <DefaultDataTable
+        title={
+          <div className="flex flex-row gap-3">
+            <div>{label} Appointments</div>
+            <Button
+              variant="greyghost"
+              onClick={() =>
+                generateAppointmentPDF({ appointmentData: userAppointment })
+              }
+            >
+              <Printer />
+              Print
+            </Button>
+          </div>
+        }
+        onAddClick={() => {
+          setIsDialogOpen(true);
+        }}
+        columns={columns(handleRowClick)}
+        data={userAppointment}
+        pageNo={pageNo}
+        totalPages={totalPages}
+        onPageChange={(newPage: number) => setPageNo(newPage)}
+      />
+      {/* ) : (
         <div className="flex flex-col justify-center items-center justify-items-center pt-20">
           User hasn&apos;t booked any appointment
         </div>
-      )}
+      )} */}
       <AppointmentsDialog
         userDetailsId={userDetailsId}
         onClose={handleDialogClose}
