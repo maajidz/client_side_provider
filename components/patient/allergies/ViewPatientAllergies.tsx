@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AllergenResponseInterfae } from "@/types/allergyInterface";
 import EditAllergy from "@/components/charts/Encounters/Details/Allergies/EditAllergy";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import AllergiesDialog from "@/components/charts/Encounters/Details/Allergies/AllergiesDialog";
 
 const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
   const [page, setPage] = useState<number>(1);
@@ -18,6 +19,7 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
   const [data, setData] = useState<AllergenResponseInterfae[]>([]);
   const [editData, setEditData] = useState<AllergenResponseInterfae>();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
 
   const fetchAllergies = useCallback(
     async (page: number) => {
@@ -54,9 +56,11 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
       <div className="space-y-3">
         {data && (
           <DefaultDataTable
+            title={"Allergies"}
+            onAddClick={() => setIsDialogOpen(true)}
             columns={columns({
               setEditData,
-              setIsDialogOpen,
+              setIsDialogOpen: setIsEditDialogOpen,
               setLoading,
               showToast: () =>
                 showToast({
@@ -73,14 +77,21 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
           />
         )}
       </div>
-        <EditAllergy
-          selectedAllergy={editData}
-          onClose={() => {
-            setIsDialogOpen(false);
-          }}
-          isOpen={isDialogOpen}
-          fetchAllergies={() => fetchAllergies(page)}
-        />
+      <AllergiesDialog
+        userDetailsId={userDetailsId}
+        onClose={() => {
+          setIsDialogOpen(false);
+        }}
+        isOpen={isDialogOpen}
+      />
+      <EditAllergy
+        selectedAllergy={editData}
+        onClose={() => {
+          setIsEditDialogOpen(false);
+        }}
+        isOpen={isEditDialogOpen}
+        fetchAllergies={() => fetchAllergies(page)}
+      />
     </>
   );
 };

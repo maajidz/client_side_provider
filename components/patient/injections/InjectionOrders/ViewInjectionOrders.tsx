@@ -31,15 +31,12 @@ import { status } from "@/constants/data";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { Button } from "@/components/ui/button";
+import InjectionOrders from "@/components/injections/injection-orders/InjectionOrders";
 
-const ViewInjectionOrders = ({
-  userDetailsId,
-  refreshTrigger,
-}: {
-  userDetailsId: string;
-  refreshTrigger: number;
-}) => {
+const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [isInjectionDialogOpen, setIsInjectionDialogOpen] =
+    useState<boolean>(false);
   const [resultList, setResultList] = useState<InjectionsInterface[]>([]);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
@@ -125,7 +122,12 @@ const ViewInjectionOrders = ({
 
   useEffect(() => {
     fetchInjectionsData(page, userDetailsId);
-  }, [page, fetchInjectionsData, userDetailsId, refreshTrigger]);
+  }, [page, fetchInjectionsData, userDetailsId]);
+
+  const handleInjectionDialogClose = () => {
+    setIsInjectionDialogOpen(false);
+    fetchInjectionsData(page, userDetailsId);
+  };
 
   if (loading) {
     return <LoadingButton />;
@@ -136,12 +138,13 @@ const ViewInjectionOrders = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-row gap-2 w-fit">
+          className="flex flex-row gap-2 w-fit"
+        >
           <FormField
             control={form.control}
             name="providerId"
             render={({ field }) => (
-              <FormItem >
+              <FormItem>
                 <FormLabel>Provider</FormLabel>
                 <FormControl>
                   <Select
@@ -178,7 +181,7 @@ const ViewInjectionOrders = ({
             control={form.control}
             name="status"
             render={({ field }) => (
-              <FormItem >
+              <FormItem>
                 <FormLabel>Status</FormLabel>
                 <FormControl>
                   <Select
@@ -209,6 +212,10 @@ const ViewInjectionOrders = ({
       </Form>
       {resultList && (
         <DefaultDataTable
+          title={"Injection Order"}
+          onAddClick={() => {
+            setIsInjectionDialogOpen(true);
+          }}
           columns={columns({
             setLoading,
             showToast: () =>
@@ -225,6 +232,10 @@ const ViewInjectionOrders = ({
           onPageChange={(newPage: number) => setPage(newPage)}
         />
       )}
+      <InjectionOrders
+        isOpen={isInjectionDialogOpen}
+        onClose={() => handleInjectionDialogClose()}
+      />
     </div>
   );
 };

@@ -4,11 +4,7 @@ import { QuickNotesInterface } from "@/types/quickNotesInterface";
 import { showToast } from "@/utils/utils";
 import QuickNotesDialog from "./QuickNotesDialog";
 import ViewPatientQuickNotes from "./ViewPatientQuickNotes";
-import { PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { Heading } from "@/components/ui/heading";
-import { Button } from "@/components/ui/button";
-
 
 const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
   // Dialog State
@@ -60,15 +56,6 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <>
       <div className="flex justify-between">
-        <Heading title="Quick Notes" />
-        <Button
-          onClick={() => {
-            setIsDialogOpen(true);
-          }}
-        >
-            <PlusIcon />
-            Note
-        </Button>
         <QuickNotesDialog
           userDetailsId={userDetailsId}
           isOpen={isDialogOpen}

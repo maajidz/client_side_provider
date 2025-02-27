@@ -7,16 +7,15 @@ import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import EditDiagnosisDialog from "./EditDiagnosesDialog";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import AddDiagnosesDialog from "./AddDiagnosesDialog";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 interface DiagnosesClientProps {
   userDetailsId: string;
-  refreshTrigger: number;
 }
 
-function DiagnosesClient({
-  userDetailsId,
-  refreshTrigger,
-}: DiagnosesClientProps) {
+function DiagnosesClient({ userDetailsId }: DiagnosesClientProps) {
   // Diagnoses State
   const [diagnosesData, setDiagnoses] = useState<DiagnosesInterface[]>([]);
 
@@ -32,10 +31,13 @@ function DiagnosesClient({
   const [loading, setLoading] = useState(false);
 
   // Dialog State
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   // Toast State
   const { toast } = useToast();
+
+  const chartId = useSelector((state: RootState) => state.user.chartId);
 
   // GET Diagnoses for a patient
   const fetchDiagnoses = useCallback(
@@ -65,22 +67,31 @@ function DiagnosesClient({
   // Effects
   useEffect(() => {
     fetchDiagnoses(page);
-  }, [fetchDiagnoses, page, refreshTrigger]);
+  }, [fetchDiagnoses, page]);
 
   const handleEditDialogClose = () => {
-    setIsDialogOpen(false);
+    setIsEditDialogOpen(false);
     setEditData(null);
+    fetchDiagnoses(page);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
     fetchDiagnoses(page);
   };
 
   if (loading) return <LoadingButton />;
 
   return (
-    <>
+    <div className="space-y-4">
       <DefaultDataTable
+        title={"Diagnoses"}
+        onAddClick={() => {
+          setIsDialogOpen(true);
+        }}
         columns={columns({
           setEditData,
-          setIsDialogOpen,
+          setIsDialogOpen: setIsEditDialogOpen,
           setLoading,
           showToast: () =>
             showToast({
@@ -95,15 +106,19 @@ function DiagnosesClient({
         totalPages={totalPages}
         onPageChange={(newPage) => setPage(newPage)}
       />
-
-      {/* Edit Diagnoses Dialog */}
+      <AddDiagnosesDialog
+        isOpen={isDialogOpen}
+        userDetailsId={userDetailsId}
+        chartId={chartId}
+        onClose={handleDialogClose}
+      />
       <EditDiagnosisDialog
         diagnosisData={editData}
-        isOpen={isDialogOpen}
+        isOpen={isEditDialogOpen}
         onFetchDiagnosesData={fetchDiagnoses}
         onClose={handleEditDialogClose}
       />
-    </>
+    </div>
   );
 }
 

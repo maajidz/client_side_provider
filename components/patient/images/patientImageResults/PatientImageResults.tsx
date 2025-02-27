@@ -26,6 +26,7 @@ import { getImageResults } from "@/services/imageResultServices";
 import { ImageResultResponseInterface } from "@/types/imageResults";
 import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
 import PageContainer from "@/components/layout/page-container";
+import { useRouter } from "next/navigation";
 
 function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -42,6 +43,8 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
   });
 
   const filters = form.watch();
+
+  const router = useRouter();
 
   const fetchImageResultsList = useCallback(
     async (page: number) => {
@@ -116,9 +119,15 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
           />
         </form>
       </Form>
-      <div className="py-5">
+      <div className="space-y-5">
         {resultList?.data && (
           <DefaultDataTable
+            title={"Patient Image Results"}
+            onAddClick={() =>
+              router.push(
+                `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_results`
+              )
+            }
             columns={columns()}
             data={resultList?.data}
             pageNo={page}

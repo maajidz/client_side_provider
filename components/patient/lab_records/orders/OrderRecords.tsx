@@ -26,6 +26,7 @@ import { useForm } from "react-hook-form";
 // import { useSelector } from "react-redux";
 import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { useRouter } from "next/navigation";
 
 interface OrderRecordsProps {
   userDetailsId: string;
@@ -34,6 +35,7 @@ interface OrderRecordsProps {
 function OrderRecords({ userDetailsId }: OrderRecordsProps) {
   // const providerDetails = useSelector((state: RootState) => state.login);
   const [orderList, setOrderList] = useState<LabOrdersDataInterface>();
+  const router = useRouter();
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -87,7 +89,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-3">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -147,16 +149,19 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
           </div>
         </form>
       </Form>
-      <div className="py-5">
-        {orderList?.data && (
-          <DefaultDataTable
-            columns={columns()}
-            data={orderList?.data}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
-          />
-        )}
+      <div className="space-y-5">
+        <DefaultDataTable
+          title={"Lab Orders"}
+          onAddClick={() =>
+            router.push(
+              `/dashboard/provider/patient/${userDetailsId}/lab_records/create-lab-order`
+            )}
+          columns={columns()}
+          data={orderList?.data || []}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
       </div>
     </div>
   );

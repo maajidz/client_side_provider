@@ -60,17 +60,22 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex justify-end">
-        <UploadDocumentDialog
-          userDetailsId={userDetailsId}
-          open={isOpen}
-          droppedFiles={droppedFiles}
-          onFileSelected={(status: boolean) => handleOpenUploadDialog(status)}
-          onFetchDocuments={fetchDocumentsData}
-        />
-      </div>
       {paginatedData ? (
         <DefaultDataTable
+          title={
+            <div className="flex flex-row gap-5 items-center">
+              <div>Patient Documents</div>
+              <UploadDocumentDialog
+                userDetailsId={userDetailsId}
+                open={isOpen}
+                droppedFiles={droppedFiles}
+                onFileSelected={(status: boolean) =>
+                  handleOpenUploadDialog(status)
+                }
+                onFetchDocuments={fetchDocumentsData}
+              />
+            </div>
+          }
           columns={columns()}
           data={paginatedData}
           pageNo={page}

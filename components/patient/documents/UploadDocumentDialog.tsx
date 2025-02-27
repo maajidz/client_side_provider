@@ -1,4 +1,3 @@
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -155,7 +154,9 @@ function UploadDocumentDialog({
     <Dialog open={open} onOpenChange={onFileSelected}>
       <DialogTrigger asChild>
         <div>
-          <DefaultButton onClick={handleButtonClick}>Import</DefaultButton>
+          <Button variant="ghost" onClick={handleButtonClick}>
+            Import
+          </Button>
           <Input
             type="file"
             ref={fileInputRef}

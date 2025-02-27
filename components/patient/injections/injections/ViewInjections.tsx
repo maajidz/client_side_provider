@@ -11,9 +11,8 @@ import FormLabels from "@/components/custom_buttons/FormLabels";
 import { Edit2Icon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/utils/utils";
-import InjectionsDialog from "@/components/charts/Encounters/Details/Injections/InjectionsDialog";
-import { PlusIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import InjectionsDialog from "@/components/charts/Encounters/Details/Injections/InjectionsDialog";
 
 const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
   const [editData, setEditData] = useState<InjectionsData | null>(null);
@@ -72,89 +71,105 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-    <div className="flex flex-col gap-6 mt-6">
-      <div className="flex justify-end">
-        <Button
-          onClick={() => {
-            setEditData(null);
-            setIsDialogOpen(true);
-          }}
-        >
-            <PlusIcon />
-            Injections
-        </Button>
-        <InjectionsDialog
-          userDetailsId={userDetailsId}
-          injectionsData={editData}
-          isOpen={isDialogOpen}
-          onClose={() => {
-            setIsDialogOpen(false);
-            fetchInjectionsData();
-          }}
-        />
-      </div>
-      <div className="flex flex-col gap-3">
-        {injectionsData ? (
-          injectionsData?.data.map((injections) => (
-            <div
-              key={injections.id}
-              className="flex flex-row justify-between border rounded-md w-full p-3">
-              <div className="flex flex-col gap-4">
-              <div className="font-semibold flex flex-col gap-2">{injections.injection_name}</div>
-                <div className="flex flex-row gap-1">
-                  <FormLabels
-                    label="Intake"
-                    value=""
-                  />
-                  <Badge>{injections.dosage_quantity} - {injections.dosage_unit}</Badge>
-                  <Badge>{injections.frequency} - {injections.period_number} {injections.period_unit}</Badge>
-                  <Badge>{injections.parental_route} - {injections.site}</Badge>
-                </div>  
-                <div className="flex flex-row gap-4 flex-wrap">
-                <FormLabels
-                  label="Lot number"
-                  value={`${injections.lot_number}`}
-                />
-                <FormLabels
-                  label="Expiration date"
-                  value={`${injections.expiration_date.split("T")[0]}`}
-                />
-                <FormLabels
-                  label="Note to nurse"
-                  value={`${injections.note_to_nurse}`}
-                />
-                <FormLabels
-                  label="Administered date"
-                  value={`${injections.administered_date.split("T")[0]}`}
-                />
-                <FormLabels label="comments" value={`${injections.comments}`} />
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-row gap-2 items-center">
+            <span className="font-bold text-lg">Injections</span>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setEditData(null);
+                setIsDialogOpen(true);
+              }}
+            >
+              {" "}
+              Add{" "}
+            </Button>
+            <InjectionsDialog
+              userDetailsId={userDetailsId}
+              injectionsData={editData}
+              isOpen={isDialogOpen}
+              onClose={() => {
+                setIsDialogOpen(false);
+                fetchInjectionsData();
+              }}
+            />
+          </div>
+          {injectionsData &&
+            injectionsData?.data &&
+            injectionsData?.data.map((injections) => (
+              <div
+                key={injections.id}
+                className="flex flex-row justify-between border rounded-md w-full p-3"
+              >
+                <div className="flex flex-col gap-4">
+                  <div className="font-semibold flex flex-col gap-2">
+                    {injections.injection_name}
+                  </div>
+                  <div className="flex flex-row gap-1">
+                    <FormLabels label="Intake" value="" />
+                    <Badge>
+                      {injections.dosage_quantity} - {injections.dosage_unit}
+                    </Badge>
+                    <Badge>
+                      {injections.frequency} - {injections.period_number}{" "}
+                      {injections.period_unit}
+                    </Badge>
+                    <Badge>
+                      {injections.parental_route} - {injections.site}
+                    </Badge>
+                  </div>
+                  <div className="flex flex-row gap-4 flex-wrap">
+                    <FormLabels
+                      label="Lot number"
+                      value={`${injections.lot_number}`}
+                    />
+                    <FormLabels
+                      label="Expiration date"
+                      value={`${injections.expiration_date.split("T")[0]}`}
+                    />
+                    <FormLabels
+                      label="Note to nurse"
+                      value={`${injections.note_to_nurse}`}
+                    />
+                    <FormLabels
+                      label="Administered date"
+                      value={`${injections.administered_date.split("T")[0]}`}
+                    />
+                    <FormLabels
+                      label="comments"
+                      value={`${injections.comments}`}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-row">
+                  <Button
+                    variant={"ghost"}
+                    className="text-[#84012A]"
+                    onClick={() => {
+                      setEditData(injections);
+                      setIsDialogOpen(true);
+                    }}
+                  >
+                    <Edit2Icon />
+                  </Button>
+                  <Button
+                    variant={"ghost"}
+                    className="text-[#84012A]"
+                    onClick={() => handleDeleteInjection(injections.id)}
+                  >
+                    <Trash2Icon />
+                  </Button>
                 </div>
               </div>
-              <div className="flex flex-row">
-                <Button
-                  variant={"ghost"}
-                  className="text-[#84012A]"
-                  onClick={() => {
-                    setEditData(injections);
-                    setIsDialogOpen(true);
-                  }}
-                >
-                  <Edit2Icon />
-                </Button>
-                <Button
-                  variant={"ghost"}
-                  className="text-[#84012A]"
-                  onClick={() => handleDeleteInjection(injections.id)}
-                >
-                  <Trash2Icon />
-                </Button>
-                </div>
+            ))}
+          {injectionsData?.data.length === 0 && (
+            <div className="flex flex-col justify-center items-center border rounded-md w-full h-full p-3 min-h-44">
+              {" "}
+              No injection data{" "}
             </div>
-          ))
-        ) : (
-          <div> No data </div>
-        )}
-      </div>
+          )}
+        </div>
       </div>
     </>
   );

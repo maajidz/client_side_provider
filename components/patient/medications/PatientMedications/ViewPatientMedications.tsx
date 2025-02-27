@@ -9,11 +9,16 @@ import { useEffect, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import EditPrescription from "./EditPrescription";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import AddMedicationDialog from "@/components/charts/Encounters/Details/Medications/AddMedicationDialog";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 
 const ViewPatientMedications = ({
   userDetailsId,
+  onSetQuickRxVisible
 }: {
   userDetailsId: string;
+  onSetQuickRxVisible: (visible: boolean) => void;
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<PrescriptionDataInterface[]>([]);
@@ -25,6 +30,7 @@ const ViewPatientMedications = ({
   const [totalPages, setTotalPages] = useState(1);
 
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isMedicationsDialogOpen, setIsMedicationsDialogOpen] = useState(false);
   const [editData, setEditData] = useState<PrescriptionDataInterface>();
   const { toast } = useToast();
 
@@ -39,7 +45,8 @@ const ViewPatientMedications = ({
           });
           if (response) {
             const filteredData = response.data.filter(
-              (prescription: PrescriptionDataInterface | null) => prescription !== null
+              (prescription: PrescriptionDataInterface | null) =>
+                prescription !== null
             );
             setResultList(filteredData);
             setTotalPages(Math.ceil(response.totalCount / itemsPerPage));
@@ -66,6 +73,20 @@ const ViewPatientMedications = ({
       <div className="space-y-3 py-5">
         {resultList && (
           <DefaultDataTable
+            title={
+              <div className="flex flex-row gap-5 items-center">
+                <div>Medications</div>
+                <Button
+                  onClick={() => {
+                    onSetQuickRxVisible(true);
+                  }}
+                >
+                  <PlusIcon />
+                  Prescriptions
+                </Button>
+              </div>
+            }
+            onAddClick={() => setIsMedicationsDialogOpen(true)}
             columns={columns({
               setEditData,
               setIsDialogOpen,
@@ -91,6 +112,13 @@ const ViewPatientMedications = ({
           selectedPrescription={editData}
           onFetchPrescriptionsList={fetchPrescriptionsList}
           onSetIsOpen={setIsDialogOpen}
+        />
+        <AddMedicationDialog
+          userDetailsId={userDetailsId}
+          onClose={() => {
+            setIsMedicationsDialogOpen(false);
+          }}
+          isOpen={isMedicationsDialogOpen}
         />
       </div>
     </>
