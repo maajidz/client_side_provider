@@ -19,20 +19,36 @@ export const columns = (): ColumnDef<ProceduresInterface>[] => [
   {
     accessorKey: "fromDate",
     header: "From Date",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">
-        {new Date(row.getValue("fromDate")).toDateString()}
-      </div>
-    ),
+    cell: ({ getValue }) => {
+      const dob = getValue() as string;
+      const date = new Date(dob);
+      return (
+        <div className="cursor-pointer">
+          {date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          })}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "toDate",
     header: "To Date",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">
-        {new Date(row.getValue("toDate")).toDateString()}
-      </div>
-    ),
+    cell: ({ getValue }) => {
+      const dob = getValue() as string;
+      const date = dob ? new Date(dob) : null;
+      return (
+        <div className="cursor-pointer">
+          {date ? date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }) : "N/A"}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "notes",

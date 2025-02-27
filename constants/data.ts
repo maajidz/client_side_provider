@@ -406,16 +406,10 @@ export const timeZonesList = [
 // * Insurance
 
 // Is Insured
-export const isInsured: IsInsuredType[] = [
-  {
-    isInsured: "Not Insured",
-  },
-  {
-    isInsured: "Private Commercial type",
-  },
-  {
-    isInsured: "Others",
-  },
+export const insuranceType = [
+    "Not Insured",
+    "Private Commercial type",
+    "Others",
 ];
 
 // Insurance Type

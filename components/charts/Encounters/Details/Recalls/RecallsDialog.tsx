@@ -66,7 +66,7 @@ const RecallsDialog = ({
         value: recallsData?.due_date_value || 1,
         unit: recallsData?.due_date_unit || "",
       },
-      provider: `${providerDetails.providerId}`,
+      provider: `${providerDetails.firstName} ${providerDetails.lastName}`,
       sendAutoReminders: false,
     },
   });
@@ -154,7 +154,7 @@ const RecallsDialog = ({
                   control={form.control}
                   name="type"
                   render={({ field }) => (
-                    <FormItem >
+                    <FormItem>
                       <FormLabel>Type</FormLabel>
                       <FormControl>
                         <Select
@@ -255,7 +255,7 @@ const RecallsDialog = ({
                   control={form.control}
                   name="provider"
                   render={({ field }) => (
-                    <FormItem >
+                    <FormItem>
                       <FormLabel>Provider</FormLabel>
                       <FormControl>
                         <Input {...field} />
@@ -288,7 +288,11 @@ const RecallsDialog = ({
                     <FormItem className="flex flex-1 w-full">
                       <FormLabel>Notes</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Add notes here..." {...field} className="resize-none"/>
+                        <Textarea
+                          placeholder="Add notes here..."
+                          {...field}
+                          className="resize-none"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -296,18 +300,18 @@ const RecallsDialog = ({
                 />
               </div>
             </ScrollArea>
+            <DialogFooter>
+              <div className="flex w-full justify-end">
+                <div className="flex  gap-2 w-fit">
+                  <Button variant="outline" onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button>Add</Button>
+                </div>
+              </div>
+            </DialogFooter>
           </form>
         </Form>
-        <DialogFooter>
-        <div className="flex w-full justify-end">
-                  <div className="flex  gap-2 w-fit">
-                    <Button variant="outline" onClick={onClose}>
-                      Cancel
-                    </Button>
-                    <Button>Add</Button>
-                  </div>
-          </div>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

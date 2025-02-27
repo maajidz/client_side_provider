@@ -58,10 +58,10 @@ export const columns = ({
     ),
   },
   {
-    accessorKey: "providerDetails.id",
+    accessorKey: "providerDetails.providerUniqueId",
     header: "Added by",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.original.providerDetails.id}</div>
+      <div className="cursor-pointer">{row.original.providerDetails.providerUniqueId}</div>
     ),
   },
   {

@@ -73,7 +73,7 @@ export const columns = ({
     accessorKey: "due_date_period",
     header: "Due Date",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("due_date_period")}</div>
+      <div className="cursor-pointer capitalize">{row.getValue("due_date_period")}</div>
     ),
   },
   {
@@ -90,14 +90,16 @@ export const columns = ({
     accessorKey: "due_date_unit",
     header: "Due Date",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("due_date_unit")}</div>
+      <div className="cursor-pointer capitalize">{row.getValue("due_date_unit")}</div>
     ),
   },
   {
     accessorKey: "auto_reminders",
     header: "auto_reminders",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("auto_reminders")}</div>
+      <div className="cursor-pointer">
+        {row.original.auto_reminders ? "Yes" : "No"}
+      </div>
     ),
   },
   {

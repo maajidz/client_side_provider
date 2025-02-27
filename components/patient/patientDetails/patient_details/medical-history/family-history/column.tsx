@@ -7,7 +7,7 @@ export const columns = (): ColumnDef<FamilyHistoryResponseInterface>[] => [
     accessorKey: "relationship",
     header: "Relationship",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("relationship")}</div>
+      <div className="cursor-pointer">{row.getValue("relationship")} {row.original.deceased ? ("(Deceased)"): ("")}</div>
     ),
   },
   {
@@ -36,16 +36,6 @@ export const columns = (): ColumnDef<FamilyHistoryResponseInterface>[] => [
         </div>
       );
     },
-  },
-
-  {
-    accessorKey: "deceased",
-    header: "Deceased",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">
-        {row.getValue("deceased") === true ? "True" : "False"}
-      </div>
-    ),
   },
   {
     accessorKey: "comments",

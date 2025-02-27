@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { isInsured } from "@/constants/data";
+import { insuranceType } from "@/constants/data";
 import { useToast } from "@/hooks/use-toast";
 import { insuranceFormSchema } from "@/schema/insuranceSchema";
 import { createInsurance, updateInsurance } from "@/services/insuranceServices";
@@ -56,6 +56,9 @@ function InsuranceDialog({
 }: InsuranceDialogProps) {
   // Loading State
   const [loading, setLoading] = useState(false);
+  const [selectedInsuranceType, setSelectedInsuranceType] = useState<string>(
+    insuranceType[0]
+  );
 
   // Toast State
   const { toast } = useToast();
@@ -164,6 +167,7 @@ function InsuranceDialog({
         subscriberNumber: selectedInsurance.subscriberNumber ?? "",
         idNumber: selectedInsurance.idNumber ?? "",
       });
+      setSelectedInsuranceType(selectedInsurance.type);
     } else {
       methods.reset({
         // Reset form when adding new insurance
@@ -173,7 +177,7 @@ function InsuranceDialog({
         idNumber: "",
       });
     }
-  }, [methods, selectedInsurance]);
+  }, [methods, selectedInsurance, selectedInsuranceType]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleIsDialogOpen}>
@@ -213,13 +217,13 @@ function InsuranceDialog({
                   Insurance Type
                 </Label>
                 <div className="flex flex-col items-start gap-2 md:flex-row">
-                  {isInsured.map((insurance, index) => (
+                  {insuranceType.map((insurance, index) => (
                     <div key={index} className="w-96">
                       <RadioButton
-                        label={insurance.isInsured}
-                        name={insurance.isInsured}
-                        value={insurance.isInsured}
-                        selectedValue={selectedIsInsured}
+                        label={insurance}
+                        name={insurance}
+                        value={insurance}
+                        selectedValue={selectedInsuranceType}
                         onChange={handleInsuranceTypeChange}
                       />
                     </div>
@@ -334,7 +338,7 @@ function InsuranceDialog({
                                     />
                                   </label>
                                   <div className="flex flex-1 justify-center items-center">
-                                    {frontImageFile && (
+                                    {frontImageFile ? (
                                       <div>
                                         <Image
                                           src={URL.createObjectURL(
@@ -346,6 +350,20 @@ function InsuranceDialog({
                                           className="w-48 h-24 object-contain rounded-md"
                                         />
                                       </div>
+                                    ) : (
+                                      selectedInsurance && (
+                                        <img
+                                          alt={
+                                            selectedInsurance.frontDocumentImage.split(
+                                              "/"
+                                            )[6]
+                                          }
+                                          src={
+                                            selectedInsurance.frontDocumentImage
+                                          }
+                                          className="w-48 h-24 object-contain rounded-md"
+                                        />
+                                      )
                                     )}
                                   </div>
                                 </div>
@@ -392,7 +410,7 @@ function InsuranceDialog({
                                     />
                                   </label>
                                   <div className="flex flex-1 justify-center items-center">
-                                    {backImageFile && (
+                                    {backImageFile ? (
                                       <div>
                                         <Image
                                           src={URL.createObjectURL(
@@ -404,6 +422,20 @@ function InsuranceDialog({
                                           className="w-48 h-24 object-contain rounded-md"
                                         />
                                       </div>
+                                    ) : (
+                                      selectedInsurance && (
+                                        <img
+                                          alt={
+                                            selectedInsurance.backDocumentImage.split(
+                                              "/"
+                                            )[6]
+                                          }
+                                          src={
+                                            selectedInsurance.backDocumentImage
+                                          }
+                                          className="w-48 h-24 object-contain rounded-md"
+                                        />
+                                      )
                                     )}
                                   </div>
                                 </div>

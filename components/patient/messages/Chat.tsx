@@ -171,61 +171,71 @@ export default function ChatPage({
         </div>
       </div>
       <div className="flex flex-grow flex-col">
-      <div className="h-[1vh] flex flex-grow border-t overflow-auto border-gray-100">
-        <div className="flex flex-col flex-1 gap-6">
-          {loading && (
-            <div className="h-4">
-              <LoadingButton />
+        <div className="h-[1vh] flex flex-grow border-t overflow-auto border-gray-100">
+          {messages && messages.length > 0 ? (
+            <div className="flex flex-col flex-1 gap-6">
+              {loading && (
+                <div className="h-4">
+                  <LoadingButton />
+                </div>
+              )}
+              <Button
+                variant="link"
+                onClick={() => setPage((prev) => prev + 1)}
+              >
+                {" "}
+                Load More Messages
+              </Button>
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`flex items-start ${
+                    msg.senderID === userId ? "flex-row-reverse" : ""
+                  } gap-2`}
+                >
+                  <Avatar
+                    className={`flex h-8 w-8 rounded-full ${
+                      msg.senderID === userId ? "" : ""
+                    }`}
+                  >
+                    <AvatarImage src="" className="border-2 border-[#FFE7E7]" />
+                    <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
+                      <span className="text-xs font-semibold">AF</span>
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex flex-col text-sm font-normal">
+                      <div
+                        className={`${
+                          msg.senderID === userId
+                            ? "flex w-fit rounded-full bg-rose-950 text-rose-100 p-3 pl-4 pr-4"
+                            : "flex w-fit rounded-full bg-[#F3EFF0] font-medium text-gray-900 p-3 pl-4 pr-4"
+                        }`}
+                      >
+                        <div className="inline">{msg.content}</div>
+                      </div>
+                      {/* <div ref={chatEndRef} /> */}
+                    </div>
+                    <div
+                      className={`${
+                        msg.senderID === userId
+                          ? "text-[10px] font-medium text-gray-400 self-end"
+                          : "text-[10px] font-medium text-gray-400 self-end"
+                      }`}
+                    >
+                      {formatSentAt(msg.sentAt)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div ref={endOfMessagesRef} />
+            </div>
+          ) : (
+            <div className="flex flex-col flex-1 gap-6 items-center justify-center font-semibold">
+              Start a conversation
             </div>
           )}
-            <Button variant="link" onClick={() => setPage((prev) => prev + 1)}>
-              {" "}
-              Load More Messages
-            </Button>
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex items-start ${
-                msg.senderID === userId ? "flex-row-reverse" : ""
-              } gap-2`}
-            >
-              <Avatar
-                className={`flex h-8 w-8 rounded-full ${
-                  msg.senderID === userId ? "" : ""
-                }`}
-              >
-                <AvatarImage src="" className="border-2 border-[#FFE7E7]"/>
-                <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
-                  <span className="text-xs font-semibold">AF</span>
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col gap-1">
-              <div className="flex flex-col text-sm font-normal">
-              <div
-                className={`${
-                  msg.senderID === userId
-                    ? "flex w-fit rounded-full bg-rose-950 text-rose-100 p-3 pl-4 pr-4"
-                    : "flex w-fit rounded-full bg-[#F3EFF0] font-medium text-gray-900 p-3 pl-4 pr-4"
-                }`}
-              >
-              <div className="inline">{msg.content}</div>
-              </div>
-              {/* <div ref={chatEndRef} /> */}
-            </div>
-            <div
-              className={`${
-                msg.senderID === userId
-                  ? "text-[10px] font-medium text-gray-400 self-end"
-                  : "text-[10px] font-medium text-gray-400 self-end"
-              }`}>
-                    {formatSentAt(msg.sentAt)}
-            </div>
-            </div>
-            </div>
-          ))}
-          <div ref={endOfMessagesRef} />
         </div>
-      </div>
       </div>
       <div className="flex flex-row gap-3 border-t pt-6 border-gray-100 items-start">
         <Textarea
@@ -234,7 +244,10 @@ export default function ChatPage({
           placeholder="Type a message..."
           className="resize-none"
         />
-        <Button onClick={() => handleSendMessage()}>Send<SendHorizonalIcon type=""/></Button>
+        <Button onClick={() => handleSendMessage()}>
+          Send
+          <SendHorizonalIcon type="" />
+        </Button>
       </div>
     </div>
   );

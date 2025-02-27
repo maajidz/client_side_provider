@@ -1,5 +1,5 @@
 import LoadingButton from "@/components/LoadingButton";
-import { isInsured } from "@/constants/data";
+import { insuranceType } from "@/constants/data";
 import { getInsuranceData } from "@/services/insuranceServices";
 import { InsuranceResponse } from "@/types/insuranceInterface";
 import InsuranceDialog from "./InsuranceDialog";
@@ -20,8 +20,8 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
   const [isOpenNotesDialog, setIsOpenNotesDialog] = useState(false);
 
   // Is Insured State
-  const [selectedIsInsured, setSelectedIsInsured] = useState(
-    isInsured[0].isInsured
+  const [selectedInsuranceType, setSelectedInsuranceType] = useState<string>(
+    insuranceType[0]
   );
 
   // Selected Insurance
@@ -74,13 +74,13 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
       <div className="flex justify-end">
         <InsuranceDialog
           isOpen={isDialogOpen}
-          setIsOpen={setIsDialogOpen}
           userDetailsId={userDetailsId}
-          selectedIsInsured={selectedIsInsured}
+          selectedIsInsured={selectedInsuranceType}
           selectedInsurance={selectedInsurance}
+          setIsOpen={setIsDialogOpen}
           setSelectedInsurance={setSelectedInsurance}
-          setSelectedIsInsured={setSelectedIsInsured}
           onFetchInsuranceData={fetchInsuranceData}
+          setSelectedIsInsured={setSelectedInsuranceType}
         />
       </div>
       <DefaultDataTable
