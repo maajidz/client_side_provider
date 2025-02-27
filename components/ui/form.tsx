@@ -163,7 +163,7 @@ const FormSectionVert = React.forwardRef<
   return (
     <div
       ref={ref}
-      className={cn("flex flex-col gap-", className)}
+      className={cn("flex flex-col gap-6", className)}
       {...props}
     />
   )

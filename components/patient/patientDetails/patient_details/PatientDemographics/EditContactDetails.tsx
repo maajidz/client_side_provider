@@ -142,7 +142,7 @@ const EditContactDetails = ({
   }
 
   return (
-    <div className="border-gray-100 border group p-6 py-4 flex-1 rounded-lg">
+    <div className="flex border-gray-100 border group p-6 py-4 flex-1 rounded-lg">
       <Form {...methods}>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
@@ -154,7 +154,7 @@ const EditContactDetails = ({
                 control={methods.control}
                 name="address"
                 render={({ field }) => (
-                  <FormItem className="w-64">
+                  <FormItem>
                     <FormLabel className="text-[#344054] font-medium text-sm">
                       Address
                     </FormLabel>
@@ -201,8 +201,6 @@ const EditContactDetails = ({
                   </FormItem>
                 )}
               />
-            </FormSectionHor>
-            <FormSectionHor>
               <FormField
                 control={methods.control}
                 name="city"
@@ -218,6 +216,9 @@ const EditContactDetails = ({
                   </FormItem>
                 )}
               />
+            </FormSectionHor>
+            <FormSectionHor>
+
               <FormField
                 control={methods.control}
                 name="country"

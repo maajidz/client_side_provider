@@ -203,14 +203,14 @@ function FamilyHistoryDialog({
                   control={form.control}
                   name="deceased"
                   render={({ field }) => (
-                    <FormItem className="flex">
-                      <FormLabel className="mt-2">Deceased</FormLabel>
+                    <FormItem className="flex flex-row gap-1 items-center">
                       <FormControl>
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
+                      <FormLabel>Deceased</FormLabel>
                     </FormItem>
                   )}
                 />
@@ -241,13 +241,13 @@ function FamilyHistoryDialog({
                   control={form.control}
                   name="activeProblems"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Active Problems</FormLabel>
+                    <FormItem className="flex flex-col gap-2">
+                      <FormLabel className="font-semibold">Active Problems</FormLabel>
                       <div className="flex flex-col gap-1">
                         {activeProblemOptions.map((item) => (
                           <FormItem
                             key={item.id}
-                            className="flex-row items-start h-fit"
+                            className="flex-row items-center"
                           >
                             <FormControl>
                               <Checkbox
@@ -266,7 +266,7 @@ function FamilyHistoryDialog({
                                 }}
                               />
                             </FormControl>
-                            <FormLabel className="font-normal">
+                            <FormLabel>
                               {item.label}
                             </FormLabel>
                           </FormItem>

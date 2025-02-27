@@ -109,8 +109,8 @@ const ViewPatientEncounters = ({
           <ScrollArea className={cn("h-[calc(60dvh-52px)]")}>
             {value === "lastvisit"
               ? chartList &&
-                chartList?.response &&
-                chartList?.response[0]?.chart && (
+                chartList.response &&
+                chartList.response[0]?.chart && (
                   <ChartNotes patientChart={chartList.response[0].chart} />
                 )
               : chartList && (

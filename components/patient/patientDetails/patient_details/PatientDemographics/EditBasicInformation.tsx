@@ -122,7 +122,7 @@ const EditBasicInformation = ({
     return <LoadingButton />;
   }
   return (
-    <div className="border-gray-100 border p-6 py-4 group flex-1 rounded-lg">
+    <div className="flex border-gray-100 border group p-6 py-4 flex-1 rounded-lg">
       <Form {...methods}>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
@@ -169,6 +169,8 @@ const EditBasicInformation = ({
                   </FormItem>
                 )}
               />
+              </FormSectionHor>
+              <FormSectionHor>
               <FormField
                 control={methods.control}
                 name="dob"

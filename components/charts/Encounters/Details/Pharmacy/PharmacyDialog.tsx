@@ -285,7 +285,7 @@ function PharmacyDialog({
             {isLoading.get || isLoading.post ? (
               <LoadingButton />
             ) : filteredData.length === 0 ? (
-              <p>No pharmacies found.</p>
+              <p className="border border-red-100 bg-red-50 w-fit px-2 py-1 rounded-md text-xs text-red-500 font-medium">No pharmacies found.</p>
             ) : (
               <div className="mt-6">
                 <DefaultDataTable

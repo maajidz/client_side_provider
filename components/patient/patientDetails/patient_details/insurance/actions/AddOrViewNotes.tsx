@@ -1,4 +1,3 @@
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -41,17 +40,17 @@ function AddOrViewNotes({
           <form>
             <Textarea />
           </form>
-          <div className="flex flex-row-reverse gap-2">
-            <SubmitButton label="Add" />
-            <Button variant="outline" onClick={() => handleIsDialogOpen(false)}>
+          <div className="flex flex-1 gap-2 justify-end">
+          <Button variant="outline" onClick={() => handleIsDialogOpen(false)}>
               Cancel
             </Button>
+            <Button>Add</Button>
           </div>
         </Form>
         <div className="flex flex-col gap-2">
           <span className="text-lg font-semibold">Past Notes</span>
           {notesData.length <= 0 ? (
-            <p className="text-center">No past notes available</p>
+            <p className="text-sm">No past notes available</p>
           ) : (
             <></>
           )}

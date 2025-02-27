@@ -40,6 +40,7 @@ import {
 import { showToast } from "@/utils/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 const RecallsDialog = ({
   userDetailsId,
@@ -312,6 +313,16 @@ const RecallsDialog = ({
             </DialogFooter>
           </form>
         </Form>
+        <DialogFooter>
+        <div className="flex w-full justify-end">
+                  <div className="flex  gap-2 w-fit">
+                    <Button variant="outline" onClick={onClose}>
+                      Cancel
+                    </Button>
+                    <SubmitButton label="Add"></SubmitButton>
+                  </div>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

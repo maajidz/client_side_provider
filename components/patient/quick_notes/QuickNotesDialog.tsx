@@ -28,7 +28,7 @@ import {
   updateQuickNotes,
 } from "@/services/quickNotesServices";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 const QuickNotesDialog = ({
   userDetailsId,
@@ -133,7 +133,7 @@ const QuickNotesDialog = ({
                     </FormItem>
                   )}
                 />
-                <DialogFooter><Button>Save</Button></DialogFooter>
+                <DialogFooter><SubmitButton label="Save"></SubmitButton></DialogFooter>
               </div>
             </ScrollArea>
           </form>

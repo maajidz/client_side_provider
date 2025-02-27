@@ -1,4 +1,3 @@
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import RadioButton from "@/components/custom_buttons/radio_button/RadioButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -189,24 +188,8 @@ function InsuranceDialog({
               : "Update Insurance Data"}
           </DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[30rem] min-h-30 p-3">
-          <div className="flex flex-col gap-6 p-6 rounded-lg">
-            {/* Action Buttons */}
-            <div className="flex gap-2 justify-end">
-              <>
-                <Button
-                  variant="outline"
-                  className="h-11"
-                  onClick={() => handleIsDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <DefaultButton onClick={toggleEdit} disabled={loading}>
-                  Save
-                </DefaultButton>
-              </>
-            </div>
-
+        <ScrollArea className="h-[30rem] min-h-30">
+          <div className="flex flex-col gap-6 rounded-lg">
             {/* Form Fields */}
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-4">
@@ -234,7 +217,7 @@ function InsuranceDialog({
               <div>
                 <FormProvider {...methods}>
                   <form onSubmit={methods.handleSubmit(toggleEdit)}>
-                    <div className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-3">
                       <Label className="text-[rgba(132,1,42,1)] font-semibold text-base">
                         Enter Details
                       </Label>
@@ -244,7 +227,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="companyName"
                           render={({ field }) => (
-                            <FormItem className="w-64">
+                            <FormItem >
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Company Name
                               </FormLabel>
@@ -259,7 +242,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="groupNameOrNumber"
                           render={({ field }) => (
-                            <FormItem className="w-64">
+                            <FormItem >
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Group Name/Number
                               </FormLabel>
@@ -274,7 +257,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="subscriberNumber"
                           render={({ field }) => (
-                            <FormItem className="w-64">
+                            <FormItem >
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Subscriber Number
                               </FormLabel>
@@ -289,7 +272,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="idNumber"
                           render={({ field }) => (
-                            <FormItem className="w-64">
+                            <FormItem >
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 ID Number
                               </FormLabel>
@@ -448,6 +431,20 @@ function InsuranceDialog({
                   </form>
                 </FormProvider>
               </div>
+            </div>
+            {/* Action Buttons */}
+            <div className="flex gap-2 justify-end">
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => handleIsDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={toggleEdit} disabled={loading}>
+                  Save
+                </Button>
+              </>
             </div>
           </div>
         </ScrollArea>

@@ -306,7 +306,7 @@ function TasksDialog({
                   <>
                     <div className="space-y-4 border-t pt-4">
                       <h4 className="text-lg font-semibold">
-                        Date and Reminder Settingssdfsdf
+                        Date and Reminder
                       </h4>
                       <div className="flex flex-row gap-2">
                       <FormField
