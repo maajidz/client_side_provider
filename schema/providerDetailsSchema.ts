@@ -18,6 +18,7 @@ export const providerDetailsSchema = z.object({
         .min(3, { message: 'nip is required.' }),
     yearsOfExperience: z
         .number().min(1, "Required"),
+    address: z.string()
 });
 
 export type ProviderDetailsFormValues = z.infer<typeof providerDetailsSchema>;

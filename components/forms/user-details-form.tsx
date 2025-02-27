@@ -57,7 +57,8 @@ export const UserDetailsForm: React.FC<UserDetailsFormType> = ({
         roleName: initialData?.roleName || '',
         nip: initialData?.nip || '',
         licenseNumber: initialData?.licenseNumber || '',
-        yearsOfExperience: initialData?.yearsOfExperience
+        yearsOfExperience: initialData?.yearsOfExperience,
+        address: initialData?.address
     };
 
     const form = useForm<ProviderDetailsFormValues>({
@@ -95,7 +96,8 @@ export const UserDetailsForm: React.FC<UserDetailsFormType> = ({
             nip: formValues.nip,
             licenseNumber: formValues.licenseNumber,
             yearsOfExperience: formValues.yearsOfExperience,
-            providerAuthId: savedProviderAuthId
+            providerAuthId: savedProviderAuthId,
+            address: "arizona",
         };
 
         const updatedRequestData = {
@@ -105,6 +107,7 @@ export const UserDetailsForm: React.FC<UserDetailsFormType> = ({
             nip: formValues.nip,
             licenseNumber: formValues.licenseNumber,
             yearsOfExperience: formValues.yearsOfExperience,
+            address: "arizona",
         };
         console.log(requestData)
 
