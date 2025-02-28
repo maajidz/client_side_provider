@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Device } from "@/types/implantedDevices";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -33,13 +34,13 @@ export const columns = (): ColumnDef<Device>[] => [
     cell: ({ row }) => {
       const statusColor =
         row.original?.device_type?.status?.toLowerCase() === "active"
-          ? "text-green-500"
-          : "text-red-500";
+          ? "success"
+          : "default";
 
       return (
-        <div className={`cursor-pointer capitalize ${statusColor}`}>
+        <Badge variant={`${statusColor}`}>
           {row.original?.device_type?.status}
-        </div>
+        </Badge>
       );
     },
   },
@@ -69,13 +70,13 @@ export const columns = (): ColumnDef<Device>[] => [
     header: "MRI Compatible",
     cell: ({ row }) => {
       const mriColor = row.original?.device_type?.mri_compatible
-        ? "text-green-500"
-        : "text-red-500";
+        ? "success"
+        : "default";
 
       return (
-        <div className={`cursor-pointer capitalize ${mriColor}`}>
+        <Badge variant={`${mriColor}`}>
           {row.original?.device_type?.mri_compatible ? "True" : "False"}
-        </div>
+        </Badge>
       );
     },
   },

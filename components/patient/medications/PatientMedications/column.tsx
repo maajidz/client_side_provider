@@ -11,6 +11,7 @@ import {
 import { deleteUserPrescriptionsData } from "@/services/prescriptionsServices";
 import { PrescriptionDataInterface } from "@/types/prescriptionInterface";
 import { Ellipsis } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const handlePrescriptionDelete = async (
   prescriptionId: string,
@@ -68,6 +69,7 @@ export const columns = ({
         </div>
         <div>Refill: {row.original?.earliest_fill_date}</div>
         <div>Supply: {row.original?.days_of_supply}</div>
+        
       </div>
     ),
   },
@@ -93,13 +95,13 @@ export const columns = ({
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <div
-        className={`cursor-pointer capitalize ${
-          row.original.status === "active" ? "text-green-500" : "text-red-500"
+      <Badge
+        variant={`${
+          row.original.status === "active" ? "success" : "warning"
         }`}
       >
         {row.original.status}
-      </div>
+      </Badge>
     ),
   },
   {

@@ -2,6 +2,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 // import { UserData } from "@/types/userInterface";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 
 export interface LabResultsInterface {
   id: string;
@@ -52,15 +53,15 @@ export const columns = (): ColumnDef<LabResultsInterface>[] => [
     accessorKey: "interpretation",
     header: "Interpretation",
     cell: ({ row }) => (
-      <span
-        className={
+      <Badge
+        variant={
           row.original.interpretation === "Abnormal"
-            ? "text-red-500 font-semibold"
-            : "text-green-500 font-semibold"
+            ? "destructive"
+            : "success"
         }
       >
         {row.original.interpretation}
-      </span>
+      </Badge>
     ),
   },
 ];

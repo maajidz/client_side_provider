@@ -12,7 +12,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ScrollArea } from "../ui/scroll-area";
 
 interface PatientNavProps {
   items: NavItem[];
@@ -35,9 +34,7 @@ export function PatientNav({
   console.log("isActive", isMobileNav, isMinimized);
 
   return (
-    <nav className="flex flex-col gap-2">
       <TooltipProvider>
-        <ScrollArea className="mb-5">
           {items.map((item, index) => {
             // const Icon = Icons[item.icon || 'arrowRight'];
             return (
@@ -72,8 +69,6 @@ export function PatientNav({
               )
             );
           })}
-        </ScrollArea>
       </TooltipProvider>
-    </nav>
   );
 }

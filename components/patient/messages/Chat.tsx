@@ -170,8 +170,8 @@ export default function ChatPage({
           {userDetails.firstName} {userDetails.lastName}
         </div>
       </div>
-      <div className="flex flex-grow flex-col">
-        <div className="h-[1vh] flex flex-grow border-t overflow-auto border-gray-100">
+      <div className="flex flex-col">
+        <div className="flex flex-grow border-t overflow-auto border-gray-100 relative">
           {messages && messages.length > 0 ? (
             <div className="flex flex-col flex-1 gap-6">
               {loading && (
@@ -231,7 +231,7 @@ export default function ChatPage({
               <div ref={endOfMessagesRef} />
             </div>
           ) : (
-            <div className="flex flex-col flex-1 gap-6 items-center justify-center font-semibold">
+            <div className="flex text-sm w-full gap-6 items-center justify-center font-medium text-gray-500 pt-4 ">
               Start a conversation
             </div>
           )}

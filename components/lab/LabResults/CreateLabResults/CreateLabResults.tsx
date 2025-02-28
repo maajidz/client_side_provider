@@ -312,7 +312,7 @@ const CreateLabResults = () => {
                             field.onChange(value);
                           }}
                         >
-                          <SelectTrigger className="w-64">
+                          <SelectTrigger>
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>

@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -68,15 +69,15 @@ export const columns = ({
     header: "Order Status",
     cell: ({ row }) => {
       return (
-        <span
-          className={
+        <Badge
+          variant={
             row.original.status.trim().toLowerCase() === "pending"
-              ? "text-yellow-500 font-semibold cursor-pointer"
-              : "text-green-500 font-semibold cursor-pointer"
+              ? "warning"
+              : "success"
           }
         >
           {row.original.status.toUpperCase()}
-        </span>
+        </Badge>
       );
     },
   },

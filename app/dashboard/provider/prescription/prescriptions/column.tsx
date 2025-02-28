@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
 
 /**
@@ -58,15 +59,16 @@ export const columns = (): ColumnDef<PrescriptionTableInterface>[] => [
     header: "Rx Status",
     cell: ({ row }) => {
       return (
-        <span
-          className={
+        <Badge
+        className="font-medium"
+          variant={
             row.original.rxStatus === "Signed"
-              ? "text-green-500 font-semibold"
-              : "text-red-500 font-semibold"
+              ? "success"
+              : "warning"
           }
         >
           {row.original.rxStatus}
-        </span>
+        </Badge>
       );
     },
   },

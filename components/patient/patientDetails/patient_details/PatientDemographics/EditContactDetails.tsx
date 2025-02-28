@@ -149,6 +149,7 @@ const EditContactDetails = ({
           className="flex gap-6 flex-col"
         >
           <FormSectionVert>
+          <div className="font-semibold text-xs text-gray-600">Contact Details</div>
             <FormSectionHor>
               <FormField
                 control={methods.control}
@@ -205,7 +206,7 @@ const EditContactDetails = ({
                 control={methods.control}
                 name="city"
                 render={({ field }) => (
-                  <FormItem className="w-64">
+                  <FormItem>
                     <FormLabel className="text-[#344054] font-medium text-sm">
                       City
                     </FormLabel>
@@ -223,7 +224,7 @@ const EditContactDetails = ({
                 control={methods.control}
                 name="country"
                 render={({ field }) => (
-                  <FormItem className="w-64">
+                  <FormItem>
                     <FormLabel className="text-[#344054] font-medium text-sm">
                       Country
                     </FormLabel>
@@ -238,7 +239,7 @@ const EditContactDetails = ({
                 control={methods.control}
                 name="zipCode"
                 render={({ field }) => (
-                  <FormItem className="w-64">
+                  <FormItem>
                     <FormLabel className="text-[#344054] font-medium text-sm">
                       Zipcode
                     </FormLabel>

@@ -11,6 +11,7 @@ import {
 import { deleteRecalls } from "@/services/chartDetailsServices";
 import { RecallsData } from "@/types/recallsInterface";
 import { Ellipsis } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const handleRecallsDelete = async (
   recallsId: string,
@@ -107,12 +108,12 @@ export const columns = ({
     header: "Status",
     cell: ({ row }) => {
       const statusColor =
-        row.original.status === "active" ? "text-green-500" : "text-red-500";
+        row.original.status === "active" ? "success" : "warning";
 
       return (
-        <div className={`cursor-pointer capitalize ${statusColor}`}>
+        <Badge variant={`${statusColor}`}>
           {row.original.status}
-        </div>
+        </Badge>
       );
     },
   },

@@ -12,7 +12,7 @@ const ContactDetails = ({
 }) => {
   return (
     <div className="flex border-gray-100 border group p-6 py-4 flex-1 rounded-lg">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-full">
         <div className="flex flex-row justify-between items-center">
           <div className="font-semibold text-xs text-gray-600">
             Contact Details

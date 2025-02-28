@@ -28,7 +28,7 @@ export const columns = (): ColumnDef<FamilyHistoryResponseInterface>[] => [
           {activeProblems.map((problem) => (
             <Badge
               key={problem.id}
-              variant="default"
+              variant="warning"
             >
               {problem.name}
             </Badge>

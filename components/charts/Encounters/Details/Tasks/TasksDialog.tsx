@@ -334,55 +334,54 @@ function TasksDialog({
 
                 {showDueDate && (
                   <>
-                    <div className="space-y-4 border-t pt-4">
+                    <div className="flex gap-4 flex-col flex-1">
                       <h4 className="text-lg font-semibold">
                         Date and Reminder
                       </h4>
                       <div className="flex flex-row gap-2">
-                        <FormField
-                          control={form.control}
-                          name="dueDate"
-                          render={({ field }) => (
-                            <FormItem className="">
-                              <FormLabel>From Date:</FormLabel>
-                              <FormControl>
-                                <Input type="date" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="sendReminder"
-                          render={({ field }) => {
-                            const selectedValues = field.value ?? [];
-
-                            return (
-                              <FormItem>
-                                <FormLabel>Send Reminder Mail</FormLabel>
-                                <Select>
-                                  <SelectTrigger>
-                                    <SelectValue
-                                      placeholder={
-                                        selectedValues.length > 0
-                                          ? selectedValues.join(", ")
-                                          : "Select Reminder Day"
-                                      }
-                                    />
-                                  </SelectTrigger>
-                                  <SelectContent className="p-2">
-                                    {reminderOptions.map((option) => (
-                                      <div
-                                        key={option}
-                                        className="flex items-center gap-2 p-2 cursor-pointer"
-                                        onClick={() => {
-                                          const updatedValues =
-                                            selectedValues.includes(option)
-                                              ? selectedValues.filter(
-                                                  (val) => val !== option
-                                                )
-                                              : [...selectedValues, option];
+                      <FormField
+                        control={form.control}
+                        name="dueDate"
+                        render={({ field }) => (
+                          <FormItem className="">
+                            <FormLabel>From Date:</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="sendReminder"
+                        render={({ field }) => {
+                          const selectedValues = field.value ?? [];
+                          return (
+                            <FormItem>
+                              <FormLabel>Send Reminder Mail</FormLabel>
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue
+                                    placeholder={
+                                      selectedValues.length > 0
+                                        ? selectedValues.join(", ")
+                                        : "Select Reminder Day"
+                                    }
+                                  />
+                                </SelectTrigger>
+                                <SelectContent className="pt-1 pb-1">
+                                  {reminderOptions.map((option) => (
+                                    <div
+                                      key={option}
+                                      className="text-sm font-medium rounded-md hover:bg-gray-100 flex items-center gap-2 p-2 cursor-pointer"
+                                      onClick={() => {
+                                        const updatedValues =
+                                          selectedValues.includes(option)
+                                            ? selectedValues.filter(
+                                                (val) => val !== option
+                                              )
+                                            : [...selectedValues, option];
 
                                           field.onChange(updatedValues);
                                         }}
