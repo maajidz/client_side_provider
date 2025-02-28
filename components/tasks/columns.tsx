@@ -62,7 +62,7 @@ const handleTasksStatusUpdate = async (
 
 export const columns = ({
   setEditData,
-  setIsDialogOpen,
+  setIsEditDialogOpen,
   setLoading,
   showToast,
   fetchTasksList,
@@ -70,7 +70,7 @@ export const columns = ({
   isPatientTask,
 }: {
   setEditData: (data: TasksResponseDataInterface | null) => void;
-  setIsDialogOpen: (isOpen: boolean) => void;
+  setIsEditDialogOpen: (isOpen: boolean) => void;
   setIsCommentDialogOpen: (isOpen: boolean) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
@@ -105,7 +105,7 @@ export const columns = ({
       const assignedProviderId = row.getValue(
         "assignedProvider"
       ) as TasksResponseDataInterface["assignedProvider"];
-      return <div className="cursor-pointer">{assignedProviderId?.id}</div>;
+      return <div className="cursor-pointer">{assignedProviderId?.providerUniqueId}</div>;
     },
   },
   {
@@ -173,7 +173,7 @@ export const columns = ({
             <DropdownMenuItem
               onClick={() => {
                 setEditData(row.original);
-                setIsDialogOpen(true);
+                setIsEditDialogOpen(true);
               }}
             >
               Edit

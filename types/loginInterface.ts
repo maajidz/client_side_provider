@@ -21,6 +21,7 @@ export interface ProviderDetails {
     nip: string
     licenseNumber: string
     yearsOfExperience: number
+    providerUniqueId: string
     createdAt: string
     updatedAt: string
 }
