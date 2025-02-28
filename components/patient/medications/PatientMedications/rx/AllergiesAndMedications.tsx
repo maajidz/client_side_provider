@@ -31,17 +31,15 @@ function AllergiesAndMedications({
   );
 
   // Loading State
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Error State
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
 
   // Fetch Allergies
   const fetchAllergies = useCallback(async () => {
-    setLoading(true);
-    setError("");
-
     try {
+      setLoading(true);
       const response = await getAllergiesData({
         limit: 10,
         page: 1,
@@ -60,17 +58,19 @@ function AllergiesAndMedications({
 
   // Fetch Prescriptions
   const fetchUserPrescriptions = useCallback(async () => {
-    setLoading(true);
-    setError("");
-
     try {
+      setLoading(true);
       const response = await getUserPrescriptionsData({
         limit: 10,
         page: 1,
         userDetailsId,
       });
       if (response) {
-        setUserPrescriptions(response.data);
+        const filteredData = response.data.filter(
+          (prescription: PrescriptionDataInterface | null) =>
+            prescription !== null
+        );
+        setUserPrescriptions(filteredData);
       }
     } catch (e) {
       if (e instanceof Error)
@@ -82,11 +82,9 @@ function AllergiesAndMedications({
 
   // GET Supplements
   const fetchSupplements = useCallback(async () => {
-    setLoading(true);
-
     try {
+      setLoading(true);
       const response = await getSupplements({ userDetailsId });
-
       if (response) {
         setSupplementsData(response.data);
       }
@@ -198,5 +196,3 @@ function AllergiesAndMedications({
 }
 
 export default AllergiesAndMedications;
-
-
