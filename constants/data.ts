@@ -170,9 +170,9 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
     label: "Alerts",
   },
   {
-    title: "Quick Notes",
-    href: `/dashboard/provider/patient/${userDetailsId}/quick_notes`,
-    label: "Quick Notes",
+    title: "Notes",
+    href: `/dashboard/provider/patient/${userDetailsId}/notes`,
+    label: "Notes",
   },
   {
     title: "Dashboard",

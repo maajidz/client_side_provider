@@ -241,7 +241,10 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
         onPageChange={(newPage) => setPageNo(newPage)}
       />
       <VaccineOrders
-        onClose={() => setIsVaccineDialogOpen(false)}
+        onClose={() => {
+          setIsVaccineDialogOpen(false);
+          fetchVaccineOrderData();
+        }}
         isOpen={isVaccineDialogOpen}
       />
     </div>

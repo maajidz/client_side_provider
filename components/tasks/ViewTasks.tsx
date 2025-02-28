@@ -319,7 +319,7 @@ const ViewTasks = () => {
               columns={columns({
                 setEditData,
                 setIsCommentDialogOpen: () => {},
-                setIsDialogOpen,
+                setIsEditDialogOpen: setIsDialogOpen,
                 setLoading,
                 showToast: () =>
                   showToast({

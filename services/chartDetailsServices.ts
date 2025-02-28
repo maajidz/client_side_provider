@@ -54,6 +54,7 @@ import {
   CreateTaskType,
   Status,
   TasksResponseInterface,
+  TaskTypeResponse,
   UpdateTaskType,
 } from "@/types/tasksInterface";
 import {
@@ -409,6 +410,33 @@ export const getTasks = async ({
   });
 
   const data: TasksResponseInterface = await response.data;
+  return data;
+};
+
+export const getTasksTypes = async ({
+  page,
+  limit,
+}: {
+  page?: number;
+  limit?: number;
+}) => {
+  const queryParams = new URLSearchParams();
+  if (page) {
+    queryParams.append("page", page.toString());
+  }
+  if (limit) {
+    queryParams.append("limit", limit.toString());
+  }
+
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/tasks/types/all?${queryParams}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: TaskTypeResponse = await response.data;
   return data;
 };
 

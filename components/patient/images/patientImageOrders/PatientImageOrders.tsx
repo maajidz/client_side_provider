@@ -135,7 +135,6 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
         </form>
       </Form>
       <div className="space-y-5">
-        {orderList?.data && (
           <DefaultDataTable
             title={"Patient Image Orders"}
             onAddClick={() =>
@@ -144,12 +143,11 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
               )
             }
             columns={columns()}
-            data={orderList?.data}
+            data={orderList?.data || []}
             pageNo={page}
             totalPages={totalPages}
             onPageChange={(newPage: number) => setPage(newPage)}
           />
-        )}
       </div>
     </PageContainer>
   );

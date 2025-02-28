@@ -24,7 +24,7 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
   // Toast State
   const { toast } = useToast();
 
-  // Fetch Quick Notes
+  // Fetch Notes
   const fetchQuickNotes = useCallback(async () => {
     setLoading(true);
 
@@ -36,12 +36,12 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
         setTotalPages(Math.ceil(response.total / limit));
       }
     } catch (e) {
-      console.error("Error fetching quick notes:", e);
+      console.error("Error fetching notes:", e);
       // Optionally, show a toast or alert to inform the user about the error.
       showToast({
         toast,
         type: "error",
-        message: "Error fetching quick notes. Please try again later.",
+        message: "Error fetching notes. Please try again later.",
       });
     } finally {
       setLoading(false);

@@ -45,7 +45,7 @@ function UserList({ users }: { users: UserData[] }) {
     { label: "Task", href: `tasks` },
     { label: "Message", href: `messages` },
     { label: "Sticky", href: `` },
-    { label: "Quick Note", href: `quick_notes` },
+    { label: "Note", href: `notes` },
     // { label: "Invoice", href: `/` },
     // { label: "Patient Due", href: `/` },
   ];

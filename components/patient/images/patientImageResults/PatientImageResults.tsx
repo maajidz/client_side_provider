@@ -120,7 +120,6 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
         </form>
       </Form>
       <div className="space-y-5">
-        {resultList?.data && (
           <DefaultDataTable
             title={"Patient Image Results"}
             onAddClick={() =>
@@ -129,12 +128,11 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
               )
             }
             columns={columns()}
-            data={resultList?.data}
+            data={resultList?.data || []}
             pageNo={page}
             totalPages={totalPages}
             onPageChange={(newPage: number) => setPage(newPage)}
           />
-        )}
       </div>
     </PageContainer>
   );

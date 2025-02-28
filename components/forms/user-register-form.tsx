@@ -12,8 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { registerProvider } from "@/services/registerServices";
 import { useDispatch } from "react-redux";
@@ -26,11 +26,14 @@ import {
 export default function UserRegisterForm() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] =
+    useState<boolean>(false);
   const defaultValues = {
     email: "",
     password: "",
+    confirmPassword: "",
     firstname: "",
     lastname: "",
     phonenumber: "",
@@ -40,6 +43,41 @@ export default function UserRegisterForm() {
     resolver: zodResolver(formRegisterSchema),
     defaultValues,
   });
+
+  const {
+    formState: { isValid },
+    control,
+  } = form;
+
+  const password = useWatch({
+    control,
+    name: "password",
+  });
+
+  const confirmPassword = useWatch({
+    control,
+    name: "confirmPassword",
+  });
+
+  useEffect(() => {
+    const validatePassword = async () => {
+      if (password) {
+        await form.trigger("password");
+      }
+    };
+
+    validatePassword();
+  }, [password, form]);
+
+  useEffect(() => {
+    const validateConfirmPassword = async () => {
+      if (confirmPassword.length > 0) {
+        await form.trigger("confirmPassword");
+      }
+    };
+
+    validateConfirmPassword();
+  }, [password, form, confirmPassword.length]);
 
   const onSubmit = async (data: UserFormRegisterValue) => {
     setLoading(true);
@@ -59,19 +97,6 @@ export default function UserRegisterForm() {
 
       if (response) {
         dispatch(setLoginData({ providerAuthId: response.providerId }));
-        // const signInResponse = await signIn('credentials', {
-        //   username: data.username,
-        //   email: data.email,
-        //   password: data.password,
-        //   callbackUrl: callbackUrl ?? '/dashboard',
-        //   redirect: false,
-        // });
-
-        // if (signInResponse?.error) {
-        //   alert('Sign-in failed: ' + signInResponse.error);
-        // } else {
-        //   window.location.href = callbackUrl ?? '/dashboard';
-        // }
         router.push("/provider_details");
       }
     } catch (error) {
@@ -83,6 +108,8 @@ export default function UserRegisterForm() {
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const toggleConfirmPasswordVisibility = () =>
+    setShowConfirmNewPassword(!showConfirmNewPassword);
 
   return (
     <>
@@ -195,10 +222,43 @@ export default function UserRegisterForm() {
               )}
             />
           </div>
+          <div className="flex flex-col">
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem className="">
+                  <FormLabel className="">Confirm Password</FormLabel>
+                  <FormControl>
+                    <div className="flex gap-2 border pr-2 rounded-md">
+                      <Input
+                        type={showConfirmNewPassword ? "text" : "password"}
+                        placeholder="Password"
+                        {...field}
+                        className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                      />
+                      <button onClick={toggleConfirmPasswordVisibility}>
+                        {showPassword ? (
+                          <EyeIcon size={15} />
+                        ) : (
+                          <EyeOffIcon size={15} />
+                        )}
+                      </button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <Button
-            disabled={loading}
-            className="ml-auto w-full bg-[#84012A]"
+            className="ml-auto w-full"
             type="submit"
+            style={{
+              backgroundColor: isValid  ? '#84012A' : '#84012A4D',
+              cursor: isValid  ? 'pointer' : 'not-allowed',
+          }}
+            disabled={!isValid || loading}
           >
             Continue
           </Button>

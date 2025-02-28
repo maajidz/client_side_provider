@@ -59,3 +59,19 @@ export interface TasksResponseDataInterface {
 export interface Status {
   status: string
 }
+
+export interface TaskTypeResponse {
+  total: number
+  page: string
+  limit: string
+  taskTypes: TaskTypeList[]
+}
+
+export interface TaskTypeList {
+  id: string
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
+}
+

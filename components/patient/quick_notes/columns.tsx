@@ -24,12 +24,12 @@ const handleDeleteQuickNote = async (
     await deleteQuickNote({ id });
     showToast({
       type: "success",
-      message: "Quick note deleted successfully",
+      message: "Note deleted successfully",
     });
     getQuickNotesData();
   } catch (error) {
     console.error("Error:", error);
-    showToast({ type: "error", message: "Failed to delete quick note" });
+    showToast({ type: "error", message: "Failed to delete note" });
   } finally {
     setLoading(false);
   }

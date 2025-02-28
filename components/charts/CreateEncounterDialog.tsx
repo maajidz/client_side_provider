@@ -114,8 +114,7 @@ const CreateEncounterDialog = ({
         visit_type: data.vist_type,
         mode: data.encounterMode,
         isVerified: false,
-        userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
-        // selectedPatient.id,
+        userDetailsId: selectedPatient.id,
         providerId: providerDetails.providerId,
         date: `${formattedDate}`,
       };
@@ -262,22 +261,18 @@ const CreateEncounterDialog = ({
                                     <CalendarIcon />
                                     {field.value
                                       ? format(new Date(field.value), "PPP")
-                                      : format(new Date(), "PPP")}
+                                      : "Select a date"}
                                   </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto p-0">
                                   <Calendar
                                     mode="single"
-                                    selected={
-                                      field.value
-                                        ? new Date(field.value)
-                                        : new Date()
-                                    }
-                                    onSelect={(date) =>
-                                      field.onChange(
-                                        date ? date.toISOString() : undefined
-                                      )
-                                    }
+                                    selected={field.value ? new Date(field.value) : undefined}
+                                    onSelect={(date) => {
+                                      if (date) {
+                                        field.onChange(date.toISOString());
+                                      }
+                                    }}
                                     initialFocus
                                   />
                                 </PopoverContent>

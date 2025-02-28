@@ -49,7 +49,7 @@ const ViewPatientQuickNotes = ({
       <div className="flex flex-col gap-6">
         {data && (
           <DefaultDataTable
-            title={"Patient Quick Notes"}
+            title={"Patient Notes"}
             onAddClick={() => setIsDialogOpen(true)}
             columns={columns({
               setIsDialogOpen,
