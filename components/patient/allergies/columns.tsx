@@ -41,19 +41,17 @@ export const columns = ({
   showToast,
   fetchAllergies,
 }: {
-  setEditData: (
-    data: AllergenResponseInterfae
-  ) => void;
+  setEditData: (data: AllergenResponseInterfae) => void;
   setIsDialogOpen: (isOpen: boolean) => void;
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchAllergies: () => void;
 }): ColumnDef<AllergenResponseInterfae>[] => [
   {
-    accessorKey: "type",
-    header: "Allergy type",
+    accessorKey: "Allergen",
+    header: "Allergy Type",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("type")}</div>
+      <div className="cursor-pointer">{row.getValue("Allergen")}</div>
     ),
   },
   {
