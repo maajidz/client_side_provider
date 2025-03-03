@@ -8,7 +8,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteRecalls } from "@/services/chartDetailsServices";
+import {
+  deleteRecalls,
+  updateRecallsData,
+} from "@/services/chartDetailsServices";
 import { RecallsData } from "@/types/recallsInterface";
 import { Ellipsis } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +33,31 @@ const handleRecallsDelete = async (
   } catch (error) {
     console.error("Error:", error);
     showToast({ type: "error", message: "Failed to delete recall" });
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleRecallsStatusUpdate = async (
+  recallsId: string,
+  setLoading: (loading: boolean) => void,
+  showToast: (args: { type: string; message: string }) => void,
+  fetchRecalls: () => void
+) => {
+  setLoading(true);
+  try {
+    const requestData = {
+      status: "Completed",
+    };
+    await updateRecallsData({ id: recallsId, requestData });
+    showToast({
+      type: "success",
+      message: "Recalls status updated successfully",
+    });
+    fetchRecalls();
+  } catch (error) {
+    console.error("Error:", error);
+    showToast({ type: "error", message: "Failed to update recalls status" });
   } finally {
     setLoading(false);
   }
@@ -74,7 +102,9 @@ export const columns = ({
     accessorKey: "due_date_period",
     header: "Due Date",
     cell: ({ row }) => (
-      <div className="cursor-pointer capitalize">{row.getValue("due_date_period")}</div>
+      <div className="cursor-pointer capitalize">
+        {row.getValue("due_date_period")}
+      </div>
     ),
   },
   {
@@ -91,7 +121,9 @@ export const columns = ({
     accessorKey: "due_date_unit",
     header: "Due Date",
     cell: ({ row }) => (
-      <div className="cursor-pointer capitalize">{row.getValue("due_date_unit")}</div>
+      <div className="cursor-pointer capitalize">
+        {row.getValue("due_date_unit")}
+      </div>
     ),
   },
   {
@@ -108,7 +140,7 @@ export const columns = ({
     header: "Status",
     cell: ({ row }) => {
       const statusColor =
-        row.original.status === "active" ? "success" : "warning";
+        row.original.status.toLowerCase() === "completed" ? "success" : "warning";
 
       return (
         <Badge variant={`${statusColor}`}>
@@ -144,7 +176,18 @@ export const columns = ({
             >
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem>Mark as Completed</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                handleRecallsStatusUpdate(
+                  row.original.id,
+                  setLoading,
+                  showToast,
+                  fetchRecalls
+                )
+              }
+            >
+              Mark as Completed
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 handleRecallsDelete(
