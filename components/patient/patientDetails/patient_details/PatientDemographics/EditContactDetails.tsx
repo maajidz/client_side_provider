@@ -73,6 +73,7 @@ const EditContactDetails = ({
         zipCode: patientDetails.location.split(",")[4],
       });
       methods.setValue("state", patientDetails.location.split(",")[2] ?? "");
+      // console.log(patientDetails.location.split(",")[2], "HEHEHEHHEH");
     }
   }, [patientDetails, methods]);
 
@@ -142,19 +143,20 @@ const EditContactDetails = ({
   }
 
   return (
-    <div className="border-gray-100 border group p-6 py-4 flex-1 rounded-lg">
+    <div className="flex border-gray-100 border group p-6 py-4 flex-1 rounded-lg">
       <Form {...methods}>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
           className="flex gap-6 flex-col"
         >
           <FormSectionVert>
+          <div className="font-semibold text-xs text-gray-600">Contact Details</div>
             <FormSectionHor>
               <FormField
                 control={methods.control}
                 name="address"
                 render={({ field }) => (
-                  <FormItem className="w-64">
+                  <FormItem>
                     <FormLabel className="text-[#344054] font-medium text-sm">
                       Address
                     </FormLabel>
@@ -175,10 +177,11 @@ const EditContactDetails = ({
                       <Select
                         value={field.value}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select here" />
+                          <SelectValue placeholder="Select a State">
+                            {field.value || "Select a State"}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           <Input
@@ -201,13 +204,11 @@ const EditContactDetails = ({
                   </FormItem>
                 )}
               />
-            </FormSectionHor>
-            <FormSectionHor>
               <FormField
                 control={methods.control}
                 name="city"
                 render={({ field }) => (
-                  <FormItem className="w-64">
+                  <FormItem>
                     <FormLabel className="text-[#344054] font-medium text-sm">
                       City
                     </FormLabel>
@@ -218,11 +219,14 @@ const EditContactDetails = ({
                   </FormItem>
                 )}
               />
+            </FormSectionHor>
+            <FormSectionHor>
+
               <FormField
                 control={methods.control}
                 name="country"
                 render={({ field }) => (
-                  <FormItem className="w-64">
+                  <FormItem>
                     <FormLabel className="text-[#344054] font-medium text-sm">
                       Country
                     </FormLabel>
@@ -237,7 +241,7 @@ const EditContactDetails = ({
                 control={methods.control}
                 name="zipCode"
                 render={({ field }) => (
-                  <FormItem className="w-64">
+                  <FormItem>
                     <FormLabel className="text-[#344054] font-medium text-sm">
                       Zipcode
                     </FormLabel>

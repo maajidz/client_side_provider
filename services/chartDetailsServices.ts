@@ -9,6 +9,7 @@ import {
 import {
   AllergenResponseInterfae,
   AllergeyRequestInterface,
+  AllergyTypeResponse,
   UpdateAllergenInterface,
 } from "@/types/allergyInterface";
 import {
@@ -48,12 +49,14 @@ import {
 import {
   CreateSupplementType,
   SupplementResponseInterface,
+  SupplementTypesResponseInterface,
   UpdateSupplementType,
 } from "@/types/supplementsInterface";
 import {
   CreateTaskType,
   Status,
   TasksResponseInterface,
+  TaskTypeResponse,
   UpdateTaskType,
 } from "@/types/tasksInterface";
 import {
@@ -412,6 +415,33 @@ export const getTasks = async ({
   return data;
 };
 
+export const getTasksTypes = async ({
+  page,
+  limit,
+}: {
+  page?: number;
+  limit?: number;
+}) => {
+  const queryParams = new URLSearchParams();
+  if (page) {
+    queryParams.append("page", page.toString());
+  }
+  if (limit) {
+    queryParams.append("limit", limit.toString());
+  }
+
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/tasks/types/all?${queryParams}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: TaskTypeResponse = await response.data;
+  return data;
+};
+
 export const updateTask = async ({
   requestData,
   id,
@@ -659,6 +689,25 @@ export const getAllergiesData = async ({
   return data;
 };
 
+export const getAllergyTypeData = async ({
+  page,
+  limit,
+}: {
+  page: number;
+  limit: number;
+}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/allergies/types/all?page=${page}&limit=${limit}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response.data);
+  const data: AllergyTypeResponse = await response.data;
+  return data;
+};
+
 export const updateAllergiesData = async ({
   id,
   requestData,
@@ -875,6 +924,19 @@ export const createSupplement = async (requestData: CreateSupplementType) => {
   const data = await response.data;
   return data;
 };
+
+export const getAllSupplementTypes = async () => {
+  const response = await ApiFetch({
+    url: "/provider/supplements/types/all",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: SupplementTypesResponseInterface = await response.data;
+  return data;
+}
 
 export const getSupplements = async ({
   userDetailsId,

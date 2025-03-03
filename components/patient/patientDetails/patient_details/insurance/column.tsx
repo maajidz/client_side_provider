@@ -10,6 +10,7 @@ import {
 import { Ellipsis } from "lucide-react";
 import { InsuranceResponse } from "@/types/insuranceInterface";
 import { deleteInsuranceData } from "@/services/insuranceServices";
+import { Badge } from "@/components/ui/badge";
 
 const handleDeleteInsuranceData = async (
   insuranceDataId: string,
@@ -113,13 +114,13 @@ export const columns = ({
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <div
-        className={`cursor-pointer capitalize ${
-          row.original.status === "active" ? "text-green-500" : "text-red-500"
+      <Badge
+        variant={`${
+          row.original.status === "active" ? "success" : "default"
         }`}
       >
         {row.getValue("status")}
-      </div>
+      </Badge>
     ),
   },
   {

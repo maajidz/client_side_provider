@@ -11,9 +11,29 @@ import { Button } from "@/components/ui/button";
 import imageUrl from "@/public/images/Logo_Red.svg";
 import Image from "next/image";
 import AccountIcon from "@/components/account/AccountIcon";
+import { Badge } from "@/components/ui/badge";
+
+const validBadgeVariants = [
+  "warning",
+  "blue",
+  "default",
+  "secondary",
+  "destructive",
+  "outline",
+  "ghost",
+  "indigo",
+  "purple",
+  "pink",
+  "success",
+] as const;
+type BadgeVariant = typeof validBadgeVariants[number];
 
 export default function DashboardPage() {
   const router = useRouter();
+
+  const isValidBadgeVariant = (value: string): value is BadgeVariant =>
+    validBadgeVariants.includes(value as BadgeVariant);
+
   return (
     <main className="w-full h-screen flex-1 overflow-hidden bg-gray-100">
       <div className="flex justify-between items-center px-11 h-16">
@@ -48,16 +68,22 @@ export default function DashboardPage() {
                     {Icon && <Icon className="" />}
                     <div className="flex justify-between">
                       <div className="text-md font-semibold">{item.title}</div>
-                      <div className="flex rounded-3xl bg-green-100 w-fit text-green-700 flex-row items-center font-semibold text-[.7rem] pl-2 pr-3 py-1 gap-1">
-                        {BadgeIcon && (
-                          <BadgeIcon
-                            size={14}
-                            strokeWidth={3}
-                            className={`${item.badgeColor}`}
-                          />
-                        )}
-                        {item.badgeLabel}
-                      </div>
+                      {/* <Badge variant={`${item.badgeColor}`}>
+                        <div className="flex rounded-3xl w-fit flex-row items-center font-semibold text-[.7rem] gap-1">
+                          {BadgeIcon && <BadgeIcon size={14} strokeWidth={3} />}
+                          {item.badgeLabel}
+                        </div>
+                      </Badge> */}
+                      {item.badgeColor && isValidBadgeVariant(item.badgeColor) && (
+                        <Badge variant={item.badgeColor}>
+                          <div className="flex rounded-3xl w-fit flex-row items-center font-semibold text-[.7rem] gap-1">
+                            {BadgeIcon && (
+                              <BadgeIcon size={14} strokeWidth={3} />
+                            )}
+                            {item.badgeLabel}
+                          </div>
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </Link>

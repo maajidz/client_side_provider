@@ -27,13 +27,15 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { categoryOptions, priority, reminderOptions } from "@/constants/data";
+import { priority, reminderOptions } from "@/constants/data";
 import { tasksSchema } from "@/schema/tasksSchema";
-import { updateTask } from "@/services/chartDetailsServices";
+import { getTasksTypes, updateTask } from "@/services/chartDetailsServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import {
   TasksResponseDataInterface,
+  TaskTypeList,
+  TaskTypeResponse,
   UpdateTaskType,
 } from "@/types/tasksInterface";
 import { RootState } from "@/store/store";
@@ -59,7 +61,9 @@ const EditPatientTaskDialog = ({
 }) => {
   const [showDueDate, setShowDueDate] = useState(false);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
+  const [tasksListData, setTasksListData] = useState<TaskTypeResponse>();
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
+  const [selectedTask, setSelectedTask] = useState<TaskTypeList>();
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
@@ -100,48 +104,68 @@ const EditPatientTaskDialog = ({
     }
   }, [toast]);
 
+  const fetchTasksList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getTasksTypes({
+        page: 1,
+        limit: 10,
+      });
+
+      if (response) {
+        setTasksListData(response);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
+    fetchTasksList();
     fetchOwnersList();
-  }, [fetchOwnersList]);
+  }, [fetchOwnersList, fetchTasksList]);
 
   useEffect(() => {
     if (tasksData) {
       form.reset({
         category: tasksData.category || "",
         task: tasksData.notes || "",
-        owner: tasksData?.assignerProvider?.id || "",
+        owner: tasksData.assignerProvider?.id || "",
+        dueDate: tasksData.dueDate,
         priority: tasksData.priority || "low",
-        sendReminder: tasksData?.reminder || [],
+        sendReminder: tasksData.reminder || [],
         comments: tasksData.description || "",
         userDetailsId: tasksData.userDetailsId,
       });
-      if (tasksData.dueDate) {
-        const formattedDueDate = new Date(tasksData.dueDate)
-          .toISOString()
-          .split("T")[0];
-        form.setValue("dueDate", formattedDueDate);
-        setShowDueDate(!!tasksData.dueDate);
-      }
 
-      setSelectedOwner(
-        ownersList.find((owner) => owner.providerDetails?.id === tasksData.assignerProvider?.id)
+      // Setting selected category
+      const selectedTaskCategory = tasksListData?.taskTypes.find(
+        (task) => task.id === tasksData.category
       );
-      console.log("Fetched",tasksData.assignerProvider?.id)
-      console.log("Set", form.getValues().owner)
+      setSelectedTask(selectedTaskCategory);
+
+      // Setting selected owner
+      const selectedTaskOwner = ownersList.find(
+        (owner) => owner.providerDetails?.id === tasksData.assignerProvider?.id
+      );
+      setSelectedOwner(selectedTaskOwner);
     }
-  }, [form, tasksData, ownersList]);
+  }, [form, tasksData, tasksListData, ownersList]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     setLoading(true);
 
     try {
       const requestData: UpdateTaskType = {
-        category: values.category,
+        category: selectedTask?.id ?? "",
         description: values.comments ?? "",
         priority: values.priority,
         status: "PENDING",
         notes: values.task,
-        dueDate: `${values.dueDate}`,
+        dueDate: values.dueDate,
         reminder: values.sendReminder,
         assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
         assignerProviderId: providerDetails.providerId,
@@ -187,29 +211,80 @@ const EditPatientTaskDialog = ({
             <div className="flex flex-col gap-5">
               <ScrollArea className="max-h-[90dvh] h-auto">
                 <div className="flex flex-col gap-5">
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="category"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel className="w-fit">Category</FormLabel>
                         <FormControl>
                           <Select
-                            onValueChange={field.onChange}
                             defaultValue={field.value}
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              const selected = tasksListData?.taskTypes.find(
+                                (category) => category.id === value
+                              );
+                              setSelectedTask(selected);
+                            }}
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Choose Category" />
                             </SelectTrigger>
                             <SelectContent>
-                              {categoryOptions.map((option) => (
-                                <SelectItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.label}
-                                </SelectItem>
-                              ))}
+                              {tasksListData && tasksListData?.taskTypes ? (
+                                tasksListData?.taskTypes.map((category) => (
+                                  <SelectItem
+                                    key={category.id}
+                                    value={category.id}
+                                  >
+                                    {category.name}
+                                  </SelectItem>
+                                ))
+                              ) : (
+                                <div>No Tasks Found</div>
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  /> */}
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="w-fit">Category</FormLabel>
+                        <FormControl>
+                          <Select
+                            defaultValue={field.value}
+                            value={field.value}
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              const selected = tasksListData?.taskTypes.find(
+                                (category) => category.id === value
+                              );
+                              setSelectedTask(selected);
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Choose Category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {tasksListData && tasksListData.taskTypes ? (
+                                tasksListData?.taskTypes.map((category) => (
+                                  <SelectItem
+                                    key={category.id}
+                                    value={category.id}
+                                  >
+                                    {category.name}
+                                  </SelectItem>
+                                ))
+                              ) : (
+                                <div>No Tasks found</div>
+                              )}
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -217,11 +292,12 @@ const EditPatientTaskDialog = ({
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="task"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel>Task</FormLabel>
                         <FormControl>
                           <Textarea {...field} />
@@ -234,7 +310,7 @@ const EditPatientTaskDialog = ({
                     control={form.control}
                     name="owner"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel className="w-fit">Owner</FormLabel>
                         <FormControl>
                           <Select
@@ -252,7 +328,10 @@ const EditPatientTaskDialog = ({
                             </SelectTrigger>
                             <SelectContent>
                               {ownersList.map((owner) => (
-                                <SelectItem key={owner.id} value={owner.providerDetails?.id || owner.id}>
+                                <SelectItem
+                                  key={owner.id}
+                                  value={owner.providerDetails?.id || owner.id}
+                                >
                                   {owner.firstName} {owner.lastName}
                                 </SelectItem>
                               ))}
@@ -267,7 +346,7 @@ const EditPatientTaskDialog = ({
                     control={form.control}
                     name="priority"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel>Priority</FormLabel>
                         <FormControl>
                           <Select
@@ -386,7 +465,7 @@ const EditPatientTaskDialog = ({
                     control={form.control}
                     name="comments"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel>Comments</FormLabel>
                         <FormControl>
                           <Textarea {...field} />

@@ -37,11 +37,7 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
 
-const ViewPatientTasks = ({
-  userDetailsId
-}: {
-  userDetailsId: string;
-}) => {
+const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
   const [loading, setLoading] = useState(false);
@@ -256,10 +252,10 @@ const ViewPatientTasks = ({
           {resultList?.data && (
             <DefaultDataTable
               title={"Patient Tasks"}
-              onAddClick={()=> setIsDialogOpen(true)}
+              onAddClick={() => setIsDialogOpen(true)}
               columns={columns({
                 setEditData,
-                setIsDialogOpen,
+                setIsEditDialogOpen,
                 setIsCommentDialogOpen,
                 setLoading,
                 showToast: () =>

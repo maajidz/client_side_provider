@@ -1,4 +1,3 @@
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import RadioButton from "@/components/custom_buttons/radio_button/RadioButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { isInsured } from "@/constants/data";
+import { insuranceType } from "@/constants/data";
 import { useToast } from "@/hooks/use-toast";
 import { insuranceFormSchema } from "@/schema/insuranceSchema";
 import { createInsurance, updateInsurance } from "@/services/insuranceServices";
@@ -56,6 +55,9 @@ function InsuranceDialog({
 }: InsuranceDialogProps) {
   // Loading State
   const [loading, setLoading] = useState(false);
+  const [selectedInsuranceType, setSelectedInsuranceType] = useState<string>(
+    insuranceType[0]
+  );
 
   // Toast State
   const { toast } = useToast();
@@ -164,6 +166,7 @@ function InsuranceDialog({
         subscriberNumber: selectedInsurance.subscriberNumber ?? "",
         idNumber: selectedInsurance.idNumber ?? "",
       });
+      setSelectedInsuranceType(selectedInsurance.type);
     } else {
       methods.reset({
         // Reset form when adding new insurance
@@ -173,7 +176,7 @@ function InsuranceDialog({
         idNumber: "",
       });
     }
-  }, [methods, selectedInsurance]);
+  }, [methods, selectedInsurance, selectedInsuranceType]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleIsDialogOpen}>
@@ -185,24 +188,8 @@ function InsuranceDialog({
               : "Update Insurance Data"}
           </DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[30rem] min-h-30 p-3">
-          <div className="flex flex-col gap-6 p-6 rounded-lg">
-            {/* Action Buttons */}
-            <div className="flex gap-2 justify-end">
-              <>
-                <Button
-                  variant="outline"
-                  className="h-11"
-                  onClick={() => handleIsDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <DefaultButton onClick={toggleEdit} disabled={loading}>
-                  Save
-                </DefaultButton>
-              </>
-            </div>
-
+        <ScrollArea className="h-[30rem] min-h-30">
+          <div className="flex flex-col gap-6 rounded-lg">
             {/* Form Fields */}
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-4">
@@ -213,13 +200,13 @@ function InsuranceDialog({
                   Insurance Type
                 </Label>
                 <div className="flex flex-col items-start gap-2 md:flex-row">
-                  {isInsured.map((insurance, index) => (
+                  {insuranceType.map((insurance, index) => (
                     <div key={index} className="w-96">
                       <RadioButton
-                        label={insurance.isInsured}
-                        name={insurance.isInsured}
-                        value={insurance.isInsured}
-                        selectedValue={selectedIsInsured}
+                        label={insurance}
+                        name={insurance}
+                        value={insurance}
+                        selectedValue={selectedInsuranceType}
                         onChange={handleInsuranceTypeChange}
                       />
                     </div>
@@ -230,7 +217,7 @@ function InsuranceDialog({
               <div>
                 <FormProvider {...methods}>
                   <form onSubmit={methods.handleSubmit(toggleEdit)}>
-                    <div className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-3">
                       <Label className="text-[rgba(132,1,42,1)] font-semibold text-base">
                         Enter Details
                       </Label>
@@ -240,7 +227,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="companyName"
                           render={({ field }) => (
-                            <FormItem className="w-64">
+                            <FormItem >
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Company Name
                               </FormLabel>
@@ -255,7 +242,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="groupNameOrNumber"
                           render={({ field }) => (
-                            <FormItem className="w-64">
+                            <FormItem >
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Group Name/Number
                               </FormLabel>
@@ -270,7 +257,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="subscriberNumber"
                           render={({ field }) => (
-                            <FormItem className="w-64">
+                            <FormItem >
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Subscriber Number
                               </FormLabel>
@@ -285,7 +272,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="idNumber"
                           render={({ field }) => (
-                            <FormItem className="w-64">
+                            <FormItem >
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 ID Number
                               </FormLabel>
@@ -334,7 +321,7 @@ function InsuranceDialog({
                                     />
                                   </label>
                                   <div className="flex flex-1 justify-center items-center">
-                                    {frontImageFile && (
+                                    {frontImageFile ? (
                                       <div>
                                         <Image
                                           src={URL.createObjectURL(
@@ -346,6 +333,20 @@ function InsuranceDialog({
                                           className="w-48 h-24 object-contain rounded-md"
                                         />
                                       </div>
+                                    ) : (
+                                      selectedInsurance && (
+                                        <img
+                                          alt={
+                                            selectedInsurance.frontDocumentImage.split(
+                                              "/"
+                                            )[6]
+                                          }
+                                          src={
+                                            selectedInsurance.frontDocumentImage
+                                          }
+                                          className="w-48 h-24 object-contain rounded-md"
+                                        />
+                                      )
                                     )}
                                   </div>
                                 </div>
@@ -392,7 +393,7 @@ function InsuranceDialog({
                                     />
                                   </label>
                                   <div className="flex flex-1 justify-center items-center">
-                                    {backImageFile && (
+                                    {backImageFile ? (
                                       <div>
                                         <Image
                                           src={URL.createObjectURL(
@@ -404,6 +405,20 @@ function InsuranceDialog({
                                           className="w-48 h-24 object-contain rounded-md"
                                         />
                                       </div>
+                                    ) : (
+                                      selectedInsurance && (
+                                        <img
+                                          alt={
+                                            selectedInsurance.backDocumentImage.split(
+                                              "/"
+                                            )[6]
+                                          }
+                                          src={
+                                            selectedInsurance.backDocumentImage
+                                          }
+                                          className="w-48 h-24 object-contain rounded-md"
+                                        />
+                                      )
                                     )}
                                   </div>
                                 </div>
@@ -416,6 +431,20 @@ function InsuranceDialog({
                   </form>
                 </FormProvider>
               </div>
+            </div>
+            {/* Action Buttons */}
+            <div className="flex gap-2 justify-end">
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => handleIsDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={toggleEdit} disabled={loading}>
+                  Save
+                </Button>
+              </>
             </div>
           </div>
         </ScrollArea>

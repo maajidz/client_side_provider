@@ -35,10 +35,9 @@ const PastPrescriptionsDialog = ({
   const chartId = useSelector((state: RootState) => state.user.chartId);
 
   const fetchAndSetResponse = useCallback(async () => {
-    setLoading(true);
-
     if (chartId) {
       try {
+        setLoading(true);
         const data = await getPrescriptionsData({ chartId });
         if (data) {
           setResponse(data);

@@ -243,7 +243,7 @@ export function AppointmentsDialog({
         </DialogHeader>
         <ScrollArea className="max-h-[calc(100dvh-6rem)] h-fit w-auto">
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2 p-4 bg-gray-50 rounded-lg **:text-xs ">
+            <div className="flex flex-col gap-2 p-4 bg-[#F3EFF0] rounded-lg **:text-xs ">
               <FormLabels
                 label="Email"
                 value={
@@ -418,7 +418,7 @@ export function AppointmentsDialog({
                                     {availability.isAvailable? "Yes": "No"}
                                   </SelectItem>
                                 )): (
-                                  <div className="text-sm text-gray-500 font-medium p-2">No slots available for {selectedDate}. Select a different date.</div>
+                                  <div className="text-xs text-gray-500 font-medium px-2 py-1">No slots available for {selectedDate}. Select a different date.</div>
                                 )}
                               </SelectContent>
                             </Select>

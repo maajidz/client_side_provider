@@ -14,9 +14,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-dvh bg-[#F3EFF0]">
+    <div className="flex bg-[#F3EFF0] w-full">
       {/* <Sidebar /> */}
-      <main className="w-full flex-1 overflow-hidden">
+      <main className="w-full flex-1">
         <Toaster />
         <AuthComponent>{children}</AuthComponent>
       </main>

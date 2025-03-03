@@ -3,11 +3,6 @@ import PageContainer from "@/components/layout/page-container";
 import PatientAllergies from "@/components/patient/allergies/PatientAllergies";
 import { useParams } from "next/navigation";
 
-// const breadcrumbItems = [
-//   { title: "Dashboard", link: "/dashboard" },
-//   { title: "Patients", link: "/dashboard/provider/patient" },
-//   { title: "Allergies", link: "" },
-// ];
 function Page() {
   const { userDetailsId } = useParams();
 
@@ -17,10 +12,7 @@ function Page() {
 
   return (
     <PageContainer scrollable={true}>
-      {/* <div className="space-y-4">
-        <Breadcrumbs items={breadcrumbItems} />
-      </div> */}
-      <PatientAllergies userDetailsId={userDetailsId}/>
+      <PatientAllergies userDetailsId={userDetailsId} />
     </PageContainer>
   );
 }

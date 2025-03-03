@@ -110,7 +110,7 @@ const ViewPatientEncounters = ({
             {value === "lastvisit"
               ? chartList &&
                 chartList.response &&
-                chartList.response[0].chart && (
+                chartList.response[0]?.chart && (
                   <ChartNotes patientChart={chartList.response[0].chart} />
                 )
               : chartList && (

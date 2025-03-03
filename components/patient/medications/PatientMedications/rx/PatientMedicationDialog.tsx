@@ -57,7 +57,7 @@ const PatientMedicationDialog = ({
 
   // Chart State
   const chartId = useSelector((state: RootState) => state.user.chartId);
-  
+
   const form = useForm<z.infer<typeof prescriptionSchema>>({
     resolver: zodResolver(prescriptionSchema),
     defaultValues: {
@@ -84,7 +84,8 @@ const PatientMedicationDialog = ({
   });
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
-    setLoading(false);
+    console.log(values);
+    setLoading(true);
     if (chartId) {
       const requestData = {
         drug_name: drugName,
@@ -114,6 +115,7 @@ const PatientMedicationDialog = ({
         ],
         chartId,
       };
+      console.log(requestData)
       try {
         setLoading(true);
         await createPrescriptions({ requestData });
@@ -223,7 +225,7 @@ const PatientMedicationDialog = ({
                           </FormItem>
                         )}
                       />
-                    </div>
+                    </div> 
                   </div>
                   <div
                     className={`${formStyles.formItem} bg-[#c5c4c4] p-3 rounded-md`}
@@ -462,7 +464,7 @@ const PatientMedicationDialog = ({
                           )}
                         />
                       </div>
-                    </div>
+                    </div> 
                     <FormField
                       control={form.control}
                       name="days_of_supply"
@@ -596,7 +598,7 @@ const PatientMedicationDialog = ({
                         </FormItem>
                       )}
                     />
-                  </div>
+                  </div> 
                   <div className="flex justify-end gap-2">
                     <Button
                       variant={"outline"}
@@ -607,6 +609,14 @@ const PatientMedicationDialog = ({
                     >
                       Cancel
                     </Button>
+                    {/* <Button
+                      type="submit"
+                      onClick={() =>
+                        console.log("Form Inside", form.getValues())
+                      }
+                    >
+                      Save
+                    </Button> */}
                     <SubmitButton label="Save" />
                   </div>
                 </div>

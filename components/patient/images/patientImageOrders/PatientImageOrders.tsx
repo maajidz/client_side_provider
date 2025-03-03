@@ -26,6 +26,7 @@ import { z } from "zod";
 import { columns } from "@/components/images/ImageOrders/columns";
 import LoadingButton from "@/components/LoadingButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { useRouter } from "next/navigation";
 
 const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -33,6 +34,9 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof filterLabOrdersSchema>>({
     resolver: zodResolver(filterLabOrdersSchema),
     defaultValues: {
@@ -130,16 +134,20 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
           />
         </form>
       </Form>
-      <div className="py-5">
-        {orderList?.data && (
+      <div className="space-y-5">
           <DefaultDataTable
+            title={"Patient Image Orders"}
+            onAddClick={() =>
+              router.push(
+                `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_orders`
+              )
+            }
             columns={columns()}
-            data={orderList?.data}
+            data={orderList?.data || []}
             pageNo={page}
             totalPages={totalPages}
             onPageChange={(newPage: number) => setPage(newPage)}
           />
-        )}
       </div>
     </PageContainer>
   );

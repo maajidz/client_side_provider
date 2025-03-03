@@ -1,3 +1,4 @@
+import formStyles from "@/components/formStyles.module.css";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
@@ -28,13 +29,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { supplementsFormSchema } from "@/schema/supplementsSchema";
-import { updateSupplement } from "@/services/chartDetailsServices";
+import {
+  getAllSupplementTypes,
+  updateSupplement,
+} from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
-import { SupplementInterface } from "@/types/supplementsInterface";
+import {
+  SupplementInterface,
+  SupplementTypesInterface,
+} from "@/types/supplementsInterface";
 import { showToast } from "@/utils/utils";
 import { Edit2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -58,6 +65,15 @@ function EditSupplement({
   patientDetails,
   fetchSupplements,
 }: EditSupplementProps) {
+  // Supplements State
+  const [supplementsData, setSupplementsData] = useState<
+    SupplementTypesInterface[]
+  >([]);
+  const [supplementId, setSupplementId] = useState("");
+  // Search Supplement States
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isListVisible, setIsListVisible] = useState(false);
+
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -84,12 +100,36 @@ function EditSupplement({
     },
   });
 
+  // GET Supplements List
+  const fetchAllSupplements = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getAllSupplementTypes();
+
+      if (response) {
+        setSupplementsData(response.data);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch supplements data",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
+
   // PATCH Supplement
   const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
     setLoading(true);
     try {
       const supplementData = {
         ...values,
+        supplementId: supplementId ?? selectedSupplement.supplementId,
         userDetailsId: patientDetails.userDetails.id,
       };
 
@@ -118,6 +158,15 @@ function EditSupplement({
     }
   };
 
+  // * Effects
+  useEffect(() => {
+    fetchAllSupplements();
+  }, [fetchAllSupplements]);
+
+  const filteredSupplements = supplementsData.filter((supplement) =>
+    supplement.supplement_name.toLocaleLowerCase().includes(searchTerm)
+  );
+
   if (loading) {
     return <LoadingButton />;
   }
@@ -141,13 +190,46 @@ function EditSupplement({
                   control={form.control}
                   name="supplement"
                   render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center">
+                    <FormItem className={formStyles.formItem}>
                       <FormLabel>Supplement</FormLabel>
                       <FormControl>
-                        <Input
-                          defaultValue={selectedSupplement.supplement}
-                          onChange={field.onChange}
-                        />
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            value={searchTerm}
+                            placeholder="Search Supplement..."
+                            onChange={(event) => {
+                              setSearchTerm(event.target.value);
+                              setIsListVisible(true);
+                            }}
+                          />
+                          {searchTerm && isListVisible && (
+                            <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                              {filteredSupplements.length > 0 ? (
+                                filteredSupplements.map((supplement) => (
+                                  <div
+                                    key={supplement.id}
+                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                    onClick={() => {
+                                      field.onChange(
+                                        supplement.supplement_name
+                                      );
+                                      setSearchTerm(supplement.supplement_name);
+                                      setSupplementId(supplement.id);
+                                      setIsListVisible(false);
+                                    }}
+                                  >
+                                    {supplement.supplement_name}
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="px-4 py-2 text-gray-500">
+                                  No results found
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

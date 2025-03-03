@@ -206,22 +206,22 @@ function SocialHistoryDialog({
                 />
               </div>
             </ScrollArea>
+            <DialogFooter>
+              <div className="flex items-end justify-end gap-2 w-full">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    form.reset();
+                    onClose();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <SubmitButton label="Save" disabled={loading} />
+              </div>
+            </DialogFooter>
           </form>
         </Form>
-        <DialogFooter>
-        <div className="flex items-end justify-end gap-2 w-full">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      form.reset();
-                      onClose();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <SubmitButton label="Save" disabled={loading} />
-        </div>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

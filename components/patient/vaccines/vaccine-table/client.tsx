@@ -4,11 +4,9 @@ import { HistoricalVaccineInterface } from "@/types/chartsInterface";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import VaccinesDialog from "@/components/charts/Encounters/Details/Vaccines/VaccinesDialog";
-import { PlusIcon } from "lucide-react";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
-import { Button } from "@/components/ui/button";
 
 interface HistoricalVaccinesProps {
   userDetailsId: string;
@@ -72,26 +70,11 @@ const HistoricalVaccinesClient = ({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-end">
-        <Button
-          onClick={() => {
-            setIsVaccinesDialogOpen(true);
-          }}
-        >
-          <PlusIcon />
-          Vaccines
-        </Button>
-        <VaccinesDialog
-          userDetailsId={userDetailsId}
-          vaccinesData={editData}
-          isOpen={isVaccinesDialogOpen}
-          onClose={() => {
-            setIsVaccinesDialogOpen(false);
-          }}
-          onFetchHistoricalData={fetchHistoricalVaccine}
-        />
-      </div>
       <DefaultDataTable
+        title={"Vaccines"}
+        onAddClick={() => {
+          setIsVaccinesDialogOpen(true);
+        }}
         columns={columns({
           setEditData,
           setIsVaccinesDialogOpen,
@@ -108,6 +91,15 @@ const HistoricalVaccinesClient = ({
         pageNo={page}
         totalPages={totalPages}
         onPageChange={(newPage: number) => setPage(newPage)}
+      />
+      <VaccinesDialog
+        userDetailsId={userDetailsId}
+        vaccinesData={editData}
+        isOpen={isVaccinesDialogOpen}
+        onClose={() => {
+          setIsVaccinesDialogOpen(false);
+        }}
+        onFetchHistoricalData={fetchHistoricalVaccine}
       />
     </div>
   );

@@ -23,8 +23,8 @@ export default function PatientSidebar({
       )}
     >
       <>
-        <div className="h-[70dvh] flex pr-4 flex-1 flex-grow overflow-auto">
-            <PatientNav items={items} />
+        <div className="flex pr-4 flex-col gap-1 overflow-y-scroll">
+            <PatientNav items={items}/>
         </div>
       </>
     </aside>

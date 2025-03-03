@@ -4,11 +4,7 @@ import { QuickNotesInterface } from "@/types/quickNotesInterface";
 import { showToast } from "@/utils/utils";
 import QuickNotesDialog from "./QuickNotesDialog";
 import ViewPatientQuickNotes from "./ViewPatientQuickNotes";
-import { PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { Heading } from "@/components/ui/heading";
-import { Button } from "@/components/ui/button";
-
 
 const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
   // Dialog State
@@ -28,7 +24,7 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
   // Toast State
   const { toast } = useToast();
 
-  // Fetch Quick Notes
+  // Fetch Notes
   const fetchQuickNotes = useCallback(async () => {
     setLoading(true);
 
@@ -40,12 +36,12 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
         setTotalPages(Math.ceil(response.total / limit));
       }
     } catch (e) {
-      console.error("Error fetching quick notes:", e);
+      console.error("Error fetching notes:", e);
       // Optionally, show a toast or alert to inform the user about the error.
       showToast({
         toast,
         type: "error",
-        message: "Error fetching quick notes. Please try again later.",
+        message: "Error fetching notes. Please try again later.",
       });
     } finally {
       setLoading(false);
@@ -60,15 +56,6 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <>
       <div className="flex justify-between">
-        <Heading title="Quick Notes" />
-        <Button
-          onClick={() => {
-            setIsDialogOpen(true);
-          }}
-        >
-            <PlusIcon />
-            Note
-        </Button>
         <QuickNotesDialog
           userDetailsId={userDetailsId}
           isOpen={isDialogOpen}

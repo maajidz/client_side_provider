@@ -14,7 +14,7 @@ export const navItems: NavItem[] = [
     icon: "users",
     label: "Patients",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "5 new",
   },
   {
@@ -23,7 +23,7 @@ export const navItems: NavItem[] = [
     icon: "calendar",
     label: "Calendar",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "warning",
     badgeLabel: "5 new",
   },
   {
@@ -32,7 +32,7 @@ export const navItems: NavItem[] = [
     icon: "message",
     label: "Messages",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "5 new",
   },
   {
@@ -41,7 +41,7 @@ export const navItems: NavItem[] = [
     icon: "tasks",
     label: "Tasks",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "5 new",
   },
   {
@@ -50,7 +50,7 @@ export const navItems: NavItem[] = [
     icon: "activity",
     label: "Analytics",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "5 new",
   },
   // {
@@ -71,7 +71,7 @@ export const navItems: NavItem[] = [
     icon: "clipboard",
     label: "Charts",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "5 new",
   },
   {
@@ -80,7 +80,7 @@ export const navItems: NavItem[] = [
     icon: "pill",
     label: "Prescription",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "5 new",
   },
   {
@@ -89,7 +89,7 @@ export const navItems: NavItem[] = [
     icon: "labs",
     label: "Labs",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "5 new",
   },
   {
@@ -98,7 +98,7 @@ export const navItems: NavItem[] = [
     icon: "microscope",
     label: "Images",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "5 new",
   },
   {
@@ -107,7 +107,7 @@ export const navItems: NavItem[] = [
     icon: "document",
     label: "Documents",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "5 new",
   },
   {
@@ -116,7 +116,7 @@ export const navItems: NavItem[] = [
     icon: "injection",
     label: "Injections",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "5 new"
   },
   {
@@ -125,7 +125,7 @@ export const navItems: NavItem[] = [
     icon: "refer",
     label: "Referrals",
     badgeIcon: "arrowUp",
-    badgeColor: "text-green-500",
+    badgeColor: "blue",
     badgeLabel: "15 new"
   },
   // {
@@ -170,9 +170,9 @@ export const patientItems = (userDetailsId: string): PatientItem[] => [
     label: "Alerts",
   },
   {
-    title: "Quick Notes",
-    href: `/dashboard/provider/patient/${userDetailsId}/quick_notes`,
-    label: "Quick Notes",
+    title: "Notes",
+    href: `/dashboard/provider/patient/${userDetailsId}/notes`,
+    label: "Notes",
   },
   {
     title: "Dashboard",
@@ -406,16 +406,10 @@ export const timeZonesList = [
 // * Insurance
 
 // Is Insured
-export const isInsured: IsInsuredType[] = [
-  {
-    isInsured: "Not Insured",
-  },
-  {
-    isInsured: "Private Commercial type",
-  },
-  {
-    isInsured: "Others",
-  },
+export const insuranceType = [
+    "Not Insured",
+    "Private Commercial type",
+    "Others",
 ];
 
 // Insurance Type

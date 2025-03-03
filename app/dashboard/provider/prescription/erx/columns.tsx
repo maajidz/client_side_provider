@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
 
 export interface eRxTableInterface {
@@ -41,15 +42,15 @@ export const columns = (): ColumnDef<eRxTableInterface>[] => [
     header: "Status",
     cell: ({ row }) => {
       return (
-        <span
-          className={
+        <Badge
+          variant={
             row.original.status === "Confirmed"
-              ? "text-green-500 font-semibold"
-              : "text-yellow-500 font-semibold"
+              ? "success"
+              : "default"
           }
         >
           {row.original.status}
-        </span>
+        </Badge>
       );
     },
   },

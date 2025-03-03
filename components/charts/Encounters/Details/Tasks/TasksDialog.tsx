@@ -34,13 +34,18 @@ import { useCallback, useEffect, useState } from "react";
 import {
   CreateTaskType,
   TasksResponseDataInterface,
+  TaskTypeResponse,
   UpdateTaskType,
 } from "@/types/tasksInterface";
-import { createTask, updateTask } from "@/services/chartDetailsServices";
+import {
+  createTask,
+  getTasksTypes,
+  updateTask,
+} from "@/services/chartDetailsServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
-import { categoryOptions, priority, reminderOptions } from "@/constants/data";
+import { priority, reminderOptions } from "@/constants/data";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -59,6 +64,7 @@ function TasksDialog({
   const [loading, setLoading] = useState<boolean>(false);
 
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
+  const [tasksListData, setTasksListData] = useState<TaskTypeResponse>();
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
 
   const { toast } = useToast();
@@ -94,9 +100,29 @@ function TasksDialog({
     }
   }, []);
 
+  const fetchTasksList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getTasksTypes({
+        page: 1,
+        limit: 10,
+      });
+
+      if (response) {
+        setTasksListData(response);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchOwnersList();
-  }, [fetchOwnersList]);
+    fetchTasksList();
+  }, [fetchOwnersList, fetchTasksList]);
 
   useEffect(() => {
     if (tasksData) {
@@ -198,14 +224,18 @@ function TasksDialog({
                             <SelectValue placeholder="Choose Category" />
                           </SelectTrigger>
                           <SelectContent>
-                            {categoryOptions.map((category) => (
-                              <SelectItem
-                                key={category.value}
-                                value={category.value}
-                              >
-                                {category.label}
-                              </SelectItem>
-                            ))}
+                            {tasksListData && tasksListData?.taskTypes ? (
+                              tasksListData?.taskTypes.map((category) => (
+                                <SelectItem
+                                  key={category.id}
+                                  value={category.id}
+                                >
+                                  {category.name}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <div>No Tasks Found</div>
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -304,9 +334,9 @@ function TasksDialog({
 
                 {showDueDate && (
                   <>
-                    <div className="space-y-4 border-t pt-4">
+                    <div className="flex gap-4 flex-col flex-1">
                       <h4 className="text-lg font-semibold">
-                        Date and Reminder Settingssdfsdf
+                        Date and Reminder
                       </h4>
                       <div className="flex flex-row gap-2">
                       <FormField
@@ -327,7 +357,6 @@ function TasksDialog({
                         name="sendReminder"
                         render={({ field }) => {
                           const selectedValues = field.value ?? [];
-
                           return (
                             <FormItem>
                               <FormLabel>Send Reminder Mail</FormLabel>
@@ -341,11 +370,11 @@ function TasksDialog({
                                     }
                                   />
                                 </SelectTrigger>
-                                <SelectContent className="p-2">
+                                <SelectContent className="pt-1 pb-1">
                                   {reminderOptions.map((option) => (
                                     <div
                                       key={option}
-                                      className="flex items-center gap-2 p-2 cursor-pointer"
+                                      className="text-sm font-medium rounded-md hover:bg-gray-100 flex items-center gap-2 p-2 cursor-pointer"
                                       onClick={() => {
                                         const updatedValues =
                                           selectedValues.includes(option)
@@ -354,24 +383,24 @@ function TasksDialog({
                                               )
                                             : [...selectedValues, option];
 
-                                        field.onChange(updatedValues);
-                                      }}
-                                    >
-                                      <Checkbox
-                                        checked={selectedValues.includes(
-                                          option
-                                        )}
-                                      />
-                                      {option}
-                                    </div>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          );
-                        }}
-                      />
+                                          field.onChange(updatedValues);
+                                        }}
+                                      >
+                                        <Checkbox
+                                          checked={selectedValues.includes(
+                                            option
+                                          )}
+                                        />
+                                        {option}
+                                      </div>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            );
+                          }}
+                        />
                       </div>
                     </div>
                   </>

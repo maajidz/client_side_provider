@@ -154,63 +154,6 @@ const ViewReferralIn = () => {
             )}
           />
 
-          {/* Referral From Filter */}
-          {/* <FormField
-              control={form.control}
-              name="referralFrom"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by Referral From" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="external" className="cursor-pointer">
-                          External
-                        </SelectItem>
-                        <SelectItem value="internal" className="cursor-pointer">
-                          Internal
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            /> */}
-
-          {/* Selected Referral From Provider Filter */}
-          {/* <FormField
-              control={form.control}
-              name="referralProviderId"
-              render={({ field }) => {
-                const referralFrom = form.watch("referralFrom") ?? "";
-
-                return (
-                  <FormItem className="flex items-center">
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        disabled={
-                          !["internal", "external"].includes(referralFrom)
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="janeDoe">Jane</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
-                );
-              }}
-            /> */}
-
           {/* Request Status Filter */}
           <FormField
             control={form.control}
@@ -265,10 +208,10 @@ const ViewReferralIn = () => {
           </div>
         </form>
       </Form>
-
       {resultList && (
         <DefaultDataTable
           title={"Referral In"}
+          onAddClick={() => setIsReferralInDialogOpen(true)}
           columns={columns()}
           data={resultList}
           pageNo={page}
@@ -276,6 +219,7 @@ const ViewReferralIn = () => {
           onPageChange={(newPage: number) => setPage(newPage)}
         />
       )}
+
       <ReferralInDialog
         onClose={handleReferralInDialogClose}
         isOpen={isReferralInDialogOpen}

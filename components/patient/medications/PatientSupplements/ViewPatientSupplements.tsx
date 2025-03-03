@@ -1,4 +1,3 @@
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import SupplementsDialog from "@/components/charts/Encounters/Details/Supplements/SupplementsDialog";
 import LoadingButton from "@/components/LoadingButton";
 import { useToast } from "@/hooks/use-toast";
@@ -7,7 +6,6 @@ import { RootState } from "@/store/store";
 import { SupplementInterface } from "@/types/supplementsInterface";
 import { showToast } from "@/utils/utils";
 import { columns } from "./columns";
-import { PlusIcon } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
@@ -56,28 +54,22 @@ const ViewPatientSupplements = ({
 
   return (
     <>
-      <div className="flex justify-end">
-        <DefaultButton
-          onClick={() => {
-            setIsDialogOpen((prev) => ({ ...prev, create: true }));
-            fetchSupplementsList();
-          }}
-        >
-          <PlusIcon />
-          Supplements
-        </DefaultButton>
-        <SupplementsDialog
-          userDetailsId={userDetailsId}
-          onClose={() => {
-            setIsDialogOpen((prev) => ({ ...prev, create: false }));
-            fetchSupplementsList();
-          }}
-          isOpen={isDialogOpen.create}
-        />
-      </div>
+      <SupplementsDialog
+        userDetailsId={userDetailsId}
+        onClose={() => {
+          setIsDialogOpen((prev) => ({ ...prev, create: false }));
+          fetchSupplementsList();
+        }}
+        isOpen={isDialogOpen.create}
+      />
       <div className="space-y-3 py-5">
         {resultList && (
           <DefaultDataTable
+            title={"Supplements"}
+            onAddClick={() => {
+              setIsDialogOpen((prev) => ({ ...prev, create: true }));
+              fetchSupplementsList();
+            }}
             columns={columns({
               setEditData,
               setIsDialogOpen,

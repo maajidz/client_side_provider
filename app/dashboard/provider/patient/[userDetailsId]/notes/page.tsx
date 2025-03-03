@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 // const breadcrumbItems = [
 //   { title: "Dashboard", link: "/dashboard" },
 //   { title: "Patients", link: "/dashboard/provider/patient" },
-//   { title: "Quick Notes", link: "" },
+//   { title: "Notes", link: "" },
 // ];
 function Page() {
   const { userDetailsId } = useParams();

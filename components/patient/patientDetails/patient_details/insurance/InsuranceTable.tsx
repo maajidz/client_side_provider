@@ -21,6 +21,7 @@ import { showToast } from "@/utils/utils";
 import AddOrViewNotes from "./actions/AddOrViewNotes";
 import { Ellipsis } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 interface InsuranceTableProps {
   insuranceData: InsuranceResponse | undefined;
@@ -99,14 +100,10 @@ function InsuranceTable({
               <TableCell>{insuranceData.groupNameOrNumber}</TableCell>
               <TableCell>{insuranceData.subscriberNumber}</TableCell>
               <TableCell>{insuranceData.idNumber}</TableCell>
-              <TableCell
-                className={`cursor-pointer capitalize ${
-                  insuranceData.status === "active"
-                    ? "text-green-500"
-                    : "text-red-500"
-                }`}
-              >
+              <TableCell>
+                <Badge variant={`${insuranceData.status === "active" ? "success" : "warning"}`}>
                 {insuranceData.status}
+                </Badge>
               </TableCell>
               <TableCell>
                 <DropdownMenu>

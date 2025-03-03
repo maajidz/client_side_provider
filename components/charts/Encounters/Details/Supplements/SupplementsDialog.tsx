@@ -31,12 +31,17 @@ import { useToast } from "@/hooks/use-toast";
 import { supplementsFormSchema } from "@/schema/supplementsSchema";
 import {
   createSupplement,
+  getAllSupplementTypes,
   updateSupplement,
 } from "@/services/chartDetailsServices";
-import { SupplementInterface } from "@/types/supplementsInterface";
+import {
+  CreateSupplementType,
+  SupplementInterface,
+  SupplementTypesInterface,
+} from "@/types/supplementsInterface";
 import { showToast } from "@/utils/utils";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 function SupplementsDialog({
   userDetailsId,
@@ -49,11 +54,43 @@ function SupplementsDialog({
   isOpen: boolean;
   selectedSupplement?: SupplementInterface | null;
 }) {
+  // Supplements State
+  const [supplementsData, setSupplementsData] = useState<
+    SupplementTypesInterface[]
+  >([]);
+  const [supplementId, setSupplementId] = useState('');
+  // Search Supplement States
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isListVisible, setIsListVisible] = useState(false);
+
   // Loading State
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState({ get: false, post: false });
 
   // Toast State
   const { toast } = useToast();
+
+  // GET Supplements List
+  const fetchAllSupplements = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, get: true }));
+
+    try {
+      const response = await getAllSupplementTypes();
+
+      if (response) {
+        setSupplementsData(response.data);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch supplements data",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, get: false }));
+    }
+  }, [toast]);
 
   const form = useForm<z.infer<typeof supplementsFormSchema>>({
     resolver: zodResolver(supplementsFormSchema),
@@ -74,6 +111,56 @@ function SupplementsDialog({
       comments: selectedSupplement?.comments || "",
     },
   });
+
+  // POST Supplement
+  const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
+    setLoading((prev) => ({ ...prev, post: true }));
+
+    try {
+      const supplementData: CreateSupplementType = {
+        ...values,
+        supplementId: supplementId,
+        userDetailsId: userDetailsId,
+      };
+
+      if (!selectedSupplement) {
+        await createSupplement(supplementData);
+
+        showToast({
+          toast,
+          type: "success",
+          message: "Supplement created successfully",
+        });
+      } else {
+        await updateSupplement({
+          requestData: supplementData,
+          supplementId: selectedSupplement?.supplementId,
+        });
+
+        showToast({
+          toast,
+          type: "success",
+          message: "Supplement updated successfully",
+        });
+      }
+    } catch (err) {
+      console.log("Error", err);
+      showToast({
+        toast,
+        type: "error",
+        message: "Supplement creation failed",
+      });
+    } finally {
+      setLoading((prev) => ({ ...prev, post: false }));
+      form.reset();
+      onClose();
+    }
+  };
+
+  // * Effects
+  useEffect(() => {
+    fetchAllSupplements();
+  }, [fetchAllSupplements]);
 
   useEffect(() => {
     if (selectedSupplement) {
@@ -99,50 +186,11 @@ function SupplementsDialog({
     }
   }, [selectedSupplement, form]);
 
-  // POST Supplement
-  const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
-    setLoading(true);
-    try {
-      const supplementData = {
-        ...values,
-        userDetailsId: userDetailsId,
-      };
+  const filteredSupplements = supplementsData.filter((supplement) =>
+    supplement.supplement_name.toLocaleLowerCase().includes(searchTerm)
+  );
 
-      if (!selectedSupplement) {
-        await createSupplement(supplementData);
-
-        showToast({
-          toast,
-          type: "success",
-          message: "Supplement created successfully",
-        });
-      } else {
-        await updateSupplement({
-          requestData: supplementData,
-          supplementId: selectedSupplement?.id,
-        });
-
-        showToast({
-          toast,
-          type: "success",
-          message: "Supplement updated successfully",
-        });
-      }
-    } catch (err) {
-      console.log("Error", err);
-      showToast({
-        toast,
-        type: "error",
-        message: "Supplement creation failed",
-      });
-    } finally {
-      setLoading(false);
-      form.reset();
-      onClose();
-    }
-  };
-
-  if (loading) {
+  if (loading.post) {
     return <LoadingButton />;
   }
 
@@ -165,7 +213,41 @@ function SupplementsDialog({
                     <FormItem className={formStyles.formItem}>
                       <FormLabel>Supplement</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            value={searchTerm}
+                            placeholder="Search Supplement..."
+                            onChange={(event) => {
+                              setSearchTerm(event.target.value);
+                              setIsListVisible(true);
+                            }}
+                          />
+                          {searchTerm && isListVisible && (
+                            <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                              {filteredSupplements.length > 0 ? (
+                                filteredSupplements.map((supplement) => (
+                                  <div
+                                    key={supplement.id}
+                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                    onClick={() => {
+                                      field.onChange(supplement.supplement_name);
+                                      setSearchTerm(supplement.supplement_name);
+                                      setSupplementId(supplement.id)
+                                      setIsListVisible(false);
+                                    }}
+                                  >
+                                    {supplement.supplement_name}
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="px-4 py-2 text-gray-500">
+                                  No results found
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -372,7 +454,7 @@ function SupplementsDialog({
                 />
                 <SubmitButton
                   label={selectedSupplement ? "Update " : "Save"}
-                  disabled={loading}
+                  disabled={loading.post}
                 />
               </div>
             </form>

@@ -39,13 +39,8 @@ import { useToast } from "@/hooks/use-toast";
 import { getLabsData } from "@/services/chartsServices";
 import { createLabResultRequest } from "@/services/labResultServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
-import {
-  fetchUserDataResponse,
-  fetchUserEssentials,
-} from "@/services/userServices";
 import { LabsDataResponse, Test } from "@/types/chartsInterface";
 import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
-import { PatientDetails, UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState, useCallback, useEffect } from "react";
@@ -54,14 +49,6 @@ import formStyles from "@/components/formStyles.module.css";
 import PageContainer from "@/components/layout/page-container";
 
 const CreateResultRecord = () => {
-  // Patients State
-  const [patientData, setPatientData] = useState<UserData[]>([]);
-  const [patient, setPatient] = useState<PatientDetails>();
-
-  // Search State
-  const [searchTerm, setSearchTerm] = useState("");
-  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
-
   // Loading State
   const [loading, setLoading] = useState({
     lab: false,
@@ -80,7 +67,7 @@ const CreateResultRecord = () => {
   const form = useForm<z.infer<typeof createLabResultsSchema>>({
     resolver: zodResolver(createLabResultsSchema),
     defaultValues: {
-      patient: patient?.user.id ?? "",
+      patient: "",
       reviewer: "",
       dateTime: "",
       labId: "",
@@ -101,6 +88,10 @@ const CreateResultRecord = () => {
     },
   });
 
+  if (userDetailsId) {
+    form.setValue("patient", userDetailsId);
+  }
+
   const { fields: testGroupFields } = useFieldArray({
     control: form.control,
     name: "testResults",
@@ -120,42 +111,6 @@ const CreateResultRecord = () => {
   const [selectedLab, setSelectedLab] = useState<string>("");
   const router = useRouter();
   const { toast } = useToast();
-
-  // GET Patient Data From Id
-  const fetchPatientFromId = useCallback(async () => {
-    setLoading((prev) => ({ ...prev, patient: true }));
-
-    try {
-      if (userDetailsId) {
-        const response = await fetchUserEssentials({ userDetailsId });
-
-        if (response) {
-          setPatient(response);
-        }
-      }
-    } catch (err) {
-      console.error("Error fetching user data:", err);
-    } finally {
-      setLoading((prev) => ({ ...prev, patient: false }));
-    }
-  }, [userDetailsId]);
-
-  // GET Patients' Data
-  const fetchPatientData = useCallback(async () => {
-    setLoading((prev) => ({ ...prev, patients: true }));
-
-    try {
-      const response = await fetchUserDataResponse({});
-
-      if (response) {
-        setPatientData(response.data);
-      }
-    } catch (err) {
-      console.error("Error fetching user data:", err);
-    } finally {
-      setLoading((prev) => ({ ...prev, patients: false }));
-    }
-  }, []);
 
   const fetchLabsData = useCallback(async () => {
     setLoading((prev) => ({ ...prev, lab: true }));
@@ -195,20 +150,21 @@ const CreateResultRecord = () => {
     }
   }, []);
 
-  const fetchLabTestsData = useCallback(async (labId: string) => {
-    if (!labId) return;
-    const selectedLab = labResponse?.data?.find((lab) => lab.id === labId);
-    if (selectedLab) {
-      setLabTestResponse(selectedLab.tests || []);
-    }
-  }, [labResponse?.data]);
+  const fetchLabTestsData = useCallback(
+    async (labId: string) => {
+      if (!labId) return;
+      const selectedLab = labResponse?.data?.find((lab) => lab.id === labId);
+      if (selectedLab) {
+        setLabTestResponse(selectedLab.tests || []);
+      }
+    },
+    [labResponse?.data]
+  );
 
   useEffect(() => {
-    fetchPatientData();
-    fetchPatientFromId();
     fetchLabsData();
     fetchProvidersList();
-  }, [fetchPatientData, fetchPatientFromId, fetchLabsData, fetchProvidersList]);
+  }, [fetchLabsData, fetchProvidersList]);
 
   useEffect(() => {
     if (selectedLab) {
@@ -216,23 +172,11 @@ const CreateResultRecord = () => {
     }
   }, [selectedLab, fetchLabTestsData]);
 
-  const filteredPatients = patientData.filter((patient) =>
-    `${patient.user.firstName} ${patient.user.lastName}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
+  const onSubmit = async () => {
+    const values = form.getValues();
 
-  useEffect(() => {
-    if (patient) {
-      setSearchTerm(`${patient.user.firstName} ${patient.user.lastName}`);
-    } else {
-      setSearchTerm("");
-    }
-  }, [patient]);
-
-  const onSubmit = async (values: z.infer<typeof createLabResultsSchema>) => {
     const requestData = {
-      userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+      userDetailsId: values.patient,
       reviewerId: values.reviewer,
       dateTime: values.dateTime,
       labId: values.labId,
@@ -268,6 +212,8 @@ const CreateResultRecord = () => {
         type: "error",
         message: "Error while saving Lab Results",
       });
+    } finally {
+      form.reset();
     }
   };
 
@@ -302,61 +248,6 @@ const CreateResultRecord = () => {
               className={`${formStyles.formBody} w-[30rem]`}
             >
               <div>
-                {!patient && (
-                  <FormField
-                    control={form.control}
-                    name="patient"
-                    render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
-                        <FormLabel>Patient</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Search Patient "
-                              value={searchTerm}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                setSearchTerm(value);
-                                setVisibleSearchList(true);
-
-                                if (!value) {
-                                  field.onChange("");
-                                }
-                              }}
-                            />
-                            {searchTerm && visibleSearchList && (
-                              <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                                {filteredPatients.length > 0 ? (
-                                  filteredPatients.map((patient) => (
-                                    <div
-                                      key={patient.id}
-                                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                      onClick={() => {
-                                        field.onChange(patient.id);
-                                        setSearchTerm(
-                                          `${patient.user.firstName} ${patient.user.lastName}`
-                                        );
-                                        setVisibleSearchList(false);
-                                      }}
-                                    >
-                                      {`${patient.user.firstName} ${patient.user.lastName}`}
-                                    </div>
-                                  ))
-                                ) : (
-                                  <div className="px-4 py-2 text-gray-500">
-                                    No results found
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-
                 <FormField
                   control={form.control}
                   name="reviewer"
@@ -515,9 +406,10 @@ const CreateResultRecord = () => {
                                 <FormLabel>Min</FormLabel>
                                 <FormControl>
                                   <Input
+                                    {...field}
                                     type="number"
                                     placeholder="Min"
-                                    {...field}
+                                    value={field.value}
                                     onChange={(e) => {
                                       const value = e.target.value;
                                       field.onChange(

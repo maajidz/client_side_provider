@@ -1,5 +1,3 @@
-import { UserDetails } from "./userInterface"
-
 export interface RecallsInterface {
     type: string
     notes: string
@@ -12,12 +10,13 @@ export interface RecallsInterface {
 }
 
 export interface UpdateRecallsInterface {
-    type: string
-    notes: string
-    due_date_period: string
-    due_date_value: number
-    due_date_unit: string
-    auto_reminders: boolean
+    type?: string
+    notes?: string
+    status?: string
+    due_date_period?: string
+    due_date_value?: number
+    due_date_unit?: string
+    auto_reminders?: boolean
 }
 
 

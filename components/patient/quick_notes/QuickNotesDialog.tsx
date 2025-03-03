@@ -28,7 +28,7 @@ import {
   updateQuickNotes,
 } from "@/services/quickNotesServices";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 const QuickNotesDialog = ({
   userDetailsId,
@@ -88,14 +88,14 @@ const QuickNotesDialog = ({
       showToast({
         toast,
         type: "success",
-        message: `Quick note added successfully`,
+        message: `Note added successfully`,
       });
     } catch (e) {
       console.log("Error:", e);
       showToast({
         toast,
         type: "error",
-        message: `Could not add quick note`,
+        message: `Could not add note`,
       });
     } finally {
       setLoading(false);
@@ -114,7 +114,7 @@ const QuickNotesDialog = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {quickNotesData ? "Update Quick Notes" : "Add Quick Notes"}
+            {quickNotesData ? "Update Notes" : "Add Notes"}
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -133,7 +133,7 @@ const QuickNotesDialog = ({
                     </FormItem>
                   )}
                 />
-                <DialogFooter><Button>Save</Button></DialogFooter>
+                <DialogFooter><SubmitButton label="Save"></SubmitButton></DialogFooter>
               </div>
             </ScrollArea>
           </form>

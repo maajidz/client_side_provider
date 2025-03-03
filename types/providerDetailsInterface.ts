@@ -8,6 +8,7 @@ export interface ProviderDetails {
   licenseNumber: string;
   yearsOfExperience: number;
   providerAuthId: string;
+  address: string;
 }
 
 export interface UpdateProviderDetails {
@@ -17,6 +18,7 @@ export interface UpdateProviderDetails {
   nip: string;
   licenseNumber: string;
   yearsOfExperience: number;
+  address: string
 }
 
 export interface FetchProviderListInterface {

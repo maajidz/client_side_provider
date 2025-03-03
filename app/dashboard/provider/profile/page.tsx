@@ -30,7 +30,8 @@ export default function Profile() {
     nip: initialData?.nip || '',
     licenseNumber: initialData?.licenseNumber || '',
     yearsOfExperience: initialData?.yearsOfExperience || 0,
-    providerAuthId: savedProviderAuthId
+    providerAuthId: savedProviderAuthId,
+    address: initialData?.address || ""
   };
 
   useEffect(() => {
@@ -48,7 +49,8 @@ export default function Profile() {
             nip: data.nip,
             licenseNumber: data.roleName,
             yearsOfExperience: data.yearsOfExperience,
-            providerAuthId: savedProviderAuthId
+            providerAuthId: savedProviderAuthId,
+            address: data.address
           });
         }
       } catch (error) {

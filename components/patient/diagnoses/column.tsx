@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenuContent,
   DropdownMenu,
@@ -82,12 +83,12 @@ export const columns = ({
     header: "Status",
     cell: ({ row }) => {
       const statusColor =
-        row.original.status === "active" ? "text-green-500" : "text-red-500";
+        row.original.status === "active" ? "success" : "warning";
 
       return (
-        <div className={`cursor-pointer capitalize ${statusColor}`}>
+        <Badge variant={`${statusColor}`}>
           {row.original.status}
-        </div>
+        </Badge>
       );
     },
   },

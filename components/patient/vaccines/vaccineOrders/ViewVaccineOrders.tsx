@@ -28,11 +28,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import VaccineOrders from "@/components/injections/vaccine-orders/VaccineOrders";
 
 function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   // Data State
   const [vaccinesData, setVaccinesData] = useState<VaccinesInterface[]>([]);
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
+  const [isVaccineDialogOpen, setIsVaccineDialogOpen] =
+    useState<boolean>(false);
 
   // Pagination State
   const itemsPerPage = 10;
@@ -112,12 +115,10 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
     }
   }, [pageNo, userDetailsId, filters.providerId, filters.status]);
 
-
   function onSubmit(values: z.infer<typeof vaccineSearchParams>) {
-
     setFilters({
-      providerId: values.providerId ==="all" ? "" : values.providerId || "",
-      status: values.status ==="all" ? "" : values.status || "",
+      providerId: values.providerId === "all" ? "" : values.providerId || "",
+      status: values.status === "all" ? "" : values.status || "",
     });
     setPageNo(1);
   }
@@ -131,97 +132,99 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
 
   return (
     <div className="flex flex-col gap-6">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-row gap-2"
-          >
-            {/* Ordered By Filter */}
-            <FormField
-              control={form.control}
-              name="providerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ordered By</FormLabel>
-                  <FormControl>
-                    <Select
-                      defaultValue={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by Ordered by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all" className="cursor-pointer">
-                          All
-                        </SelectItem>
-                        {providersList
-                          .filter(
-                            (
-                              provider
-                            ): provider is typeof provider & {
-                              providerDetails: { id: string };
-                            } => Boolean(provider?.providerDetails?.id)
-                          )
-                          .map((provider) => (
-                            <SelectItem
-                              key={provider.id}
-                              value={provider.providerDetails.id}
-                              className="cursor-pointer"
-                            >
-                              {provider.firstName} {provider.lastName}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-
-            {/* Status Filter */}
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem >
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all" className="cursor-pointer">
-                          All
-                        </SelectItem>
-                        {Array.from(
-                          new Set(
-                            vaccinesData?.map((vaccine) => vaccine?.status)
-                          )
-                        ).map((status) => (
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-row gap-2"
+        >
+          {/* Ordered By Filter */}
+          <FormField
+            control={form.control}
+            name="providerId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ordered By</FormLabel>
+                <FormControl>
+                  <Select
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by Ordered by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all" className="cursor-pointer">
+                        All
+                      </SelectItem>
+                      {providersList
+                        .filter(
+                          (
+                            provider
+                          ): provider is typeof provider & {
+                            providerDetails: { id: string };
+                          } => Boolean(provider?.providerDetails?.id)
+                        )
+                        .map((provider) => (
                           <SelectItem
-                            key={status}
-                            value={status}
+                            key={provider.id}
+                            value={provider.providerDetails.id}
                             className="cursor-pointer"
                           >
-                            {status}
+                            {provider.firstName} {provider.lastName}
                           </SelectItem>
                         ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-            <div className="flex items-end">
-              <Button variant={"secondary"}>Search</Button>
-            </div>
-          </form>
-        </Form>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage className="text-red-500" />
+              </FormItem>
+            )}
+          />
+
+          {/* Status Filter */}
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <FormControl>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all" className="cursor-pointer">
+                        All
+                      </SelectItem>
+                      {Array.from(
+                        new Set(vaccinesData?.map((vaccine) => vaccine?.status))
+                      ).map((status) => (
+                        <SelectItem
+                          key={status}
+                          value={status}
+                          className="cursor-pointer"
+                        >
+                          {status}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage className="text-red-500" />
+              </FormItem>
+            )}
+          />
+          <div className="flex items-end">
+            <Button variant={"secondary"}>Search</Button>
+          </div>
+        </form>
+      </Form>
       <DefaultDataTable
+        title={"Vaccine Order"}
+        onAddClick={() => {
+          setIsVaccineDialogOpen(true);
+        }}
         columns={columns({
           setLoading,
           showToast: () =>
@@ -236,6 +239,13 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
         pageNo={pageNo}
         totalPages={totalPages}
         onPageChange={(newPage) => setPageNo(newPage)}
+      />
+      <VaccineOrders
+        onClose={() => {
+          setIsVaccineDialogOpen(false);
+          fetchVaccineOrderData();
+        }}
+        isOpen={isVaccineDialogOpen}
       />
     </div>
   );

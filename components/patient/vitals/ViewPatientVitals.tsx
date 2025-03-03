@@ -6,10 +6,7 @@ import { showToast } from "@/utils/utils";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import VitalDialog from "./VitalDialog";
-import { PlusIcon } from "lucide-react";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import { Heading } from "@/components/ui/heading";
-import { Button } from "@/components/ui/button";
 
 const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   // Vitals State
@@ -65,46 +62,37 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   if (loading) return <LoadingButton />;
 
   return (
-    <>
-      <div className="flex justify-between">
-        <Heading title="Vitals" />
-        <Button
-          onClick={() => {
-            setEditData(undefined);
-            setIsDialogOpen(true);
-          }}
-        >
-          Add Vitals
-          <PlusIcon />
-        </Button>
-        <VitalDialog
-          isOpen={isDialogOpen}
-          vitalsData={editData}
-          userDetailsId={userDetailsId}
-          onClose={handleDialogClose}
-        />
-      </div>
-      <div className="flex flex-col gap-6">
-        <DefaultDataTable
-          columns={columns({
-            fetchVitalsData,
-            setEditData,
-            setIsDialogOpen,
-            setLoading,
-            showToast: () =>
-              showToast({
-                toast,
-                type: "success",
-                message: "Deleted Successfully",
-              }),
-          })}
-          data={vitalsData}
-          pageNo={page}
-          totalPages={total}
-          onPageChange={(newPage) => setPage(newPage)}
-        />
-      </div>
-    </>
+    <div className="space-y-4">
+      <DefaultDataTable
+        title={"Vitals"}
+        onAddClick={() => {
+          setEditData(undefined);
+          setIsDialogOpen(true);
+        }}
+        columns={columns({
+          fetchVitalsData,
+          setEditData,
+          setIsDialogOpen,
+          setLoading,
+          showToast: () =>
+            showToast({
+              toast,
+              type: "success",
+              message: "Deleted Successfully",
+            }),
+        })}
+        data={vitalsData}
+        pageNo={page}
+        totalPages={total}
+        onPageChange={(newPage) => setPage(newPage)}
+      />
+      <VitalDialog
+        isOpen={isDialogOpen}
+        vitalsData={editData}
+        userDetailsId={userDetailsId}
+        onClose={handleDialogClose}
+      />
+    </div>
   );
 };
 

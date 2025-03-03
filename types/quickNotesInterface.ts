@@ -1,12 +1,14 @@
 export interface ProviderDetail {
   id: string;
   professionalSummary: string;
+  providerUniqueId: string
   gender: string;
   roleName: string;
   nip: string;
   licenseNumber: string;
   yearsOfExperience: number;
   createdAt: string;
+  address: string
   updatedAt: string;
 }
 

@@ -192,7 +192,7 @@ const EditPatientBody = ({
           className="flex gap-6 flex-col"
         >
           <FormSectionVert>
-            {/* <div className="font-bold text-sm text-gray-500">Basic Information</div> */}
+            <div className="font-bold text-sm text-gray-500">Basic Information</div>
             <FormSectionHor>
               <FormField
                 control={methods.control}
@@ -277,7 +277,7 @@ const EditPatientBody = ({
             </FormSectionHor>
           </FormSectionVert>
           <FormSectionVert>
-            {/* <div className="font-bold text-sm text-gray-500">Contact Details</div> */}
+            <div className="font-semibold text-xs text-gray-600">Contact Details</div>
             <FormSectionHor>
               <FormField
                 control={methods.control}

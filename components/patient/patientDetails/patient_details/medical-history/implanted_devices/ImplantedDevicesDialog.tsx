@@ -156,7 +156,6 @@ const ImplantedDevicesDialog = ({
       //   //   });
       //   // }
       // }
-      onClose();
     } catch (e) {
       console.log("Error:", e);
       showToast({
@@ -165,6 +164,7 @@ const ImplantedDevicesDialog = ({
         message: "Failed to add a device",
       });
     } finally {
+      form.reset();
       setLoading(false);
       onClose();
     }

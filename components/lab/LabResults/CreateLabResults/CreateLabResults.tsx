@@ -184,9 +184,8 @@ const CreateLabResults = () => {
   );
 
   const onSubmit = async (values: z.infer<typeof createLabResultsSchema>) => {
-    console.log(values);
     const requestData = {
-      userDetailsId: "97f41397-3fe3-4f0b-a242-d3370063db33",
+      userDetailsId: values.patient,
       reviewerId: values.reviewer,
       dateTime: values.dateTime,
       labId: values.labId,
@@ -312,7 +311,7 @@ const CreateLabResults = () => {
                             field.onChange(value);
                           }}
                         >
-                          <SelectTrigger className="w-64">
+                          <SelectTrigger>
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>

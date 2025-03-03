@@ -51,7 +51,7 @@ export const updateInsurance = async ({
     url: `/provider/insurance/${id}`,
     method: "PATCH",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data"
     },
     data: requestData,
   });
