@@ -73,6 +73,7 @@ const EditContactDetails = ({
         zipCode: patientDetails.location.split(",")[4],
       });
       methods.setValue("state", patientDetails.location.split(",")[2] ?? "");
+      // console.log(patientDetails.location.split(",")[2], "HEHEHEHHEH");
     }
   }, [patientDetails, methods]);
 
@@ -176,10 +177,11 @@ const EditContactDetails = ({
                       <Select
                         value={field.value}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select here" />
+                          <SelectValue placeholder="Select a State">
+                            {field.value || "Select a State"}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           <Input
