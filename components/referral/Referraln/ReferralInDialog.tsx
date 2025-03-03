@@ -55,7 +55,10 @@ const ReferralInDialog = ({
 }) => {
   const [patients, setPatients] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [providerSearchTerm, setProviderSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+  const [visibleProviderSearchList, setVisibleProviderSearchList] =
+    useState<boolean>(false);
   const [selectedDiagnoses, setSelectedDiagnoses] = useState<
     PastDiagnosesInterface[]
   >([]);
@@ -158,7 +161,7 @@ const ReferralInDialog = ({
     console.log("Form Values:", values);
     const requestData = {
       // referringToProviderID: values.referralTo,
-      referringToProviderID: "3abdd291-9a25-4390-8558-0059734de538",
+      referringToProviderID: values.referralTo,
       referringFromProviderID: providerDetails.providerId,
       referralType: "Internal",
       referralReason: values.referralReason,
@@ -199,6 +202,12 @@ const ReferralInDialog = ({
       .includes(searchTerm.toLowerCase())
   );
 
+  const filteredProviders = providerList.filter((provider) =>
+    `${provider.firstName} ${provider.lastName}`
+      .toLowerCase()
+      .includes(providerSearchTerm.toLowerCase())
+  );
+
   if (loading) {
     <div>
       <LoadingButton />
@@ -227,6 +236,7 @@ const ReferralInDialog = ({
                     name="userDetailsId"
                     render={({ field }) => (
                       <FormItem className={`${formStyles.formFilterItem}`}>
+                        <FormLabel>Search Patient</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input
@@ -245,7 +255,9 @@ const ReferralInDialog = ({
                                       key={patient.id}
                                       className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                       onClick={() => {
-                                        field.onChange(patient.id);
+                                        field.onChange(
+                                          patient.user.userDetailsId ?? ""
+                                        );
                                         setSearchTerm(
                                           `${patient.user.firstName} ${patient.user.lastName}`
                                         );
@@ -275,7 +287,44 @@ const ReferralInDialog = ({
                       <FormItem className={`${formStyles.formFilterItem}`}>
                         <FormLabel>Referral To</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter Provider name" {...field} />
+                          <div className="relative">
+                            <Input
+                              placeholder="Search Provider"
+                              value={providerSearchTerm}
+                              onChange={(e) => {
+                                setProviderSearchTerm(e.target.value);
+                                setVisibleProviderSearchList(true);
+                              }}
+                            />
+                            {providerSearchTerm &&
+                              visibleProviderSearchList && (
+                                <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full">
+                                  {filteredProviders.length > 0 ? (
+                                    filteredProviders.map((provider) => (
+                                      <div
+                                        key={provider.id}
+                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                        onClick={() => {
+                                          field.onChange(
+                                            provider.providerDetails?.id ?? ""
+                                          );
+                                          setProviderSearchTerm(
+                                            `${provider.firstName} ${provider.lastName}`
+                                          );
+                                          setVisibleProviderSearchList(false);
+                                        }}
+                                      >
+                                        {`${provider.firstName} ${provider.lastName}`}
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="px-4 py-2 text-gray-500">
+                                      No results found
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -299,7 +348,7 @@ const ReferralInDialog = ({
                               {providerList.map((provider) => (
                                 <SelectItem
                                   key={provider.id}
-                                  value={provider.id}
+                                  value={provider.providerDetails?.id ?? ""}
                                 >
                                   {provider.firstName} {provider.lastName}
                                 </SelectItem>

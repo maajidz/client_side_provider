@@ -150,7 +150,7 @@ const ReferralOutDialog = ({
     console.log("Form Values:", values);
     const requestData = {
       // referringToProviderID: values.referralTo,
-      referringToProviderID: "3abdd291-9a25-4390-8558-0059734de538",
+      referringToProviderID: values.referralTo,
       referringFromProviderID: providerDetails.providerId,
       referralType: "Internal",
       referralReason: values.referralReason,
@@ -243,7 +243,7 @@ const ReferralOutDialog = ({
                                       key={patient.id}
                                       className="px-4 py-2 cursor-pointer hover:bg-gray-100 capitalize"
                                       onClick={() => {
-                                        field.onChange(patient.id);
+                                        field.onChange(patient.user.userDetailsId);
                                         setSearchTerm(
                                           `${patient.user.firstName} ${patient.user.lastName}`
                                         );
@@ -291,7 +291,7 @@ const ReferralOutDialog = ({
                                 {providerList.map((provider) => (
                                   <SelectItem
                                     key={provider.id}
-                                    value={provider.id}
+                                    value={provider.providerDetails?.id ?? ''}
                                   >
                                     {provider.firstName} {provider.lastName}
                                   </SelectItem>
