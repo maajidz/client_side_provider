@@ -9,3 +9,13 @@ export const addImageResultFormSchema = z.object({
     })
   ),
 });
+
+export const createImageOrderSchema = z.object({
+  patient: z.string().optional(),
+  providerId: z.string(),
+  ordered_date: z.string().optional(),
+  imageTypeId: z.string(),
+  imageTestIds: z.string(),
+  note_to_patients: z.string(),
+  intra_office_notes: z.string(),
+});
