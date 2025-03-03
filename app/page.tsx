@@ -12,13 +12,7 @@ export default function Home() {
   return (
     <div>
       {token ? (
-        <main className="w-full flex-1 bg-gray-100">
-          {/* <div className="flex justify-between items-center px-11 h-16">
-            <Link href={"/dashboard"}>
-              <Image src={imageUrl} alt={"logo"} height={24} priority />
-            </Link>
-            <AccountIcon />
-          </div> */}
+        <main className="w-screen h-screen flex flex-1 bg-gray-100">
           <DashboardPage />
         </main>
       ) : (

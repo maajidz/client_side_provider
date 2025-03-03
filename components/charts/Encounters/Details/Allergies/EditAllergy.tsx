@@ -22,15 +22,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { updateAllergiesData } from "@/services/chartDetailsServices";
+import {
+  getAllergyTypeData,
+  updateAllergiesData,
+} from "@/services/chartDetailsServices";
 import { updateAllergyFormSchema } from "@/schema/allergenFormSchema";
 import {
   AllergenResponseInterfae,
+  AllergyTypeResponse,
   UpdateAllergenInterface,
 } from "@/types/allergyInterface";
 import { showToast } from "@/utils/utils";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 
@@ -48,12 +52,13 @@ function EditAllergy({
   isOpen,
 }: EditAllergyProps) {
   const [loading, setLoading] = useState(false);
+  const [allergyTypeData, setAllergyTypeData] = useState<AllergyTypeResponse>();
 
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof updateAllergyFormSchema>>({
     defaultValues: {
-      type: selectedAllergy?.type || "",
+      type: selectedAllergy?.typeId || "",
       Allergen: selectedAllergy?.Allergen || "",
       observedOn: selectedAllergy?.observedOn.split("T")[0],
       serverity: selectedAllergy?.serverity || "",
@@ -64,10 +69,29 @@ function EditAllergy({
     },
   });
 
+  const fetchAllergiesTypeData = useCallback(async () => {
+    console.log("Allery ferch");
+    setLoading(true);
+    try {
+      const response = await getAllergyTypeData({ page: 1, limit: 10 });
+      if (response) {
+        setAllergyTypeData(response);
+      }
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAllergiesTypeData();
+  }, [fetchAllergiesTypeData]);
+
   useEffect(() => {
     if (selectedAllergy) {
       form.reset({
-        type: selectedAllergy.type,
+        type: selectedAllergy.typeId,
         Allergen: selectedAllergy.Allergen,
         observedOn: selectedAllergy.observedOn.split("T")[0],
         serverity: selectedAllergy.serverity,
@@ -76,6 +100,7 @@ function EditAllergy({
           ? selectedAllergy.reactions
           : [],
       });
+      
     }
   }, [selectedAllergy, form]);
 
@@ -150,10 +175,20 @@ function EditAllergy({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="Medication">
-                                Medication
-                              </SelectItem>
-                              <SelectItem value="Food">Food</SelectItem>
+                              {allergyTypeData?.allergyTypes ? (
+                                allergyTypeData?.allergyTypes.map(
+                                  (typeData) => (
+                                    <SelectItem
+                                      key={typeData.id}
+                                      value={typeData.id}
+                                    >
+                                      {typeData.name}
+                                    </SelectItem>
+                                  )
+                                )
+                              ) : (
+                                <div>No Allergy type found</div>
+                              )}
                             </SelectContent>
                           </Select>
                           <FormMessage />

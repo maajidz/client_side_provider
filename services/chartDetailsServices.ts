@@ -9,6 +9,7 @@ import {
 import {
   AllergenResponseInterfae,
   AllergeyRequestInterface,
+  AllergyTypeResponse,
   UpdateAllergenInterface,
 } from "@/types/allergyInterface";
 import {
@@ -684,6 +685,25 @@ export const getAllergiesData = async ({
   });
 
   const data: AllergenResponseInterfae[] = await response.data;
+  return data;
+};
+
+export const getAllergyTypeData = async ({
+  page,
+  limit,
+}: {
+  page: number;
+  limit: number;
+}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/allergies/types/all?page=${page}&limit=${limit}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(response.data);
+  const data: AllergyTypeResponse = await response.data;
   return data;
 };
 

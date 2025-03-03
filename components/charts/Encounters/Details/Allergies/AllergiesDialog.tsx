@@ -20,7 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createAllergies } from "@/services/chartDetailsServices";
+import {
+  createAllergies,
+  getAllergyTypeData,
+} from "@/services/chartDetailsServices";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { allergenFormSchema } from "@/schema/allergenFormSchema";
@@ -30,9 +33,12 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
-import { AllergeyRequestInterface } from "@/types/allergyInterface";
+import {
+  AllergeyRequestInterface,
+  AllergyTypeResponse,
+} from "@/types/allergyInterface";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 
@@ -50,6 +56,8 @@ function AllergiesDialog({
   const { toast } = useToast();
   const providerDetails = useSelector((state: RootState) => state.login);
   const [loading, setLoading] = useState<boolean>(false);
+  const [allergyTypeData, setAllergyTypeData] = useState<AllergyTypeResponse>();
+
   const form = useForm<z.infer<typeof allergenFormSchema>>({
     resolver: zodResolver(allergenFormSchema),
     defaultValues: {
@@ -65,6 +73,25 @@ function AllergiesDialog({
       ],
     },
   });
+
+  const fetchAllergiesTypeData = useCallback(async () => {
+    console.log("Allery ferch");
+    setLoading(true);
+    try {
+      const response = await getAllergyTypeData({ page: 1, limit: 10 });
+      if (response) {
+        setAllergyTypeData(response);
+      }
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAllergiesTypeData();
+  }, [fetchAllergiesTypeData]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -96,7 +123,7 @@ function AllergiesDialog({
 
         const requestData: AllergeyRequestInterface = {
           allergies: data.allergens.map((allergen) => ({
-            type: allergen.type,
+            typeId: allergen.type,
             serverity: allergen.serverity,
             observedOn: allergen.observedOn,
             Allergen: allergen.Allergen,
@@ -111,7 +138,6 @@ function AllergiesDialog({
             providerId: providerDetails.providerId,
           })),
         };
-
         await createAllergies({ requestData });
         showToast({
           toast,
@@ -174,10 +200,20 @@ function AllergiesDialog({
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="Medication">
-                                  Medication
-                                </SelectItem>
-                                <SelectItem value="Food">Food</SelectItem>
+                                {allergyTypeData?.allergyTypes ? (
+                                  allergyTypeData?.allergyTypes.map(
+                                    (typeData) => (
+                                      <SelectItem
+                                        key={typeData.id}
+                                        value={typeData.id}
+                                      >
+                                        {typeData.name}
+                                      </SelectItem>
+                                    )
+                                  )
+                                ) : (
+                                  <div>No Allergy type found</div>
+                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -185,7 +221,6 @@ function AllergiesDialog({
                         )}
                       />
                     </td>
-
                     <td className="p-2">
                       <FormField
                         control={form.control}

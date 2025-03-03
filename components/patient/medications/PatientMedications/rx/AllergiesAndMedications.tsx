@@ -129,7 +129,7 @@ function AllergiesAndMedications({
               >
                 <p>{allergy.Allergen}</p>
                 {" / "}
-                <p>{allergy.type}</p>
+                <p>{allergy.typeId}</p>
                 {" / "}
                 <p>{allergy.serverity}</p>
                 {" / "}
