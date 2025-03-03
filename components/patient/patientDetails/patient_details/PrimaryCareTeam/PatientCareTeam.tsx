@@ -43,7 +43,10 @@ const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <div className={styles.infoContainer}>
-      <PrimaryCarePhysician careTeam={careTeam? careTeam : null}/>
+      <PrimaryCarePhysician
+        careTeam={careTeam ? careTeam : null}
+        userDetailsId={userDetailsId}
+      />
       {/* <ReferringPhysicianSelect />
       <InHouseCareTeam /> */}
     </div>
