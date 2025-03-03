@@ -46,11 +46,7 @@ export const columns = (
   {
     id: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <Badge variant="success">
-        {row.original.status}
-      </Badge>
-    ),
+    cell: ({ row }) => <Badge variant="success">{row.original.status}</Badge>,
   },
   {
     accessorKey: "additionalText",
@@ -68,7 +64,15 @@ export const columns = (
     id: "meetingLink",
     header: "Meeting Link",
     cell: ({ row }) => (
-      <JoinButton appointmentLink={row.original.meetingLink} />
+      <JoinButton
+        appointmentLink={row.original.meetingLink}
+        disabled={
+          row.original.status === "No Show" ||
+          row.original.status === "Consulted"
+            ? true
+            : false
+        }
+      />
     ),
     enableSorting: true,
   },
