@@ -313,7 +313,7 @@ const ViewTasks = () => {
             <DefaultDataTable
               title="Tasks"
               onAddClick={() => {
-                setEditData(null);
+                // setEditData(null);
                 setIsDialogOpen(true);
               }}
               columns={columns({

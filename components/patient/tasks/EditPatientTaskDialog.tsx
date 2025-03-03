@@ -124,6 +124,7 @@ const EditPatientTaskDialog = ({
   }, []);
 
   useEffect(() => {
+    fetchTasksList();
     fetchOwnersList();
   }, [fetchOwnersList, fetchTasksList]);
 
@@ -133,6 +134,7 @@ const EditPatientTaskDialog = ({
         category: tasksData.category || "",
         task: tasksData.notes || "",
         owner: tasksData.assignerProvider?.id || "",
+        dueDate: tasksData.dueDate,
         priority: tasksData.priority || "low",
         sendReminder: tasksData.reminder || [],
         comments: tasksData.description || "",
@@ -153,39 +155,6 @@ const EditPatientTaskDialog = ({
     }
   }, [form, tasksData, tasksListData, ownersList]);
 
-  // useEffect(() => {
-  //   if (tasksData) {
-  //     form.reset({
-  //       category: tasksData.category,
-  //       task: tasksData.notes,
-  //       owner: tasksData?.assignerProvider?.id,
-  //       priority: tasksData.priority,
-  //       sendReminder: tasksData?.reminder,
-  //       comments: tasksData.description,
-  //       userDetailsId: tasksData.userDetailsId,
-  //     });
-  //     if (tasksData.dueDate) {
-  //       const formattedDueDate = new Date(tasksData.dueDate)
-  //         .toISOString()
-  //         .split("T")[0];
-  //       form.setValue("dueDate", formattedDueDate);
-  //       setShowDueDate(!!tasksData.dueDate);
-  //     }
-
-  //     setSelectedOwner(
-  //       ownersList.find(
-  //         (owner) =>
-  //           owner.providerDetails?.id === tasksData.assignerProvider?.id
-  //       )
-  //     );
-  //     setSelectedTask(
-  //       tasksListData?.taskTypes.find((task) => task.id === tasksData.category)
-  //     );
-  //     console.log("Fetched", tasksData.assignerProvider?.id);
-  //     console.log("Set", form.getValues().owner);
-  //   }
-  // }, [form, tasksData, ownersList, selectedTask, tasksListData]);
-
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     setLoading(true);
 
@@ -196,7 +165,7 @@ const EditPatientTaskDialog = ({
         priority: values.priority,
         status: "PENDING",
         notes: values.task,
-        dueDate: `${values.dueDate}`,
+        dueDate: values.dueDate,
         reminder: values.sendReminder,
         assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
         assignerProviderId: providerDetails.providerId,
