@@ -151,10 +151,11 @@ const AlertDialog = ({
                   control={form.control}
                   name="alertName"
                   render={({ field }) => (
-                    <FormItem >
+                    <FormItem>
                       <FormLabel>Alert Name</FormLabel>
                       <FormControl>
                         <Select
+                          disabled={alertData ? true : false}
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
@@ -178,7 +179,7 @@ const AlertDialog = ({
                   control={form.control}
                   name="alertDescription"
                   render={({ field }) => (
-                    <FormItem >
+                    <FormItem>
                       <FormLabel>Alert Description</FormLabel>
                       <FormControl>
                         <Textarea className="resize-none" {...field} />
