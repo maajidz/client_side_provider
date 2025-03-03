@@ -49,6 +49,7 @@ import {
 import {
   CreateSupplementType,
   SupplementResponseInterface,
+  SupplementTypesResponseInterface,
   UpdateSupplementType,
 } from "@/types/supplementsInterface";
 import {
@@ -923,6 +924,19 @@ export const createSupplement = async (requestData: CreateSupplementType) => {
   const data = await response.data;
   return data;
 };
+
+export const getAllSupplementTypes = async () => {
+  const response = await ApiFetch({
+    url: "/provider/supplements/types/all",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: SupplementTypesResponseInterface = await response.data;
+  return data;
+}
 
 export const getSupplements = async ({
   userDetailsId,

@@ -1,5 +1,6 @@
 export interface SupplementInterface {
   id: string;
+  supplementId: string;
   supplement: string;
   manufacturer: string;
   fromDate: string;
@@ -12,6 +13,19 @@ export interface SupplementInterface {
   comments: string;
   userDetailsId: string;
 }
+
+export interface SupplementTypesInterface {
+  id: string;
+  supplement_name: string;
+  description: string;
+  createdAt: string
+  updatedAt: string;
+}
+
+export interface SupplementTypesResponseInterface {
+  data: SupplementTypesInterface[],
+  total: number
+}; 
 
 export interface SupplementResponseInterface {
   data: SupplementInterface[];
