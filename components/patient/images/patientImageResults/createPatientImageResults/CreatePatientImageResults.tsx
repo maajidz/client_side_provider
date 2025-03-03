@@ -80,10 +80,9 @@ const CreatePatientImageResults = ({
   }, [fetchImageTestsData]);
 
   const onSubmit = async (values: z.infer<typeof createImageResultsSchema>) => {
-    console.log("values", values);
     try {
       const requestData: CreateImageResultInterface = {
-        userDetailsId: userDetailsId,
+        userDetailsId,
         reviewerId: providerDetails.providerId,
         testResults: values.testResults.map((test, index) => ({
           imageTestId: selectedTests[index],
@@ -91,7 +90,6 @@ const CreatePatientImageResults = ({
           documents: uploadedImages,
         })),
       };
-      console.log("Request", requestData);
       const response = await createImageResultRequest({
         requestData: requestData,
       });
