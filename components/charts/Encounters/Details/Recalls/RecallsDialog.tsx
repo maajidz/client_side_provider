@@ -307,22 +307,12 @@ const RecallsDialog = ({
                   <Button variant="outline" onClick={onClose}>
                     Cancel
                   </Button>
-                  <Button>Add</Button>
+                  <SubmitButton label="Add"></SubmitButton>
                 </div>
               </div>
             </DialogFooter>
           </form>
         </Form>
-        <DialogFooter>
-        <div className="flex w-full justify-end">
-                  <div className="flex  gap-2 w-fit">
-                    <Button variant="outline" onClick={onClose}>
-                      Cancel
-                    </Button>
-                    <SubmitButton label="Add"></SubmitButton>
-                  </div>
-          </div>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
