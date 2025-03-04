@@ -29,6 +29,7 @@ import { createNewPatient } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import PatientConfirmationScreen from "./PatientConfirmationScreen";
+import { useRouter } from "next/navigation";
 
 const AddPatientBody = () => {
   const [loading, setLoading] = useState(false);
@@ -36,6 +37,7 @@ const AddPatientBody = () => {
   const [search, setSearch] = useState<string>("");
 
   const { toast } = useToast();
+  const router  = useRouter();
 
   const methods = useForm({
     resolver: zodResolver(addNewPatientSchema),
@@ -143,6 +145,7 @@ const AddPatientBody = () => {
       });
     } finally {
       setLoading(false);
+      router.push('/dashboard/provider/patient')
       methods.reset();
     }
   };

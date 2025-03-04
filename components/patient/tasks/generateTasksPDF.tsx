@@ -28,7 +28,7 @@ const generateTasksPDF = ({
     head: [["Task ID", "Category", "Status", "Priority"]], 
     body:  [[
       tasksData.id ?? "",
-      tasksData.category ?? "",
+      tasksData.categoryId ?? "",
       tasksData.status ?? "",
       tasksData.priority ?? "",
     ]],

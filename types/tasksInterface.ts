@@ -39,39 +39,38 @@ export interface TasksResponseInterface {
 }
 
 export interface TasksResponseDataInterface {
-  id: string
-  category: string
-  description: string
-  status: string
-  notes: string
+  id: string;
+  categoryId: string;
+  description: string;
+  status: string;
+  notes: string;
   priority?: "low" | "medium" | "high";
-  dueDate: string
-  reminder: any
-  assignedByAdmin: boolean
-  userDetailsId: string
-  isAccepted: boolean
-  createdAt: string
-  updatedAt: string
-  assignedProvider: ProviderDetails
-  assignerProvider: ProviderDetails
+  dueDate: string;
+  reminder: any;
+  assignedByAdmin: boolean;
+  userDetailsId: string;
+  isAccepted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  assignedProvider: ProviderDetails;
+  assignerProvider: ProviderDetails;
 }
 
 export interface Status {
-  status: string
+  status: string;
 }
 
 export interface TaskTypeResponse {
-  total: number
-  page: string
-  limit: string
-  taskTypes: TaskTypeList[]
+  total: number;
+  page: string;
+  limit: string;
+  taskTypes: TaskTypeList[];
 }
 
 export interface TaskTypeList {
-  id: string
-  name: string
-  description: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
 }
-

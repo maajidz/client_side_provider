@@ -72,7 +72,7 @@ const EditPatientTaskDialog = ({
   const form = useForm<z.infer<typeof tasksSchema>>({
     resolver: zodResolver(tasksSchema),
     defaultValues: {
-      category: tasksData?.category ?? "",
+      category: tasksData?.categoryId ?? "",
       task: tasksData?.notes ?? "",
       owner: tasksData?.assignedProvider?.id ?? "",
       priority: tasksData?.priority ?? "low",
@@ -131,7 +131,7 @@ const EditPatientTaskDialog = ({
   useEffect(() => {
     if (tasksData) {
       form.reset({
-        category: tasksData.category || "",
+        category: tasksData.categoryId || "",
         task: tasksData.notes || "",
         owner: tasksData.assignerProvider?.id || "",
         dueDate: tasksData.dueDate,
@@ -143,7 +143,7 @@ const EditPatientTaskDialog = ({
 
       // Setting selected category
       const selectedTaskCategory = tasksListData?.taskTypes.find(
-        (task) => task.id === tasksData.category
+        (task) => task.id === tasksData.categoryId
       );
       setSelectedTask(selectedTaskCategory);
 

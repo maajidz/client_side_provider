@@ -33,7 +33,9 @@ function ViewRecallDialog({
         </DialogHeader>
         <div className="grid md:grid-cols-2 flex-col items-start gap-6 w-full max-w-md font-medium">
           <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-600">Recall Type:</span>
+            <span className="text-sm font-medium text-gray-600">
+              Recall Type:
+            </span>
             <span>{selectedRecallData?.type}</span>
           </div>
           <div className="flex flex-col gap-1">
@@ -42,24 +44,25 @@ function ViewRecallDialog({
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium text-gray-600">Due Date:</span>
-            <span>
-              {selectedRecallData?.due_date_period ?? ""}{" "}
+            <span className="capitalize">
+              {selectedRecallData?.due_date_period ?? ""}
+              {"  "}
               {selectedRecallData?.due_date_value ?? ""}{" "}
               {selectedRecallData?.due_date_unit ?? ""}
             </span>
           </div>
           <div className="flex flex-col gap-1">
-            <span  className="text-sm font-medium text-gray-600">Provider:</span>
-            <span>[Provider Name]</span>
+            <span className="text-sm font-medium text-gray-600">Status:</span>
+            <span className="capitalize">{selectedRecallData?.status}</span>
           </div>
           <div className="flex flex-col gap-1">
-            <span  className="text-sm font-medium text-gray-600">Status:</span>
-            <span>[Status]</span>
+            <span className="text-sm font-medium text-gray-600">Provider:</span>
+            <span>{selectedRecallData?.providerId}</span>
           </div>
-          <div className="flex flex-col gap-1">
+          {/* <div className="flex flex-col gap-1">
             <span  className="text-sm font-medium text-gray-600">Visit Date:</span>
             <span>[Visit Date]</span>
-          </div>
+          </div> */}
         </div>
       </DialogContent>
     </Dialog>
