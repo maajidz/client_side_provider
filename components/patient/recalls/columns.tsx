@@ -108,7 +108,7 @@ export const columns = ({
     header: "Status",
     cell: ({ row }) => {
       const statusColor =
-        row.original.status === "active" ? "success" : "warning";
+        row.original.status === "Completed" ? "success" : "warning";
 
       return (
         <Badge variant={`${statusColor}`}>

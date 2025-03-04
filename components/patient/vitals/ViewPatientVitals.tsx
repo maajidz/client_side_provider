@@ -62,7 +62,7 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   if (loading) return <LoadingButton />;
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col space-y-4">
       <DefaultDataTable
         title={"Vitals"}
         onAddClick={() => {

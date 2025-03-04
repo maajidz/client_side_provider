@@ -176,12 +176,12 @@ const ImplantedDevicesDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="min-w-fit">
         <DialogHeader>
           <DialogTitle>Add Device</DialogTitle>
         </DialogHeader>
         {showImplantedDeviceDetails ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6">
             <div className={`${styles.infoContainer}`}>
               <div className={`${styles.labelContainer}`}>
                 <div className={`${styles.labelText}`}>UDI:</div>

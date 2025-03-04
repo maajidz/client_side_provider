@@ -36,7 +36,7 @@ export interface BadgeProps
 
 function Badge({ className, variant, ...props }: BadgeProps) {
   return (
-    <div className={cn(badgeVariants({ variant }), className, "capitalize w-fit flex flex-row items-center gap-1 rounded-2xl px-2 py-1 text-xs font-medium hover:cursor-pointer")} {...props} />
+    <span className={cn(badgeVariants({ variant }), "capitalize w-fit h-fit inline-flex flex-row items-center gap-1 rounded-2xl px-2 py-1 text-xs font-medium hover:cursor-pointer", className)} {...props} />
   )
 }
 

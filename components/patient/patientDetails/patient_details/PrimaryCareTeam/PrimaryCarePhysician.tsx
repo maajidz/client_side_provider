@@ -85,13 +85,13 @@ const PrimaryCarePhysician = ({
       )}
 
       {!loading && searchPrimaryCarePhysician && (
-        <div className="absolute w-full bottom-0">
+        <div className="absolute w-full top-8">
           {!selectedPrimaryCarePhysician && providers.length > 0 ? (
             <div className="mt-2 w-full bg-white shadow-lg rounded-lg z-10">
               {providers.map((user) => (
                 <div
                   key={user.id}
-                  className="border-2 border-gray-300 rounded-lg p-2 hover:bg-gray-100 cursor-pointer"
+                  className="rounded-lg px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   onClick={() => handlePrimaryCarePhysicianSelect(user)}
                 >
                   <div className="text-[#84012A] text-base font-medium">
