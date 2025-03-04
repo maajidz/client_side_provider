@@ -11,11 +11,11 @@ export const addImageResultFormSchema = z.object({
 });
 
 export const createImageOrderSchema = z.object({
-  patient: z.string().optional(),
-  providerId: z.string(),
-  ordered_date: z.string().optional(),
-  imageTypeId: z.string(),
-  imageTestIds: z.string(),
-  note_to_patients: z.string(),
-  intra_office_notes: z.string(),
+  patient: z.string().min(1, { message: "Patient field is required" }),
+  orderedBy: z.string().min(1, { message: "Ordered by is required" }),
+  orderedDate: z.string().min(1, {message: "Ordered date is required"}),
+  imageTypeId: z.string().min(1, { message: "Image type is required" }),
+  imageTestIds: z.array(z.string()),
+  note_to_patients: z.string().optional(),
+  intra_office_notes: z.string().optional(),
 });

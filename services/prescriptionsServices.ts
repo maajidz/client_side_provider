@@ -1,5 +1,4 @@
 import ApiFetch from "@/config/api";
-import { CreatePrescriptionInterface } from "@/types/chartsInterface";
 import { PrescriptionResponseInterface, UpdatePrescriptionInterface } from "@/types/prescriptionInterface";
 
 export const getUserPrescriptionsData = async ({
@@ -45,7 +44,7 @@ export const updateUserPrescription = async ({
 
 export const deleteUserPrescriptionsData = async ({ id }: { id: string }) => {
   const response = await ApiFetch({
-    url: `/provider/prescriptions/patient/${id}`,
+    url: `/provider/prescriptions/${id}`,
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

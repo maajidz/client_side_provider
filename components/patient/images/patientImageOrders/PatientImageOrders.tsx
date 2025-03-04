@@ -55,7 +55,7 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
             providerId: providerDetails.providerId,
             limit: limit,
             page: page,
-            userDetailsId: userDetailsId,
+            userDetailsId,
           });
           if (response) {
             setOrderList(response);
