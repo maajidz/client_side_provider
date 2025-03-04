@@ -32,11 +32,16 @@ const badgeVariants = cva(
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+    VariantProps<typeof badgeVariants> {
+  icon?: React.ElementType;
+}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ className, variant, icon: Icon, children, ...props }: BadgeProps) {
   return (
-    <span className={cn(badgeVariants({ variant }), "capitalize w-fit h-fit inline-flex flex-row items-center gap-1 rounded-2xl px-2 py-1 text-xs font-medium hover:cursor-pointer", className)} {...props} />
+    <span className={cn(badgeVariants({ variant }), "capitalize w-fit h-fit inline-flex flex-row items-center gap-1 rounded-2xl px-2 py-1 text-xs font-medium hover:cursor-pointer", className)} {...props}>
+      {Icon && <Icon className="mr-1 w-3 h-3" />}
+      {children}
+    </span>
   )
 }
 
