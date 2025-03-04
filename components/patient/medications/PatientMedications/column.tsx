@@ -67,7 +67,7 @@ export const columns = ({
           Dispense: {row.original?.dispense_quantity}{" "}
           {row.original?.dispense_unit}
         </div>
-        <div>Refill: {row.original?.earliest_fill_date}</div>
+        <div>Refill: {row.original?.earliest_fill_date.split('T')[0]}</div>
         <div>Supply: {row.original?.days_of_supply}</div>
         
       </div>

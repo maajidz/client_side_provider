@@ -210,7 +210,7 @@ function EditPrescription({
               <div className="flex items-center gap-3">
                 <span className="font-medium">Note to Pharmacy:</span>
                 <span className="font-semibold">
-                  {selectedPrescription?.note_to_Pharmacy ?? ""}
+                  {selectedPrescription?.Note_to_Pharmacy ?? ""}
                 </span>
               </div>
               <div className="flex gap-2">

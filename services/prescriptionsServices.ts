@@ -45,7 +45,7 @@ export const updateUserPrescription = async ({
 
 export const deleteUserPrescriptionsData = async ({ id }: { id: string }) => {
   const response = await ApiFetch({
-    url: `/provider/prescriptions/patient/${id}`,
+    url: `/provider/prescriptions/${id}`,
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

@@ -14,14 +14,20 @@ export interface PrescriptionDataInterface {
   internal_comments: string;
   days_of_supply: number;
   additional_refills: number;
-  note_to_Pharmacy: string;
+  Note_to_Pharmacy: string;
   earliest_fill_date: string;
-	fromDate: string;
-	toDate: string;
-	status: 'inactive' | 'active';
+  status: "inactive" | "active";
   createdAt: string;
   updatedAt: string;
   dosages: Dosage[];
+  fromDate: string;
+  toDate: string;
+  userDetails: {
+    userID: string;
+    userName: string;
+  };
+  provideName: string;
+  providerId: null;
 }
 
 export interface PrescriptionResponseInterface {
