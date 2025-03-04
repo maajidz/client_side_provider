@@ -68,7 +68,6 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             <Card className="flex flex-grow-0">
               <CardHeader>
                 <CardTitle>
-                <CardTitle>
                   <TitleLinks
                     title="Allergies"
                     href="allergies"
