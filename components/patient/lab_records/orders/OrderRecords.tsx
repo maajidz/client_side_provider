@@ -27,6 +27,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { useRouter } from "next/navigation";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { fetchProviderListDetails } from "@/services/registerServices";
 
 interface OrderRecordsProps {
   userDetailsId: string;
@@ -35,6 +37,7 @@ interface OrderRecordsProps {
 function OrderRecords({ userDetailsId }: OrderRecordsProps) {
   // const providerDetails = useSelector((state: RootState) => state.login);
   const [orderList, setOrderList] = useState<LabOrdersDataInterface>();
+  const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
   const router = useRouter();
 
   // Loading State
@@ -45,6 +48,11 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
+  const [filters, setFilters] = useState({
+    orderedby: "",
+    status: "",
+  });
+
   const form = useForm<z.infer<typeof filterLabOrdersSchema>>({
     resolver: zodResolver(filterLabOrdersSchema),
     defaultValues: {
@@ -54,8 +62,31 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
   });
 
   function onSubmit(values: z.infer<typeof filterLabOrdersSchema>) {
-    console.log(values);
+    setFilters((prev) => ({
+      ...prev,
+      orderedby: values.orderedby === "all" ? "" : values.orderedby || "",
+      status: values.status === "all" ? "" : values.status || "",
+      patient: "",
+    }));
+
+    setPage(1);
   }
+
+  const fetchProvidersData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({
+        page: page,
+        limit: 10,
+      });
+      setProvidersList(response.data);
+    } catch (err) {
+      console.error("Error fetching providers data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page]);
 
   const fetchLabOrdersList = useCallback(
     async (page: number) => {
@@ -66,6 +97,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
           userDetailsId,
           limit,
           page,
+          providerId: filters.orderedby,
         });
         if (response) {
           setOrderList(response);
@@ -77,12 +109,13 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
         setLoading(false);
       }
     },
-    [userDetailsId]
+    [userDetailsId, filters]
   );
 
   useEffect(() => {
     fetchLabOrdersList(page);
-  }, [page, fetchLabOrdersList]);
+    fetchProvidersData();
+  }, [page, fetchLabOrdersList, fetchProvidersData]);
 
   if (loading) {
     return <LoadingButton />;
@@ -110,7 +143,24 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
                       <SelectValue placeholder="Select Reviewer" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="reviewer1">Reviewer</SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      {providersList
+                        .filter(
+                          (
+                            provider
+                          ): provider is typeof provider & {
+                            providerDetails: { id: string };
+                          } => Boolean(provider?.providerDetails?.id)
+                        )
+                        .map((provider) => (
+                          <SelectItem
+                            key={provider.providerDetails.id}
+                            value={provider.providerDetails.id}
+                            className="cursor-pointer"
+                          >
+                            {provider.firstName} {provider.lastName}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -155,7 +205,8 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
           onAddClick={() =>
             router.push(
               `/dashboard/provider/patient/${userDetailsId}/lab_records/create-lab-order`
-            )}
+            )
+          }
           columns={columns()}
           data={orderList?.data || []}
           pageNo={page}

@@ -29,6 +29,7 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
+import { useRouter } from "next/navigation";
 
 const CreatePatientImageResults = ({
   userDetailsId,
@@ -42,6 +43,7 @@ const CreatePatientImageResults = ({
     useState<ImagesTestsResponseInterface>();
   const providerDetails = useSelector((state: RootState) => state.login);
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof createImageResultsSchema>>({
     resolver: zodResolver(createImageResultsSchema),
@@ -110,6 +112,8 @@ const CreatePatientImageResults = ({
         message: "Error while adding image results!",
       });
     } finally {
+      form.reset();
+      router.push(`/dashboard/provider/patient/${userDetailsId}/images`)
     }
   };
 

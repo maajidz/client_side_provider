@@ -27,13 +27,22 @@ import { columns } from "@/components/images/ImageOrders/columns";
 import LoadingButton from "@/components/LoadingButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { useRouter } from "next/navigation";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [orderList, setOrderList] = useState<ImageOrdersResponseInterface>();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [filters, setFilters] = useState({
+    orderedby: "",
+    status: "",
+  });
 
   const router = useRouter();
 
@@ -45,6 +54,17 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
     },
   });
 
+  function onSubmit(values: z.infer<typeof filterLabOrdersSchema>) {
+    setFilters((prev) => ({
+      ...prev,
+
+      orderedby: values.orderedby === "all" ? "" : values.orderedby || "",
+      status: values.status === "all" ? "" : values.status || "",
+    }));
+
+    setPage(1);
+  }
+
   const fetchLabOrdersList = useCallback(
     async (page: number) => {
       try {
@@ -52,7 +72,7 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
         const limit = 4;
         if (providerDetails) {
           const response = await getImagesOrdersData({
-            providerId: providerDetails.providerId,
+            providerId: filters.orderedby || providerDetails.providerId,
             limit: limit,
             page: page,
             userDetailsId: userDetailsId,
@@ -69,12 +89,29 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
         setLoading(false);
       }
     },
-    [providerDetails, userDetailsId]
+    [providerDetails, userDetailsId, filters]
   );
+
+  const fetchOwnersList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+
+      if (response) {
+        setOwnersList(response.data);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchLabOrdersList(page);
-  }, [page, fetchLabOrdersList]);
+    fetchOwnersList();
+  }, [page, fetchLabOrdersList, fetchOwnersList]);
 
   if (loading) {
     return <LoadingButton />;
@@ -83,7 +120,10 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <PageContainer>
       <Form {...form}>
-        <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+        >
           <FormField
             control={form.control}
             name="orderedby"
@@ -99,7 +139,15 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
                       <SelectValue placeholder="Select Reviewer" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="reviewer1">Reviewer</SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      {ownersList.map((owner) => (
+                        <SelectItem
+                          key={owner.id}
+                          value={owner.providerDetails?.id || owner.id}
+                        >
+                          {owner.firstName} {owner.lastName}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -107,7 +155,6 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="status"
@@ -132,6 +179,11 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
               </FormItem>
             )}
           />
+          <div className="flex items-end">
+            <Button type="submit" variant={"secondary"}>
+              Search <Search />
+            </Button>
+          </div>
         </form>
       </Form>
       <div className="space-y-5">

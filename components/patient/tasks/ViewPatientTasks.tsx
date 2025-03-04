@@ -236,7 +236,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             />
             <div className="flex items-end">
-              <Button variant={"secondary"}>
+              <Button type="submit" variant={"secondary"}>
                 Search <Search />
               </Button>
             </div>

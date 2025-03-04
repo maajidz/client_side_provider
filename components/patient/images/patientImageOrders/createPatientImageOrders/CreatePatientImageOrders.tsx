@@ -58,6 +58,7 @@ const CreatePatientImageOrders = ({
   const onSubmit = async (values: z.infer<typeof createLabResultsSchema>) => {
     console.log(values);
     setLoading(false);
+    
   };
 
   if (loading) {

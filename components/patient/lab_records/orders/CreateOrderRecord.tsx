@@ -163,6 +163,8 @@ const CreateOrderRecord = () => {
       });
     } finally {
       form.reset();
+      form.reset();
+      router.push(`/dashboard/provider/patient/${userDetailsId}/lab_records`)
     }
   };
 

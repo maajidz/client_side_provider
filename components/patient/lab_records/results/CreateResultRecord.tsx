@@ -214,6 +214,7 @@ const CreateResultRecord = () => {
       });
     } finally {
       form.reset();
+      router.replace(`/dashboard/provider/patient/${userDetailsId}/lab_records`)
     }
   };
 
@@ -266,6 +267,7 @@ const CreateResultRecord = () => {
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
+                              
                               {providerListData.data.map((providerList) => {
                                 const providerId =
                                   providerList.providerDetails?.id ??
