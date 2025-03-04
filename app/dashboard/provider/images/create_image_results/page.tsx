@@ -7,11 +7,14 @@ import PageContainer from "@/components/layout/page-container";
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
   { title: "Images", link: "/dashboard/provider/images" },
-  { title: "Create Image Results", link: "/dashboard/provider/images/create_image_results" },
+  {
+    title: "Create Image Results",
+    link: "/dashboard/provider/images/create_image_results",
+  },
 ];
 export default function ImageResults() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
         <CreateImageResults />

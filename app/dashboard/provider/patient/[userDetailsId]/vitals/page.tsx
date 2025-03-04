@@ -14,13 +14,13 @@ function Page() {
   if (!userDetailsId || Array.isArray(userDetailsId)) {
     return <div>Error: User details ID not found</div>;
   }
-  
+
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       {/* <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
       </div> */}
-      <PatientVitals userDetailsId={userDetailsId}/>
+      <PatientVitals userDetailsId={userDetailsId} />
     </PageContainer>
   );
 }

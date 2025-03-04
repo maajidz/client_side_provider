@@ -14,17 +14,17 @@ function Injections() {
     {
       value: "injectionOrders",
       label: "Injection Orders",
-      component: InjectionsClient
+      component: InjectionsClient,
     },
     {
       value: "vaccineOrders",
       label: "Vaccine Orders",
-      component: VaccinesClient
+      component: VaccinesClient,
     },
   ];
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-2">
         <Tabs
           defaultValue={activeTab}
@@ -40,13 +40,11 @@ function Injections() {
             </TabsList>
           </div>
           <>
-            {injectionsTab.map(
-              ({ value, component: Component }) => (
-                <TabsContent value={value} key={value}>
-                  <Component />
-                </TabsContent>
-              )
-            )}
+            {injectionsTab.map(({ value, component: Component }) => (
+              <TabsContent value={value} key={value}>
+                <Component />
+              </TabsContent>
+            ))}
           </>
         </Tabs>
       </div>

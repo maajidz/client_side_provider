@@ -3,7 +3,7 @@ import PageContainer from "@/components/layout/page-container";
 
 const ImagesPreview = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="flex flex-col gap-5">
         Image Results
         <div className="flex flex-col gap-3 border-b">

@@ -11,7 +11,7 @@ const breadcrumbItems = [
 
 function TasksPage() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
         <Tasks />

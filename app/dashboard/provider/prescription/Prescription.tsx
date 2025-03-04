@@ -25,7 +25,7 @@ const prescriptionTab = [
 
 function Prescription() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-2">
         <Tabs defaultValue="prescriptions">
           <div className="flex items-center justify-between border-b border-gray-300 pb-2">

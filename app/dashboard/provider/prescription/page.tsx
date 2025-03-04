@@ -9,7 +9,7 @@ const breadcrumbItems = [
 ];
 function PrescriptionPage() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
         <Prescription />
@@ -19,4 +19,3 @@ function PrescriptionPage() {
 }
 
 export default PrescriptionPage;
-

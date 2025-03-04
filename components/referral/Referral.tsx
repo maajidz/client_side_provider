@@ -21,7 +21,7 @@ const Referral = () => {
   ];
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Tabs defaultValue="referralOut">
           <TabsList className="grid w-full grid-cols-2">

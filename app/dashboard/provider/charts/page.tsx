@@ -11,7 +11,7 @@ const breadcrumbItems = [
 
 export default function Calendar() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
         <ChartsClient />

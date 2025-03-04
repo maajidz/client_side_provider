@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import PageContainer from "@/components/layout/page-container";
 import PatientAppointments from "@/components/patient/appointments/PatientAppointments";
 import { useParams } from "next/navigation";
@@ -17,9 +17,9 @@ function Page() {
   }
 
   return (
-    <PageContainer scrollable={true}>
-        {/* <Breadcrumbs items={breadcrumbItems} /> */}
-        <PatientAppointments userDetailsId={userDetailsId} />
+    <PageContainer>
+      {/* <Breadcrumbs items={breadcrumbItems} /> */}
+      <PatientAppointments userDetailsId={userDetailsId} />
     </PageContainer>
   );
 }

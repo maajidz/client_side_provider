@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import PageContainer from "@/components/layout/page-container";
 import PatientReferrals from "@/components/patient/referrals/PatientReferrals";
@@ -12,7 +12,7 @@ function Page() {
   }
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <PatientReferrals userDetailsId={userDetailsId} />
     </PageContainer>
   );

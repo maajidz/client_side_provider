@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import PageContainer from "@/components/layout/page-container";
 import PatientDashboard from "@/components/patient/dashboard/PatientDashboard";
@@ -17,7 +17,7 @@ function Page() {
     return <div>Error: User details ID not found</div>;
   }
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <PatientDashboard userDetailsId={userDetailsId} />
     </PageContainer>
   );

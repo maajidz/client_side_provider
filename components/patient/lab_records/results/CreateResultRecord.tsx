@@ -223,7 +223,7 @@ const CreateResultRecord = () => {
 
   return (
     <>
-      <PageContainer scrollable={true}>
+      <PageContainer>
         <div>
           <div className="flex justify-between">
             Add Lab Results

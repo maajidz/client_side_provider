@@ -10,7 +10,7 @@ const breadcrumbItems = [
 ];
 export default function ReferralPage() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
         <Referral />

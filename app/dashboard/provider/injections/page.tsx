@@ -9,7 +9,7 @@ const breadcrumbItems = [
 
 function InjectionsPage() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
         <Injections />

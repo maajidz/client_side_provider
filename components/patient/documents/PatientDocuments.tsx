@@ -42,7 +42,7 @@ const PatientDocuments = ({ userDetailsId }: { userDetailsId: string }) => {
     // },
   ];
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="flex flex-col gap-3 rounded-lg">
         <Tabs defaultValue="all">
           <TabsList className="grid w-full grid-cols-2">

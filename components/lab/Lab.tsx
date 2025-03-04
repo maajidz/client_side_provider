@@ -21,7 +21,7 @@ const labTab = [
 
 export default function Lab() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-2">
         <Tabs defaultValue="labResults">
           <div className="flex items-center justify-between border-b border-gray-300 pb-2">

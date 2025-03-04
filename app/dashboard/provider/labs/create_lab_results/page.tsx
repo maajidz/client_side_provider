@@ -7,11 +7,14 @@ import PageContainer from "@/components/layout/page-container";
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
   { title: "Labs", link: "/dashboard/provider/labs" },
-  { title: "Create Lab Results", link: "/dashboard/provider/labs/create_lab_results" },
+  {
+    title: "Create Lab Results",
+    link: "/dashboard/provider/labs/create_lab_results",
+  },
 ];
 export default function Labs() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
         <CreateLabResults />

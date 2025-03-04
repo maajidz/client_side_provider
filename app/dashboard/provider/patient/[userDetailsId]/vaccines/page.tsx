@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import PageContainer from "@/components/layout/page-container";
 import PatientVaccines from "@/components/patient/vaccines/PatientVaccines";
 import { useParams } from "next/navigation";
@@ -15,11 +15,11 @@ function Page() {
     return <div>Error: User details ID not found</div>;
   }
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       {/* <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
       </div> */}
-      <PatientVaccines userDetailsId={userDetailsId}/>
+      <PatientVaccines userDetailsId={userDetailsId} />
     </PageContainer>
   );
 }

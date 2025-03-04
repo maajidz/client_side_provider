@@ -81,7 +81,7 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   }
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <Form {...form}>
         <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           <FormField
@@ -135,19 +135,19 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
         </form>
       </Form>
       <div className="space-y-5">
-          <DefaultDataTable
-            title={"Patient Image Orders"}
-            onAddClick={() =>
-              router.push(
-                `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_orders`
-              )
-            }
-            columns={columns()}
-            data={orderList?.data || []}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
-          />
+        <DefaultDataTable
+          title={"Patient Image Orders"}
+          onAddClick={() =>
+            router.push(
+              `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_orders`
+            )
+          }
+          columns={columns()}
+          data={orderList?.data || []}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
       </div>
     </PageContainer>
   );
