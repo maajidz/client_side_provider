@@ -1,12 +1,14 @@
 .infoContainer {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
     align-items: center;
 }
 
 .labelContainer {
     display: flex;
+    justify-items: start;
+    align-items: start;
     flex-direction: column;
     gap: 0.5rem;
 }
