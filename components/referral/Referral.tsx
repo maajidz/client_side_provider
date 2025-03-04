@@ -24,15 +24,13 @@ const Referral = () => {
     <PageContainer scrollable={true}>
       <div className="space-y-4">
         <Tabs defaultValue="referralOut">
-          <div className="flex flex-row justify-between gap-10">
-            <TabsList className="grid w-full grid-cols-2">
-              {patientReferralTab.map((tab) => (
-                <CustomTabsTrigger value={tab.value} key={tab.value}>
-                  {tab.label}
-                </CustomTabsTrigger>
-              ))}
-            </TabsList>
-          </div>
+          <TabsList className="grid w-full grid-cols-2">
+            {patientReferralTab.map((tab) => (
+              <CustomTabsTrigger value={tab.value} key={tab.value}>
+                {tab.label}
+              </CustomTabsTrigger>
+            ))}
+          </TabsList>
           {patientReferralTab.map(({ value, component: Component }) => (
             <TabsContent value={value} key={value}>
               {Component ? <Component /> : value}
