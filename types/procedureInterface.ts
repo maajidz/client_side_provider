@@ -1,6 +1,6 @@
 export interface ProceduresInterface {
   type: string;
-  name: string;
+  nameId: string;
   fromDate: string;
   toDate: string;
   notes: string;
@@ -9,12 +9,25 @@ export interface ProceduresInterface {
 
 export interface UpdateProceduresInterface {
   type: string;
-  name: string;
+  nameId: string;
   fromDate: string;
   toDate: string;
   notes: string;
   userDetailsId: string;
   id: string;
+}
+
+export interface ProceduresTypesResponseInterface {
+  data: ProceduresTypesInterface[]
+  total: number
+}
+
+export interface ProceduresTypesInterface {
+  id: string
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
 }
 
 

@@ -33,6 +33,7 @@ import {
 import {
   ProcedureResponse,
   ProceduresInterface,
+  ProceduresTypesResponseInterface,
 } from "@/types/procedureInterface";
 import {
   RecallsData,
@@ -1061,6 +1062,19 @@ export const deleteProcedure = async ({ id }: { id: string }) => {
   const data = await response.data;
   return data;
 };
+
+export const getAllProcedureNameTypes = async () => {
+  const response = await ApiFetch({
+    url: "/provider/procedures/type-name/all",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: ProceduresTypesResponseInterface = await response.data;
+  return data;
+}
 
 /**
  * * Historical Vaccines API

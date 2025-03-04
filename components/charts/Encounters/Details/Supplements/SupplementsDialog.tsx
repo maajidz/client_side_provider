@@ -95,7 +95,7 @@ function SupplementsDialog({
   const form = useForm<z.infer<typeof supplementsFormSchema>>({
     resolver: zodResolver(supplementsFormSchema),
     defaultValues: {
-      supplement: selectedSupplement?.supplement || "",
+      supplement: selectedSupplement?.supplementId || "",
       manufacturer: selectedSupplement?.manufacturer || "",
       fromDate:
         selectedSupplement?.fromDate.split("T")[0] ||
