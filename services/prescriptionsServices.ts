@@ -1,5 +1,4 @@
 import ApiFetch from "@/config/api";
-import { CreatePrescriptionInterface } from "@/types/chartsInterface";
 import { PrescriptionResponseInterface, UpdatePrescriptionInterface } from "@/types/prescriptionInterface";
 
 export const getUserPrescriptionsData = async ({

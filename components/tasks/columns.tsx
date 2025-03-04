@@ -105,7 +105,11 @@ export const columns = ({
       const assignedProviderId = row.getValue(
         "assignedProvider"
       ) as TasksResponseDataInterface["assignedProvider"];
-      return <div className="cursor-pointer">{assignedProviderId?.providerUniqueId}</div>;
+      return (
+        <div className="cursor-pointer">
+          {assignedProviderId?.providerUniqueId}
+        </div>
+      );
     },
   },
   {
@@ -146,7 +150,9 @@ export const columns = ({
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("status")}</div>
+      <div className="cursor-pointer capitalize">
+        {row.original.status.toLowerCase()}
+      </div>
     ),
   },
   {
@@ -180,7 +186,12 @@ export const columns = ({
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                handleTasksStatusUpdate(row.original.id, setLoading, showToast, fetchTasksList);
+                handleTasksStatusUpdate(
+                  row.original.id,
+                  setLoading,
+                  showToast,
+                  fetchTasksList
+                );
               }}
             >
               Mark as completed

@@ -19,7 +19,6 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import LoadingButton from "@/components/LoadingButton";
 import { getRecallsData } from "@/services/chartDetailsServices";
-import { status } from "@/constants/data";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -144,16 +143,29 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
                     defaultValue={field.value}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select Status" />
+                      <SelectValue
+                        placeholder="Select Status"
+                        className="capitalize"
+                      >
+                        {field.value
+                          ? field.value.charAt(0).toUpperCase() +
+                            field.value.slice(1)
+                          : "Select Status"}
+                      </SelectValue>
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="capitalize">
                       <SelectItem value="all">All</SelectItem>
-                      {status.map((status) => (
+                      {[
+                        ...new Set(
+                          resultList?.data?.map((item) => item.status)
+                        ),
+                      ].map((status, index) => (
                         <SelectItem
-                          key={status.value}
-                          value={status.value.toLowerCase()}
+                          key={index}
+                          value={status}
+                          className="capitalize"
                         >
-                          {status.label}
+                          {status.charAt(0).toUpperCase() + status.slice(1)}
                         </SelectItem>
                       ))}
                     </SelectContent>

@@ -165,7 +165,7 @@ const InjectionsDialog = ({
         <ScrollArea className="h-[80dvh]">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-6 p-2.5">
                 <FormField
                   control={form.control}
                   name="injection_name"
@@ -446,7 +446,7 @@ const InjectionsDialog = ({
                     </FormItem>
                   )}
                 />
-                <SubmitButton label="Submit" onClick={form.reset} />
+                <SubmitButton label="Submit" />
               </div>
             </form>
           </Form>

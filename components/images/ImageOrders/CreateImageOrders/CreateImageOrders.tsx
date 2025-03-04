@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,8 +11,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createLabResultsSchema } from "@/schema/createLabResultsSchema";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
+import { createImageOrderSchema } from "@/schema/imagesFormSchema";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
@@ -31,27 +31,14 @@ const CreateImageResults = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof createLabResultsSchema>>({
-    resolver: zodResolver(createLabResultsSchema),
+  const form = useForm<z.infer<typeof createImageOrderSchema>>({
+    resolver: zodResolver(createImageOrderSchema),
     defaultValues: {
       patient: "",
-      reviewer: "",
-      dateTime: "",
-      labId: "",
-      testIds: [],
-      testResults: [
-        {
-          name: "",
-          result: "",
-          unit: "",
-          referenceMin: undefined,
-          referenceMax: undefined,
-          interpretation: "",
-          comment: "",
-          groupComment: "",
-        },
-      ],
-      tags: "",
+      orderedBy: "",
+      orderedDate: "",
+      imageTypeId: "",
+      imageTestIds: [],
     },
   });
 
@@ -84,7 +71,7 @@ const CreateImageResults = () => {
       .includes(searchTerm.toLowerCase())
   );
 
-  const onSubmit = async (values: z.infer<typeof createLabResultsSchema>) => {
+  const onSubmit = async (values: z.infer<typeof createImageOrderSchema>) => {
     console.log(values);
   };
 
@@ -165,7 +152,7 @@ const CreateImageResults = () => {
               />
               <FormField
                 control={form.control}
-                name="dateTime"
+                name="orderedDate"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Ordered Data</FormLabel>
@@ -189,8 +176,6 @@ const CreateImageResults = () => {
           <AddImagesDrawer userDetailsId="97f41397-3fe3-4f0b-a242-d3370063db33" />
           <Separator orientation="vertical" />
           <PastImageOrders userDetailsId="97f41397-3fe3-4f0b-a242-d3370063db33" />
-          {/* <Separator orientation="vertical" />
-                    <MapDx /> */}
         </div>
       </div>
     </>

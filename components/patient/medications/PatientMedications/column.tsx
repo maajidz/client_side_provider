@@ -16,7 +16,8 @@ import { Badge } from "@/components/ui/badge";
 const handlePrescriptionDelete = async (
   prescriptionId: string,
   setLoading: (loading: boolean) => void,
-  showToast: (args: { type: string; message: string }) => void
+  showToast: (args: { type: string; message: string }) => void,
+  fetchSupplements: () => void
 ) => {
   setLoading(true);
   try {
@@ -30,6 +31,7 @@ const handlePrescriptionDelete = async (
     showToast({ type: "error", message: "Failed to delete prescription" });
   } finally {
     setLoading(false);
+    fetchSupplements();
   }
 };
 
@@ -128,7 +130,8 @@ export const columns = ({
                 handlePrescriptionDelete(
                   row.original.id,
                   setLoading,
-                  showToast
+                  showToast,
+                  fetchPrescriptionsList
                 );
                 fetchPrescriptionsList();
               }}

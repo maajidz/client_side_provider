@@ -68,6 +68,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             <Card className="flex flex-grow-0">
               <CardHeader>
                 <CardTitle>
+                <CardTitle>
                   <TitleLinks
                     title="Allergies"
                     href="allergies"
@@ -583,7 +584,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                           window.open(image, "_blank");
                         }}
                       >
-                        {image.split("/")[5]}
+                        {image.split("/")[4]}
                       </Button>
                     ))}
                   </div>
