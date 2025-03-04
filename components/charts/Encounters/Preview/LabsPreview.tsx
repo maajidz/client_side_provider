@@ -4,7 +4,7 @@ import React from "react";
 
 const LabsPreview = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="flex flex-col gap-6">
         <h3 className="text-xl font-semibold text-bold-800">Lab Results</h3>
         <hr className="border-t border-gray-300 mb-4" />

@@ -34,7 +34,7 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
       });
       if (response) {
         setData(response);
-        setTotalPages(response.total / limit);
+        setTotalPages(Math.ceil(response.total / limit));
       }
     } catch (e) {
       console.log("Error", e);

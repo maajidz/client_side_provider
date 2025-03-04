@@ -21,7 +21,7 @@ const PatientImages = ({ userDetailsId }: { userDetailsId: string }) => {
   ];
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Tabs defaultValue="imageResults">
           <div className="flex flex-row justify-between gap-10">

@@ -12,7 +12,7 @@ const breadcrumbItems = [
 export default function AddPatient() {
   return (
     <>
-      <PageContainer scrollable={true}>
+      <PageContainer>
         <div className="space-y-4">
           <Breadcrumbs items={breadcrumbItems} />
           <AddPatientBody />

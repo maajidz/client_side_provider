@@ -82,7 +82,7 @@ function EditTask({
   const form = useForm<z.infer<typeof tasksSchema>>({
     resolver: zodResolver(tasksSchema),
     defaultValues: {
-      category: selectedTask.category ?? "",
+      category: selectedTask.categoryId ?? "",
       task: selectedTask.notes ?? "",
       owner: selectedTask.id ?? "",
       priority: selectedTask?.priority ?? "low",

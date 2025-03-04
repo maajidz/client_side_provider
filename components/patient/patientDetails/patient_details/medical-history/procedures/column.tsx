@@ -3,10 +3,10 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export const columns = (): ColumnDef<ProceduresInterface>[] => [
   {
-    accessorKey: "name",
+    accessorKey: "nameId",
     header: "Name",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("name")}</div>
+      <div className="cursor-pointer">{row.getValue("nameId")}</div>
     ),
   },
   {

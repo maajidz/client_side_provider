@@ -3,7 +3,7 @@ import PageContainer from "@/components/layout/page-container";
 
 function page() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Account />
       </div>

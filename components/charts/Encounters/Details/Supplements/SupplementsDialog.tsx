@@ -95,7 +95,7 @@ function SupplementsDialog({
   const form = useForm<z.infer<typeof supplementsFormSchema>>({
     resolver: zodResolver(supplementsFormSchema),
     defaultValues: {
-      supplement: selectedSupplement?.supplement || "",
+      supplement: selectedSupplement?.supplementId || "",
       manufacturer: selectedSupplement?.manufacturer || "",
       fromDate:
         selectedSupplement?.fromDate.split("T")[0] ||
@@ -115,7 +115,7 @@ function SupplementsDialog({
   // POST Supplement
   const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
-
+    
     try {
       const supplementData: CreateSupplementType = {
         ...values,
@@ -134,7 +134,7 @@ function SupplementsDialog({
       } else {
         await updateSupplement({
           requestData: supplementData,
-          supplementId: selectedSupplement?.supplementId,
+          supplementId: selectedSupplement?.id,
         });
 
         showToast({
@@ -165,7 +165,7 @@ function SupplementsDialog({
   useEffect(() => {
     if (selectedSupplement) {
       form.reset({
-        supplement: selectedSupplement?.supplement || "",
+        supplement: selectedSupplement?.supplementId || "",
         manufacturer: selectedSupplement?.manufacturer || "",
         fromDate:
           selectedSupplement?.fromDate.split("T")[0] ||
@@ -216,7 +216,7 @@ function SupplementsDialog({
                         <div className="relative">
                           <Input
                             {...field}
-                            value={searchTerm}
+                            value={searchTerm || field.value}
                             placeholder="Search Supplement..."
                             onChange={(event) => {
                               setSearchTerm(event.target.value);

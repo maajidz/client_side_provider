@@ -21,7 +21,7 @@ const imageTab = [
 
 function Images() {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Tabs defaultValue="imageResults">
           <div className="flex items-center justify-between border-b border-gray-300 pb-2">

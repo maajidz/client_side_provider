@@ -34,9 +34,8 @@ const PatientHeader = ({ userId }: { userId: string }) => {
   const breadcrumbItems = [
     { title: "Dashboard", link: "/dashboard" },
     { title: "Patients", link: "/dashboard/provider/patient" },
-    { title: `${path.split('/')[5]}`, link: `${path}` },
+    { title: `${path.split("/")[5]}`, link: `${path}` },
   ];
-  
 
   const router = useRouter();
 
@@ -91,9 +90,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
     <div
       className="flex flex-col w-full gap-6"
       onClick={() =>
-        router.push(
-          `/dashboard/provider/patient/${userId}/patientDetails`
-        )
+        router.push(`/dashboard/provider/patient/${userId}/patientDetails`)
       }
     >
       <Breadcrumbs items={breadcrumbItems} />
@@ -103,9 +100,9 @@ const PatientHeader = ({ userId }: { userId: string }) => {
             <div className="flex flex-row gap-2">
               <Avatar className="flex h-11 w-11 items-center justify-center border">
                 <AvatarImage src="/avatars/02.png" alt="Avatar" />
-                <AvatarFallback>
-                  {response?.user.firstName?.charAt(0)}
-                  {response?.user.lastName?.charAt(0)}
+                <AvatarFallback >
+                  <span className="capitalize">{response?.user.firstName?.charAt(0)}</span>
+                  <span className="capitalize">{response?.user.lastName?.charAt(0)} </span>
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col gap-1">
@@ -204,7 +201,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
           <CardContent className="flex gap-1 text-sm font-medium items-center">
             <DollarSign size={16} className="text-gray-500" />
             <span>
-              {response && response?.wallet ? response.wallet : "N/A"}
+              {response && response?.wallet ? response.wallet : "0"}
             </span>
           </CardContent>
         </Card>

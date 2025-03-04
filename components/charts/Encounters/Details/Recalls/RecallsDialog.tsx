@@ -132,6 +132,7 @@ const RecallsDialog = ({
       });
     } finally {
       setLoading(false);
+      form.reset();
     }
   };
 
@@ -150,7 +151,7 @@ const RecallsDialog = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <ScrollArea>
-              <div className="max-h-[90dvh] h-auto flex flex-col items-start gap-6">
+              <div className="max-h-[90dvh] h-auto flex flex-col items-start gap-6 p-2.5">
                 <FormField
                   control={form.control}
                   name="type"
@@ -307,22 +308,23 @@ const RecallsDialog = ({
                   <Button variant="outline" onClick={onClose}>
                     Cancel
                   </Button>
-                  <Button>Add</Button>
+                  <SubmitButton label="Add" />
+                  <SubmitButton label="Add"></SubmitButton>
                 </div>
               </div>
             </DialogFooter>
           </form>
         </Form>
-        <DialogFooter>
-        <div className="flex w-full justify-end">
+        {/* <DialogFooter> */}
+        {/* <div className="flex w-full justify-end">
                   <div className="flex  gap-2 w-fit">
                     <Button variant="outline" onClick={onClose}>
                       Cancel
                     </Button>
                     <SubmitButton label="Add"></SubmitButton>
                   </div>
-          </div>
-        </DialogFooter>
+          </div> */}
+        {/* </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

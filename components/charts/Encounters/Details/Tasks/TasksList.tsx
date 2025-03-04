@@ -68,7 +68,7 @@ function TasksList({
             className="flex flex-col gap-2 border rounded-md p-2"
           >
             <div className="flex justify-between items-center">
-              <h5 className="text-lg font-semibold">{task?.category}</h5>
+              <h5 className="text-lg font-semibold">{task?.categoryId}</h5>
               <div className="flex items-center">
                 <EditTask
                   patientDetails={patientDetails}

@@ -26,7 +26,7 @@ const validBadgeVariants = [
   "pink",
   "success",
 ] as const;
-type BadgeVariant = typeof validBadgeVariants[number];
+type BadgeVariant = (typeof validBadgeVariants)[number];
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export default function DashboardPage() {
         </Link>
         <AccountIcon />
       </div>
-      <PageContainer scrollable={true}>
+      <PageContainer>
         <div className="flex flex-col max-w-5xl items-center gap-3 w-full self-center">
           <div className="flex w-full gap-2 items-end py-8 justify-between">
             <SearchInput />
@@ -74,16 +74,17 @@ export default function DashboardPage() {
                           {item.badgeLabel}
                         </div>
                       </Badge> */}
-                      {item.badgeColor && isValidBadgeVariant(item.badgeColor) && (
-                        <Badge variant={item.badgeColor}>
-                          <div className="flex rounded-3xl w-fit flex-row items-center font-semibold text-[.7rem] gap-1">
-                            {BadgeIcon && (
-                              <BadgeIcon size={14} strokeWidth={3} />
-                            )}
-                            {item.badgeLabel}
-                          </div>
-                        </Badge>
-                      )}
+                      {item.badgeColor &&
+                        isValidBadgeVariant(item.badgeColor) && (
+                          <Badge variant={item.badgeColor}>
+                            <div className="flex rounded-3xl w-fit flex-row items-center font-semibold text-[.7rem] gap-1">
+                              {BadgeIcon && (
+                                <BadgeIcon size={14} strokeWidth={3} />
+                              )}
+                              {item.badgeLabel}
+                            </div>
+                          </Badge>
+                        )}
                     </div>
                   </div>
                 </Link>

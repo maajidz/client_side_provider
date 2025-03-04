@@ -116,6 +116,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                           variant={"ghost"}
                           onClick={() => {
                             setEditData({
+                              status: recall.status,
                               id: recall.id,
                               type: recall.type,
                               notes: recall.notes,

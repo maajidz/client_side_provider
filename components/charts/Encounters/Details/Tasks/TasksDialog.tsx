@@ -127,7 +127,7 @@ function TasksDialog({
   useEffect(() => {
     if (tasksData) {
       form.reset({
-        category: tasksData.category ?? "",
+        category: tasksData.categoryId ?? "",
         task: tasksData.notes ?? "",
         owner: tasksData.id ?? "",
         priority: tasksData?.priority ?? "low",

@@ -125,7 +125,7 @@ const ProceduresSurgeriesAndHospitalization = ({
                             setEditData({
                               id: procedure.id,
                               type: procedure.type,
-                              name: procedure.name,
+                              nameId: procedure.nameId,
                               fromDate: procedure.fromDate,
                               toDate: procedure.toDate,
                               notes: procedure.notes,
@@ -145,7 +145,7 @@ const ProceduresSurgeriesAndHospitalization = ({
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2 ">
-                      <FormLabels label="Name" value={procedure.name} />
+                      <FormLabels label="Name" value={procedure.nameId} />
                       <FormLabels
                         label="From date"
                         value={procedure.fromDate.split("T")[0]}

@@ -53,15 +53,17 @@ function UserList({ users }: { users: UserData[] }) {
     <div className="absolute top-14 left-0 shadow-md rounded-lg space-y-2 w-full p-2 bg-white z-50">
       {users.map((user) => (
         <div
-          onClick={() =>
-            router.push(
-              `dashboard/provider/patient/${user.user.userDetailsId}/patientDetails`
-            )
-          }
           key={user.id}
           className="flex rounded-md px-4 py-3 hover:cursor-pointer hover:bg-blue-50 flex-row items-center group transition-all duration-400"
         >
-          <div className="flex gap-3 items-center w-full">
+          <div
+            className="flex gap-3 items-center w-full"
+            onClick={() =>
+              router.push(
+                `/dashboard/provider/patient/${user.user.userDetailsId}/patientDetails`
+              )
+            }
+          >
             <div className="flex bg-pink-50 text-[#63293b] text-lg font-medium rounded-full h-14 w-14 justify-center items-center">
               <span className="uppercase">
                 {user.user.firstName?.charAt(0)}
@@ -79,8 +81,6 @@ function UserList({ users }: { users: UserData[] }) {
                       className="text-blue-400"
                     />
                   ) : (
-
-                    
                     <Venus
                       size={14}
                       strokeWidth={2.5}
@@ -149,11 +149,11 @@ function UserList({ users }: { users: UserData[] }) {
                     <DropdownMenuItem
                       key={link.label}
                       className="font-medium group hover:first:text-sky-600 hover:text-sky-600  flex flex-1 w-full"
-                      onClick={() =>
+                      onClick={() => {
                         router.push(
-                          `dashboard/provider/patient/${user.user.userDetailsId}/${link.href}`
-                        )
-                      }
+                          `/dashboard/provider/patient/${user.user.userDetailsId}/${link.href}`
+                        );
+                      }}
                     >
                       {link.label}{" "}
                       <PlusIcon

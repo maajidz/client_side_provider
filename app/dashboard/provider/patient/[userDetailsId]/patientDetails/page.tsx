@@ -11,7 +11,7 @@ function Page() {
   }
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <PatientDetails userId={userDetailsId} />
     </PageContainer>
   );

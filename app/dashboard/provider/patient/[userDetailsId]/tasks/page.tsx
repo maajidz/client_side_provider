@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import PageContainer from "@/components/layout/page-container";
 import PatientTasks from "@/components/patient/tasks/PatientTasks";
 import { useParams } from "next/navigation";
@@ -11,7 +11,7 @@ function Page() {
   }
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <PatientTasks userDetailsId={userDetailsId} />
     </PageContainer>
   );

@@ -69,7 +69,7 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
     setFilters((prev) => ({
       ...prev,
 
-      reviewer: values.reviewer || "",
+      reviewer: values.reviewer === "all" ? "" : values.reviewer || "",
       status: values.status === "all" ? "" : values.status || "",
       patient: "",
     }));
@@ -184,6 +184,7 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
                       <SelectValue placeholder="Select Reviewer" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
                       {providersList
                         .filter(
                           (

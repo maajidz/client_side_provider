@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import PageContainer from "@/components/layout/page-container";
 import PatientQuickNotes from "@/components/patient/quick_notes/PatientQuickNotes";
 import { useParams } from "next/navigation";
@@ -10,17 +10,17 @@ import { useParams } from "next/navigation";
 // ];
 function Page() {
   const { userDetailsId } = useParams();
-  
-    if (!userDetailsId || Array.isArray(userDetailsId)) {
-      return <div>Error: User details ID not found</div>;
-    }
-    
-    return (
-    <PageContainer scrollable={true}>
+
+  if (!userDetailsId || Array.isArray(userDetailsId)) {
+    return <div>Error: User details ID not found</div>;
+  }
+
+  return (
+    <PageContainer>
       {/* <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
       </div> */}
-      <PatientQuickNotes userDetailsId={userDetailsId}/>
+      <PatientQuickNotes userDetailsId={userDetailsId} />
     </PageContainer>
   );
 }

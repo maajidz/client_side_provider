@@ -4,7 +4,7 @@ import QuestionnairePreviewDialog from "./PreviewDialogs/QuestionnairePreviewDia
 
 const QuestionnairePreview = () => {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="flex flex-col gap-6">
         <h3 className="text-xl font-semibold text-gray-800">Questionnaires</h3>
         <hr className="border-t border-gray-300 mb-4" />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -28,9 +28,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { addProceduresSurgeriesAndHospitalizationFormSchema } from "@/schema/addProceduresSurgeriesAndHospitalizationSchma";
 import {
   createProcedure,
+  getAllProcedureNameTypes,
   updateProcedureData,
 } from "@/services/chartDetailsServices";
-import { UpdateProceduresInterface } from "@/types/procedureInterface";
+import {
+  ProceduresTypesInterface,
+  UpdateProceduresInterface,
+} from "@/types/procedureInterface";
 import { useToast } from "@/hooks/use-toast";
 import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
@@ -47,8 +51,36 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const [procedureListData, setProcedureListData] = useState<
+    ProceduresTypesInterface[]
+  >([]);
+  const [procedureId, setProcedureId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isListVisible, setIsListVisible] = useState<boolean>(false);
   const { toast } = useToast();
+
+  const fetchAllProcedures = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getAllProcedureNameTypes();
+
+      if (response) {
+        setProcedureListData(response.data);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch supplements data",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
 
   const form = useForm<
     z.infer<typeof addProceduresSurgeriesAndHospitalizationFormSchema>
@@ -56,7 +88,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
     resolver: zodResolver(addProceduresSurgeriesAndHospitalizationFormSchema),
     defaultValues: {
       type: procedureData?.type || "",
-      name: procedureData?.name || "",
+      name: procedureData?.nameId || "",
       fromDate:
         procedureData?.fromDate || new Date().toISOString().split("T")[0],
       toDate: procedureData?.toDate || new Date().toISOString().split("T")[0],
@@ -65,15 +97,22 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
   });
 
   useEffect(() => {
+    fetchAllProcedures();
+  }, [fetchAllProcedures]);
+
+  useEffect(() => {
     if (procedureData) {
       form.reset({
         type: procedureData?.type || "",
-        name: procedureData?.name || "",
+        name: procedureData?.nameId || "",
         fromDate:
           procedureData?.fromDate || new Date().toISOString().split("T")[0],
         toDate: procedureData?.toDate || new Date().toISOString().split("T")[0],
         notes: procedureData?.notes || "",
       });
+      if(procedureData.nameId){
+        setProcedureId(procedureData.nameId)
+      }
     }
   }, [procedureData, form]);
 
@@ -85,7 +124,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
       if (!procedureData) {
         const requestData = {
           type: values.type ?? "",
-          name: values.name,
+          nameId: procedureId,
           fromDate: values.fromDate ?? "",
           toDate: values.toDate ?? "",
           notes: values.notes ?? "",
@@ -102,7 +141,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
       } else {
         const requestData = {
           type: values.type ?? "",
-          name: values.name,
+          nameId: procedureId,
           fromDate: values.fromDate ?? "",
           toDate: values.toDate ?? "",
           notes: values.notes ?? "",
@@ -133,6 +172,10 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
     }
   };
 
+  const filteredProcedures = procedureListData.filter((procedure) =>
+    procedure.name.toLocaleLowerCase().includes(searchTerm)
+  );
+
   if (loading) {
     return <LoadingButton />;
   }
@@ -150,51 +193,85 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-col gap-6">
-                <FormField
-                  control={form.control}
-                  name="type"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel className="w-fit">Type</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Choose type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="procedure">Procedure</SelectItem>
-                            <SelectItem value="surgeries">Surgeries</SelectItem>
-                            <SelectItem value="hospitalization">
-                              Hospitalization
-                            </SelectItem>
-                            <SelectItem value="other_events">
-                              Other Events
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel className="w-fit">Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex gap-2">
+            <div className="flex flex-col gap-6">
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="w-fit">Type</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="procedure">Procedure</SelectItem>
+                          <SelectItem value="surgeries">Surgeries</SelectItem>
+                          <SelectItem value="hospitalization">
+                            Hospitalization
+                          </SelectItem>
+                          <SelectItem value="other_events">
+                            Other Events
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="w-fit">Name</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          value={searchTerm}
+                          placeholder="Search Supplement..."
+                          onChange={(event) => {
+                            setSearchTerm(event.target.value);
+                            setIsListVisible(true);
+                          }}
+                        />
+                        {searchTerm && isListVisible && (
+                          <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                            {filteredProcedures.length > 0 ? (
+                              filteredProcedures.map((procedure) => (
+                                <div
+                                  key={procedure.id}
+                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                  onClick={() => {
+                                    field.onChange(procedure.name);
+                                    setSearchTerm(procedure.name);
+                                    setProcedureId(procedure.id);
+                                    setIsListVisible(false);
+                                  }}
+                                >
+                                  {procedure.name}
+                                </div>
+                              ))
+                            ) : (
+                              <div className="px-4 py-2 text-gray-500">
+                                No results found
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex gap-2">
                 <FormField
                   control={form.control}
                   name="fromDate"
@@ -212,7 +289,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                   control={form.control}
                   name="toDate"
                   render={({ field }) => (
-                    <FormItem >
+                    <FormItem>
                       <FormLabel>To Date:</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
@@ -221,22 +298,22 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                     </FormItem>
                   )}
                 />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel>Notes</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <SubmitButton label="Save" />
               </div>
+              <FormField
+                control={form.control}
+                name="notes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Notes</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <SubmitButton label="Save" />
+            </div>
           </form>
         </Form>
       </DialogContent>

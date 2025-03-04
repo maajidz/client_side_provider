@@ -42,10 +42,10 @@ const PatientDocuments = ({ userDetailsId }: { userDetailsId: string }) => {
     // },
   ];
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="flex flex-col gap-3 rounded-lg">
-        <Tabs defaultValue="all" className="flex flex-row gap-5">
-          <TabsList className="flex flex-col h-full w-56 justify-start items-start p-3 gap-3 overflow-hidden">
+        <Tabs defaultValue="all">
+          <TabsList className="grid w-full grid-cols-2">
             {patientDocumentsTab.map((tab) => (
               <CustomTabsTrigger value={tab.value} key={tab.value}>
                 {tab.label}

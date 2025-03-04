@@ -27,7 +27,7 @@ function Page() {
   ];
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
         <Heading title="Lab Order" description="" />
@@ -38,5 +38,3 @@ function Page() {
 }
 
 export default Page;
-
-

@@ -5,7 +5,7 @@ import ViewTasks from "./ViewTasks";
 
 const Tasks = () => {
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <ViewTasks />
     </PageContainer>
   );

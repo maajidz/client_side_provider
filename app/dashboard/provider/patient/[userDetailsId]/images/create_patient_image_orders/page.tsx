@@ -15,7 +15,10 @@ export default function PatientImageOrders() {
   const breadcrumbItems = [
     { title: "Dashboard", link: "/dashboard" },
     { title: "Patients", link: "/dashboard/provider/patient" },
-    { title: "Images", link: `/dashboard/provider/patient/${userDetailsId}/images` },
+    {
+      title: "Images",
+      link: `/dashboard/provider/patient/${userDetailsId}/images`,
+    },
     {
       title: "Create Patient Image Orders",
       link: `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_orders`,
@@ -23,7 +26,7 @@ export default function PatientImageOrders() {
   ];
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
         <CreatePatientImageOrders userDetailsId={userDetailsId} />

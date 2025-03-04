@@ -96,7 +96,7 @@ const PatientQuestionnaires = ({
   }, [getUserQuestionnaire, page, limit]);
 
   return (
-    <Tabs defaultValue={type} className="flex gap-4 bg-white">
+    <Tabs value={type} className="flex gap-4 bg-white">
       <div className={styles.questionnaireContainer}>
         {patientQuestionnaireTab.map((tab) => (
           <TabsContent value={tab.value} key={tab.value} className="flex flex-col gap-4">
