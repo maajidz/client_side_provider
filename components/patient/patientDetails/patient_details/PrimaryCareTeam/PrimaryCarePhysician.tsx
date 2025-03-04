@@ -16,10 +16,14 @@ import { showToast } from "@/utils/utils";
 
 const PrimaryCarePhysician = ({
   careTeam,
+  refreshKey,
   userDetailsId,
+  onRefresh,
 }: {
   careTeam: PatientCareTeamInterface | null;
+  refreshKey: number;
   userDetailsId: string;
+  onRefresh: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const [providers, setProviders] = useState<FetchProviderList[]>([]);
   const [searchPrimaryCarePhysician, setSearchPrimaryCarePhysician] =
@@ -81,6 +85,7 @@ const PrimaryCarePhysician = ({
         type: "error",
         message: "Primary care physician added successfully",
       });
+      onRefresh((prev) => prev + 1);
     } catch (err) {
       if (err instanceof Error) {
         showToast({
@@ -107,6 +112,7 @@ const PrimaryCarePhysician = ({
         type: "error",
         message: "Primary care physician deleted successfully",
       });
+      onRefresh((prev) => prev + 1);
     } catch (err) {
       if (err instanceof Error) {
         showToast({
@@ -121,7 +127,10 @@ const PrimaryCarePhysician = ({
   };
 
   return (
-    <div className="border-gray-100 border flex gap-6 flex-col group p-6 flex-1 rounded-lg">
+    <div
+      key={refreshKey}
+      className="border-gray-100 border flex gap-6 flex-col group p-6 flex-1 rounded-lg"
+    >
       <div className=" flex flex-col gap-1">
         <div className="font-semibold text-xs pb-2 text-gray-600">
           Primary Care Physician
@@ -146,13 +155,13 @@ const PrimaryCarePhysician = ({
           )}
 
           {!loading && searchPrimaryCarePhysician && (
-            <div className="absolute w-full bottom-0">
+            <div className="absolute w-full top-8">
               {!selectedPrimaryCarePhysician && providers.length > 0 ? (
                 <div className="mt-2 w-full bg-white shadow-lg rounded-lg z-10">
                   {providers.map((user) => (
                     <div
                       key={user.id}
-                      className="border-2 border-gray-300 rounded-lg p-2 hover:bg-gray-100 cursor-pointer"
+                      className="rounded-lg px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       onClick={() => handlePrimaryCarePhysicianSelect(user)}
                     >
                       <div className="text-[#84012A] text-base font-medium">
@@ -173,7 +182,6 @@ const PrimaryCarePhysician = ({
           )}
         </div>
       </div>
-
       <div className={styles.physicianDetailsBox}>
         {careTeam && (
           <PhysicianData

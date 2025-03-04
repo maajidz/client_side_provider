@@ -67,6 +67,7 @@ function ERxPharmacyTable({ userDetailsId }: ERxPharmacyClientProps) {
         type: "success",
         message: `Pharmacy deleted successfully`,
       });
+      setERxData(undefined);
     } catch (err) {
       if (err instanceof Error)
         showToast({
@@ -76,7 +77,6 @@ function ERxPharmacyTable({ userDetailsId }: ERxPharmacyClientProps) {
         });
     } finally {
       setLoading(false);
-      fetchUserPharmacy();
     }
   };
 

@@ -21,13 +21,14 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "@/components/tasks/columns";
 import LoadingButton from "@/components/LoadingButton";
-import { getTasks } from "@/services/chartDetailsServices";
+import { getTasks, getTasksTypes } from "@/services/chartDetailsServices";
 import {
   TasksResponseDataInterface,
   TasksResponseInterface,
+  TaskTypeList,
 } from "@/types/tasksInterface";
 import { filterTasksSchema } from "@/schema/tasksSchema";
-import { categoryOptions, priority, status } from "@/constants/data";
+import { priority, status } from "@/constants/data";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AddTaskComment from "./AddTaskComment";
@@ -39,6 +40,7 @@ import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialo
 
 const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [taskTypes, setTaskTypes] = useState<TaskTypeList[]>([]);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
@@ -81,6 +83,25 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
     setPage(1);
   }
 
+  const fetchTaskTypes = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getTasksTypes({
+        page: 1,
+        limit: 10,
+      });
+
+      if (response) {
+        setTaskTypes(response.taskTypes);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const fetchTasksList = useCallback(
     async (
       page: number,
@@ -118,7 +139,8 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
 
   useEffect(() => {
     fetchTasksList(page, userDetailsId);
-  }, [page, fetchTasksList, userDetailsId]);
+    fetchTaskTypes();
+  }, [page, fetchTasksList, fetchTaskTypes, userDetailsId]);
 
   if (loading) {
     return <LoadingButton />;
@@ -165,12 +187,12 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
-                        {categoryOptions.map((category) => (
+                        {taskTypes.map((type) => (
                           <SelectItem
-                            key={category.value}
-                            value={category.value}
+                            key={type.id}
+                            value={type.name}
                           >
-                            {category.label}
+                            {type.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

@@ -12,6 +12,7 @@ import PrimaryCarePhysician from "./PrimaryCarePhysician";
 const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [careTeam, setCareTeam] = useState<PatientCareTeamInterface>();
+  const [refreshKey, setRefreshKey] = useState(0);
   const { toast } = useToast();
 
   const fetchPatientCareTeam = useCallback(async () => {
@@ -31,11 +32,11 @@ const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
     } finally {
       setLoading(false);
     }
-  }, [toast, userDetailsId]);
+  }, [toast, userDetailsId,]);
 
   useEffect(() => {
     fetchPatientCareTeam();
-  }, [fetchPatientCareTeam]);
+  }, [fetchPatientCareTeam, refreshKey]);
 
   if (loading) {
     return <LoadingButton />;
@@ -45,7 +46,9 @@ const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
     <div className={styles.infoContainer}>
       <PrimaryCarePhysician
         careTeam={careTeam ? careTeam : null}
+        refreshKey={refreshKey}
         userDetailsId={userDetailsId}
+        onRefresh={setRefreshKey}
       />
       {/* <ReferringPhysicianSelect />
       <InHouseCareTeam /> */}
