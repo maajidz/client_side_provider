@@ -30,7 +30,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CreateTaskType,
   TasksResponseDataInterface,
@@ -39,10 +39,8 @@ import {
 } from "@/types/tasksInterface";
 import {
   createTask,
-  getTasksTypes,
   updateTask,
 } from "@/services/chartDetailsServices";
-import { fetchProviderListDetails } from "@/services/registerServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { priority, reminderOptions } from "@/constants/data";
@@ -54,17 +52,18 @@ function TasksDialog({
   userDetailsId,
   tasksData,
   onClose,
+  ownersList,
+  tasksListData
 }: {
   isOpen: boolean;
   userDetailsId: string;
   tasksData?: TasksResponseDataInterface | null;
   onClose: () => void;
+  ownersList: FetchProviderList[];
+  tasksListData: TaskTypeResponse | null;
 }) {
   const [showDueDate, setShowDueDate] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
-  const [tasksListData, setTasksListData] = useState<TaskTypeResponse>();
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
 
   const { toast } = useToast();
@@ -83,46 +82,6 @@ function TasksDialog({
       comments: "",
     },
   });
-
-  const fetchOwnersList = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
-
-      if (response) {
-        setOwnersList(response.data);
-      }
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchTasksList = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const response = await getTasksTypes({
-        page: 1,
-        limit: 10,
-      });
-
-      if (response) {
-        setTasksListData(response);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchOwnersList();
-    fetchTasksList();
-  }, [fetchOwnersList, fetchTasksList]);
 
   useEffect(() => {
     if (tasksData) {

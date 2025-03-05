@@ -2,7 +2,6 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import Header from "@/components/layout/header";
 import PatientSidebar from "@/components/patient/patientSidebar";
 import { Toaster } from "@/components/ui/toaster";
 import PatientHeader from "@/components/patient/patientDetails/patientHeader";
@@ -27,7 +26,7 @@ export default function PatientDashboardLayout({
         <PatientSidebar userDetailsId={userDetailsId} />
         <main className="w-full flex flex-1 items-start">
           <Toaster />
-          <Header />
+          {/* <Header /> */}
           {children}
         </main>
       </div>

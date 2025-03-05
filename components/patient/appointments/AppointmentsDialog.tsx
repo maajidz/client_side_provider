@@ -461,6 +461,7 @@ export function AppointmentsDialog({
                   </Button>
                   <SubmitButton
                     label={appointmentsData ? "Update" : "Create"}
+                    disabled={loading}
                   />
                 </div>
               </form>

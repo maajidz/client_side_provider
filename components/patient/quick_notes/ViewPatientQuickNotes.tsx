@@ -37,6 +37,11 @@ const ViewPatientQuickNotes = ({
     noteId: string;
   } | null>(null);
 
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setEditData(null);
+  };
+
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   // If loading, show a loading button
@@ -74,7 +79,7 @@ const ViewPatientQuickNotes = ({
           userDetailsId={userDetailsId}
           quickNotesData={editData}
           isOpen={isDialogOpen}
-          onClose={() => setIsDialogOpen(false)}
+          onClose={handleCloseDialog}
           onFetchQuickNotes={fetchQuickNotes}
         />
       </div>

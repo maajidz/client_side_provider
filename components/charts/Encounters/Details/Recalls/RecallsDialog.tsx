@@ -309,7 +309,6 @@ const RecallsDialog = ({
                     Cancel
                   </Button>
                   <SubmitButton label="Add" />
-                  <SubmitButton label="Add"></SubmitButton>
                 </div>
               </div>
             </DialogFooter>

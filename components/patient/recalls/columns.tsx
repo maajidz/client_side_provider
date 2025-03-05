@@ -196,7 +196,6 @@ export const columns = ({
                   showToast,
                   fetchRecalls
                 );
-                fetchRecalls();
               }}
             >
               Delete

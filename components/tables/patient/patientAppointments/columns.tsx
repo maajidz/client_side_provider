@@ -7,10 +7,21 @@ import { format, parseISO } from 'date-fns'; // Import date-fns functions
 import { XCircle, Info, Check, Calendar, CheckCheck } from 'lucide-react'; // Import icons
 
 // Define the return type for the badge variant function
-interface BadgeVariant {
-  variant: "default" | "secondary" | "destructive" | "outline" | "ghost" | "blue" | "indigo" | "purple" | "pink" | "warning" | "success";
-  icon: React.ElementType | null; // Icon can be a React component or null
-}
+// interface BadgeVariant {
+//   variant:
+//     | "default"
+//     | "secondary"
+//     | "destructive"
+//     | "outline"
+//     | "ghost"
+//     | "blue"
+//     | "indigo"
+//     | "purple"
+//     | "pink"
+//     | "warning"
+//     | "success";
+//   icon: React.ElementType | null; 
+// }
 
 // Function to determine the badge variant and icon based on status
 const getBadgeVariant = (status: string): BadgeVariant => {
@@ -56,9 +67,12 @@ export const columns = (
 
       // Combine date and time into a single string
       const dateTimeString = `${date}T${time}`;
-      
+
       // Format the date and time
-      const formattedDateTime = format(parseISO(dateTimeString), "dd MMM, yyyy - hh:mm a");
+      const formattedDateTime = format(
+        parseISO(dateTimeString),
+        "dd MMM, yyyy - hh:mm a"
+      );
 
       return (
         <div
@@ -83,7 +97,7 @@ export const columns = (
     ),
   },
   {
-    id: "status",
+    accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
       const { variant, icon } = getBadgeVariant(row.original.status); // Destructure the returned object
