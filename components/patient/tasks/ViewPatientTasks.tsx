@@ -28,7 +28,7 @@ import {
   TaskTypeList,
 } from "@/types/tasksInterface";
 import { filterTasksSchema } from "@/schema/tasksSchema";
-import { priority, status } from "@/constants/data";
+import { priority, taskStatus } from "@/constants/data";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AddTaskComment from "./AddTaskComment";
@@ -117,7 +117,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             providerId: providerDetails.providerId,
             limit: limit,
             page: page,
-            status: status || filters.status,
+            status: status?.toUpperCase() || filters.status.toUpperCase(),
             category: category || filters.category,
             priority: priority || filters.priority,
             userDetailsId: userDetailsId,
@@ -218,7 +218,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
-                        {status.map((status) => (
+                        {taskStatus.map((status) => (
                           <SelectItem key={status.value} value={status.value}>
                             {status.label}
                           </SelectItem>
@@ -241,13 +241,13 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="capitalize">
                         <SelectValue placeholder="Choose Priority" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
                         {priority.map((priority) => (
-                          <SelectItem value={priority} key={priority}>
+                          <SelectItem value={priority} key={priority} className="capitalize">
                             {priority}
                           </SelectItem>
                         ))}
