@@ -292,6 +292,11 @@ export const taskStatus = [
   { value: "Completed", label: "Completed" },
 ]; 
 
+export const injectionStatus = [
+  { value: "Pending", label: "Pending" },
+  { value: "active", label: "Active" },
+]; 
+
 export const US_STATES = [
   { name: "Alabama" },
   { name: "Alaska" },
