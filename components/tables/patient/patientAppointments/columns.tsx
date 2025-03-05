@@ -4,7 +4,7 @@ import { UserAppointmentInterface } from "@/types/userInterface";
 import JoinButton from "./JoinButton";
 import { Badge } from "@/components/ui/badge";
 import { format, parseISO } from 'date-fns'; // Import date-fns functions
-import { CheckCircle, XCircle, Info, Check, Calendar, CheckCheck } from 'lucide-react'; // Import icons
+import { XCircle, Info, Check, Calendar, CheckCheck } from 'lucide-react'; // Import icons
 
 // Define the return type for the badge variant function
 interface BadgeVariant {
