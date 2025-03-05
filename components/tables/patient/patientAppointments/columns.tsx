@@ -6,22 +6,22 @@ import { Badge } from "@/components/ui/badge";
 import { format, parseISO } from 'date-fns'; // Import date-fns functions
 import { XCircle, Info, Check, Calendar, CheckCheck } from 'lucide-react'; // Import icons
 
-// Define the return type for the badge variant function
-// interface BadgeVariant {
-//   variant:
-//     | "default"
-//     | "secondary"
-//     | "destructive"
-//     | "outline"
-//     | "ghost"
-//     | "blue"
-//     | "indigo"
-//     | "purple"
-//     | "pink"
-//     | "warning"
-//     | "success";
-//   icon: React.ElementType | null; 
-// }
+
+interface BadgeVariant {
+  variant:
+    | "default"
+    | "secondary"
+    | "destructive"
+    | "outline"
+    | "ghost"
+    | "blue"
+    | "indigo"
+    | "purple"
+    | "pink"
+    | "warning"
+    | "success";
+  icon: React.ElementType | null; 
+}
 
 // Function to determine the badge variant and icon based on status
 const getBadgeVariant = (status: string): BadgeVariant => {
