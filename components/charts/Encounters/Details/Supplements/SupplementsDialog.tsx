@@ -35,9 +35,9 @@ import {
   updateSupplement,
 } from "@/services/chartDetailsServices";
 import {
-  CreateSupplementType,
   SupplementInterface,
   SupplementTypesInterface,
+  UpdateSupplementType,
 } from "@/types/supplementsInterface";
 import { showToast } from "@/utils/utils";
 import { useForm } from "react-hook-form";
@@ -58,7 +58,6 @@ function SupplementsDialog({
   const [supplementsData, setSupplementsData] = useState<
     SupplementTypesInterface[]
   >([]);
-  const [supplementId, setSupplementId] = useState('');
   // Search Supplement States
   const [searchTerm, setSearchTerm] = useState("");
   const [isListVisible, setIsListVisible] = useState(false);
@@ -115,16 +114,31 @@ function SupplementsDialog({
   // POST Supplement
   const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
-    
+
+    const requestData: UpdateSupplementType = {
+      supplementId: values.supplement,
+      supplement: values.supplement,
+      manufacturer: values.manufacturer,
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+      status: values.status,
+      dosage: values.dosage,
+      unit: values.unit,
+      frequency: values.frequency,
+      intake_type: values.intake_type,
+      comments: values.comments,
+      userDetailsId: userDetailsId,
+    };
+
     try {
-      const supplementData: CreateSupplementType = {
-        ...values,
-        supplementId: supplementId,
-        userDetailsId: userDetailsId,
-      };
+      // const supplementData: CreateSupplementType = {
+      //   ...values,
+      //   supplementId: supplementId,
+      //   userDetailsId: userDetailsId,
+      // };
 
       if (!selectedSupplement) {
-        await createSupplement(supplementData);
+        await createSupplement({ requestData: requestData });
 
         showToast({
           toast,
@@ -133,7 +147,7 @@ function SupplementsDialog({
         });
       } else {
         await updateSupplement({
-          requestData: supplementData,
+          requestData: requestData,
           supplementId: selectedSupplement?.id,
         });
 
@@ -231,9 +245,10 @@ function SupplementsDialog({
                                     key={supplement.id}
                                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                     onClick={() => {
-                                      field.onChange(supplement.supplement_name);
+                                      field.onChange(
+                                        supplement.supplement_name
+                                      );
                                       setSearchTerm(supplement.supplement_name);
-                                      setSupplementId(supplement.id)
                                       setIsListVisible(false);
                                     }}
                                   >

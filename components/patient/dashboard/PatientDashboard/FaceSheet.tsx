@@ -583,7 +583,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                           window.open(image, "_blank");
                         }}
                       >
-                        {image.split("/")[4]}
+                        {image.split("/")[5]}
                       </Button>
                     ))}
                   </div>

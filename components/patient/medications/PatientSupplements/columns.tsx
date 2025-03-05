@@ -8,10 +8,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteSupplement } from "@/services/chartDetailsServices";
-import { SupplementInterface } from "@/types/supplementsInterface";
+import {
+  deleteSupplement,
+  updateSupplement,
+} from "@/services/chartDetailsServices";
+import {
+  SupplementInterface,
+  UpdateSupplementType,
+} from "@/types/supplementsInterface";
 import { Ellipsis } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
+import { Badge } from "@/components/ui/badge";
 
 const handleSupplementDelete = async (
   id: string,
@@ -22,6 +29,47 @@ const handleSupplementDelete = async (
   setLoading(true);
   try {
     await deleteSupplement(id);
+    showToast({
+      type: "success",
+      message: "supplement deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    showToast({ type: "error", message: "Failed to delete supplement" });
+  } finally {
+    setLoading(false);
+    fetchSupplements();
+  }
+};
+
+const handleSupplementStatus = async (
+  status: "Active" | "Inactive",
+  id: string,
+  supplementData: SupplementInterface,
+  setLoading: (loading: boolean) => void,
+  showToast: (args: { type: string; message: string }) => void,
+  fetchSupplements: () => void
+) => {
+  setLoading(true);
+  const requestData: UpdateSupplementType = {
+    supplementId: supplementData.supplement,
+    supplement: supplementData.supplement,
+    manufacturer: supplementData.manufacturer,
+    fromDate: supplementData.fromDate,
+    toDate: supplementData.toDate,
+    status: status,
+    dosage: supplementData.dosage,
+    unit: supplementData.unit,
+    frequency: supplementData.unit,
+    intake_type: supplementData.intake_type,
+    comments: supplementData.comments,
+    userDetailsId: supplementData.userDetailsId,
+  };
+  try {
+    await updateSupplement({
+      requestData: requestData,
+      supplementId: id,
+    });
     showToast({
       type: "success",
       message: "supplement deleted successfully",
@@ -101,12 +149,24 @@ export const columns = ({
       );
     },
   },
+  // {
+  //   accessorKey: "status",
+  //   header: "Status",
+  //   cell: ({ row }) => (
+  //     <div className="cursor-pointer">{row.getValue("status")}</div>
+  //   ),
+  // },
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("status")}</div>
-    ),
+    cell: ({ row }) => {
+      const statusColor =
+        row.original.status.toLowerCase() === "inactive"
+          ? "success"
+          : "warning";
+
+      return <Badge variant={`${statusColor}`}>{row.original.status}</Badge>;
+    },
   },
   {
     accessorKey: "id",
@@ -139,7 +199,37 @@ export const columns = ({
             >
               Delete
             </DropdownMenuItem>
-            <DropdownMenuItem>Mark as Inactive</DropdownMenuItem>
+            {row.original.status === "Inactive" ? (
+              <DropdownMenuItem
+                onClick={() => {
+                  handleSupplementStatus(
+                    "Active",
+                    row.original.id,
+                    row.original,
+                    setLoading,
+                    showToast,
+                    fetchSupplementsList
+                  );
+                }}
+              >
+                Mark as Active
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                onClick={() => {
+                  handleSupplementStatus(
+                    "Inactive",
+                    row.original.id,
+                    row.original,
+                    setLoading,
+                    showToast,
+                    fetchSupplementsList
+                  );
+                }}
+              >
+                Mark as Inactive
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

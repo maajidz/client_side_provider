@@ -140,13 +140,11 @@ export const columns = ({
     header: "Status",
     cell: ({ row }) => {
       const statusColor =
-        row.original.status.toLowerCase() === "completed" ? "success" : "warning";
+        row.original.status.toLowerCase() === "completed"
+          ? "success"
+          : "warning";
 
-      return (
-        <Badge variant={`${statusColor}`}>
-          {row.original.status}
-        </Badge>
-      );
+      return <Badge variant={`${statusColor}`}>{row.original.status}</Badge>;
     },
   },
   {
@@ -176,18 +174,20 @@ export const columns = ({
             >
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                handleRecallsStatusUpdate(
-                  row.original.id,
-                  setLoading,
-                  showToast,
-                  fetchRecalls
-                )
-              }
-            >
-              Mark as Completed
-            </DropdownMenuItem>
+            {row.original.status === "pending" && (
+              <DropdownMenuItem
+                onClick={() =>
+                  handleRecallsStatusUpdate(
+                    row.original.id,
+                    setLoading,
+                    showToast,
+                    fetchRecalls
+                  )
+                }
+              >
+                Mark as Completed
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onClick={() => {
                 handleRecallsDelete(
