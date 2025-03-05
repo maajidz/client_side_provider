@@ -81,11 +81,13 @@ function InsuranceDialog({
 
   // Handle Dialog State
   const handleIsDialogOpen = (status: boolean) => {
+    methods.reset();
     setIsOpen(status);
   };
 
   const handleInsuranceTypeChange = (value: string) => {
     setSelectedIsInsured(value);
+    setSelectedInsuranceType(value);
     methods.reset();
   };
 
@@ -176,7 +178,7 @@ function InsuranceDialog({
         idNumber: "",
       });
     }
-  }, [methods, selectedInsurance, selectedInsuranceType]);
+  }, [methods, selectedInsurance]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleIsDialogOpen}>
@@ -227,7 +229,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="companyName"
                           render={({ field }) => (
-                            <FormItem >
+                            <FormItem>
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Company Name
                               </FormLabel>
@@ -242,7 +244,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="groupNameOrNumber"
                           render={({ field }) => (
-                            <FormItem >
+                            <FormItem>
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Group Name/Number
                               </FormLabel>
@@ -257,7 +259,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="subscriberNumber"
                           render={({ field }) => (
-                            <FormItem >
+                            <FormItem>
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 Subscriber Number
                               </FormLabel>
@@ -272,7 +274,7 @@ function InsuranceDialog({
                           control={methods.control}
                           name="idNumber"
                           render={({ field }) => (
-                            <FormItem >
+                            <FormItem>
                               <FormLabel className="text-[#344054] font-medium text-sm">
                                 ID Number
                               </FormLabel>
