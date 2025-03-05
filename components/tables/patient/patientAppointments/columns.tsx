@@ -3,6 +3,34 @@ import { ColumnDef } from "@tanstack/react-table";
 import { UserAppointmentInterface } from "@/types/userInterface";
 import JoinButton from "./JoinButton";
 import { Badge } from "@/components/ui/badge";
+import { format, parseISO } from 'date-fns'; // Import date-fns functions
+import { CheckCircle, XCircle, Info, Check, Calendar, CheckCheck } from 'lucide-react'; // Import icons
+
+// Define the return type for the badge variant function
+interface BadgeVariant {
+  variant: "default" | "secondary" | "destructive" | "outline" | "ghost" | "blue" | "indigo" | "purple" | "pink" | "warning" | "success";
+  icon: React.ElementType | null; // Icon can be a React component or null
+}
+
+// Function to determine the badge variant and icon based on status
+const getBadgeVariant = (status: string): BadgeVariant => {
+  const normalizedStatus = status.toLowerCase();
+  
+  switch (normalizedStatus) {
+    case "no show":
+      return { variant: "destructive", icon: XCircle }; // Red for no show
+    case "consulted":
+      return { variant: "success", icon: CheckCheck }; // Green for consulted
+    case "pending":
+      return { variant: "warning", icon: Info }; // Yellow for pending
+    case "confirmed":
+      return { variant: "blue", icon: Check }; // Change "blue" to "secondary" or another valid variant
+    case "scheduled":
+      return { variant: "blue", icon: Calendar }; // Blue for scheduled
+    default:
+      return { variant: "default", icon: null }; // Default variant
+  }
+};
 
 export const columns = (
   handleRowClick: (userAppointment: UserAppointmentInterface) => void
@@ -22,14 +50,25 @@ export const columns = (
   {
     accessorKey: "dateOfAppointment",
     header: "Date / Time",
-    cell: ({ row }) => (
-      <div
-        className="cursor-pointer"
-        onClick={() => handleRowClick(row.original)}
-      >
-        {row.original.dateOfAppointment} / {row.original.timeOfAppointment}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const date = row.original.dateOfAppointment;
+      const time = row.original.timeOfAppointment;
+
+      // Combine date and time into a single string
+      const dateTimeString = `${date}T${time}`;
+      
+      // Format the date and time
+      const formattedDateTime = format(parseISO(dateTimeString), "dd MMM, yyyy - hh:mm a");
+
+      return (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleRowClick(row.original)}
+        >
+          {formattedDateTime}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "reason",
@@ -46,7 +85,16 @@ export const columns = (
   {
     id: "status",
     header: "Status",
-    cell: ({ row }) => <Badge variant="success">{row.original.status}</Badge>,
+
+    cell: ({ row }) => {
+      const { variant, icon } = getBadgeVariant(row.original.status); // Destructure the returned object
+
+      return (
+        <Badge variant={variant} icon={icon ? icon : undefined}>
+          {row.original.status}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "additionalText",
