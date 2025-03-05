@@ -155,19 +155,8 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
                     </SelectTrigger>
                     <SelectContent className="capitalize">
                       <SelectItem value="all">All</SelectItem>
-                      {[
-                        ...new Set(
-                          resultList?.data?.map((item) => item.status)
-                        ),
-                      ].map((status, index) => (
-                        <SelectItem
-                          key={index}
-                          value={status}
-                          className="capitalize"
-                        >
-                          {status.charAt(0).toUpperCase() + status.slice(1)}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="Completed">Completed</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
