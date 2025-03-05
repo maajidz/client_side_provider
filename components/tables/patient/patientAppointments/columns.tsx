@@ -3,34 +3,44 @@ import { ColumnDef } from "@tanstack/react-table";
 import { UserAppointmentInterface } from "@/types/userInterface";
 import JoinButton from "./JoinButton";
 import { Badge } from "@/components/ui/badge";
-import { format, parseISO } from 'date-fns'; // Import date-fns functions
-import { XCircle, Info, Check, Calendar, CheckCheck } from 'lucide-react'; // Import icons
+import { format, parseISO } from "date-fns"; 
 
 // Define the return type for the badge variant function
-interface BadgeVariant {
-  variant: "default" | "secondary" | "destructive" | "outline" | "ghost" | "blue" | "indigo" | "purple" | "pink" | "warning" | "success";
-  icon: React.ElementType | null; // Icon can be a React component or null
-}
+// interface BadgeVariant {
+//   variant:
+//     | "default"
+//     | "secondary"
+//     | "destructive"
+//     | "outline"
+//     | "ghost"
+//     | "blue"
+//     | "indigo"
+//     | "purple"
+//     | "pink"
+//     | "warning"
+//     | "success";
+//   icon: React.ElementType | null; 
+// }
 
 // Function to determine the badge variant and icon based on status
-const getBadgeVariant = (status: string): BadgeVariant => {
-  const normalizedStatus = status.toLowerCase();
-  
-  switch (normalizedStatus) {
-    case "no show":
-      return { variant: "destructive", icon: XCircle }; // Red for no show
-    case "consulted":
-      return { variant: "success", icon: CheckCheck }; // Green for consulted
-    case "pending":
-      return { variant: "warning", icon: Info }; // Yellow for pending
-    case "confirmed":
-      return { variant: "blue", icon: Check }; // Change "blue" to "secondary" or another valid variant
-    case "scheduled":
-      return { variant: "blue", icon: Calendar }; // Blue for scheduled
-    default:
-      return { variant: "default", icon: null }; // Default variant
-  }
-};
+// const getBadgeVariant = (status: string): BadgeVariant => {
+//   const normalizedStatus = status.toLowerCase();
+
+//   switch (normalizedStatus) {
+//     case "No Show":
+//       return { variant: "destructive", icon: XCircle }; // Red for no show
+//     case "Consulted":
+//       return { variant: "success", icon: CheckCheck }; // Green for consulted
+//     case "Pending":
+//       return { variant: "warning", icon: Info }; // Yellow for pending
+//     case "Confirmed":
+//       return { variant: "blue", icon: Check }; // Change "blue" to "secondary" or another valid variant
+//     case "Scheduled":
+//       return { variant: "blue", icon: Calendar }; // Blue for scheduled
+//     default:
+//       return { variant: "default", icon: null }; // Default variant
+//   }
+// };
 
 export const columns = (
   handleRowClick: (userAppointment: UserAppointmentInterface) => void
@@ -56,9 +66,12 @@ export const columns = (
 
       // Combine date and time into a single string
       const dateTimeString = `${date}T${time}`;
-      
+
       // Format the date and time
-      const formattedDateTime = format(parseISO(dateTimeString), "dd MMM, yyyy - hh:mm a");
+      const formattedDateTime = format(
+        parseISO(dateTimeString),
+        "dd MMM, yyyy - hh:mm a"
+      );
 
       return (
         <div
@@ -83,17 +96,19 @@ export const columns = (
     ),
   },
   {
-    id: "status",
+    accessorKey: "status",
     header: "Status",
-
     cell: ({ row }) => {
-      const { variant, icon } = getBadgeVariant(row.original.status); // Destructure the returned object
+      const statusColor =
+        row.original.status === "Confirmed"
+          ? "success"
+          : row.original.status === "No Show"
+          ? "destructive" 
+          : row.original.status === "Scheduled"
+          ? "blue"
+          : "warning";
 
-      return (
-        <Badge variant={variant} icon={icon ? icon : undefined}>
-          {row.original.status}
-        </Badge>
-      );
+      return <Badge variant={`${statusColor}`}>{row.original.status}</Badge>;
     },
   },
   {

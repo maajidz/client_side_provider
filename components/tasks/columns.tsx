@@ -12,6 +12,7 @@ import {
 import { deleteTask, updateTaskStatus } from "@/services/chartDetailsServices";
 import generateTasksPDF from "../patient/tasks/generateTasksPDF";
 import { Ellipsis } from "lucide-react";
+import { Badge } from "../ui/badge";
 
 const handleTasksDelete = async (
   taskId: string,
@@ -149,11 +150,11 @@ export const columns = ({
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="cursor-pointer capitalize">
-        {row.original.status.toLowerCase()}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const statusColor =
+        row.original.status === "COMPLETED" ? "success" : "warning";
+      return <Badge variant={`${statusColor}`}>{row.original.status}</Badge>;
+    },
   },
   {
     accessorKey: "id",
@@ -184,18 +185,20 @@ export const columns = ({
             >
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                handleTasksStatusUpdate(
-                  row.original.id,
-                  setLoading,
-                  showToast,
-                  fetchTasksList
-                );
-              }}
-            >
-              Mark as completed
-            </DropdownMenuItem>
+            {row.original.status === "PENDING" && (
+              <DropdownMenuItem
+                onClick={() => {
+                  handleTasksStatusUpdate(
+                    row.original.id,
+                    setLoading,
+                    showToast,
+                    fetchTasksList
+                  );
+                }}
+              >
+                Mark as completed
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onClick={() => {
                 handleTasksDelete(

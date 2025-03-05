@@ -5,23 +5,35 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { getTasks } from "@/services/chartDetailsServices";
+import { getTasks, getTasksTypes } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
-import { TasksResponseDataInterface } from "@/types/tasksInterface";
+import {
+  TasksResponseDataInterface,
+  TaskTypeResponse,
+} from "@/types/tasksInterface";
 import TasksDialog from "./TasksDialog";
 import TasksList from "./TasksList";
 import { PlusCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { showToast } from "@/utils/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
     null
   );
-
+  const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
+  const [tasksListData, setTasksListData] = useState<TaskTypeResponse | null>(
+    null
+  );
   const [tasksData, setTasksData] = useState<TasksResponseDataInterface[]>();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { toast } = useToast();
 
   const fetchTasks = useCallback(async () => {
     setLoading(true);
@@ -51,9 +63,51 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     }
   }, [patientDetails?.providerID]);
 
+  const fetchOwnersList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+
+      if (response) {
+        setOwnersList(response.data || []);
+      }
+    } catch (err) {
+      console.log(err);
+      showToast({
+        toast,
+        type: "error",
+        message: "Failed to fetch owners list.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
+
+  const fetchTasksList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getTasksTypes({
+        page: 1,
+        limit: 10,
+      });
+
+      if (response) {
+        setTasksListData(response);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks]);
+    fetchOwnersList();
+    fetchTasksList();
+  }, [fetchTasks, fetchOwnersList, fetchTasksList]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -77,6 +131,8 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
               onClose={() => {
                 setIsDialogOpen(false);
               }}
+              ownersList={ownersList}
+              tasksListData={tasksListData}
             />
           </div>
           <AccordionContent className="sm:max-w-4xl">
