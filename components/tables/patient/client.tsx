@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
@@ -15,24 +15,33 @@ export const PatientClient = () => {
   const [pageNo, setPageNo] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
+  const pageSize = 10;
+
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchAndSetResponse = async (pageNo: number) => {
+  const fetchData = useCallback(async (page: number) => {
+    setLoading(true);
+    try {
       const userData = await fetchUserDataResponse({
-        pageNo: pageNo,
-        pageSize: 10,
+        pageNo: page,
+        pageSize: pageSize,
       });
       if (userData) {
         setResponse(userData);
-        setUserResponse(userData.data);
+        const filteredData = userData.data.filter((user) => user.patientId);
+        setUserResponse(filteredData);
         setTotalPages(Math.ceil(userData.total / userData.pageSize));
       }
+    } catch (error) {
+      console.error("Failed to fetch patient data", error);
+    } finally {
       setLoading(false);
-    };
+    }
+  }, []);
 
-    fetchAndSetResponse(pageNo);
-  }, [pageNo]);
+  useEffect(() => {
+    fetchData(pageNo);
+  }, [pageNo, fetchData]);
 
   const handleRowClick = (id: string) => {
     router.push(`/dashboard/provider/patient/${id}/patientDetails`);
@@ -51,24 +60,14 @@ export const PatientClient = () => {
   }
 
   return (
-    <>
-      {/* <div className="flex items-start justify-between">
-        <Heading title={`Patients (${response?.total})`} description="" />
-        <DefaultButton onClick={handleAddPatientClick}>
-          Add Patient
-        </DefaultButton>
-      </div> */}
-      {userResponse && (
-        <DefaultDataTable
-          columns={columns(handleRowClick)}
-          onAddClick={handleAddPatientClick}
-          title={`Patients (${response?.total})`}
-          data={userResponse}
-          pageNo={pageNo}
-          totalPages={totalPages}
-          onPageChange={(newPage: number) => setPageNo(newPage)}
-        />
-      )}
-    </>
+    <DefaultDataTable
+      columns={columns(handleRowClick)}
+      onAddClick={handleAddPatientClick}
+      title={`Patients (${response?.total})`}
+      data={userResponse || []}
+      pageNo={pageNo}
+      totalPages={totalPages}
+      onPageChange={(newPage: number) => setPageNo(newPage)}
+    />
   );
 };
