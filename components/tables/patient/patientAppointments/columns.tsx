@@ -4,7 +4,7 @@ import { UserAppointmentInterface } from "@/types/userInterface";
 import JoinButton from "./JoinButton";
 import { Badge } from "@/components/ui/badge";
 import { format, parseISO } from 'date-fns'; // Import date-fns functions
-import { CheckCircle, XCircle, Info, Check, Calendar, CheckCheck } from 'lucide-react'; // Import icons
+import { XCircle, Info, Check, Calendar, CheckCheck } from 'lucide-react'; // Import icons
 
 // Define the return type for the badge variant function
 interface BadgeVariant {
@@ -20,11 +20,11 @@ const getBadgeVariant = (status: string): BadgeVariant => {
     case "no show":
       return { variant: "destructive", icon: XCircle }; // Red for no show
     case "consulted":
-      return { variant: "success", icon: CheckCheck }; // Green for consulted
+      return { variant: "blue", icon: CheckCheck }; // Green for consulted
     case "pending":
       return { variant: "warning", icon: Info }; // Yellow for pending
     case "confirmed":
-      return { variant: "blue", icon: Check }; // Change "blue" to "secondary" or another valid variant
+      return { variant: "success", icon: Check }; // Change "blue" to "secondary" or another valid variant
     case "scheduled":
       return { variant: "blue", icon: Calendar }; // Blue for scheduled
     default:
@@ -85,9 +85,11 @@ export const columns = (
   {
     id: "status",
     header: "Status",
-
     cell: ({ row }) => {
       const { variant, icon } = getBadgeVariant(row.original.status); // Destructure the returned object
+
+      // Log the entire appointment data for debugging
+      console.log("Appointment Data:", row.original);
 
       return (
         <Badge variant={variant} icon={icon ? icon : undefined}>
