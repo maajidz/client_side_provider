@@ -93,31 +93,29 @@ export const columns = ({
       <div className="cursor-pointer">{row.getValue("idNumber")}</div>
     ),
   },
-  {
-    accessorKey: "dueDate",
-    header: "Due Date",
-    cell: ({ getValue }) => {
-      const dob = getValue() as string;
-      const date = new Date(dob);
-      return (
-        <div className="cursor-pointer">
-          {date.toLocaleDateString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          })}
-        </div>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "dueDate",
+  //   header: "Due Date",
+  //   cell: ({ getValue }) => {
+  //     const dob = getValue() as string;
+  //     const date = new Date(dob);
+  //     return (
+  //       <div className="cursor-pointer">
+  //         {date.toLocaleDateString("en-US", {
+  //           month: "short",
+  //           day: "2-digit",
+  //           year: "numeric",
+  //         })}
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
       <Badge
-        variant={`${
-          row.original.status === "active" ? "success" : "default"
-        }`}
+        variant={`${row.original.status === "active" ? "success" : "default"}`}
       >
         {row.getValue("status")}
       </Badge>
@@ -159,9 +157,15 @@ export const columns = ({
             >
               Delete
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              Mark as Inactive
-            </DropdownMenuItem>
+            {row.original.status === "inactive" ? (
+              <DropdownMenuItem className="cursor-pointer">
+                Mark as Active
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem className="cursor-pointer">
+                Mark as Inactive
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
