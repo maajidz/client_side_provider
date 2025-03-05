@@ -8,7 +8,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteUserPrescriptionsData } from "@/services/prescriptionsServices";
+import {
+  deleteUserPrescriptionsData,
+  updateUserPrescription,
+} from "@/services/prescriptionsServices";
 import { PrescriptionDataInterface } from "@/types/prescriptionInterface";
 import { Ellipsis } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +35,39 @@ const handlePrescriptionDelete = async (
   } finally {
     setLoading(false);
     fetchSupplements();
+  }
+};
+
+const handleStatusUpdate = async (
+  requestData: PrescriptionDataInterface,
+  prescriptionId: string,
+  setLoading: (loading: boolean) => void,
+  showToast: (args: { type: string; message: string }) => void,
+  fetchPrescriptionData: () => void
+) => {
+  setLoading(true);
+  try {
+    await updateUserPrescription({ requestData, id: prescriptionId });
+    showToast({
+      type: "success",
+      message: "Prescription status updated successfully",
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      showToast({
+        type: "error",
+        message: "Failed to update prescription status",
+      });
+    } else {
+      showToast({
+        type: "error",
+        message:
+          "Failed to update prescription status. An unknown error occurred",
+      });
+    }
+  } finally {
+    setLoading(false);
+    fetchPrescriptionData();
   }
 };
 
@@ -69,9 +105,8 @@ export const columns = ({
           Dispense: {row.original?.dispense_quantity}{" "}
           {row.original?.dispense_unit}
         </div>
-        <div>Refill: {row.original?.earliest_fill_date.split('T')[0]}</div>
+        <div>Refill: {row.original?.earliest_fill_date.split("T")[0]}</div>
         <div>Supply: {row.original?.days_of_supply}</div>
-        
       </div>
     ),
   },
@@ -98,9 +133,7 @@ export const columns = ({
     header: "Status",
     cell: ({ row }) => (
       <Badge
-        variant={`${
-          row.original.status === "active" ? "success" : "warning"
-        }`}
+        variant={`${row.original.status === "completed" ? "success" : "warning"}`}
       >
         {row.original.status}
       </Badge>
@@ -138,7 +171,37 @@ export const columns = ({
             >
               Delete
             </DropdownMenuItem>
-            <DropdownMenuItem>Mark as Inactive</DropdownMenuItem>
+            {row.original.status === "pending" ? (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() =>
+                  handleStatusUpdate(
+                    { ...row.original, status: "completed" },
+                    row.original.id,
+                    setLoading,
+                    showToast,
+                    fetchPrescriptionsList
+                  )
+                }
+              >
+                Mark as Completed
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() =>
+                  handleStatusUpdate(
+                    { ...row.original, status: "pending" },
+                    row.original.id,
+                    setLoading,
+                    showToast,
+                    fetchPrescriptionsList
+                  )
+                }
+              >
+                Mark as Pending
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

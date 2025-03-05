@@ -161,7 +161,7 @@ export const columns = ({
     header: "Status",
     cell: ({ row }) => {
       const statusColor =
-        row.original.status.toLowerCase() === "inactive"
+        row.original.status.toLowerCase() === "active"
           ? "success"
           : "warning";
 
