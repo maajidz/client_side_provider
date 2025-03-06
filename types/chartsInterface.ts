@@ -353,10 +353,17 @@ export interface LabOrdersData {
   orderedBy: string;
   date: string;
   isSigned: boolean;
+  status: string;
   createdAt: string;
   updatedAt: string;
   labs: Lab[];
   tests: Test[];
+  userDetails: LabUserDetails;
+}
+
+export interface LabUserDetails {
+  id: string;
+  gender: string;
 }
 
 export interface Test {
@@ -364,6 +371,11 @@ export interface Test {
   name: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface TestInterface {
+  id: string;
+  name: string;
 }
 
 export interface CreatePrescriptionInterface {

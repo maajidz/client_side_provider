@@ -46,18 +46,17 @@ import {
 } from "@/components/ui/popover";
 
 const CreateOrderRecord = () => {
-  // Labs Data
-  const [labResponse, setLabResponse] = useState<LabsDataResponse>({
-    data: [],
-    total: 0,
-  });
-
   // Providers List
   const [providerListData, setProviderListData] =
     useState<FetchProviderListInterface>({
       data: [],
       total: 0,
     });
+  // Labs Data
+  const [labResponse, setLabResponse] = useState<LabsDataResponse>({
+    data: [],
+    total: 0,
+  });
 
   // Loading State
   const [loading, setLoading] = useState({
@@ -164,7 +163,7 @@ const CreateOrderRecord = () => {
     } finally {
       form.reset();
       form.reset();
-      router.push(`/dashboard/provider/patient/${userDetailsId}/lab_records`)
+      router.push(`/dashboard/provider/patient/${userDetailsId}/lab_records`);
     }
   };
 

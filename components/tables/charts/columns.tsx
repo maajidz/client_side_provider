@@ -3,10 +3,12 @@ import { ColumnDef } from '@tanstack/react-table';
 import { EncounterResponse } from '@/types/encounterInterface';
 import { Button } from '@/components/ui/button';
 
-export const columns = (handleRowClick: (id: string) => void): ColumnDef<EncounterResponse | undefined>[] => [
+export const columns = (
+  handleRowClick: (id: string) => void
+): ColumnDef<EncounterResponse | undefined>[] => [
   {
-    accessorKey: 'userDetails',
-    header: 'User Details',
+    accessorKey: "userDetails",
+    header: "User Details",
     cell: ({ row }) => {
       const userDetails = row.original?.userDetails;
       return userDetails ? (
@@ -14,14 +16,14 @@ export const columns = (handleRowClick: (id: string) => void): ColumnDef<Encount
           className="cursor-pointer"
           onClick={() => handleRowClick(row.original!.id)}
         >
-          {userDetails.id}
+          {userDetails.patientId}
         </div>
       ) : null;
     },
   },
   {
-    accessorKey: 'visit_type',
-    header: 'Visit type',
+    accessorKey: "visit_type",
+    header: "Visit type",
     cell: ({ row }) => {
       const visitType = row.original?.visit_type;
       return visitType ? (
@@ -35,8 +37,8 @@ export const columns = (handleRowClick: (id: string) => void): ColumnDef<Encount
     },
   },
   {
-    accessorKey: 'mode',
-    header: 'Mode',
+    accessorKey: "mode",
+    header: "Mode",
     cell: ({ row }) => {
       const mode = row.original?.mode;
       return mode ? (
@@ -50,23 +52,24 @@ export const columns = (handleRowClick: (id: string) => void): ColumnDef<Encount
     },
   },
   {
-    accessorKey: 'isVerified',
-    header: 'Is Verified',
+    accessorKey: "isVerified",
+    header: "Is Verified",
     cell: ({ row }) => {
-      const isVerified = row.original?.isVerified;
-      return isVerified ? (
+      const { isVerified, id } = row.original || {};
+
+      return (
         <div
           className="cursor-pointer"
-          onClick={() => handleRowClick(row.original!.id)}
+          onClick={() => id && handleRowClick(id)}
         >
-          {isVerified}
+          {isVerified ? "True" : "False"}
         </div>
-      ) : null;
+      );
     },
   },
   {
-    accessorKey: 'createdAt',
-    header: 'Data',
+    accessorKey: "createdAt",
+    header: "Data",
     cell: ({ row }) => {
       const createdAt = row.original?.createdAt;
       return createdAt ? (
@@ -74,19 +77,23 @@ export const columns = (handleRowClick: (id: string) => void): ColumnDef<Encount
           className="cursor-pointer"
           onClick={() => handleRowClick(row.original!.id)}
         >
-           {createdAt.split('T')[0]}
+          {createdAt.split("T")[0]}
         </div>
       ) : null;
     },
   },
   {
-    accessorKey: 'id',
-    header: 'Id',
+    accessorKey: "id",
+    header: "Id",
     cell: ({ row }) => {
       const id = row.original?.id;
       return id ? (
-        <Button variant={'link'} className='text-blue-600 underline' onClick={() => handleRowClick(id)}>
-          Open Encounter 
+        <Button
+          variant={"link"}
+          className="text-blue-600 underline"
+          onClick={() => handleRowClick(id)}
+        >
+          Open Encounter
         </Button>
       ) : null;
     },

@@ -40,6 +40,7 @@ export interface TasksResponseInterface {
 
 export interface TasksResponseDataInterface {
   id: string;
+  patientId: string;
   categoryId: string;
   description: string;
   status: string;

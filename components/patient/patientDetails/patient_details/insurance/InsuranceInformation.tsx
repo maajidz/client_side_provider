@@ -99,7 +99,7 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
             showToast({
               toast,
               type: "success",
-              message: "Deleted successfully",
+              message: "Success",
             }),
           fetchInsuranceData: () => fetchInsuranceData(),
           setIsOpenNotesDialog,

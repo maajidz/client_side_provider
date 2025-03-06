@@ -107,7 +107,7 @@ function UserList({ users }: { users: UserData[] }) {
               className="text-cyan-600 text-xs font-medium"
               onClick={() =>
                 router.push(
-                  `dashboard/provider/patient/${user.user.userDetailsId}/patientDetails`
+                  `/dashboard/provider/patient/${user.user.userDetailsId}/dashboard`
                 )
               }
             >

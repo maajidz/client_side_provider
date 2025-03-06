@@ -135,7 +135,7 @@ function EditPrescription({
           ? formatDate(selectedPrescription?.toDate)
           : new Date().toISOString().split("T")[0],
         status:
-          (selectedPrescription?.status as "active" | "inactive") ?? "active",
+          (selectedPrescription?.status as "pending" | "completed") ?? "active",
         internal_comments: selectedPrescription?.internal_comments ?? "",
       });
     }

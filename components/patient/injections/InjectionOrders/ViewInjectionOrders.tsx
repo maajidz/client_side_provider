@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { status } from "@/constants/data";
+import { injectionStatus } from "@/constants/data";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { Button } from "@/components/ui/button";
@@ -193,7 +193,7 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {status.map((status) => (
+                      {injectionStatus.map((status) => (
                         <SelectItem key={status.value} value={status.value}>
                           {status.label}
                         </SelectItem>

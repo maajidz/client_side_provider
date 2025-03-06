@@ -104,10 +104,10 @@ export const columns = ({
     },
   },
   {
-    accessorKey: "userDetailsId",
+    accessorKey: "patientId",
     header: "Patient",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("userDetailsId")}</div>
+      <div className="cursor-pointer">{row.getValue("patientId")}</div>
     ),
   },
   {

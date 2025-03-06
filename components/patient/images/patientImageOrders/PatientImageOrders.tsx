@@ -57,7 +57,6 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   function onSubmit(values: z.infer<typeof filterLabOrdersSchema>) {
     setFilters((prev) => ({
       ...prev,
-
       orderedby: values.orderedby === "all" ? "" : values.orderedby || "",
       status: values.status === "all" ? "" : values.status || "",
     }));
@@ -170,8 +169,17 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
                       <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="signed">Signed</SelectItem>
-                      <SelectItem value="unsigned">Unsigned</SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="alghjl">Accll</SelectItem>
+                      {Array.from(
+                        new Set(
+                          orderList?.data.map((order) => order?.status)
+                        )
+                      ).map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {status}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>

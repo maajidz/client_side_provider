@@ -39,7 +39,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getLabsData } from "@/services/chartsServices";
 import { createLabResultRequest } from "@/services/labResultServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
-import { LabsDataResponse, Test } from "@/types/chartsInterface";
+import { LabsDataResponse, Test, TestInterface } from "@/types/chartsInterface";
 import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
 import { showToast } from "@/utils/utils";
 import { useParams, useRouter } from "next/navigation";
@@ -97,7 +97,7 @@ const CreateResultRecord = () => {
     name: "testResults",
   });
 
-  const [selectedTests, setSelectedTests] = useState<string[]>([]);
+  const [selectedTests, setSelectedTests] = useState<TestInterface[]>([]);
   const [labResponse, setLabResponse] = useState<LabsDataResponse>({
     data: [],
     total: 0,
@@ -214,7 +214,9 @@ const CreateResultRecord = () => {
       });
     } finally {
       form.reset();
-      router.replace(`/dashboard/provider/patient/${userDetailsId}/lab_records`)
+      router.replace(
+        `/dashboard/provider/patient/${userDetailsId}/lab_records`
+      );
     }
   };
 
@@ -267,7 +269,6 @@ const CreateResultRecord = () => {
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              
                               {providerListData.data.map((providerList) => {
                                 const providerId =
                                   providerList.providerDetails?.id ??
@@ -349,7 +350,7 @@ const CreateResultRecord = () => {
                 <div className="test-groups">
                   {selectedTests.map((test, index) => (
                     <div key={index}>
-                      <h3 className="text-lg font-semibold">{`Test Results for ${test}`}</h3>
+                      <h3 className="text-lg font-semibold">{`Test Results for ${test.name}`}</h3>
                       {testGroupFields.map((group, groupIndex) => (
                         <div
                           key={`${group.id}-${groupIndex}`}
@@ -503,20 +504,30 @@ export function DropdownMenuCheckboxesField({
   tests,
 }: {
   field: FieldValues;
-  selectedTests: string[];
-  setSelectedTests: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedTests: TestInterface[];
+  setSelectedTests: React.Dispatch<React.SetStateAction<TestInterface[]>>;
   tests: Test[];
 }) {
-  const handleTestChange = (value: string, checked: boolean) => {
+  const handleTestChange = (value: TestInterface, checked: boolean) => {
+    let updatedTests: TestInterface[];
+
     if (checked) {
-      const updatedTests = [...selectedTests, value];
-      setSelectedTests(updatedTests);
-      field.onChange(updatedTests);
+      updatedTests = [...selectedTests, value];
     } else {
-      const updatedTests = selectedTests.filter((test) => test !== value);
-      setSelectedTests(updatedTests);
-      field.onChange(updatedTests);
+      updatedTests = selectedTests.filter((test) => test.id !== value.id);
     }
+
+    setSelectedTests(updatedTests);
+    field.onChange(updatedTests.map((test) => test.id));
+    // if (checked) {
+    //   const updatedTests = [...selectedTests, value];
+    //   setSelectedTests(updatedTests);
+    //   field.onChange(updatedTests);
+    // } else {
+    //   const updatedTests = selectedTests.filter((test) => test !== value);
+    //   setSelectedTests(updatedTests);
+    //   field.onChange(updatedTests);
+    // }
   };
 
   return (
@@ -527,7 +538,7 @@ export function DropdownMenuCheckboxesField({
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
               {selectedTests.length > 0
-                ? `${selectedTests.join(", ")}`
+                ? selectedTests.map((test) => test.name).join(", ")
                 : "Select tests"}
             </Button>
           </DropdownMenuTrigger>
@@ -537,10 +548,8 @@ export function DropdownMenuCheckboxesField({
             {tests.map((test) => (
               <DropdownMenuCheckboxItem
                 key={test.id}
-                checked={selectedTests.includes(test.id)}
-                onCheckedChange={(checked) =>
-                  handleTestChange(test.id, checked)
-                }
+                checked={selectedTests.includes(test)}
+                onCheckedChange={(checked) => handleTestChange(test, checked)}
               >
                 {test.name}
               </DropdownMenuCheckboxItem>
@@ -560,8 +569,8 @@ function TestsField({
   tests,
 }: {
   form: UseFormReturn<z.infer<typeof createLabResultsSchema>>;
-  selectedTests: string[];
-  setSelectedTests: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedTests: TestInterface[];
+  setSelectedTests: React.Dispatch<React.SetStateAction<TestInterface[]>>;
   tests: Test[];
 }) {
   return (

@@ -486,19 +486,26 @@ export const getImagesTestsData = async ({
 export const getLabOrdersData = async ({
   userDetailsId = "",
   providerId = "",
-  page,
-  limit,
+  status = "",
+  page = 1,
+  limit = 10,
 }: {
   userDetailsId?: string;
   providerId?: string;
   page?: number;
+  status?: string;
   limit?: number;
 }) => {
+  const queryParams = new URLSearchParams();
+  if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
+  if (providerId) queryParams.append("providerId", providerId);
+  if (status) queryParams.append("status", status);
+  if (page) queryParams.append("page", page.toString());
+  if (limit) queryParams.append("limit", limit.toString());
+
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/lab/orders?userDetailsId=${userDetailsId}&providerId=${
-      providerId ? providerId : ""
-    }&limit=${limit ? limit : 10}&page=${page ? page : 1}`,
+    url: `/provider/lab/orders?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -595,7 +602,7 @@ export const getTransferData = async ({
   idType,
   referralType,
   statusType,
-  status
+  status,
 }: {
   id: string;
   idType:
