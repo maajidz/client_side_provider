@@ -77,7 +77,7 @@ export const columns = ({
     header: "Alert type",
     cell: ({ row }) => {
       const alertType = row.original.alertType;
-      return <div className="cursor-pointer">{alertType.alertName}</div>;
+      return <div className="cursor-pointer">{alertType?.alertName}</div>;
     },
   },
   {
