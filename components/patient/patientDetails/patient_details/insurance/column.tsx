@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, EllipsisVertical } from "lucide-react";
 import {
   InsuranceResponse,
   UpdateInsuranceType,
