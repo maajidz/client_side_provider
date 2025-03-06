@@ -110,24 +110,24 @@ export const columns = ({
       </div>
     ),
   },
-  {
-    accessorKey: "fromDate",
-    header: "From Date",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">
-        {new Date(row.original.fromDate).toDateString()}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "toDate",
-    header: "To Date",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">
-        {new Date(row.original.toDate).toDateString()}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "fromDate",
+  //   header: "From Date",
+  //   cell: ({ row }) => (
+  //     <div className="cursor-pointer">
+  //       {new Date(row.original.fromDate).toDateString()}
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "toDate",
+  //   header: "To Date",
+  //   cell: ({ row }) => (
+  //     <div className="cursor-pointer">
+  //       {new Date(row.original.toDate).toDateString()}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "status",
     header: "Status",
