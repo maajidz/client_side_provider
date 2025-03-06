@@ -1,4 +1,5 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { LabOrdersData } from "@/types/chartsInterface";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -38,7 +39,7 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
     accessorKey: "isSigned",
     header: "Is signed",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("isSigned")}</div>
+      <div className="cursor-pointer">{row.getValue("isSigned") ? "Yes": "No"}</div>
     ),
   },
   {
@@ -68,5 +69,22 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
         </div>
       );
     },
-  }
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      return (
+        <Badge
+          variant={
+            row.original.status === "completed"
+              ? "success"
+              : "default"
+          }
+        >
+          {row.original.status}
+        </Badge>
+      );
+    },
+  },
 ];
