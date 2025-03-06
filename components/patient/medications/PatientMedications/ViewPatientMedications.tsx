@@ -12,10 +12,13 @@ import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataT
 import AddMedicationDialog from "@/components/charts/Encounters/Details/Medications/AddMedicationDialog";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+import { getMedicationData } from "@/services/chartDetailsServices";
+import { MedicationResultInterface } from "@/types/medicationInterface";
+import { MedicationColumn } from "./medicationColumn";
 
 const ViewPatientMedications = ({
   userDetailsId,
-  onSetQuickRxVisible
+  onSetQuickRxVisible,
 }: {
   userDetailsId: string;
   onSetQuickRxVisible: (visible: boolean) => void;
@@ -23,6 +26,11 @@ const ViewPatientMedications = ({
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<PrescriptionDataInterface[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Medications State
+  const [medications, setMedicationsData] = useState<
+    MedicationResultInterface[]
+  >([]);
 
   // Pagination State
   const itemsPerPage = 5;
@@ -33,6 +41,25 @@ const ViewPatientMedications = ({
   const [isMedicationsDialogOpen, setIsMedicationsDialogOpen] = useState(false);
   const [editData, setEditData] = useState<PrescriptionDataInterface>();
   const { toast } = useToast();
+
+  // Get Medication Data
+  const fetchMedicationData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getMedicationData({
+        page,
+        limit: itemsPerPage,
+      });
+      setMedicationsData(response.result);
+
+      setTotalPages(Math.ceil(response.total / itemsPerPage));
+    } catch (err) {
+      console.error("Error fetching pharmacy data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, itemsPerPage]);
 
   const fetchPrescriptionsList = useCallback(
     async (userDetailsId: string) => {
@@ -62,7 +89,8 @@ const ViewPatientMedications = ({
 
   useEffect(() => {
     fetchPrescriptionsList(userDetailsId);
-  }, [fetchPrescriptionsList, userDetailsId]);
+    fetchMedicationData();
+  }, [fetchPrescriptionsList, fetchMedicationData, userDetailsId]);
 
   if (loading) {
     return <LoadingButton />;
@@ -106,6 +134,16 @@ const ViewPatientMedications = ({
             onPageChange={(newPage: number) => setPage(newPage)}
           />
         )}
+
+        {/* Medication DatTable */}
+        <DefaultDataTable
+          columns={MedicationColumn()}
+          data={medications}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+
         <EditPrescription
           userDetailsId={userDetailsId}
           isOpen={isDialogOpen}
