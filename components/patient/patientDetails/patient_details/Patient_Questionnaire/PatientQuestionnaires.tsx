@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { generateQuestionnairePDF } from "./generateQuestionnairePDF";
-import { Copy, Ellipsis, FileUp } from "lucide-react";
+import { Copy, EllipsisVertical, FileUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PatientQuestionnaires = ({
@@ -165,7 +165,7 @@ const PatientQuestionnaires = ({
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="border border-[#D9D9D9] px-2 h-9 items-center rounded-md">
-                    <Ellipsis />
+                    <EllipsisVertical size={16} className="text-gray-500"/>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem>Delete</DropdownMenuItem>

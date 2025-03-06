@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteUserPrescriptionsData } from "@/services/prescriptionsServices";
 import { PrescriptionDataInterface } from "@/types/prescriptionInterface";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const handlePrescriptionDelete = async (
@@ -113,7 +113,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

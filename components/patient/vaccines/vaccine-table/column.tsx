@@ -9,7 +9,7 @@ import {
 import { deleteHistoricalVaccine } from "@/services/chartDetailsServices";
 import { HistoricalVaccineInterface } from "@/types/chartsInterface";
 import { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 
 const handleDeleteVaccine = async (
   vaccineId: string,
@@ -94,7 +94,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

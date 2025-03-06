@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteAlert } from "@/services/chartDetailsServices";
 import { AlertData } from "@/types/alertInterface";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 
 const handleDeleteAlert = async (
   alertId: string,
@@ -77,7 +77,7 @@ export const columns = ({
     header: "Alert type",
     cell: ({ row }) => {
       const alertType = row.original.alertType;
-      return <div className="cursor-pointer">{alertType.alertName}</div>;
+      return <div className="cursor-pointer">{alertType?.alertName}</div>;
     },
   },
   {
@@ -87,14 +87,14 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
                 setEditData({
-                  alertName: row.original.alertType.alertName,
+                  alertName: row.original.alertType?.alertName,
                   alertDescription: row.original.alertDescription,
                   alertId: row.original.id,
                 });

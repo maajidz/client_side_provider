@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { InsuranceResponse } from "@/types/insuranceInterface";
 import { deleteInsuranceData } from "@/services/insuranceServices";
 import { Badge } from "@/components/ui/badge";
@@ -128,7 +128,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem

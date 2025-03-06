@@ -9,7 +9,7 @@ import {
 import { deleteDiagnoses } from "@/services/chartsServices";
 import { DiagnosesInterface } from "@/types/chartsInterface";
 import { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 
 const handleDiagnosisDelete = async (
   diagnosisId: string,
@@ -99,7 +99,7 @@ export const columns = ({
       <div className="cursor-pointer">
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

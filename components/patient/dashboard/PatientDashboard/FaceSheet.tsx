@@ -65,7 +65,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
       <ScrollArea>
         <div className={styles.infoContent}>
           <div className="flex flex-row gap-4 w-full md:w-full">
-            <Card className="flex flex-grow-0">
+            <Card className="flex flex-1">
               <CardHeader>
                 <CardTitle>
                   <TitleLinks
@@ -89,7 +89,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               </CardContent>
             </Card>
 
-            <Card className="flex flex-grow-0">
+            <Card className="flex flex-1">
               <CardHeader>
                 <CardTitle>
                   <TitleLinks
@@ -99,11 +99,11 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                   />
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-row gap-2">
+              <CardContent className="flex flex-row gap-2 w-full">
                 {userDashboardData?.diagnoses ? (
                   <div
                     key={userDashboardData?.diagnoses.id}
-                    className="flex flex-row justify-between"
+                    className="flex flex-row justify-between items-center gap-4 flex-1"
                   >
                     <div className="flex flex-row gap-2">
                       <div className="text-sm font-medium">
@@ -209,12 +209,12 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                             userDashboardData?.medicalHistory
                               .glp_refill_note_practice
                           }
-                          icon={CheckCircle}
+
                         />
                         <FaceSheetLabels
                           label="Notes:"
                           value={userDashboardData?.medicalHistory?.notes}
-                          icon={Info}
+
                         />
                       </div>
                     ) : (
@@ -284,78 +284,90 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <TitleLinks
-                  title="Supplements"
-                  href="medications"
-                  userDetailsId={userDetailsId}
-                />
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-row gap-2">
-              {userDashboardData?.supplements ? (
-                <div
-                  key={userDashboardData?.supplements?.id}
-                  className={styles.dataContainer}
-                >
-                  <div className={`${styles.infoTextLabel}`}>
-                    {userDashboardData?.supplements?.supplement} {""}
-                    {userDashboardData?.supplements?.manufacturer} {""}
-                    {userDashboardData?.supplements?.dosage} {""}
-                    {userDashboardData?.supplements?.unit}{" "}
-                  </div>
-                  <div className={styles.infoSub}>
-                    {userDashboardData?.supplements?.frequency}, {""}
-                    {userDashboardData?.supplements?.intake_type}
-                    {""}
-                  </div>
-                </div>
-              ) : (
-                <NoDataRecorded />
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <TitleLinks
-                  title="Injections"
-                  href="injections"
-                  userDetailsId={userDetailsId}
-                />
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-row gap-2">
-              {userDashboardData?.injections ? (
-                <div className="flex flex-col gap-3">
+          <div className="flex flex-row gap-4 w-full md:w-full">
+            <Card className="flex flex-1">
+              <CardHeader>
+                <CardTitle>
+                  <TitleLinks
+                    title="Supplements"
+                    href="medications"
+                    userDetailsId={userDetailsId}
+                  />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-row gap-2">
+                {userDashboardData?.supplements ? (
                   <div
-                    key={userDashboardData?.injections?.id}
-                    className={`${styles.subContainer} bg-[#F5F5F5] p-2 rounded`}
+                    key={userDashboardData?.supplements?.id}
+                    className={styles.dataContainer}
                   >
-                    <FaceSheetLabels
-                      label="Injection Name:"
-                      value={
-                        userDashboardData?.injections?.injection_name
+                    <div className={`${styles.infoTextLabel}`}>
+                      {userDashboardData?.supplements?.supplement} {" - "}
+                      {userDashboardData?.supplements?.manufacturer} {""}
+                    </div>
+                    <div className={styles.infoSub}>
+                      {userDashboardData?.supplements?.dosage}{", "}
+                      {userDashboardData?.supplements?.unit}{", "}
+                      {userDashboardData?.supplements?.frequency}{", "}
+                      {userDashboardData?.supplements?.intake_type}
+                    </div>
+                  </div>
+                ) : (
+                  <NoDataRecorded />
+                )}
+              </CardContent>
+            </Card>
+            <Card className="flex flex-1">
+              <CardHeader>
+                <CardTitle>
+                  <TitleLinks
+                    title="Medication"
+                    href="medications"
+                    userDetailsId={userDetailsId}
+                  />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-row gap-2">
+                <span className={styles.infoText}>No data recorded</span>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="flex flex-row gap-4 w-full md:w-full">
+          <Card className="flex flex-1">
+              <CardHeader>
+                <CardTitle>
+                  <TitleLinks
+                    title="Injections"
+                    href="injections"
+                    userDetailsId={userDetailsId}
+                  />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-row gap-2 w-full">
+                {userDashboardData?.injections ? (
+                  <div className="flex flex-col gap-3 flex-1">
+                    <div
+                      key={userDashboardData?.injections?.id}
+                      className={`${styles.subContainer} gap-1`}
+                    >
+                      <span className={styles.infoTextLabel}>
+                        {userDashboardData?.injections?.injection_name
                           ? userDashboardData?.injections?.injection_name
-                          : "N/A"
-                      }
-                    />
-                    <FaceSheetLabels
-                      label="Dosage:"
-                      value={
-                        userDashboardData?.injections?.dosage_quantity
-                          ? `${userDashboardData?.injections?.dosage_quantity} ${userDashboardData?.injections.dosage_unit}`
-                          : "N/A"
-                      }
-                    />
-                    <FaceSheetLabels
-                      label="Administrated On:"
-                      value={
-                        userDashboardData?.injections?.administered_date
-                          ? `
+                            : "N/A"}
+                      </span>
+                      <FaceSheetLabels
+                        label="Dosage:"
+                        value={
+                          userDashboardData?.injections?.dosage_quantity
+                            ? `${userDashboardData?.injections?.dosage_quantity} ${userDashboardData?.injections.dosage_unit}`
+                            : "N/A"
+                        }
+                      />
+                      <FaceSheetLabels
+                        label="Administrated On:"
+                        value={
+                          userDashboardData?.injections?.administered_date
+                            ? `
                       ${new Date(
                         userDashboardData?.injections?.administered_date
                       ).toLocaleDateString("en-US", {
@@ -363,29 +375,35 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                         day: "2-digit",
                         year: "numeric",
                       })}
-                     ${userDashboardData?.injections.administered_time} ${
-                              userDashboardData?.injections.frequency
-                            }`
-                          : "N/A"
-                      }
-                    />
-                    <FaceSheetLabels
-                      label="Comments:"
-                      value={
-                        userDashboardData?.injections?.comments
-                          ? userDashboardData?.injections?.comments
-                          : "N/A"
-                      }
-                    />
+                      @
+                     ${userDashboardData?.injections.administered_time}`
+                            : "N/A"
+                        }
+                      />
+                      <FaceSheetLabels
+                        label="Frequency:"
+                        value={
+                          userDashboardData?.injections?.frequency
+                            ? userDashboardData?.injections?.frequency
+                            : "N/A"
+                        }
+                      />
+                      <FaceSheetLabels
+                        label="Comments:"
+                        value={
+                          userDashboardData?.injections?.comments
+                            ? userDashboardData?.injections?.comments
+                            : "N/A"
+                        }
+                      />
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <NoDataRecorded />
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
+                ) : (
+                  <NoDataRecorded />
+                )}
+              </CardContent>
+            </Card>
+          <Card className="flex flex-1">
             <CardHeader>
               <CardTitle>
                 <TitleLinks
@@ -430,7 +448,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             </CardContent>
           </Card>
-
+          </div>
           {/* <div className={styles.infoContainer}>
             <TitleLinks
               title="Implanted Devices"
@@ -450,8 +468,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               <NoDataRecorded />
             )}
           </div>  */}
-
-          <Card>
+          <div className="flex flex-row gap-4 w-full md:w-full">
+          <Card className="flex flex-1">
             <CardHeader>
               <CardTitle>
                 <TitleLinks
@@ -486,7 +504,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="flex flex-1">
             <CardHeader>
               <CardTitle>
                 <TitleLinks
@@ -518,90 +536,92 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <TitleLinks
-                  title="Contact Details"
-                  href="patientDetails"
-                  userDetailsId={userDetailsId}
-                />
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-row gap-2">
-              {userData ? (
-                <div>
-                  <FaceSheetLabels
-                    label="Address:"
-                    value={userData?.location ? userData?.location : "N/A"}
+          </div>
+          <div className="flex flex-row gap-4 w-full md:w-full">
+            <Card className="flex flex-1">
+              <CardHeader>
+                <CardTitle>
+                  <TitleLinks
+                    title="Contact Details"
+                    href="patientDetails"
+                    userDetailsId={userDetailsId}
                   />
-                  <FaceSheetLabels
-                    label="Email:"
-                    value={
-                      userData?.user?.email ? userData?.user?.email : "N/A"
-                    }
-                  />
-                  <FaceSheetLabels
-                    label="Phone:"
-                    value={
-                      userData?.user?.phoneNumber
-                        ? userData?.user?.phoneNumber
-                        : "N/A"
-                    }
-                  />
-                </div>
-              ) : (
-                <NoDataRecorded />
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <TitleLinks
-                  title="Documents"
-                  href="documents"
-                  userDetailsId={userDetailsId}
-                />
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-row gap-2">
-              {userDashboardData?.documents ? (
-                <div
-                  key={userDashboardData?.documents.id}
-                  className={styles.dataContainer}
-                >
-                  <div className={`${styles.infoTextLabel}`}>
-                    {userDashboardData?.documents?.documents.map((image) => (
-                      <Button
-                        key={image}
-                        className="p-0"
-                        variant={"link"}
-                        onClick={() => {
-                          window.open(image, "_blank");
-                        }}
-                      >
-                        {image.split("/")[4]}
-                      </Button>
-                    ))}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-row gap-2">
+                {userData ? (
+                  <div>
+                    <FaceSheetLabels
+                      label="Address:"
+                      value={userData?.location ? userData?.location : "N/A"}
+                    />
+                    <FaceSheetLabels
+                      label="Email:"
+                      value={
+                        userData?.user?.email ? userData?.user?.email : "N/A"
+                      }
+                    />
+                    <FaceSheetLabels
+                      label="Phone:"
+                      value={
+                        userData?.user?.phoneNumber
+                          ? userData?.user?.phoneNumber
+                          : "N/A"
+                      }
+                    />
                   </div>
-                  <div className={styles.infoSub}>
-                    {new Date(
-                      userDashboardData?.documents?.date
-                    ).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "2-digit",
-                      year: "numeric",
-                    })}
+                ) : (
+                  <NoDataRecorded />
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="flex flex-1">
+              <CardHeader>
+                <CardTitle>
+                  <TitleLinks
+                    title="Documents"
+                    href="documents"
+                    userDetailsId={userDetailsId}
+                  />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-row gap-2">
+                {userDashboardData?.documents ? (
+                  <div
+                    key={userDashboardData?.documents.id}
+                    className={styles.dataContainer}
+                  >
+                    <div className={`${styles.infoTextLabel}`}>
+                      {userDashboardData?.documents?.documents.map((image) => (
+                        <Button
+                          key={image}
+                          className="p-0"
+                          variant={"link"}
+                          onClick={() => {
+                            window.open(image, "_blank");
+                          }}
+                        >
+                          {image.split("/")[4]}
+                        </Button>
+                      ))}
+                    </div>
+                    <div className={styles.infoSub}>
+                      {new Date(
+                        userDashboardData?.documents?.date
+                      ).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <NoDataRecorded />
-              )}
-            </CardContent>
-          </Card>
+                ) : (
+                  <NoDataRecorded />
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </ScrollArea>
     </>
@@ -620,12 +640,12 @@ const FaceSheetLabels = ({
   icon?: React.ElementType;
 }) => {
   return (
-    <div className="flex flex-row items-center ">
+    <div className="flex flex-row items-start ">
       {Icon && <Icon className="mr-2" style={{ width: 14, height: 14 }} />}
-      <div className="flex flex-1 text-sm font-medium max-w-[200px]">
+      <div className="flex flex-1 text-sm font-medium max-w-[200px] text-gray-600">
         {label}
       </div>
-      <div className="flex flex-1 text-sm">{value}</div>
+      <div className="flex flex-1 text-sm font-medium">{value}</div>
     </div>
   );
 };

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteAllergies } from "@/services/chartDetailsServices";
 import { AllergenResponseInterfae } from "@/types/allergyInterface";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 
 const handleDeleteAllergy = async (
   allergyId: string,
@@ -128,7 +128,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

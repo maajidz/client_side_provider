@@ -26,7 +26,7 @@ const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
       console.log("Error", error);
       showToast({
         toast,
-        type: "erroe",
+        type: "error",
         message: "Error while fetching Care Team",
       });
     } finally {
