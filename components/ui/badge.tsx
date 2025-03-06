@@ -32,7 +32,7 @@ const badgeVariants = cva(
 )
 
 // Define styles for indicators based on the variant
-const indicatorStylesMap: Record<string, string> = {
+export const indicatorStylesMap: Record<string, string> = {
   default: "bg-gray-500",
   warning: "bg-yellow-500",
   destructive: "bg-red-500",
