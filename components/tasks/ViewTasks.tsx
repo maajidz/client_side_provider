@@ -22,13 +22,14 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
-import { getTasks } from "@/services/chartDetailsServices";
+import { getTasks, getTasksTypes } from "@/services/chartDetailsServices";
 import {
   TasksResponseDataInterface,
   TasksResponseInterface,
+  TaskTypeList,
 } from "@/types/tasksInterface";
 import { filterTasksSchema } from "@/schema/tasksSchema";
-import { categoryOptions, priority, status } from "@/constants/data";
+import { priority, status } from "@/constants/data";
 import TasksDialog from "./TasksDialog";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -40,6 +41,7 @@ import { DefaultDataTable } from "../custom_buttons/table/DefaultDataTable";
 
 const ViewTasks = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [taskTypes, setTaskTypes] = useState<TaskTypeList[]>([]);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState<number>(1);
@@ -84,6 +86,25 @@ const ViewTasks = () => {
 
     setPage(1);
   }
+
+  const fetchTaskTypes = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getTasksTypes({
+        page: 1,
+        limit: 10,
+      });
+
+      if (response) {
+        setTaskTypes(response.taskTypes);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const fetchTasksList = useCallback(
     async (
@@ -144,7 +165,8 @@ const ViewTasks = () => {
 
   useEffect(() => {
     fetchPatientList();
-  }, [fetchPatientList]);
+    fetchTaskTypes();
+  }, [fetchPatientList, fetchTaskTypes]);
 
   useEffect(() => {
     fetchTasksList(page);
@@ -184,12 +206,9 @@ const ViewTasks = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
-                        {categoryOptions.map((category) => (
-                          <SelectItem
-                            key={category.value}
-                            value={category.value}
-                          >
-                            {category.label}
+                        {taskTypes.map((type) => (
+                          <SelectItem key={type.id} value={type.name}>
+                            {type.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -216,7 +235,7 @@ const ViewTasks = () => {
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
                         {status.map((status) => (
-                          <SelectItem key={status.value} value={status.value}>
+                          <SelectItem key={status.value} value={status.value.toUpperCase()}>
                             {status.label}
                           </SelectItem>
                         ))}
