@@ -92,15 +92,15 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                                 {data.data.flatMap((alert, index) => (
                                     <div key={index} className='flex flex-col gap-2 border p-2'>
                                         <div className='flex justify-between items-center'>
-                                            <div className='text-base font-semibold'>{alert.alertType.alertName} </div>
+                                            <div className='text-base font-semibold'>{alert.alert.alertType.alertName} </div>
                                             <div className='flex'>
                                                 <Button
                                                     variant={'ghost'}
                                                     onClick={() => {
                                                         setEditData({
-                                                            alertName: alert.alertType.id,
-                                                            alertDescription: alert.alertDescription,
-                                                            alertId: alert.id
+                                                            alertName: alert.alert.id,
+                                                            alertDescription: alert.alert.alertDescription,
+                                                            alertId: alert.alert.id
                                                         })
                                                         setIsDialogOpen(true);
                                                     }} >
@@ -108,16 +108,16 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                                                 </Button>
                                                 <Button
                                                     variant={'ghost'}
-                                                    onClick={() => handleDeleteAlert(alert.id)}
+                                                    onClick={() => handleDeleteAlert(alert.alert.id)}
                                                 >
                                                     <Trash2Icon color='#84012A' />
                                                 </Button>
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-1 '>
-                                            <FormLabels label='Description' value={alert.alertDescription} />
-                                            <FormLabels label='Notes' value={alert.alertType.notes} />
-                                            <FormLabels label='Created on' value={alert.alertType.createdAt.split("T")[0]} />
+                                            <FormLabels label='Description' value={alert.alert.alertDescription} />
+                                            <FormLabels label='Notes' value={alert.alert.alertType.notes} />
+                                            <FormLabels label='Created on' value={alert.alert.alertType.createdAt.split("T")[0]} />
                                         </div>
                                     </div>
                                 ))}
