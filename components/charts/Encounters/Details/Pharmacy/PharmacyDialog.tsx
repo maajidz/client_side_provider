@@ -3,6 +3,7 @@ import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -182,6 +183,7 @@ function PharmacyDialog({
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>Add Pharmacy</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[30rem] h-auto">
           <div className={formStyles.formBody}>

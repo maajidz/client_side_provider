@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -179,6 +180,7 @@ const PatientMedicationDialog = ({
       <DialogContent className="max-w-fit">
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         {showPrescriptionForm ? (
           <Form {...form}>

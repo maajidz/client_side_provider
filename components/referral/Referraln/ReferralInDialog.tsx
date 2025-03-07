@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -219,6 +220,7 @@ const ReferralInDialog = ({
       <DialogContent className="sm:max-w-[98rem]">
         <DialogHeader>
           <DialogTitle>Add Referral In</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -468,6 +470,7 @@ const ReferralInDialog = ({
                         <DialogContent className="sm:max-w-[425px]">
                           <DialogHeader>
                             <DialogTitle>Diagnoses</DialogTitle>
+                            <DialogDescription></DialogDescription>
                             <DiagnosesClient
                               onSelectionChange={handleSelectedDiagnoses}
                               chartID={form.getValues().relatedEncounter}
@@ -513,6 +516,7 @@ const ReferralInDialog = ({
                                             <DialogContent className="sm:max-w-[425px]">
                                                 <DialogHeader>
                                                     <DialogTitle>Insurance</DialogTitle>
+                                                    <DialogDescription></DialogDescription>
                                                 </DialogHeader>
                                             </DialogContent>
                                         </Dialog>

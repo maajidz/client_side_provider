@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -91,6 +92,7 @@ function QuestionnairePreviewDialog() {
         <DialogContent className="max-w-lg">
           <DialogHeader className=" p-4 rounded-t-lg">
             <DialogTitle>Add Questionnaire</DialogTitle>
+            <DialogDescription></DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4 my-4">
             {questionnaireOptions.map((question) => (

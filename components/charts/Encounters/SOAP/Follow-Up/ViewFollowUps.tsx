@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -120,6 +121,7 @@ const ViewFollowUps = ({ patientDetails }: { patientDetails: UserEncounterData }
         <DialogContent className="sm:max-w-5xl">
           <DialogHeader>
             <DialogTitle>View Follow-ups</DialogTitle>
+            <DialogDescription></DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-5">
             <div className="flex gap-3">

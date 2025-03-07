@@ -4,6 +4,7 @@ import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -63,6 +64,7 @@ const PastPrescriptionsDialog = ({
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <>
           <div className="flex flex-col gap-4">

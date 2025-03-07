@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -167,6 +168,7 @@ function FamilyHistoryDialog({
           <DialogTitle>
             {familyHistoryData ? "Edit Family History" : "Add Family History"}
           </DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

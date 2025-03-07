@@ -2,6 +2,7 @@ import React from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
 } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
@@ -16,7 +17,10 @@ const PatientConfirmationScreen = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <DialogHeader><DialogTitle>Patient Created Succesfully!</DialogTitle></DialogHeader>
+        <DialogHeader>
+          <DialogTitle>Patient Created Succesfully!</DialogTitle>
+          <DialogDescription></DialogDescription>
+        </DialogHeader>
         To get Login Details check your email.
       </DialogContent>
     </Dialog>

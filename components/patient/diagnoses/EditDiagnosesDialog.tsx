@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -144,6 +145,7 @@ export default function EditDiagnosisDialog({
       <DialogContent className="max-h-[90dvh] h-auto">
         <DialogHeader>
           <DialogTitle>Edit Diagnosis</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[30rem] h-auto flex gap-6 flex-col">
           <div className="flex flex-col gap-6">

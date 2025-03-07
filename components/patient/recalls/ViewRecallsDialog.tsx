@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -30,6 +31,7 @@ function ViewRecallDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>View Recalls</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="grid md:grid-cols-2 flex-col items-start gap-6 w-full max-w-md font-medium">
           <div className="flex flex-col gap-1">

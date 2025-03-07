@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -54,6 +55,7 @@ const PastOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Past Orders</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <table>
           <tr className="border font-semibold text-lg text-[#84012A]">

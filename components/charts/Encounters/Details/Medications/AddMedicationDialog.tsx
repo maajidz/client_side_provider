@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -18,6 +19,7 @@ function AddMedicationDialog({ userDetailsId, onClose, isOpen }: AddMedicationDi
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Add Medications</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <AddMedicationBody userDetailsId={userDetailsId} />
       </DialogContent>
