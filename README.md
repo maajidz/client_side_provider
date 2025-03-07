@@ -1,4 +1,4 @@
-This is a Join-Pomegranate project bootstrapped 
+This is a Join-Pomegranate project bootstrapped .
 
 ## Getting Started
 

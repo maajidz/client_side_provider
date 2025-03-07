@@ -3,7 +3,7 @@ import { z } from "zod";
 export const addDiagnosesSchema = z.object({
   diagnoses: z.array(
     z.object({
-      diagnosis_name: z
+      diagnosis_Id: z
         .string()
         .min(1, { message: "Diagnosis name is required" }),
       ICD_Code: z.string().min(1, { message: "ICD Code is required" }),

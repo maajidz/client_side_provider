@@ -106,10 +106,10 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                     className="flex flex-row items-start gap-2">
                     <div className="flex flex-row gap-2 ">
                       <div className="text-sm font-medium">
-                        {userDashboardData?.diagnoses.diagnosis_name}
-                        <Badge className="inline-flex ml-2">
+                        {userDashboardData?.diagnoses?.diagnosis_Id}
+                        {/* <Badge className="inline-flex ml-2">
                           {userDashboardData?.diagnoses.ICD_Code}
-                        </Badge>
+                        </Badge> */}
                       </div>
                     </div>
                     <div className={`${styles.infoSub} flex w-fit flex-shrink-0 pt-1`}>

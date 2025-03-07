@@ -1,3 +1,5 @@
+import { ProviderDetails } from "./loginInterface";
+
 export interface CreateEncounterInterface {
   visit_type: string;
   mode: string;
@@ -137,8 +139,7 @@ export interface CreateDiagnosesRequestBody {
   userDetailsId: string;
   providerId: string;
   diagnoses: {
-    diagnosis_name: string;
-    ICD_Code: string;
+    diagnosis_Id: string;
     chartId: string;
     notes?: string;
     status?: "active" | "inactive";
@@ -148,7 +149,7 @@ export interface CreateDiagnosesRequestBody {
 }
 
 export interface UpdateDiagnosesRequestBody {
-  diagnosis_name?: string;
+  diagnosis_Id?: string;
   ICD_Code?: string;
   notes?: string;
   status?: "active" | "inactive";
@@ -180,11 +181,10 @@ export interface ChartInterface {
 // * For Diagnoses in patient details
 export interface DiagnosesInterface {
   id: string;
-  diagnosis_name: string;
-  ICD_Code: string;
+  diagnosis_Id: string;
   notes: string;
-  status: string;
   providerId: string;
+  status: string;
   fromDate?: string;
   toDate?: string;
   createdAt: string;
@@ -204,6 +204,22 @@ export interface DiagnosesChart {
   assessment: string;
   plan: string;
   additionalText: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DiagnosesTypeDataInterface {
+  data: DiagnosesTypeData[];
+  total: number;
+  page: string;
+  limit: string;
+}
+
+export interface DiagnosesTypeData {
+  id: string;
+  diagnosis_name: string;
+  ICD_Code: string;
+  description: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -359,10 +375,12 @@ export interface LabOrdersData {
   labs: Lab[];
   tests: Test[];
   userDetails: LabUserDetails;
+  providerDetails: ProviderDetails;
 }
 
 export interface LabUserDetails {
   id: string;
+  patientId: string
   gender: string;
 }
 
