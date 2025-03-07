@@ -46,8 +46,8 @@ const handleDiagnosisStatus = async (
 ) => {
   setLoading(true);
   const requestData: UpdateDiagnosesRequestBody = {
-    diagnosis_name: diagnosisData?.diagnosis_name ?? "",
-    ICD_Code: diagnosisData?.ICD_Code,
+    diagnosis_Id: diagnosisData?.diagnosis_Id ?? "",
+    // ICD_Code: diagnosisData?.ICD_Code,
     notes: diagnosisData.notes,
     status: status,
     fromDate: diagnosisData.fromDate,
@@ -85,19 +85,19 @@ export const columns = ({
   fetchDiagnoses: () => void;
 }): ColumnDef<DiagnosesInterface>[] => [
   {
-    accessorKey: "diagnosis_name",
+    accessorKey: "diagnosis_Id",
     header: "Diagnosis Name",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("diagnosis_name")}</div>
+      <div className="cursor-pointer">{row.getValue("diagnosis_Id")}</div>
     ),
   },
-  {
-    accessorKey: "ICD_Code",
-    header: "ICD Code",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("ICD_Code")}</div>
-    ),
-  },
+  // {
+  //   accessorKey: "ICD_Code",
+  //   header: "ICD Code",
+  //   cell: ({ row }) => (
+  //     <div className="cursor-pointer">{row.getValue("ICD_Code")}</div>
+  //   ),
+  // },
   {
     accessorKey: "fromDate",
     header: "From Date",

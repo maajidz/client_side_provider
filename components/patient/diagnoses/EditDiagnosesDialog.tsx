@@ -87,8 +87,8 @@ export default function EditDiagnosisDialog({
     setLoading(true);
 
     const requestData: UpdateDiagnosesRequestBody = {
-      diagnosis_name: diagnosisData?.diagnosis_name ?? "",
-      ICD_Code: diagnosisData?.ICD_Code,
+      diagnosis_Id: diagnosisData?.diagnosis_Id ?? "",
+      // ICD_Code: diagnosisData?.ICD_Code,
       notes: values.notes,
       status: values.status,
       fromDate: values.fromDate,
@@ -157,13 +157,13 @@ export default function EditDiagnosisDialog({
             </thead>
             <tbody>
               <tr className="border-b">
-                <td className="px-3 py-2">{diagnosisData?.ICD_Code ?? ""}</td>
+                {/* <td className="px-3 py-2">{diagnosisData?.ICD_Code ?? ""}</td> */}
               </tr>
               <tr>
                 <td className="px-3 py-2"></td>
               </tr>
               <tr>
-                <td className="px-3 py-2"></td>
+                <td className="px-3 py-2">{diagnosisData?.diagnosis_Id}</td>
               </tr>
             </tbody>
           </table>

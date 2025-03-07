@@ -17,9 +17,9 @@ export default function PatientSidebar({
 
   return (
     <aside
-      className={cn(`relative flex-none duration-500 text-gray-600  overflow-y-scroll`, className)}
+      className={cn(`relative flex-none duration-500 text-gray-600  overflow-y-scroll h-[calc(100dvh-18rem)]`, className)}
     >
-      <div className="flex pr-4 flex-col gap-1 overflow-y-scroll">
+      <div className="flex pr-4 flex-col gap-1">
         <PatientNav items={items} />
       </div>
     </aside>
