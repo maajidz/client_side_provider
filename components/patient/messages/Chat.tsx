@@ -164,23 +164,14 @@ export default function ChatPage({
   };
 
   return (
-<<<<<<< HEAD
     <div className="flex flex-col gap-4">
-=======
-    <div className="flex flex-col gap-4 max-h-[calc(100vh-20rem)]">
->>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
       <div className="flex justify-between">
         <div className="font-semibold text-base capitalize">
           {userDetails.firstName} {userDetails.lastName}
         </div>
       </div>
-<<<<<<< HEAD
-      <div className="flex flex-col">
-        <div className="flex border-t overflow-y-scroll border-gray-100 relative lg:max-h-[calc(100dvh-30rem)] md:max-h-[calc(100dvh-30rem)]">
-=======
       <div className="flex flex-col overflow-y-scroll">
         <div className="flex border-t overflow-auto border-gray-100 relative">
->>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
           {messages && messages.length > 0 ? (
             <div className="flex flex-col flex-1 gap-6">
               {loading && (

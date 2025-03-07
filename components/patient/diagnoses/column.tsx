@@ -133,11 +133,7 @@ export const columns = ({
       <div className="cursor-pointer">
         <DropdownMenu>
           <DropdownMenuTrigger>
-<<<<<<< HEAD
             <EllipsisVertical size={16} className="text-gray-500"/>
-=======
-            <EllipsisVertical size={16} color="gray" />
->>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

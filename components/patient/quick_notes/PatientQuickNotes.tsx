@@ -55,16 +55,6 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-<<<<<<< HEAD
-      <QuickNotesDialog
-        userDetailsId={userDetailsId}
-        isOpen={isDialogOpen}
-        onClose={() => {
-          setIsDialogOpen(false);
-        }}
-        onFetchQuickNotes={fetchQuickNotes}
-      />
-=======
         <QuickNotesDialog
           userDetailsId={userDetailsId}
           isOpen={isDialogOpen}
@@ -73,7 +63,6 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
           }}
           onFetchQuickNotes={fetchQuickNotes}
         />
->>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
       <ViewPatientQuickNotes
         userDetailsId={userDetailsId}
         page={page}

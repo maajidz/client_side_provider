@@ -165,11 +165,7 @@ const PatientQuestionnaires = ({
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="border border-[#D9D9D9] px-2 h-9 items-center rounded-md">
-<<<<<<< HEAD
                     <EllipsisVertical size={16} className="text-gray-500"/>
-=======
-                    <EllipsisVertical size={16} color="gray" />
->>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem>Delete</DropdownMenuItem>
