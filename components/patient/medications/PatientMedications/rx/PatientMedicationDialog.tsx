@@ -112,7 +112,7 @@ const PatientMedicationDialog = ({
   useEffect(() => {
     const directions = generateDirections();
     setValue("directions", directions); // Update the directions field
-  }, [dosageQuantity, dosageUnit, frequency, durationQuantity, durationUnit, route, watch("when"), setValue]);
+  }, [dosageQuantity, dosageUnit, frequency, durationQuantity, durationUnit, route, form, watch("when"), generateDirections]);
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
     console.log(values);
