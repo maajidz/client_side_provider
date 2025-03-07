@@ -2,7 +2,7 @@
 
 import ProceduresSurgeriesAndHospitalizationDialog from "@/components/charts/Encounters/Details/ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalizationDialog";
 import { getProcedureData } from "@/services/chartDetailsServices";
-import { ProceduresInterface } from "@/types/procedureInterface";
+import { ProcedureData } from "@/types/procedureInterface";
 import { useCallback, useEffect, useState } from "react";
 import { columns } from "./column";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
@@ -15,7 +15,7 @@ function ProceduresSurgeriesAndHospitalization({
   userDetailsId,
 }: ProceduresSurgeriesAndHospitalizationProps) {
   // Procedures Data
-  const [data, setData] = useState<ProceduresInterface[]>([]);
+  const [data, setData] = useState<ProcedureData[]>([]);
 
   // Loading State
   const [, setLoading] = useState(false);

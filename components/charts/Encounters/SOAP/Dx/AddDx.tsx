@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -119,6 +120,7 @@ const AddDx = ({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Add Diagnoses</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="flex gap-3">

@@ -248,6 +248,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
           <DialogContent className="w-fit">
             <DialogHeader>
               <DialogTitle>Edit Availabilty</DialogTitle>
+              <DialogDescription></DialogDescription>
               <DialogDescription>
                 Modify details for your selected slot.
               </DialogDescription>

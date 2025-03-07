@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -20,6 +21,7 @@ const PastDx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Past Diagnoses</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <PastDxBody patientDetails={patientDetails} />
       </DialogContent>

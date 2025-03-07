@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -176,6 +177,7 @@ export default function AddDiagnosesDialog({
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>Add Diagnoses</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

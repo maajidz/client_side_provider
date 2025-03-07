@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -158,6 +159,7 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
           <DialogTitle>Add Lab Orders</DialogTitle>
+          <DialogDescription></DialogDescription>
           <>
             <div className="flex justify-between items-center">
               <div className="font-normal text-black">Choose Labs</div>
@@ -218,6 +220,7 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>Book test for {lab.name}</DialogTitle>
+                        <DialogDescription></DialogDescription>
                       </DialogHeader>
                       <div className="flex items-center gap-3 justtify-center">
                         <FormLabels

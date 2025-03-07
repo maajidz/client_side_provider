@@ -2,6 +2,7 @@ import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -179,6 +180,7 @@ const ImplantedDevicesDialog = ({
       <DialogContent className="min-w-fit">
         <DialogHeader>
           <DialogTitle>Add Device</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         {showImplantedDeviceDetails ? (
           <div className="flex flex-col gap-6">

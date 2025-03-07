@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -181,6 +182,7 @@ function EditSupplement({
       <DialogContent className="sm:max-w-[465px]">
         <DialogHeader>
           <DialogTitle>Edit Supplement</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[30rem] max-h-[30rem] p-2.5">
           <Form {...form}>

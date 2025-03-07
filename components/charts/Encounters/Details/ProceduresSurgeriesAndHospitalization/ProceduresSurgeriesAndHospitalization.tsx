@@ -129,7 +129,14 @@ const ProceduresSurgeriesAndHospitalization = ({
                               fromDate: procedure.fromDate,
                               toDate: procedure.toDate,
                               notes: procedure.notes,
-                              userDetailsId: procedure.userDetailsId,
+                              userDetailsId: patientDetails.userDetails.id,
+                              nameType: {
+                                id: procedure.nameType.id,
+                                createdAt: procedure.nameType.createdAt,
+                                updatedAt: procedure.nameType.createdAt,
+                                description: procedure.nameType.description,
+                                name: procedure.nameType.name
+                              }
                             });
                             setIsDialogOpen(true);
                           }}
@@ -145,7 +152,7 @@ const ProceduresSurgeriesAndHospitalization = ({
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2 ">
-                      <FormLabels label="Name" value={procedure.nameId} />
+                      <FormLabels label="Name" value={procedure.nameType.name} />
                       <FormLabels
                         label="From date"
                         value={procedure.fromDate.split("T")[0]}

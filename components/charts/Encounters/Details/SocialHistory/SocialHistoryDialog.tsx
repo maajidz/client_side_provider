@@ -3,6 +3,7 @@ import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -153,6 +154,7 @@ function SocialHistoryDialog({
           <DialogTitle>
             {socialHistoryData ? "Update Social History" : "Add Social History"}
           </DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

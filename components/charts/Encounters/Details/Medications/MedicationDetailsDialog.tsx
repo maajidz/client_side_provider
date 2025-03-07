@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -112,6 +113,7 @@ const MedicationDetailsDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Medication</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         {loading ? (
           <LoadingButton />
