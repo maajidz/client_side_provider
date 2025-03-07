@@ -50,7 +50,6 @@ const ViewPatientQuickNotes = ({
   }
 
   return (
-    <div>
       <div className="flex flex-col gap-6">
         {data && (
           <DefaultDataTable
@@ -78,7 +77,6 @@ const ViewPatientQuickNotes = ({
           onFetchQuickNotes={fetchQuickNotes}
         />
       </div>
-    </div>
   );
 };
 

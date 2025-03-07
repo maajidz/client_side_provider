@@ -13,7 +13,7 @@ import {
   updateRecallsData,
 } from "@/services/chartDetailsServices";
 import { RecallsData } from "@/types/recallsInterface";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const handleRecallsDelete = async (
@@ -154,7 +154,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

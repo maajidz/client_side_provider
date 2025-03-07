@@ -1,15 +1,17 @@
 import LoadingButton from "@/components/LoadingButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import {
   getAllergiesData,
   getSupplements,
 } from "@/services/chartDetailsServices";
+import { format } from "date-fns"; // Import format from date-fns
 import { getUserPrescriptionsData } from "@/services/prescriptionsServices";
 import { AllergenResponseInterfae } from "@/types/allergyInterface";
 import { PrescriptionDataInterface } from "@/types/prescriptionInterface";
 import { SupplementInterface } from "@/types/supplementsInterface";
 import { useCallback, useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 
 interface AllergiesAndMedicationsProps {
   userDetailsId: string;
@@ -35,6 +37,19 @@ function AllergiesAndMedications({
 
   // Error State
   const [error, setError] = useState<string>("");
+
+  // Severity to Badge Variant Mapping
+  const severityBadgeMap: Record<string, string> = {
+    mild: "text-gray-900/70",
+    moderate: "text-yellow-900/70",
+    severe: "text-red-900/70",
+  };
+
+  // Status to Badge Variant Mapping
+  const statusBadgeMap: Record<string, "success" | "default"> = {
+    active: "success",
+    inactive: "default",
+  };
 
   // Fetch Allergies
   const fetchAllergies = useCallback(async () => {
@@ -114,42 +129,55 @@ function AllergiesAndMedications({
   }
 
   return (
-    <ScrollArea className="h-[18rem] min-h-10">
-      <div className="flex flex-col gap-5 p-2">
-        <div className="text-lg font-semibold">
-          Allergies & Active Medications
-        </div>
+    <ScrollArea className="flex min-h-0 flex-grow">
+      <div className="flex flex-col gap-6 p-2">
         <div className="flex flex-col gap-3">
-          <div className="text-md font-semibold">Allergies</div>
+        <div className="text-md font-semibold">Allergies</div>
+        <div className="flex flex-row gap-3">
           {allergies?.length > 0 ? (
             allergies.map((allergy) => (
-              <div
+              <Card
                 key={allergy.id}
-                className="flex gap-2 border p-2 rounded-lg capitalize"
+                className={`${allergy.status.toLowerCase() === "inactive" ? "opacity-60" : ""} flex-1`}
               >
-                <p>{allergy.Allergen}</p>
-                {" / "}
-                <p>{allergy.typeId}</p>
-                {" / "}
-                <p>{allergy.serverity}</p>
-                {" / "}
-                <p>{allergy.status}</p>
-              </div>
+                <CardTitle className="font-medium gap-2 justify-between w-full">
+                  {allergy.Allergen}
+                  <Badge variant={statusBadgeMap[allergy.status.toLowerCase() as keyof typeof statusBadgeMap]} showIndicator>
+                    {allergy.status}
+                  </Badge>
+                </CardTitle>
+                <CardDescription className="flex flex-col gap-1">
+                  <div className={`${severityBadgeMap[allergy.serverity.toLowerCase() as keyof typeof severityBadgeMap]} font-bold uppercase tracking-wider text-xs`}>
+                    {allergy.serverity}
+                  </div>
+                  <span className="text-xs text-gray-600 font-medium">{allergy.reactions.map((reaction) => reaction.name).join(", ")}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-gray-500">{format(new Date(allergy.observedOn), "do MMMM, yyyy")}</span>
+                  </div>
+                </CardDescription>
+              </Card>
             ))
           ) : (
-            <p className="text-center">No recorded allergies</p>
+            <p className="text-center text-xs text-gray-500">No recorded allergies</p>
           )}
+          </div>
         </div>
-        <Separator />
         <div className="flex flex-col gap-3">
           <div className="text-md font-semibold">Prescriptions</div>
+          <div className="flex flex-row gap-3">
           {userPrescriptions && userPrescriptions.length > 0 ? (
             userPrescriptions.map((prescription) => (
-              <div
+              <Card
                 key={prescription.id}
-                className="flex flex-col border p-2 rounded-lg"
+                className="flex-1"
               >
-                <div className="font-semibold">{prescription.drug_name}</div>
+                <CardTitle className="font-medium gap-2 justify-between w-full">
+                  {prescription.drug_name}
+                  <Badge variant={statusBadgeMap[prescription.status.toLowerCase() as keyof typeof statusBadgeMap]}>
+                    {prescription.status}
+                  </Badge>
+                </CardTitle>
+                <CardDescription className="flex flex-col gap-1 font-medium">
                 <>
                   {prescription?.dosages?.map((dosage) => (
                     <div key={dosage?.id}>
@@ -163,32 +191,42 @@ function AllergiesAndMedications({
                   {prescription?.dosages?.map((dosage) => dosage.frequency)}
                 </p>
                 <p>Days of Supply: {prescription.days_of_supply}</p>
-              </div>
+                </CardDescription>
+              </Card>
             ))
           ) : (
             <p className="text-center">No active prescriptions</p>
           )}
         </div>
-        <Separator />
+        </div>
         <div className="flex flex-col gap-3">
           <div className="text-md font-semibold">Supplements</div>
+          <div className="flex flex-row gap-3">
           {supplementsData && supplementsData.length > 0 ? (
             supplementsData?.map((supplement) => (
-              <div
+              <Card
                 key={supplement.id}
-                className="flex flex-col border p-2 rounded-lg"
+                className="flex-1"
               >
-                <div className="font-semibold">{supplement.supplement}</div>
+                <CardTitle className="font-medium gap-2 justify-between w-full">
+                  {supplement.supplement || "Supplement 1"}
+                  <Badge variant={statusBadgeMap[supplement.status.toLowerCase() as keyof typeof statusBadgeMap]} showIndicator>
+                    {supplement.status}
+                  </Badge>
+                </CardTitle>
+                <CardDescription className="flex flex-col gap-1 font-medium">
                 <div>
                   Dosage: {supplement.dosage} {supplement.unit}
                 </div>
                 <div>Intake type: {supplement.intake_type}</div>
                 <div>Frequency: {supplement.frequency}</div>
-              </div>
+                </CardDescription>
+              </Card>
             ))
           ) : (
             <p className="text-center">No active supplements</p>
           )}
+          </div>
         </div>
       </div>
     </ScrollArea>

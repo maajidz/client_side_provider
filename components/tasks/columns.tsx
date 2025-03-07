@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteTask, updateTaskStatus } from "@/services/chartDetailsServices";
 import generateTasksPDF from "../patient/tasks/generateTasksPDF";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { Badge } from "../ui/badge";
 
 const handleTasksDelete = async (
@@ -50,15 +50,21 @@ const handleTasksStatusUpdate = async (
     await updateTaskStatus({ id: taskId, requestData });
     showToast({
       type: "success",
-      message: "Task deleted successfully",
+      message: "Task updated successfully",
     });
     fetchTasks();
   } catch (error) {
     console.error("Error:", error);
-    showToast({ type: "error", message: "Failed to delete task" });
+    showToast({ type: "error", message: "Failed to update task" });
   } finally {
     setLoading(false);
   }
+};
+
+const priorityBadgeVariants: Record<string, "default" | "warning" | "destructive"> = {
+  low: "default",      
+  medium: "warning",   
+  high: "destructive", 
 };
 
 export const columns = ({
@@ -88,9 +94,14 @@ export const columns = ({
   {
     accessorKey: "priority",
     header: "Priority",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("priority")}</div>
-    ),
+    cell: ({ row }) => {
+      const priorityValue = row.getValue("priority") as keyof typeof priorityBadgeVariants;
+      return (
+        <Badge variant={priorityBadgeVariants[priorityValue] || "default"} showIndicator>
+          {priorityValue}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "patientId",
@@ -153,7 +164,7 @@ export const columns = ({
     cell: ({ row }) => {
       const statusColor =
         row.original.status === "COMPLETED" ? "success" : "warning";
-      return <Badge variant={`${statusColor}`}>{row.original.status}</Badge>;
+      return <Badge variant={`${statusColor}`} >{row.original.status}</Badge>;
     },
   },
   {
@@ -163,7 +174,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

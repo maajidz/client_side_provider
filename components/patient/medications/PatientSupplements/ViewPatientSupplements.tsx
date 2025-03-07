@@ -62,7 +62,7 @@ const ViewPatientSupplements = ({
         }}
         isOpen={isDialogOpen.create}
       />
-      <div className="space-y-3 py-5">
+      <div className="">
         {resultList && (
           <DefaultDataTable
             title={"Supplements"}

@@ -19,7 +19,7 @@ import { deleteInsuranceData } from "@/services/insuranceServices";
 import { InsuranceResponse } from "@/types/insuranceInterface";
 import { showToast } from "@/utils/utils";
 import AddOrViewNotes from "./actions/AddOrViewNotes";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -108,7 +108,7 @@ function InsuranceTable({
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger>
-                    <Ellipsis />
+                    <EllipsisVertical size={16} className="text-gray-500"/>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem

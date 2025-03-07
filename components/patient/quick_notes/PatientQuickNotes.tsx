@@ -55,7 +55,6 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <>
-      <div className="flex justify-between">
         <QuickNotesDialog
           userDetailsId={userDetailsId}
           isOpen={isDialogOpen}
@@ -64,7 +63,6 @@ const PatientQuickNotes = ({ userDetailsId }: { userDetailsId: string }) => {
           }}
           onFetchQuickNotes={fetchQuickNotes}
         />
-      </div>
       <ViewPatientQuickNotes
         userDetailsId={userDetailsId}
         page={page}

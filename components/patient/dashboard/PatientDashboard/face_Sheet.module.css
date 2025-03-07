@@ -36,8 +36,8 @@
 }
 
 .infoTextLabel {
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   line-height: 16.8px;
 }
 
@@ -55,11 +55,8 @@
 }
 
 .infoSub {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  line-height: 12.1px;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
   color: #666666;
 }
 
@@ -72,7 +69,7 @@
 .subContainer {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 4px;
 }
 
 .section {

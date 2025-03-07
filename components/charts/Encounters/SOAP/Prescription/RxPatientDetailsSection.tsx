@@ -58,7 +58,7 @@ const RxPatientDetailsSection = ({
   if (loading) return <LoadingButton />;
 
   return (
-    <div className="flex gap-6 p-4 border rounded-lg bg-white shadow-md">
+    <div className="flex gap-6 p-4 border text-sm rounded-lg bg-white shadow-md">
       {/* Patient Details */}
       <div className="flex flex-col border-r pr-6">
         <div className="text-lg font-semibold mb-2">Patient Information</div>
