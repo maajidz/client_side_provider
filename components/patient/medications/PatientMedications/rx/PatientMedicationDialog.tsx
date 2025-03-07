@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -85,7 +85,7 @@ const PatientMedicationDialog = ({
     },
   });
 
-  const { watch, setValue } = form;
+  const { watch } = form;
 
   // Watch the relevant fields
   const dosageQuantity = watch("dosage_quantity");
@@ -96,23 +96,31 @@ const PatientMedicationDialog = ({
   const route = watch("route");
 
   // Function to generate directions
-  const generateDirections = () => {
+  const generateDirections = useCallback(() => {
     const qty = dosageQuantity ? `${dosageQuantity} ${dosageUnit}(s)` : "";
     const freq = frequency ? `${frequency} a day` : "";
     const whenText = watch("when") ? `before ${watch("when")}` : "";
-    const duration = durationQuantity ? `for ${durationQuantity} ${durationUnit}(s)` : "";
+    const duration = durationQuantity
+      ? `for ${durationQuantity} ${durationUnit}(s)`
+      : "";
     const routeText = route ? `via ${route}` : "";
 
     // Construct the directions string
-    const directions = [qty, freq, whenText, duration, routeText].filter(Boolean).join(" ").trim();
+    const directions = [qty, freq, whenText, duration, routeText]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
     return directions;
-  };
+  }, [dosageQuantity, dosageUnit, frequency, durationQuantity, durationUnit, route, watch]);
 
   // Update the directions field whenever the relevant fields change
   useEffect(() => {
     const directions = generateDirections();
-    setValue("directions", directions); // Update the directions field
-  }, [dosageQuantity, dosageUnit, frequency, durationQuantity, durationUnit, route, form, watch("when"), generateDirections]);
+    form.setValue("directions", directions); // Update the directions field
+  }, [
+    form,
+    generateDirections,
+  ]);
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
     console.log(values);
@@ -146,7 +154,7 @@ const PatientMedicationDialog = ({
         ],
         chartId,
       };
-      console.log(requestData)
+      console.log(requestData);
       try {
         setLoading(true);
         await createPrescriptions({ requestData });
@@ -179,13 +187,13 @@ const PatientMedicationDialog = ({
                 <div className={formStyles.formBody}>
                   <div className="flex gap-8 flex-row justify-between">
                     <FormItem className="flex flex-1">
-                        <FormLabel>Drug Name</FormLabel>
-                        <Input
-                          value={drugName}
-                          className="w-full"
-                          onChange={(e) => setDrugName(e.target.value)}
-                          placeholder="Enter drug name"
-                         />
+                      <FormLabel>Drug Name</FormLabel>
+                      <Input
+                        value={drugName}
+                        className="w-full"
+                        onChange={(e) => setDrugName(e.target.value)}
+                        placeholder="Enter drug name"
+                      />
                     </FormItem>
                     <FormItem className="inline-flex flex-row items-end gap-2 mb-3 flex-none">
                       <FormLabel>Dispense as Written</FormLabel>
@@ -193,7 +201,7 @@ const PatientMedicationDialog = ({
                         checked={dispenseAsWritten}
                         onCheckedChange={(value) => setDispenseAsWritten(value)}
                       />
-                      </FormItem>
+                    </FormItem>
                   </div>
                   <div className={formStyles.formItem}>
                     <div className="flex w-full gap-3 items-end">
@@ -261,11 +269,11 @@ const PatientMedicationDialog = ({
                           </FormItem>
                         )}
                       />
-                    </div> 
+                    </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label>Dosage:</Label>
-                  <div className="flex gap-3 flex-wrap bg-gray-50 p-4 rounded-md">
+                    <div className="flex gap-3 flex-wrap bg-gray-50 p-4 rounded-md">
                       <FormField
                         control={form.control}
                         name="dosage_quantity"
@@ -455,9 +463,7 @@ const PatientMedicationDialog = ({
                           control={form.control}
                           name="dispense_quantity"
                           render={({ field }) => (
-                            <FormItem
-                              className={`${formStyles.formItem}`}
-                            >
+                            <FormItem className={`${formStyles.formItem}`}>
                               <FormControl>
                                 <Input
                                   type="number"
@@ -499,7 +505,7 @@ const PatientMedicationDialog = ({
                           )}
                         />
                       </div>
-                    </div> 
+                    </div>
                     <FormField
                       control={form.control}
                       name="days_of_supply"
@@ -525,9 +531,7 @@ const PatientMedicationDialog = ({
                       name="earliest_fill_date"
                       render={({ field }) => (
                         <FormItem className={`${formStyles.formItem}`}>
-                          <FormLabel>
-                            Earliest Fill Date
-                          </FormLabel>
+                          <FormLabel>Earliest Fill Date</FormLabel>
                           <FormControl>
                             <Input type="date" placeholder="" {...field} />
                           </FormControl>
@@ -543,10 +547,8 @@ const PatientMedicationDialog = ({
                           control={form.control}
                           name="prior_auth"
                           render={({ field }) => (
-                            <FormItem
-                              className={`${formStyles.formItem}`}
-                            >
-                            <FormLabel>Prior Auth</FormLabel>
+                            <FormItem className={`${formStyles.formItem}`}>
+                              <FormLabel>Prior Auth</FormLabel>
                               <FormControl>
                                 <Input placeholder="Prior Auth" {...field} />
                               </FormControl>
@@ -558,9 +560,7 @@ const PatientMedicationDialog = ({
                           control={form.control}
                           name="prior_auth_decision"
                           render={({ field }) => (
-                            <FormItem
-                              className={`${formStyles.formItem}`}
-                            >
+                            <FormItem className={`${formStyles.formItem}`}>
                               <FormControl>
                                 <Select
                                   onValueChange={field.onChange}
@@ -633,7 +633,7 @@ const PatientMedicationDialog = ({
                         </FormItem>
                       )}
                     />
-                  </div> 
+                  </div>
                   <DialogFooter className="flex justify-end gap-2">
                     <Button
                       variant={"outline"}

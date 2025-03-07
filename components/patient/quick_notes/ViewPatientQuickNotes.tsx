@@ -50,33 +50,40 @@ const ViewPatientQuickNotes = ({
   }
 
   return (
-      <div className="flex flex-col gap-6">
-        {data && (
-          <DefaultDataTable
-            title={"Patient Notes"}
-            onAddClick={() => setIsDialogOpen(true)}
-            columns={columns({
-              setIsDialogOpen,
-              setEditData,
-              setLoading,
-              showToast: (args) => showToast({ toast, ...args }),
-              fetchQuickNotes: fetchQuickNotes,
-            })}
-            data={data}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
-          />
-        )}
-
-        <QuickNotesDialog
-          userDetailsId={userDetailsId}
-          quickNotesData={editData}
-          isOpen={isDialogOpen}
-          onClose={handleCloseDialog}
-          onFetchQuickNotes={fetchQuickNotes}
+    <div className="flex flex-col gap-6">
+      {data && (
+        <DefaultDataTable
+          title={"Patient Notes"}
+          onAddClick={() => setIsDialogOpen(true)}
+          columns={columns({
+            setIsDialogOpen,
+            setEditData,
+            setLoading,
+            showToast: ({ type, message }) => {
+              showToast({
+                toast,
+                type: type === "success" ? "success" : "error",
+                message,
+              });
+            },
+            // showToast: (args) => showToast({ toast, ...args }),
+            fetchQuickNotes: fetchQuickNotes,
+          })}
+          data={data}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
         />
-      </div>
+      )}
+
+      <QuickNotesDialog
+        userDetailsId={userDetailsId}
+        quickNotesData={editData}
+        isOpen={isDialogOpen}
+        onClose={handleCloseDialog}
+        onFetchQuickNotes={fetchQuickNotes}
+      />
+    </div>
   );
 };
 

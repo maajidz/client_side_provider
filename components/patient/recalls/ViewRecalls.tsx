@@ -182,7 +182,14 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
                 setEditData,
                 setIsDialogOpen,
                 setLoading,
-                showToast: (args) => showToast({ toast, ...args }),
+                showToast: ({ type, message }) => {
+                  showToast({
+                    toast,
+                    type: type === "success" ? "success" : "error",
+                    message,
+                  });
+                },
+                // showToast: (args) => showToast({ toast, ...args }),
                 fetchRecalls: () => fetchRecalls(),
               })}
               data={resultList?.data}
