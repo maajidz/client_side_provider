@@ -97,7 +97,7 @@ export const columns = ({
     cell: ({ row }) => {
       const priorityValue = row.getValue("priority") as keyof typeof priorityBadgeVariants;
       return (
-        <Badge variant={priorityBadgeVariants[priorityValue] || "default"} showIndicator className="capitalize">
+        <Badge variant={priorityBadgeVariants[priorityValue] || "default"} showIndicator>
           {priorityValue}
         </Badge>
       );
@@ -174,7 +174,11 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
+<<<<<<< HEAD
             <EllipsisVertical size={16} className="text-gray-500"/>
+=======
+            <EllipsisVertical size={16} color="gray" />
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

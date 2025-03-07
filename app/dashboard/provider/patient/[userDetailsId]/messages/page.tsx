@@ -15,8 +15,12 @@ function Page() {
   }
   return (
     <>
+<<<<<<< HEAD
       <div 
       className="flex w-full flex-col gap-6 rounded-xl border border-gray-300/50 p-4 bg-white shadow-sm overflow-hidden">
+=======
+      <div className="flex w-full flex-col gap-6 rounded-xl border border-gray-300/50 p-4 bg-white shadow-sm">
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
         {/* <div className="flex flex-1 gap-4 flex-col"> */}
           {/* <Breadcrumbs items={breadcrumbItems} /> */}
           {/* <Heading title="Messages" description="" /> */}

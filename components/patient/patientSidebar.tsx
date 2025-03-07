@@ -17,7 +17,11 @@ export default function PatientSidebar({
 
   return (
     <aside
+<<<<<<< HEAD
       className={cn(`relative flex-none duration-500 text-gray-600  overflow-y-scroll`, className)}
+=======
+      className={cn(`relative flex-none duration-500 text-gray-600 max-h-[calc(100vh-15rem)] overflow-y-scroll`, className)}
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
     >
       <div className="flex pr-4 flex-col gap-1 overflow-y-scroll">
         <PatientNav items={items} />

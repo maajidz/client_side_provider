@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -19,7 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import RxPatientDetailsSection from "@/components/charts/Encounters/SOAP/Prescription/RxPatientDetailsSection";
+// import RxPatientDetailsSection from "@/components/charts/Encounters/SOAP/Prescription/RxPatientDetailsSection";
 import {
   Select,
   SelectContent,
@@ -38,9 +39,10 @@ import { RootState } from "@/store/store";
 import { createPrescriptions } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 const PatientMedicationDialog = ({
-  userDetailsId,
+  // userDetailsId,
   isOpen,
   onClose,
 }: {
@@ -82,6 +84,35 @@ const PatientMedicationDialog = ({
       Note_to_Pharmacy: "",
     },
   });
+
+  const { watch, setValue } = form;
+
+  // Watch the relevant fields
+  const dosageQuantity = watch("dosage_quantity");
+  const dosageUnit = watch("dosage_unit");
+  const frequency = watch("frequency");
+  const durationQuantity = watch("duration_quantity");
+  const durationUnit = watch("duration_unit");
+  const route = watch("route");
+
+  // Function to generate directions
+  const generateDirections = () => {
+    const qty = dosageQuantity ? `${dosageQuantity} ${dosageUnit}(s)` : "";
+    const freq = frequency ? `${frequency} a day` : "";
+    const whenText = watch("when") ? `before ${watch("when")}` : "";
+    const duration = durationQuantity ? `for ${durationQuantity} ${durationUnit}(s)` : "";
+    const routeText = route ? `via ${route}` : "";
+
+    // Construct the directions string
+    const directions = [qty, freq, whenText, duration, routeText].filter(Boolean).join(" ").trim();
+    return directions;
+  };
+
+  // Update the directions field whenever the relevant fields change
+  useEffect(() => {
+    const directions = generateDirections();
+    setValue("directions", directions); // Update the directions field
+  }, [dosageQuantity, dosageUnit, frequency, durationQuantity, durationUnit, route, watch("when"), setValue]);
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
     console.log(values);
@@ -137,36 +168,41 @@ const PatientMedicationDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-w-fit">
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
         </DialogHeader>
         {showPrescriptionForm ? (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <ScrollArea className="h-[30rem]">
+              <ScrollArea className="h-[40rem]">
                 <div className={formStyles.formBody}>
-                  <div className="flex flex-row gap-2">
-                    <div>Dispense as Written</div>
-                    <Switch
-                      checked={dispenseAsWritten}
-                      onCheckedChange={(value) => setDispenseAsWritten(value)}
-                    />
+                  <div className="flex gap-8 flex-row justify-between">
+                    <FormItem className="flex flex-1">
+                        <FormLabel>Drug Name</FormLabel>
+                        <Input
+                          value={drugName}
+                          className="w-full"
+                          onChange={(e) => setDrugName(e.target.value)}
+                          placeholder="Enter drug name"
+                         />
+                    </FormItem>
+                    <FormItem className="inline-flex flex-row items-end gap-2 mb-3 flex-none">
+                      <FormLabel>Dispense as Written</FormLabel>
+                      <Switch
+                        checked={dispenseAsWritten}
+                        onCheckedChange={(value) => setDispenseAsWritten(value)}
+                      />
+                      </FormItem>
                   </div>
-                  <Input
-                    value={drugName}
-                    onChange={(e) => setDrugName(e.target.value)}
-                    placeholder="Enter drug name"
-                  />
-
                   <div className={formStyles.formItem}>
-                    <div className="font-semibold">Diagnosis</div>
-                    <div className="flex w-full gap-3">
+                    <div className="flex w-full gap-3 items-end">
                       <FormField
                         control={form.control}
                         name="primary_diagnosis"
                         render={({ field }) => (
                           <FormItem className={`${formStyles.formItem} w-full`}>
+                            <FormLabel>Diagnosis</FormLabel>
                             <FormControl>
                               <Select
                                 onValueChange={field.onChange}
@@ -227,21 +263,20 @@ const PatientMedicationDialog = ({
                       />
                     </div> 
                   </div>
-                  <div
-                    className={`${formStyles.formItem} bg-[#c5c4c4] p-3 rounded-md`}
-                  >
-                    <div className="font-semibold">Dosage: </div>
-                    <div className="flex w-full gap-3">
+                  <div className="flex flex-col gap-2">
+                    <Label>Dosage:</Label>
+                  <div className="flex gap-3 flex-wrap bg-gray-50 p-4 rounded-md">
                       <FormField
                         control={form.control}
                         name="dosage_quantity"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem className="flex-none">
                             <FormLabel>Qty</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
-                                placeholder="Enter quantity"
+                                placeholder="Qty"
+                                className="bg-white"
                                 value={field.value ?? ""}
                                 onChange={(e) =>
                                   field.onChange(e.target.valueAsNumber || "")
@@ -256,7 +291,7 @@ const PatientMedicationDialog = ({
                         control={form.control}
                         name="dosage_unit"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem className="flex-none">
                             <FormLabel>Unit</FormLabel>
                             <FormControl>
                               <Select
@@ -280,7 +315,7 @@ const PatientMedicationDialog = ({
                         control={form.control}
                         name="route"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem className="flex-none">
                             <FormLabel>Route</FormLabel>
                             <FormControl>
                               <Select
@@ -308,7 +343,7 @@ const PatientMedicationDialog = ({
                         control={form.control}
                         name="frequency"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem className="flex-none">
                             <FormLabel>Frequency</FormLabel>
                             <FormControl>
                               <Select
@@ -336,7 +371,7 @@ const PatientMedicationDialog = ({
                         control={form.control}
                         name="when"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem className="flex-none">
                             <FormLabel>When</FormLabel>
                             <FormControl>
                               <Select
@@ -364,10 +399,10 @@ const PatientMedicationDialog = ({
                         control={form.control}
                         name="duration_quantity"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem className="flex-none">
                             <FormLabel>Duration</FormLabel>
                             <FormControl>
-                              <Input placeholder="Duration" {...field} />
+                              <Input {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -377,7 +412,7 @@ const PatientMedicationDialog = ({
                         control={form.control}
                         name="duration_unit"
                         render={({ field }) => (
-                          <FormItem className={formStyles.formItem}>
+                          <FormItem className="flex-none">
                             <FormLabel>Duration Unit</FormLabel>
                             <FormControl>
                               <Select
@@ -403,7 +438,7 @@ const PatientMedicationDialog = ({
                     control={form.control}
                     name="directions"
                     render={({ field }) => (
-                      <FormItem className={formStyles.formItem}>
+                      <FormItem>
                         <FormLabel>Directions</FormLabel>
                         <FormControl>
                           <Textarea placeholder="Directions" {...field} />
@@ -412,16 +447,16 @@ const PatientMedicationDialog = ({
                       </FormItem>
                     )}
                   />
-                  <div className="flex w-full gap-3">
-                    <div className={`${formStyles.formItem} w-full`}>
-                      <div className="font-semibold">Dispense</div>
-                      <div className="flex gap-3 w-full">
+                  <div className="flex w-full gap-3 flex-wrap">
+                    <div className={`${formStyles.formItem}`}>
+                      <FormLabel>Dispense</FormLabel>
+                      <div className="flex gap-3">
                         <FormField
                           control={form.control}
                           name="dispense_quantity"
                           render={({ field }) => (
                             <FormItem
-                              className={`${formStyles.formItem} w-full`}
+                              className={`${formStyles.formItem}`}
                             >
                               <FormControl>
                                 <Input
@@ -469,8 +504,8 @@ const PatientMedicationDialog = ({
                       control={form.control}
                       name="days_of_supply"
                       render={({ field }) => (
-                        <FormItem className={`${formStyles.formItem} w-full`}>
-                          <FormLabel className="w-fit">Days Supply</FormLabel>
+                        <FormItem>
+                          <FormLabel>Days Supply</FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -489,8 +524,8 @@ const PatientMedicationDialog = ({
                       control={form.control}
                       name="earliest_fill_date"
                       render={({ field }) => (
-                        <FormItem className={`${formStyles.formItem} w-full`}>
-                          <FormLabel className="w-fit">
+                        <FormItem className={`${formStyles.formItem}`}>
+                          <FormLabel>
                             Earliest Fill Date
                           </FormLabel>
                           <FormControl>
@@ -501,17 +536,17 @@ const PatientMedicationDialog = ({
                       )}
                     />
                   </div>
-                  <div className="flex gap-3 w-full">
-                    <div className={`${formStyles.formItem} w-full`}>
-                      <div>Prior Auth</div>
-                      <div className="flex gap-3 w-full">
+                  <div className="flex gap-3 ">
+                    <div className={`${formStyles.formItem}`}>
+                      <div className="flex gap-3 items-end">
                         <FormField
                           control={form.control}
                           name="prior_auth"
                           render={({ field }) => (
                             <FormItem
-                              className={`${formStyles.formItem} w-full`}
+                              className={`${formStyles.formItem}`}
                             >
+                            <FormLabel>Prior Auth</FormLabel>
                               <FormControl>
                                 <Input placeholder="Prior Auth" {...field} />
                               </FormControl>
@@ -524,7 +559,7 @@ const PatientMedicationDialog = ({
                           name="prior_auth_decision"
                           render={({ field }) => (
                             <FormItem
-                              className={`${formStyles.formItem} w-full`}
+                              className={`${formStyles.formItem}`}
                             >
                               <FormControl>
                                 <Select
@@ -554,7 +589,7 @@ const PatientMedicationDialog = ({
                       control={form.control}
                       name="additional_refills"
                       render={({ field }) => (
-                        <FormItem className={`${formStyles.formItem} w-full`}>
+                        <FormItem className={`${formStyles.formItem}`}>
                           <FormLabel>Additional Refills</FormLabel>
                           <FormControl>
                             <Input
@@ -599,55 +634,42 @@ const PatientMedicationDialog = ({
                       )}
                     />
                   </div> 
-                  <div className="flex justify-end gap-2">
+                  <DialogFooter className="flex justify-end gap-2">
                     <Button
                       variant={"outline"}
-                      className="w-full"
                       onClick={() =>
                         setShowPrescriptionForm(!showPrescriptionForm)
                       }
                     >
                       Cancel
                     </Button>
-                    {/* <Button
-                      type="submit"
-                      onClick={() =>
-                        console.log("Form Inside", form.getValues())
-                      }
-                    >
-                      Save
-                    </Button> */}
                     <SubmitButton label="Save" />
-                  </div>
+                  </DialogFooter>
                 </div>
               </ScrollArea>
             </form>
           </Form>
         ) : (
-          <div className="flex flex-col gap-2">
-            <RxPatientDetailsSection userDetailsId={userDetailsId} />
-            <div className="flex flex-col p-3 rounded-lg border">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-lg font-semibold text-gray-700">
-                  Search & Add Rx
-                </span>
+          <div className="flex flex-col w-full gap-2">
+            {/* <RxPatientDetailsSection userDetailsId={userDetailsId} /> */}
+            <div className="flex flex-1 flex-col gap-4 items-start">
+              <div className="flex flex-col gap-2 justify-between w-full">
+                <Label>Search & Add Rx</Label>
                 <Input
                   value={drugName}
                   placeholder="Enter drug name"
-                  className="w-1/2 rounded-md"
+                  className="w-full rounded-md"
                   onChange={(e) => setDrugName(e.target.value)}
                 />
               </div>
-              <div className="flex items-center">
-                <div className="flex text-center">
-                  Please search for your drug. If not found,
-                </div>
+              <div className="flex flex-row items-center">
+                <Label>or</Label>
                 <Button
-                  variant={"ghost"}
+                  variant={"link"}
                   onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
                   className="text-[#84012A] font-semibold ml-1"
                 >
-                  Add a custom drug
+                  Add custom drug
                 </Button>
               </div>
             </div>

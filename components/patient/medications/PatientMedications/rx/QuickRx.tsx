@@ -1,9 +1,8 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
-import { Separator } from "@/components/ui/separator";
 import AllergiesAndMedications from "./AllergiesAndMedications";
 import PastPrescriptionsDialog from "./PastPrescriptionsDialog";
 import PatientMedicationDialog from "./PatientMedicationDialog";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface QuickRxProps {
   userDetailsId: string;
@@ -21,15 +20,14 @@ function QuickRx({ userDetailsId }: QuickRxProps) {
 
   return (
     <div className="flex flex-col justify-end">
-      <div className="flex border-b pb-3">
-        <div className="flex flex-row-reverse items-center gap-2 w-full bg-[#f4f4f5]">
-          <GhostButton onClick={() => setIsPastPrescriptionsDialogOpen(true)}>
+      <div className="flex pb-3">
+        <div className="flex flex-row-reverse items-center gap-2 w-full">
+          <Button variant={"link"} onClick={() => setIsPastPrescriptionsDialogOpen(true)}>
             Past Rx
-          </GhostButton>
-          <GhostButton onClick={() => setIsPrescriptionsDialogOpen(true)}>
+          </Button>
+          <Button variant={"link"} onClick={() => setIsPrescriptionsDialogOpen(true)}>
             Add Rx
-          </GhostButton>
-          <Separator orientation="vertical" />
+          </Button>
         </div>
       </div>
 
@@ -49,7 +47,6 @@ function QuickRx({ userDetailsId }: QuickRxProps) {
 
       {/* Allergies and Active Medications */}
       <AllergiesAndMedications userDetailsId={userDetailsId} />
-      <Separator />
     </div>
   );
 }

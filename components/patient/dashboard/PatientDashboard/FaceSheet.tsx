@@ -103,9 +103,14 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 {userDashboardData?.diagnoses ? (
                   <div
                     key={userDashboardData?.diagnoses.id}
+<<<<<<< HEAD
                     className="flex flex-row justify-between items-center gap-4 flex-1"
                   >
                     <div className="flex flex-row gap-2">
+=======
+                    className="flex flex-row items-start gap-2">
+                    <div className="flex flex-row gap-2 ">
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
                       <div className="text-sm font-medium">
                         {userDashboardData?.diagnoses.diagnosis_name}
                         <Badge className="inline-flex ml-2">
@@ -113,7 +118,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                         </Badge>
                       </div>
                     </div>
-                    <div className={`${styles.infoSub} flex w-fit`}>
+                    <div className={`${styles.infoSub} flex w-fit flex-shrink-0 pt-1`}>
                       {new Date(
                         userDashboardData?.diagnoses.createdAt
                       ).toLocaleDateString("en-US", {
@@ -284,7 +289,11 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             </Card>
           </div>
 
+<<<<<<< HEAD
           <div className="flex flex-row gap-4 w-full md:w-full">
+=======
+          <div className="flex flex-row gap-4 w-full">
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
             <Card className="flex flex-1">
               <CardHeader>
                 <CardTitle>
@@ -306,10 +315,18 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                       {userDashboardData?.supplements?.manufacturer} {""}
                     </div>
                     <div className={styles.infoSub}>
+<<<<<<< HEAD
                       {userDashboardData?.supplements?.dosage}{", "}
                       {userDashboardData?.supplements?.unit}{", "}
                       {userDashboardData?.supplements?.frequency}{", "}
                       {userDashboardData?.supplements?.intake_type}
+=======
+                    {userDashboardData?.supplements?.dosage} {" "},
+                    {userDashboardData?.supplements?.unit}{" "},
+                      {userDashboardData?.supplements?.frequency}, {" "}
+                      {userDashboardData?.supplements?.intake_type}
+                      {""}
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
                     </div>
                   </div>
                 ) : (
@@ -317,10 +334,15 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 )}
               </CardContent>
             </Card>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
             <Card className="flex flex-1">
               <CardHeader>
                 <CardTitle>
                   <TitleLinks
+<<<<<<< HEAD
                     title="Medication"
                     href="medications"
                     userDetailsId={userDetailsId}
@@ -337,6 +359,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               <CardHeader>
                 <CardTitle>
                   <TitleLinks
+=======
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
                     title="Injections"
                     href="injections"
                     userDetailsId={userDetailsId}
@@ -345,6 +369,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               </CardHeader>
               <CardContent className="flex flex-row gap-2 w-full">
                 {userDashboardData?.injections ? (
+<<<<<<< HEAD
                   <div className="flex flex-col gap-3 flex-1">
                     <div
                       key={userDashboardData?.injections?.id}
@@ -355,6 +380,21 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                           ? userDashboardData?.injections?.injection_name
                             : "N/A"}
                       </span>
+=======
+                  <div className="flex flex-col gap-3 w-full">
+                    <div
+                      key={userDashboardData?.injections?.id}
+                      className="flex flex-col gap-1"
+                    >
+                      <FaceSheetLabels
+                        label="Injection Name:"
+                        value={
+                          userDashboardData?.injections?.injection_name
+                            ? userDashboardData?.injections?.injection_name
+                            : "N/A"
+                        }
+                      />
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
                       <FaceSheetLabels
                         label="Dosage:"
                         value={
@@ -375,8 +415,12 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                         day: "2-digit",
                         year: "numeric",
                       })}
+<<<<<<< HEAD
                       @
                      ${userDashboardData?.injections.administered_time}`
+=======
+                     ${userDashboardData?.injections.administered_time} `
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
                             : "N/A"
                         }
                       />
@@ -384,7 +428,11 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                         label="Frequency:"
                         value={
                           userDashboardData?.injections?.frequency
+<<<<<<< HEAD
                             ? userDashboardData?.injections?.frequency
+=======
+                            ? userDashboardData?.injections.frequency
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
                             : "N/A"
                         }
                       />
@@ -403,7 +451,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 )}
               </CardContent>
             </Card>
+<<<<<<< HEAD
           <Card className="flex flex-1">
+=======
+          </div>
+          <div className="flex flex-row gap-4 w-full">
+            <Card className="flex flex-1">
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
             <CardHeader>
               <CardTitle>
                 <TitleLinks
@@ -468,7 +522,11 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               <NoDataRecorded />
             )}
           </div>  */}
+<<<<<<< HEAD
           <div className="flex flex-row gap-4 w-full md:w-full">
+=======
+
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
           <Card className="flex flex-1">
             <CardHeader>
               <CardTitle>
@@ -503,7 +561,12 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             </CardContent>
           </Card>
+<<<<<<< HEAD
 
+=======
+          </div>
+          <div className="flex flex-row gap-4 w-full">
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
           <Card className="flex flex-1">
             <CardHeader>
               <CardTitle>
@@ -536,6 +599,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             </CardContent>
           </Card>
+<<<<<<< HEAD
           </div>
           <div className="flex flex-row gap-4 w-full md:w-full">
             <Card className="flex flex-1">
@@ -569,6 +633,77 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                           : "N/A"
                       }
                     />
+=======
+
+          <Card className="flex flex-1">
+            <CardHeader>
+              <CardTitle>
+                <TitleLinks
+                  title="Contact Details"
+                  href="patientDetails"
+                  userDetailsId={userDetailsId}
+                />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
+              {userData ? (
+                <div>
+                  <FaceSheetLabels
+                    label="Address:"
+                    value={userData?.location ? userData?.location : "N/A"}
+                  />
+                  <FaceSheetLabels
+                    label="Email:"
+                    value={
+                      userData?.user?.email ? userData?.user?.email : "N/A"
+                    }
+                  />
+                  <FaceSheetLabels
+                    label="Phone:"
+                    value={
+                      userData?.user?.phoneNumber
+                        ? userData?.user?.phoneNumber
+                        : "N/A"
+                    }
+                  />
+                </div>
+              ) : (
+                <NoDataRecorded />
+              )}
+            </CardContent>
+          </Card>
+          </div>
+          <div className="flex flex-row gap-4 w-full">
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <TitleLinks
+                  title="Documents"
+                  href="documents"
+                  userDetailsId={userDetailsId}
+                />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-row gap-2">
+              {userDashboardData?.documents ? (
+                <div
+                  key={userDashboardData?.documents.id}
+                  className={styles.dataContainer}
+                >
+                  <div className={`${styles.infoTextLabel}`}>
+                    {userDashboardData?.documents?.documents.map((image) => (
+                      <Button
+                        key={image}
+                        className="p-0"
+                        variant={"link"}
+                        onClick={() => {
+                          window.open(image, "_blank");
+                        }}
+                      >
+                        {image.split("/")[5]}
+                      </Button>
+                    ))}
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
                   </div>
                 ) : (
                   <NoDataRecorded />
@@ -616,11 +751,20 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                       })}
                     </div>
                   </div>
+<<<<<<< HEAD
                 ) : (
                   <NoDataRecorded />
                 )}
               </CardContent>
             </Card>
+=======
+                </div>
+              ) : (
+                <NoDataRecorded />
+              )}
+            </CardContent>
+          </Card>
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
           </div>
         </div>
       </ScrollArea>
@@ -640,12 +784,21 @@ const FaceSheetLabels = ({
   icon?: React.ElementType;
 }) => {
   return (
+<<<<<<< HEAD
     <div className="flex flex-row items-start ">
       {Icon && <Icon className="mr-2" style={{ width: 14, height: 14 }} />}
       <div className="flex flex-1 text-sm font-medium max-w-[200px] text-gray-600">
         {label}
       </div>
       <div className="flex flex-1 text-sm font-medium">{value}</div>
+=======
+    <div className="flex flex-row items-start text-xs w-full">
+      {Icon && <Icon className="mr-2" style={{ width: 14, height: 14 }} />}
+      <div className="flex flex-1 text-gray-600 font-semibold max-w-[200px]">
+        {label}
+      </div>
+      <div className="flex flex-1 font-medium">{value}</div>
+>>>>>>> 5c353e5 (Added UI Styles - Badges, Indicators and Misc fixes)
     </div>
   );
 };
