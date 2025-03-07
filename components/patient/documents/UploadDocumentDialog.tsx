@@ -267,7 +267,9 @@ function UploadDocumentDialog({
                       <FormControl>
                         <Checkbox
                           checked={field.value}
-                          onCheckedChange={(checked) => field.onChange(checked)}
+                          onCheckedChange={(checked) =>
+                            field.onChange(checked === true)
+                          }
                         />
                       </FormControl>
                       <FormMessage />
