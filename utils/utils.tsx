@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 
 export const formatDate = (date: Date) => {
   let day = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}`;
@@ -9,28 +9,23 @@ export const showToast = ({
   toast,
   type,
   message,
+  icon,
+  variant = "default",
 }: {
   toast: (options: any) => void;
-  type: string;
+  type: "success" | "error";
   message: string;
+  icon?: LucideIcon;
+  variant?: "default" | "success" | "error" | "info" | "destructive";
 }) => {
   toast({
     description: (
       <div className="flex gap-4 items-center">
-        <div
-          className={`flex ${
-            type === "success" ? "bg-[#18A900]" : "bg-red-600"
-          } h-9 w-9 rounded-md items-center justify-center`}
-        >
-          {type === "success" ? (
-            <Check color="#FFFFFF" />
-          ) : (
-            <X color="#FFFFFF" />
-          )}
-        </div>
         <div>{message}</div>
       </div>
     ),
+    variant,
+    icon,
   });
 };
 

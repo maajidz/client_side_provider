@@ -76,51 +76,44 @@ export const columns = ({
     },
   },
   {
-    accessorKey: "alert",
-    header: "Alert Details",
-    cell: ({ row }) => {
-      const alertDetails = row.original.alert;
-      return (
-        <div className="flex flex-row justify-between cursor-pointer">
-          <div className="w-44"> {alertDetails?.alertType.alertName}</div>
-          <div className="w-60"> {alertDetails?.alertDescription}</div>
-          <div>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Ellipsis />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                onClick={() => {
-                  setEditData({
-                    alertName: row.original.alert.alertType.alertName,
-                    alertDescription: row.original.alert.alertDescription,
-                    alertId: row.original.alert.id,
-                  });
-                  setIsDialogOpen((prev) => ({ ...prev, edit: true }));
-                }}
-                >
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                onClick={() => {
-                  handleDeleteAlert(
-                    row.original.alert.id,
-                    setLoading,
-                    showToast,
-                    fetchAlerts
-                  );
-                  fetchAlerts();
-                }}
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      );
-    },
+    accessorKey: "id",
+    header: "",
+    cell: ({ row }) => (
+      <div>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+          <EllipsisVertical size={16} className="text-gray-500"/>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                setEditData({
+                  alertName: row.original.alertType.alertName,
+                  alertDescription: row.original.alertDescription,
+                  alertId: row.original.id,
+                });
+                setIsDialogOpen((prev) => ({ ...prev, edit: true }));
+              }}
+            >
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                handleDeleteAlert(
+                  row.original.id,
+                  setLoading,
+                  showToast,
+                  fetchAlerts
+                );
+                fetchAlerts();
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    ),
   },
 ];

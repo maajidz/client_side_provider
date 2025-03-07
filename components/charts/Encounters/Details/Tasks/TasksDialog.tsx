@@ -302,7 +302,7 @@ function TasksDialog({
                         control={form.control}
                         name="dueDate"
                         render={({ field }) => (
-                          <FormItem className="">
+                          <FormItem>
                             <FormLabel>From Date:</FormLabel>
                             <FormControl>
                               <Input type="date" {...field} />
@@ -320,7 +320,7 @@ function TasksDialog({
                             <FormItem>
                               <FormLabel>Send Reminder Mail</FormLabel>
                               <Select>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full max-w-full">
                                   <SelectValue
                                     placeholder={
                                       selectedValues.length > 0

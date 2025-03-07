@@ -147,7 +147,7 @@ function EditSupplement({
       if (err instanceof Error) {
         showToast({
           toast,
-          type: "failed",
+          type: "error",
           message: "Could not update supplement",
         });
       }

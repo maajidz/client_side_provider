@@ -30,6 +30,7 @@ interface DefaultDataTableProps<TData, TValue> {
   onPageChange: (page: number) => void;
   // clickAddButton?: React.Dispatch<React.SetStateAction<boolean>>;
   onAddClick?: () => void;
+  className?: string;
 }
 
 export function DefaultDataTable<TData, TValue>({
@@ -40,6 +41,7 @@ export function DefaultDataTable<TData, TValue>({
   totalPages,
   onPageChange,
   onAddClick,
+  className,
 }: DefaultDataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState<string>("");
 
@@ -56,8 +58,8 @@ export function DefaultDataTable<TData, TValue>({
   });
 
   return (
-    <>
-      <div className="flex flex-row items-center justify-between">
+    <div className={`data-table-container flex flex-col gap-3 ${className}`}>
+      <div className="flex flex-row items-center justify-between ">
         <div className="flex flex-row gap-2 items-center">
           {title && (
             <span className="font-bold text-lg">{title}</span>
@@ -146,6 +148,6 @@ export function DefaultDataTable<TData, TValue>({
         </Table>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-    </>
+    </div>
   );
 }

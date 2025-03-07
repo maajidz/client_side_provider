@@ -93,7 +93,7 @@ const MessageBody = () => {
                         <div
                           className={`${styles.section} ${styles.listTitle}`}
                         >
-                          No Conversation Avaialble
+                          No Conversation Available
                         </div>
                       )}
                     </>

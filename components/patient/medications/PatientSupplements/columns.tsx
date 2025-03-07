@@ -16,7 +16,7 @@ import {
   SupplementInterface,
   UpdateSupplementType,
 } from "@/types/supplementsInterface";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import { Badge } from "@/components/ui/badge";
 
@@ -175,7 +175,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

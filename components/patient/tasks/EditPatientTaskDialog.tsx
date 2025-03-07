@@ -130,7 +130,6 @@ const EditPatientTaskDialog = ({
       };
       if (tasksData) {
         await updateTask({ requestData, id: tasksData.id });
-
         showToast({
           toast,
           type: "success",
@@ -306,74 +305,75 @@ const EditPatientTaskDialog = ({
                       <h4 className="text-lg font-semibold">
                         Date and Reminder Settings
                       </h4>
-
-                      {/* Due Date Field */}
-                      <FormField
-                        control={form.control}
-                        name="dueDate"
-                        render={({ field }) => (
-                          <FormItem className="flex gap-2 items-center">
-                            <FormLabel>From Date:</FormLabel>
-                            <FormControl>
-                              <Input type="date" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* Reminder Selection */}
-                      <FormField
-                        control={form.control}
-                        name="sendReminder"
-                        render={({ field }) => {
-                          const selectedValues: string[] = field.value || [];
-
-                          return (
-                            <FormItem>
-                              <FormLabel>Send Reminder Mail</FormLabel>
-                              <Select>
-                                <SelectTrigger>
-                                  <SelectValue
-                                    placeholder={
-                                      selectedValues.length > 0
-                                        ? selectedValues.join(", ")
-                                        : "Select Reminder Day"
-                                    }
-                                  />
-                                </SelectTrigger>
-                                <SelectContent className="p-2">
-                                  {reminderOptions.map((option) => {
-                                    const isSelected =
-                                      selectedValues.includes(option);
-
-                                    return (
-                                      <div
-                                        key={option}
-                                        className="flex items-center gap-2 p-2 cursor-pointer"
-                                        onClick={() => {
-                                          // Toggle selection
-                                          const updatedValues = isSelected
-                                            ? selectedValues.filter(
-                                                (val) => val !== option
-                                              )
-                                            : [...selectedValues, option];
-
-                                          field.onChange(updatedValues);
-                                        }}
-                                      >
-                                        <Checkbox checked={isSelected} />
-                                        {option}
-                                      </div>
-                                    );
-                                  })}
-                                </SelectContent>
-                              </Select>
+                      <div className="flex flex-row gap-4 items-baseline justify-end">
+                        {/* Due Date Field */}
+                        <FormField
+                          control={form.control}
+                          name="dueDate"
+                          render={({ field }) => (
+                            <FormItem className="flex gap-2">
+                              <FormLabel>From Date:</FormLabel>
+                              <FormControl>
+                                <Input type="date" {...field} />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
-                          );
-                        }}
-                      />
+                          )}
+                        />
+
+                        {/* Reminder Selection */}
+                        <FormField
+                          control={form.control}
+                          name="sendReminder"
+                          render={({ field }) => {
+                            const selectedValues: string[] = field.value || [];
+
+                            return (
+                              <FormItem>
+                                <FormLabel>Send Reminder Mail</FormLabel>
+                                <Select>
+                                  <SelectTrigger>
+                                    <SelectValue
+                                      placeholder={
+                                        selectedValues.length > 0
+                                          ? selectedValues.join(", ")
+                                          : "Select Reminder Day"
+                                      }
+                                    />
+                                  </SelectTrigger>
+                                  <SelectContent className="p-2">
+                                    {reminderOptions.map((option) => {
+                                      const isSelected =
+                                        selectedValues.includes(option);
+
+                                      return (
+                                        <div
+                                          key={option}
+                                          className="flex items-center gap-2 p-2 cursor-pointer"
+                                          onClick={() => {
+                                            // Toggle selection
+                                            const updatedValues = isSelected
+                                              ? selectedValues.filter(
+                                                  (val) => val !== option
+                                                )
+                                              : [...selectedValues, option];
+
+                                            field.onChange(updatedValues);
+                                          }}
+                                        >
+                                          <Checkbox checked={isSelected} />
+                                          {option}
+                                        </div>
+                                      );
+                                    })}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            );
+                          }}
+                        />
+                      </div>
                     </div>
                   )}
 

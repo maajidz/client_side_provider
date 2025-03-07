@@ -36,7 +36,7 @@ import AddTaskComment from "./AddTaskComment";
 import EditPatientTaskDialog from "./EditPatientTaskDialog";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, XCircle } from "lucide-react";
 import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
@@ -93,6 +93,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
         toast,
         type: "error",
         message: "Failed to fetch owners list.",
+        icon: XCircle,
       });
     } finally {
       setLoading(false);
@@ -231,14 +232,14 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem className="flex flex-1">
+                <FormItem className="flex-none">
                   <FormLabel className="w-fit">Category</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-fit text-sm font-medium">
                         <SelectValue placeholder="Choose Category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -259,14 +260,14 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
               control={form.control}
               name="status"
               render={({ field }) => (
-                <FormItem className="flex flex-1">
+                <FormItem className="flex flex-none">
                   <FormLabel>Status</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-fit text-sm font-medium">
                         <SelectValue placeholder="Select Status" />
                       </SelectTrigger>
                       <SelectContent>
@@ -287,14 +288,14 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
               control={form.control}
               name="priority"
               render={({ field }) => (
-                <FormItem className="flex flex-1">
+                <FormItem className="flex-none">
                   <FormLabel>Priority</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger className="capitalize">
+                      <SelectTrigger className="w-fit text-sm font-medium">
                         <SelectValue placeholder="Choose Priority" />
                       </SelectTrigger>
                       <SelectContent>
@@ -315,7 +316,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             />
             <div className="flex items-end">
-              <Button type="submit" variant={"secondary"}>
+              <Button type="submit" variant={"default"} className="bg-primary">
                 Search <Search />
               </Button>
             </div>

@@ -98,9 +98,10 @@ const ViewPatientMedications = ({
 
   return (
     <>
-      <div className="space-y-3 py-5">
+      <div className="">
         {resultList && (
           <DefaultDataTable
+            className="flex flex-col gap-4"
             title={
               <div className="flex flex-row gap-5 items-center">
                 <div>Medications</div>

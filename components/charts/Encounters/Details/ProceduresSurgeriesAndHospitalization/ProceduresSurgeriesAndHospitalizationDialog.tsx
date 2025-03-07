@@ -242,7 +242,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                           }}
                         />
                         {searchTerm && isListVisible && (
-                          <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                          <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
                             {filteredProcedures.length > 0 ? (
                               filteredProcedures.map((procedure) => (
                                 <div
