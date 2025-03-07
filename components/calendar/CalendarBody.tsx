@@ -182,7 +182,10 @@ export const CalendarBody = () => {
               </Popover>
             </div>
             {providerAppointment && (
-              <ListViewBody appointments={providerAppointment.data} />
+              <ListViewBody
+                appointments={providerAppointment.data}
+                onFetch={fetchAppointments}
+              />
             )}
           </div>
         </TabsContent>
