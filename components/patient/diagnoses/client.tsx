@@ -93,12 +93,7 @@ function DiagnosesClient({ userDetailsId }: DiagnosesClientProps) {
           setEditData,
           setIsDialogOpen: setIsEditDialogOpen,
           setLoading,
-          showToast: () =>
-            showToast({
-              toast,
-              type: "success",
-              message: "Deleted Successfully",
-            }),
+          showToast: (args) => showToast({ toast, ...args }),
           fetchDiagnoses: () => fetchDiagnoses(page),
         })}
         data={diagnosesData}

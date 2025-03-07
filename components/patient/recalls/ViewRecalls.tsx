@@ -182,12 +182,7 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
                 setEditData,
                 setIsDialogOpen,
                 setLoading,
-                showToast: () =>
-                  showToast({
-                    toast,
-                    type: "success",
-                    message: "Deleted Successfully",
-                  }),
+                showToast: (args) => showToast({ toast, ...args }),
                 fetchRecalls: () => fetchRecalls(),
               })}
               data={resultList?.data}

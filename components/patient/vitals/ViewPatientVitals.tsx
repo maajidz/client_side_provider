@@ -74,12 +74,7 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
           setEditData,
           setIsDialogOpen,
           setLoading,
-          showToast: () =>
-            showToast({
-              toast,
-              type: "success",
-              message: "Deleted Successfully",
-            }),
+          showToast: (args) => showToast({ toast, ...args }),
         })}
         data={vitalsData}
         pageNo={page}

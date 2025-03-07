@@ -339,12 +339,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
                 setIsEditDialogOpen,
                 setIsCommentDialogOpen,
                 setLoading,
-                showToast: () =>
-                  showToast({
-                    toast,
-                    type: "success",
-                    message: "Deleted Successfully",
-                  }),
+                showToast: (args) => showToast({ toast, ...args }),
                 fetchTasksList: () => fetchTasks(page, userDetailsId),
                 isPatientTask: true,
               })}

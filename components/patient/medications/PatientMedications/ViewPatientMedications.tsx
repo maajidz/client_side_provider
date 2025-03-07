@@ -119,12 +119,7 @@ const ViewPatientMedications = ({
               setEditData,
               setIsDialogOpen,
               setLoading,
-              showToast: () =>
-                showToast({
-                  toast,
-                  type: "success",
-                  message: "Deleted Successfully",
-                }),
+              showToast: (args) => showToast({ toast, ...args }),
               fetchPrescriptionsList: () =>
                 fetchPrescriptionsList(userDetailsId),
             })}

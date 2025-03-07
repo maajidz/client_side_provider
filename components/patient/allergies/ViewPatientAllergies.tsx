@@ -62,12 +62,7 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
               setEditData,
               setIsDialogOpen: setIsEditDialogOpen,
               setLoading,
-              showToast: () =>
-                showToast({
-                  toast,
-                  type: "success",
-                  message: "Deleted Successfully",
-                }),
+              showToast: (args) => showToast({ toast, ...args }),
               fetchAllergies: () => fetchAllergies(page),
             })}
             data={data}
@@ -81,7 +76,7 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
         userDetailsId={userDetailsId}
         onClose={() => {
           setIsDialogOpen(false);
-          fetchAllergies(page)
+          fetchAllergies(page);
         }}
         isOpen={isDialogOpen}
       />
