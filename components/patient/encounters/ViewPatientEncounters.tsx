@@ -21,6 +21,7 @@ const ViewPatientEncounters = ({
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [activeTab, setActiveTab] = useState('lastvisit');
 
   const patientEncountersTab = [
     {
@@ -89,14 +90,19 @@ const ViewPatientEncounters = ({
 
   useEffect(() => {
     fetchEncounterList(page);
-  }, [page, fetchEncounterList]);
+  }, [activeTab, page, fetchEncounterList]);
 
   if (loading) {
     return <LoadingButton />;
   }
 
   return (
-    <Tabs defaultValue="lastvisit" className="flex flex-row gap-5">
+    <Tabs
+      defaultValue="lastvisit"
+      value={activeTab}
+      onValueChange={setActiveTab}
+      className="flex flex-row gap-5"
+    >
       <TabsList className="flex flex-col h-full w-56 justify-start items-start p-3 gap-3 overflow-hidden">
         {patientEncountersTab.map((tab) => (
           <CustomTabsTrigger value={tab.value} key={tab.value}>

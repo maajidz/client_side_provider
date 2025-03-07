@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { generateQuestionnairePDF } from "./generateQuestionnairePDF";
-import { Copy, Ellipsis, FileUp } from "lucide-react";
+import { Copy, EllipsisVertical, FileUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PatientQuestionnaires = ({
@@ -68,7 +68,7 @@ const PatientQuestionnaires = ({
   };
 
   const getUserQuestionnaire = useCallback(
-    async (page?: number, limit?: number) => {
+    async (type: string, page?: number, limit?: number) => {
       try {
         setLoading(true);
         const response = await fetchUserQuestionnaire({
@@ -79,7 +79,7 @@ const PatientQuestionnaires = ({
         });
         if (response) {
           setResultList(response);
-          setTotalPages(Math.ceil(response.total / Number(response.limit)));
+          setTotalPages(Math.ceil(response.total / (limit || 5)));
         }
       } catch (error) {
         setLoading(false);
@@ -88,95 +88,111 @@ const PatientQuestionnaires = ({
         setLoading(false);
       }
     },
-    [userDetailsId, type]
+    [userDetailsId]
   );
 
   useEffect(() => {
-    getUserQuestionnaire(page, limit);
-  }, [getUserQuestionnaire, page, limit]);
+    getUserQuestionnaire(type, page, limit);
+  }, [getUserQuestionnaire, type, page, limit]);
 
   return (
     <Tabs value={type} className="flex gap-4 bg-white">
       <div className={styles.questionnaireContainer}>
-        {patientQuestionnaireTab.map((tab) => (
-          <TabsContent value={tab.value} key={tab.value} className="flex flex-col gap-4">
-            {loading && <LoadingButton />}
-              <div className="flex flex-row justify-between items-center">
-                <TabsList className="pl-4 flex w-fit flex-row gap-4 rounded-lg border bg-white border-none self-end">
-                  {patientQuestionnaireTab.map((tab) => (
-                    <CustomTabsTrigger
-                      value={tab.value}
-                      key={tab.value}
-                      onClick={() => setType(tab.value)}
-                    >
-                      {tab.label}
-                    </CustomTabsTrigger>
-                  ))}
-                </TabsList>
-                <div className="flex items-center justify-end gap-2">
-                    <div className="text-sm text-muted-foreground">
-                      Page {page} of {totalPages}
-                    </div>
-                    <div className="space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPage(page - 1)}
-                        disabled={page <= 1}
-                      >
-                        Previous
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPage(page + 1)}
-                        disabled={page >= totalPages}
-                      >
-                        Next
-                      </Button>
-                    </div>
-                  </div>
+        <div className="flex flex-row justify-between items-center">
+          <TabsList className="pl-4 flex w-fit flex-row gap-4 rounded-lg border bg-white border-none self-end">
+            {patientQuestionnaireTab.map((tab) => (
+              <CustomTabsTrigger
+                value={tab.value}
+                key={tab.value}
+                onClick={() => setType(tab.value)}
+              >
+                {tab.label}
+              </CustomTabsTrigger>
+            ))}
+          </TabsList>
+          <div className="flex items-center justify-end gap-2">
+            <div className="text-sm text-muted-foreground">
+              Page {page} of {totalPages}
+            </div>
+            <div className="space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(page - 1)}
+                disabled={page <= 1}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(page + 1)}
+                disabled={page >= totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </div>
+        <TabsContent value={type} key={type} className="flex flex-col gap-4">
+          {loading ? (
+            <LoadingButton />
+          ) : (
+            <div className={cn(styles.infoContainer, "group")}>
+              <div
+                className={cn(
+                  styles.buttonContainer,
+                  "absolute invisible right-4 group-hover:visible"
+                )}
+              >
+                <Button
+                  variant={"outline"}
+                  onClick={handleCopyContent}
+                  className="p-3"
+                >
+                  <Copy />
+                </Button>
+                <Button
+                  className="p-3"
+                  variant={"outline"}
+                  onClick={() => {
+                    if (resultList?.data) {
+                      generateQuestionnairePDF({ data: resultList.data });
+                    }
+                  }}
+                >
+                  <FileUp />
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="border border-[#D9D9D9] px-2 h-9 items-center rounded-md">
+                    <EllipsisVertical size={16} className="text-gray-500"/>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-              <div className={cn(styles.infoContainer,"group")}>
-                <div className={cn(styles.buttonContainer, "absolute invisible right-4 group-hover:visible")}>
-                  <Button variant={"outline"} onClick={handleCopyContent} className="p-3">
-                    <Copy/>
-                  </Button>
-                  <Button className="p-3"
-                    variant={"outline"}
-                    onClick={() => {
-                      if (resultList?.data) {
-                        generateQuestionnairePDF({ data: resultList.data });
-                      }
-                    }}
-                  >
-                    <FileUp/>
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="border border-[#D9D9D9] px-2 h-9 items-center rounded-md">
-                      <Ellipsis />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                  <div className={styles.detailsContainer}>
-                    {resultList?.data?.map((result) => (
-                      <div key={result.id} className="flex flex-col">
-                        <div className={styles.detailsLabel}>
-                          Q. {result.questionText}
-                        </div>
-                        <div className={`${styles.detailsValue} pl-5 capitalize`}>
-                          {result.answerText}
-                        </div>
+              <div className={styles.detailsContainer}>
+                {resultList?.data ? (
+                  resultList?.data?.map((result) => (
+                    <div key={result.id} className="flex flex-col">
+                      <div className={styles.detailsLabel}>
+                        Q. {result.questionText}
                       </div>
-                    ))}
+                      <div className={`${styles.detailsValue} pl-5 capitalize`}>
+                        {result.answerText}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex flex-row w-full justify-center items-center h-full min-h-52">
+                    No Questionnaire data found.
                   </div>
+                )}
               </div>
-
-          </TabsContent>
-        ))}
+            </div>
+          )}
+        </TabsContent>
       </div>
     </Tabs>
   );

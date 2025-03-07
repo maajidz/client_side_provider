@@ -912,7 +912,7 @@ export const deleteMedicationPrescription = async ({
 /**
  * * Supplements API
  */
-export const createSupplement = async (requestData: CreateSupplementType) => {
+export const createSupplement = async ({requestData}:{requestData: CreateSupplementType}) => {
   const response = await ApiFetch({
     url: "/provider/supplements",
     method: "POST",

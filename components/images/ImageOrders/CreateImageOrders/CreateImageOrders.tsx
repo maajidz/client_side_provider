@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import formStyles from "@/components/formStyles.module.css";
 import {
   Form,
   FormControl,
@@ -23,12 +24,35 @@ import PastImageOrders from "@/components/charts/Encounters/SOAP/Images/PastImag
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
+import { ImageOrdersInterface, ImagesTestData } from "@/types/chartsInterface";
+import { useToast } from "@/hooks/use-toast";
+import {
+  createImageOrder,
+  getImagesTestsData,
+} from "@/services/chartsServices";
+import { showToast } from "@/utils/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const CreateImageResults = () => {
+  const [providerListData, setProviderListData] =
+    useState<FetchProviderListInterface>({
+      data: [],
+      total: 0,
+    });
+  const [imageTests, setImageTests] = useState<ImagesTestData[]>([]);
   const [patients, setPatients] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState({
+    image: false,
+    provider: false,
+    patient: false,
+  });
+  const { toast } = useToast();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof createImageOrderSchema>>({
@@ -43,7 +67,7 @@ const CreateImageResults = () => {
   });
 
   const fetchPatientList = useCallback(async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, patient: true }));
     try {
       const response = await fetchUserDataResponse({
         pageNo: 1,
@@ -57,13 +81,50 @@ const CreateImageResults = () => {
     } catch (e) {
       console.log("Error", e);
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, patient: false }));
     }
   }, [searchTerm]);
 
+  // GET Providers List
+  const fetchProvidersList = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, provider: true }));
+    try {
+      const data = await fetchProviderListDetails({ page: 1, limit: 10 });
+      if (data) {
+        setProviderListData(() => ({
+          data: data.data,
+          total: data.total,
+        }));
+      }
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setLoading((prev) => ({ ...prev, provider: false }));
+    }
+  }, []);
+
+  // GET Image Tests
+  const fetchImageTests = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, image: true }));
+
+    try {
+      const response = await getImagesTestsData({ limit: 15, page: 1 });
+
+      if (response) {
+        setImageTests(response.data);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading((prev) => ({ ...prev, image: false }));
+    }
+  }, []);
+
   useEffect(() => {
     fetchPatientList();
-  }, [searchTerm, fetchPatientList]);
+    fetchProvidersList();
+    fetchImageTests();
+  }, [searchTerm, fetchPatientList, fetchProvidersList, fetchImageTests]);
 
   const filteredPatients = patients.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
@@ -72,10 +133,41 @@ const CreateImageResults = () => {
   );
 
   const onSubmit = async (values: z.infer<typeof createImageOrderSchema>) => {
-    console.log(values);
+    setLoading((prev) => ({ ...prev, image: true }));
+
+    const requestData: ImageOrdersInterface = {
+      ordered_date: values.orderedDate,
+      providerId: values.orderedBy,
+      userDetailsId: values.patient,
+      imageTypeId: values.imageTypeId,
+      imageTestIds: values.imageTestIds,
+      intra_office_notes: "",
+      note_to_patients: "",
+    };
+
+    try {
+      await createImageOrder({ requestData });
+
+      showToast({
+        toast,
+        type: "success",
+        message: "Image order saved successfully!",
+      });
+      router.replace(`/dashboard/provider/images`);
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Image order could not be saved!",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, image: false }));
+    }
   };
 
-  if (loading) {
+  if (loading.image || loading.patient || loading.provider) {
     return <LoadingButton />;
   }
 
@@ -102,12 +194,12 @@ const CreateImageResults = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
-            <div className="flex gap-7">
+            <div className={formStyles.formBody}>
               <FormField
                 control={form.control}
                 name="patient"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>Patient</FormLabel>
                     <FormControl>
                       <div className="relative">
@@ -154,7 +246,7 @@ const CreateImageResults = () => {
                 control={form.control}
                 name="orderedDate"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className={formStyles.formItem}>
                     <FormLabel>Ordered Data</FormLabel>
                     <FormControl>
                       <Input
@@ -163,6 +255,131 @@ const CreateImageResults = () => {
                         placeholder="Select date"
                         className="w-fit"
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Ordered By */}
+              <FormField
+                control={form.control}
+                name="orderedBy"
+                render={({ field }) => (
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel>Ordered By:</FormLabel>
+                    <FormControl>
+                      <div className="flex flex-col gap-2 items-start justify-start">
+                        <Select
+                          value={field.value}
+                          onValueChange={(value: string) => {
+                            field.onChange(value);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {providerListData.data.map((providerList) => {
+                              const providerId =
+                                providerList.providerDetails?.id ??
+                                providerList.id;
+                              return (
+                                <SelectItem
+                                  key={providerList.id}
+                                  value={providerId}
+                                >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Image Type */}
+              <FormField
+                control={form.control}
+                name="imageTypeId"
+                render={({ field }) => (
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel>Image Type:</FormLabel>
+                    <FormControl>
+                      <div className="flex flex-col gap-2 items-start justify-start">
+                        <Select
+                          value={field.value}
+                          onValueChange={(value: string) => {
+                            field.onChange(value);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {imageTests.map((imageTest) => {
+                              return (
+                                <SelectItem
+                                  key={imageTest.id}
+                                  value={imageTest.imageType.id}
+                                >{`${imageTest.imageType.name}`}</SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Tests */}
+              <FormField
+                control={form.control}
+                name="imageTestIds"
+                render={({ field }) => (
+                  <FormItem className={formStyles.formItem}>
+                    <FormLabel>Tests</FormLabel>
+                    <FormControl>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button
+                            className="border px-4 py-2 rounded-md w-full text-left"
+                            type="button"
+                          >
+                            {field.value.length > 0
+                              ? imageTests
+                                  .filter((test) =>
+                                    field.value.includes(test.id)
+                                  )
+                                  .map((test) => test.name)
+                                  .join(", ")
+                              : "Select tests"}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-72 bg-white border rounded-md p-2">
+                          {imageTests.map((test) => (
+                            <div
+                              key={test.id}
+                              className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded"
+                              onClick={() => {
+                                const updatedTests = field.value.includes(
+                                  test.id
+                                )
+                                  ? field.value.filter((id) => id !== test.id)
+                                  : [...field.value, test.id];
+
+                                form.setValue("imageTestIds", updatedTests);
+                              }}
+                            >
+                              <Checkbox
+                                checked={field.value.includes(test.id)}
+                              />
+                              <span>{test.name}</span>
+                            </div>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

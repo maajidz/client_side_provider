@@ -15,7 +15,7 @@ function Page() {
   }
   return (
     <>
-      <div className="flex flex-1 w-full flex-grow flex-col gap-6 rounded-xl border border-gray-300/50 p-4 bg-white shadow-sm">
+      <div className="flex w-full flex-col gap-6 rounded-xl border border-gray-300/50 p-4 bg-white shadow-sm">
         {/* <div className="flex flex-1 gap-4 flex-col"> */}
           {/* <Breadcrumbs items={breadcrumbItems} /> */}
           {/* <Heading title="Messages" description="" /> */}

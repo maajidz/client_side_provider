@@ -8,31 +8,28 @@ import BasicInformation from "./BasicInformation";
 import ContactDetails from "./ContactDetails";
 import EditBasicInformation from "./EditBasicInformation";
 import EditContactDetails from "./EditContactDetails";
-// import PHRRegistration from "./PHRRegistration";
-// import PatientId from "./PatientId";
-// import EmergencyContact from "./EmergencyContact";
-// import PatientPreferences from "./PatientPreferences";
-// import AdditionalInformation from "./AdditionalInformation";
 
 const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<PatientDetails>();
   const [editPatient, setEditPatient] = useState<boolean>(false);
   const [editBasicPatientDetails, setBasicPatientDetails] =
     useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchAndSetResponse = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
       const userData = await fetchUserEssentials({
         userDetailsId: userDetailsId,
       });
       if (userData) {
         setResponse(userData);
-        setLoading(false);
       }
     } catch (error) {
       console.log(error);
+      setError("Failed to load patient details.");
     } finally {
       setLoading(false);
     }
@@ -40,37 +37,47 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
 
   useEffect(() => {
     fetchAndSetResponse();
-  }, [fetchAndSetResponse, editPatient, editBasicPatientDetails]);
+  }, [fetchAndSetResponse]);
+
+  const renderBasicInformation = () =>
+    editBasicPatientDetails ? (
+      <EditBasicInformation
+        patientDetails={response!}
+        setEditPatient={setBasicPatientDetails}
+      />
+    ) : (
+      <BasicInformation
+        patientDetails={response!}
+        setEditPatient={setBasicPatientDetails}
+      />
+    );
+
+  const renderContactDetails = () =>
+    editPatient ? (
+      <EditContactDetails
+        patientDetails={response!}
+        setEditPatient={setEditPatient}
+      />
+    ) : (
+      <ContactDetails
+        patientDetails={response!}
+        setEditPatient={setEditPatient}
+      />
+    );
+
+  if (loading) return <LoadingButton />;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <>
-      {loading && <LoadingButton />}
-      {response && (
+      {loading ? (
+        <LoadingButton />
+      ) : response ? (
         <div className="flex flex-col">
           <div className="flex flex-col gap-6">
             <div className="flex flex-1 flex-row gap-4">
-              {editBasicPatientDetails ? (
-                <EditBasicInformation
-                  patientDetails={response}
-                  setEditPatient={setBasicPatientDetails}
-                />
-              ) : (
-                <BasicInformation
-                  patientDetails={response}
-                  setEditPatient={setBasicPatientDetails}
-                />
-              )}
-              {editPatient ? (
-                <EditContactDetails
-                  patientDetails={response}
-                  setEditPatient={setEditPatient}
-                />
-              ) : (
-                <ContactDetails
-                  patientDetails={response}
-                  setEditPatient={setEditPatient}
-                />
-              )}
+              {renderBasicInformation()}
+              {renderContactDetails()}
               {/* <PHRRegistration patientDetails={response} />
                   <PatientId patientDetails={response} />
                   <EmergencyContact patientDetails={response} />
@@ -79,6 +86,8 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
             </div>
           </div>
         </div>
+      ) : (
+        <p>No data available.</p>
       )}
     </>
   );

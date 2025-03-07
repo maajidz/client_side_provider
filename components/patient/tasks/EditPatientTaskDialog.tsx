@@ -29,8 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { priority, reminderOptions } from "@/constants/data";
 import { tasksSchema } from "@/schema/tasksSchema";
-import { getTasksTypes, updateTask } from "@/services/chartDetailsServices";
-import { fetchProviderListDetails } from "@/services/registerServices";
+import { updateTask } from "@/services/chartDetailsServices";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import {
   TasksResponseDataInterface,
@@ -41,7 +40,7 @@ import {
 import { RootState } from "@/store/store";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
@@ -51,17 +50,19 @@ const EditPatientTaskDialog = ({
   userDetailsId,
   isOpen,
   onClose,
+  ownersList,
   onFetchTasks,
+  tasksListData,
 }: {
   tasksData?: TasksResponseDataInterface | null;
   userDetailsId: string;
   isOpen: boolean;
   onClose: () => void;
+  ownersList: FetchProviderList[];
   onFetchTasks: (page: number, userDetailsId: string) => Promise<void>;
+  tasksListData: TaskTypeResponse | null;
 }) => {
   const [showDueDate, setShowDueDate] = useState(false);
-  const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
-  const [tasksListData, setTasksListData] = useState<TaskTypeResponse>();
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
   const [selectedTask, setSelectedTask] = useState<TaskTypeList>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -82,51 +83,6 @@ const EditPatientTaskDialog = ({
       userDetailsId: tasksData?.userDetailsId ?? "",
     },
   });
-
-  const fetchOwnersList = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
-
-      if (response) {
-        setOwnersList(response.data || []);
-      }
-    } catch (err) {
-      console.log(err);
-      showToast({
-        toast,
-        type: "error",
-        message: "Failed to fetch owners list.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [toast]);
-
-  const fetchTasksList = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const response = await getTasksTypes({
-        page: 1,
-        limit: 10,
-      });
-
-      if (response) {
-        setTasksListData(response);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTasksList();
-    fetchOwnersList();
-  }, [fetchOwnersList, fetchTasksList]);
 
   useEffect(() => {
     if (tasksData) {
@@ -174,7 +130,6 @@ const EditPatientTaskDialog = ({
       };
       if (tasksData) {
         await updateTask({ requestData, id: tasksData.id });
-
         showToast({
           toast,
           type: "success",
@@ -211,46 +166,6 @@ const EditPatientTaskDialog = ({
             <div className="flex flex-col gap-5">
               <ScrollArea className="max-h-[90dvh] h-auto">
                 <div className="flex flex-col gap-5">
-                  {/* <FormField
-                    control={form.control}
-                    name="category"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="w-fit">Category</FormLabel>
-                        <FormControl>
-                          <Select
-                            defaultValue={field.value}
-                            onValueChange={(value) => {
-                              field.onChange(value);
-                              const selected = tasksListData?.taskTypes.find(
-                                (category) => category.id === value
-                              );
-                              setSelectedTask(selected);
-                            }}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Choose Category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {tasksListData && tasksListData?.taskTypes ? (
-                                tasksListData?.taskTypes.map((category) => (
-                                  <SelectItem
-                                    key={category.id}
-                                    value={category.id}
-                                  >
-                                    {category.name}
-                                  </SelectItem>
-                                ))
-                              ) : (
-                                <div>No Tasks Found</div>
-                              )}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */}
                   <FormField
                     control={form.control}
                     name="category"
@@ -390,74 +305,75 @@ const EditPatientTaskDialog = ({
                       <h4 className="text-lg font-semibold">
                         Date and Reminder Settings
                       </h4>
-
-                      {/* Due Date Field */}
-                      <FormField
-                        control={form.control}
-                        name="dueDate"
-                        render={({ field }) => (
-                          <FormItem className="flex gap-2 items-center">
-                            <FormLabel>From Date:</FormLabel>
-                            <FormControl>
-                              <Input type="date" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* Reminder Selection */}
-                      <FormField
-                        control={form.control}
-                        name="sendReminder"
-                        render={({ field }) => {
-                          const selectedValues: string[] = field.value || [];
-
-                          return (
-                            <FormItem>
-                              <FormLabel>Send Reminder Mail</FormLabel>
-                              <Select>
-                                <SelectTrigger>
-                                  <SelectValue
-                                    placeholder={
-                                      selectedValues.length > 0
-                                        ? selectedValues.join(", ")
-                                        : "Select Reminder Day"
-                                    }
-                                  />
-                                </SelectTrigger>
-                                <SelectContent className="p-2">
-                                  {reminderOptions.map((option) => {
-                                    const isSelected =
-                                      selectedValues.includes(option);
-
-                                    return (
-                                      <div
-                                        key={option}
-                                        className="flex items-center gap-2 p-2 cursor-pointer"
-                                        onClick={() => {
-                                          // Toggle selection
-                                          const updatedValues = isSelected
-                                            ? selectedValues.filter(
-                                                (val) => val !== option
-                                              )
-                                            : [...selectedValues, option];
-
-                                          field.onChange(updatedValues);
-                                        }}
-                                      >
-                                        <Checkbox checked={isSelected} />
-                                        {option}
-                                      </div>
-                                    );
-                                  })}
-                                </SelectContent>
-                              </Select>
+                      <div className="flex flex-row gap-4 items-baseline justify-end">
+                        {/* Due Date Field */}
+                        <FormField
+                          control={form.control}
+                          name="dueDate"
+                          render={({ field }) => (
+                            <FormItem className="flex gap-2">
+                              <FormLabel>From Date:</FormLabel>
+                              <FormControl>
+                                <Input type="date" {...field} />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
-                          );
-                        }}
-                      />
+                          )}
+                        />
+
+                        {/* Reminder Selection */}
+                        <FormField
+                          control={form.control}
+                          name="sendReminder"
+                          render={({ field }) => {
+                            const selectedValues: string[] = field.value || [];
+
+                            return (
+                              <FormItem>
+                                <FormLabel>Send Reminder Mail</FormLabel>
+                                <Select>
+                                  <SelectTrigger>
+                                    <SelectValue
+                                      placeholder={
+                                        selectedValues.length > 0
+                                          ? selectedValues.join(", ")
+                                          : "Select Reminder Day"
+                                      }
+                                    />
+                                  </SelectTrigger>
+                                  <SelectContent className="p-2">
+                                    {reminderOptions.map((option) => {
+                                      const isSelected =
+                                        selectedValues.includes(option);
+
+                                      return (
+                                        <div
+                                          key={option}
+                                          className="flex items-center gap-2 p-2 cursor-pointer"
+                                          onClick={() => {
+                                            // Toggle selection
+                                            const updatedValues = isSelected
+                                              ? selectedValues.filter(
+                                                  (val) => val !== option
+                                                )
+                                              : [...selectedValues, option];
+
+                                            field.onChange(updatedValues);
+                                          }}
+                                        >
+                                          <Checkbox checked={isSelected} />
+                                          {option}
+                                        </div>
+                                      );
+                                    })}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            );
+                          }}
+                        />
+                      </div>
                     </div>
                   )}
 

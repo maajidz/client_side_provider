@@ -640,9 +640,7 @@ const AddRx = ({
           </Form>
         ) : (
           <div className="flex flex-col gap-2">
-            <RxPatientDetailsSection
-              userDetailsId={patientDetails.userDetails.id}
-            />
+            <RxPatientDetailsSection userDetailsId={patientDetails.userDetails.id} />
             <div className="flex flex-col p-3 rounded-lg border">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-lg font-semibold text-gray-700">

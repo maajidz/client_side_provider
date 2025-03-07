@@ -12,6 +12,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -118,13 +119,10 @@ const PatientHeader = ({ userId }: { userId: string }) => {
                     ? `${response?.gender} / ${age}`
                     : "N/A"}
                 </CardDescription>
+                <CardFooter>
+                  <div className="text-xs font-semibold text-gray-500">{response?.patientId ? response.patientId : "N/A"}</div>
+                </CardFooter>
               </div>
-            </div>
-            <div className="flex flex-col items-end text-sm font-medium gap-2">
-              <span className="text-gray-500">PID</span>
-              <span className="text-gray-900">
-                {response?.patientId ? response.patientId : "N/A"}
-              </span>
             </div>
           </CardHeader>
         </Card>

@@ -1,4 +1,4 @@
-import { Test } from "./chartsInterface";
+import { LabUserDetails, Test } from "./chartsInterface";
 
 export interface CreateLabResults {
   userDetailsId: string;
@@ -22,28 +22,29 @@ export interface TestResult {
 }
 
 export interface LabResultsInterface {
-  total: number
-  page: string
-  limit: string
-  results: Result[]
+  total: number;
+  page: string;
+  limit: string;
+  results: Result[];
 }
 
 export interface Result {
-  id: string
-  reviewerId: string
-  dateTime: string
-  tags: string
-  file: any
-  // `status` field was missing
-  status: "Pending" | "Completed";
-  createdAt: string
-  updatedAt: string
-  tests: Test[]
-  testResults: TestResultResponse[]
+  id: string;
+  reviewerId: string;
+  dateTime: string;
+  tags: string;
+  files: any;
+  status: "pending" | "completed";
+  uploadedBy: string
+  createdAt: string;
+  updatedAt: string;
+  tests: Test[];
+  testResults: TestResultResponse[];
+  userDetails: LabUserDetails
 }
 
 export interface TestResultResponse extends TestResult {
-  id: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  createdAt: string;
+  updatedAt: string;
 }

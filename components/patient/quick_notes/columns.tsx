@@ -11,7 +11,7 @@ import {
 import { deleteQuickNote } from "@/services/quickNotesServices";
 import { QuickNotesInterface } from "@/types/quickNotesInterface";
 import generateQuickNotesPDF from "./generateQuickNotesPDF";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 
 const handleDeleteQuickNote = async (
   id: string,
@@ -80,7 +80,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

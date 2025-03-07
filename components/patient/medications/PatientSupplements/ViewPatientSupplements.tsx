@@ -62,7 +62,7 @@ const ViewPatientSupplements = ({
         }}
         isOpen={isDialogOpen.create}
       />
-      <div className="space-y-3 py-5">
+      <div className="">
         {resultList && (
           <DefaultDataTable
             title={"Supplements"}
@@ -74,12 +74,14 @@ const ViewPatientSupplements = ({
               setEditData,
               setIsDialogOpen,
               setLoading,
-              showToast: () =>
+              showToast: ({ type, message }) => {
                 showToast({
                   toast,
-                  type: "success",
-                  message: "Deleted Successfully",
-                }),
+                  type: type === "success" ? "success" : "error",
+                  message,
+                });
+              },
+              // showToast: (args) => showToast({ toast, ...args }),
               fetchSupplementsList: () => fetchSupplementsList(),
             })}
             data={resultList}

@@ -1,5 +1,6 @@
 import axios from 'axios'
-const appServerURL = "https://api.joinpomegranateapi.com";
+const appServerURL = "http://api-pomegranate.ap-south-1.elasticbeanstalk.com";
+// "https://api.joinpomegranateapi.com";
 // "https://server-pomegranate.onrender.com";
 //dev and prod
 

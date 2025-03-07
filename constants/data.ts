@@ -1,5 +1,5 @@
 import { NavItem, PatientItem } from "@/types";
-import { InsuranceType, IsInsuredType } from "@/types/insuranceInterface";
+import { InsuranceType } from "@/types/insuranceInterface";
 
 export const navItems: NavItem[] = [
   // {
@@ -286,6 +286,16 @@ export const status = [
   { value: "Completed", label: "Completed" },
   { value: "Cancelled", label: "Cancelled" },
 ];
+
+export const taskStatus = [
+  { value: "PENDING", label: "Pending" },
+  { value: "Completed", label: "Completed" },
+]; 
+
+export const injectionStatus = [
+  { value: "Pending", label: "Pending" },
+  { value: "active", label: "Active" },
+]; 
 
 export const US_STATES = [
   { name: "Alabama" },

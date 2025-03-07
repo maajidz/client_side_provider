@@ -52,7 +52,7 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
   const paginatedData = documentsData.slice(
     (page - 1) * itemsPerPage,
     page * itemsPerPage
-  );
+  ).filter(document => document.documents.documents);
 
   if (loading) {
     return <LoadingButton />;

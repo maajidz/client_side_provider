@@ -66,6 +66,12 @@ const QuickNotesDialog = ({
     }
   }, [quickNotesData, form]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      form.reset({ notes: "" });
+    }
+  }, [isOpen, form]);
+
   const onSubmit = async (values: z.infer<typeof quickNotesSchema>) => {
     setLoading(true);
     try {
@@ -120,12 +126,12 @@ const QuickNotesDialog = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <ScrollArea className="max-h-[30rem] h-auto">
-              <div >
+              <div>
                 <FormField
                   control={form.control}
                   name="notes"
                   render={({ field }) => (
-                    <FormItem >
+                    <FormItem>
                       <FormControl>
                         <Textarea {...field} className="resize-none" />
                       </FormControl>
@@ -133,7 +139,9 @@ const QuickNotesDialog = ({
                     </FormItem>
                   )}
                 />
-                <DialogFooter><SubmitButton label="Save"></SubmitButton></DialogFooter>
+                <DialogFooter>
+                  <SubmitButton label="Save"></SubmitButton>
+                </DialogFooter>
               </div>
             </ScrollArea>
           </form>

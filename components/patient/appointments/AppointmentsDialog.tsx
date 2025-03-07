@@ -234,8 +234,8 @@ export function AppointmentsDialog({
         <DialogHeader>
           <DialogTitle className="capitalize">
             {appointmentsData
-              ? `Edit Appointment - ${appointmentsData.patientName}`
-              : `New Appointment - ${userData?.firstName}
+              ? `Edit Appointment for ${appointmentsData.patientName}`
+              : `New Appointment for ${userData?.firstName}
             ${userData?.lastName}`}
           </DialogTitle>
           {/* <DialogDescription>New Appointment</DialogDescription> */}
@@ -461,6 +461,7 @@ export function AppointmentsDialog({
                   </Button>
                   <SubmitButton
                     label={appointmentsData ? "Update" : "Create"}
+                    disabled={loading}
                   />
                 </div>
               </form>

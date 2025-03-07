@@ -1,4 +1,5 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { ImageOrdersData } from "@/types/chartsInterface";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -8,13 +9,6 @@ export const columns = (): ColumnDef<ImageOrdersData>[] => [
     header: "Image ID",
     cell: ({ row }) => (
       <div className="cursor-pointer">{row.getValue("id")}</div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: "Result Status",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("status")}</div>
     ),
   },
  {
@@ -66,5 +60,22 @@ export const columns = (): ColumnDef<ImageOrdersData>[] => [
         </div>
       );
     },
-  }
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      return (
+        <Badge
+          variant={
+            row.original.status === "Confirmed"
+              ? "success"
+              : "default"
+          }
+        >
+          {row.original.status}
+        </Badge>
+      );
+    },
+  },
 ];

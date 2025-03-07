@@ -8,7 +8,7 @@ import {
 import { deleteVaccineOrder } from "@/services/injectionsServices";
 import { VaccinesInterface } from "@/types/injectionsInterface";
 import { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 
 const handleDeleteVaccineOrder = async (
   vaccineOrderId: string,
@@ -88,7 +88,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem

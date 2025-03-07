@@ -8,9 +8,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteUserPrescriptionsData } from "@/services/prescriptionsServices";
+import {
+  deleteUserPrescriptionsData,
+  updateUserPrescription,
+} from "@/services/prescriptionsServices";
 import { PrescriptionDataInterface } from "@/types/prescriptionInterface";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const handlePrescriptionDelete = async (
@@ -35,6 +38,39 @@ const handlePrescriptionDelete = async (
   }
 };
 
+const handleStatusUpdate = async (
+  requestData: PrescriptionDataInterface,
+  prescriptionId: string,
+  setLoading: (loading: boolean) => void,
+  showToast: (args: { type: string; message: string }) => void,
+  fetchPrescriptionData: () => void
+) => {
+  setLoading(true);
+  try {
+    await updateUserPrescription({ requestData, id: prescriptionId });
+    showToast({
+      type: "success",
+      message: "Prescription status updated successfully",
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      showToast({
+        type: "error",
+        message: "Failed to update prescription status",
+      });
+    } else {
+      showToast({
+        type: "error",
+        message:
+          "Failed to update prescription status. An unknown error occurred",
+      });
+    }
+  } finally {
+    setLoading(false);
+    fetchPrescriptionData();
+  }
+};
+
 export const columns = ({
   setEditData,
   setIsDialogOpen,
@@ -51,46 +87,50 @@ export const columns = ({
   {
     accessorKey: "drug_name",
     header: "Prescription",
-    cell: ({ row }) => (
-      <div className="flex flex-col gap-1 cursor-pointer">
-        <div className="text-sm font-semibold">{row.getValue("drug_name")}</div>
-        <div>
-          {row?.original?.dosages?.map((dosage, index) => (
-            <div key={dosage?.id}>
-              {index === 0 ? <></> : <span>,</span>}
-              <span>
-                {dosage.dosage_quantity} {dosage.dosage_unit} {dosage.frequency}{" "}
-                for {dosage.duration_quantity} {dosage.dosage_unit}{" "}
-              </span>
-            </div>
-          ))}
+    cell: ({ row }) => {
+      const prescription: PrescriptionDataInterface = row.original;
+
+      return (
+        <div className="flex flex-col gap-1 text-[13px] font-medium cursor-pointer">
+          <div className="font-semibold text-sm">{prescription.drug_name}</div>
+          <div>{prescription.directions}{", "}for {prescription.days_of_supply} days</div>
+          {/* <div>Dispense as Written: {prescription.dispense_as_written ? "Yes" : "No"}</div> */}
+          {/* <div>Primary Diagnosis: {prescription.primary_diagnosis}</div> */}
+          {/* <div>Secondary Diagnosis: {prescription.secondary_diagnosis}</div> */}
+          <div>
+           <span className="text-gray-600">Dispense:</span> {prescription.dispense_quantity} blisters, {prescription.dispense_unit}
+          </div>
+          <div><span className="text-gray-600">Refills:</span> {prescription.additional_refills}</div>
+          {/* <div>Prior Authorization: {prescription.prior_auth}</div> */}
+          {/* <div>Prior Auth Decision: {prescription.prior_auth_decision}</div> */}
+          <div><span className="text-gray-600">Earliest Fill Date:</span> {new Date(prescription.earliest_fill_date).toLocaleDateString("en-US")}</div>
+          <div><span className="text-gray-600">Internal Comments:</span> {prescription.internal_comments}</div>
+          <div><span className="text-gray-600">Note to Pharmacy:</span> {prescription.Note_to_Pharmacy}</div>
+          {/* <div>Created At: {new Date(prescription.createdAt).toLocaleDateString("en-US")}</div> */}
+          {/* <div>Updated At: {new Date(prescription.updatedAt).toLocaleDateString("en-US")}</div> */}
         </div>
-        <div>
-          Dispense: {row.original?.dispense_quantity}{" "}
-          {row.original?.dispense_unit}
-        </div>
-        <div>Refill: {row.original?.earliest_fill_date.split('T')[0]}</div>
-        <div>Supply: {row.original?.days_of_supply}</div>
-        
-      </div>
-    ),
+      );
+    },
   },
   {
     accessorKey: "fromDate",
     header: "From Date",
     cell: ({ row }) => (
-      <div className="cursor-pointer">
-        {new Date(row.original.fromDate).toDateString()}
-      </div>
+      <div>{new Date(row.original.fromDate).toLocaleDateString("en-US")}</div>
     ),
   },
   {
     accessorKey: "toDate",
     header: "To Date",
     cell: ({ row }) => (
-      <div className="cursor-pointer">
-        {new Date(row.original.toDate).toDateString()}
-      </div>
+      <div>{new Date(row.original.toDate).toLocaleDateString("en-US")}</div>
+    ),
+  },
+  {
+    accessorKey: "signed",
+    header: "Signed",
+    cell: ({ row }) => (
+      <div>{row.original.status === "completed" ? "Yes" : "No"}</div>
     ),
   },
   {
@@ -98,9 +138,7 @@ export const columns = ({
     header: "Status",
     cell: ({ row }) => (
       <Badge
-        variant={`${
-          row.original.status === "active" ? "success" : "warning"
-        }`}
+        variant={`${row.original.status === "completed" ? "success" : "warning"}`}
       >
         {row.original.status}
       </Badge>
@@ -113,7 +151,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
@@ -138,7 +176,37 @@ export const columns = ({
             >
               Delete
             </DropdownMenuItem>
-            <DropdownMenuItem>Mark as Inactive</DropdownMenuItem>
+            {row.original.status === "pending" ? (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() =>
+                  handleStatusUpdate(
+                    { ...row.original, status: "completed" },
+                    row.original.id,
+                    setLoading,
+                    showToast,
+                    fetchPrescriptionsList
+                  )
+                }
+              >
+                Mark as Completed
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() =>
+                  handleStatusUpdate(
+                    { ...row.original, status: "pending" },
+                    row.original.id,
+                    setLoading,
+                    showToast,
+                    fetchPrescriptionsList
+                  )
+                }
+              >
+                Mark as Pending
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

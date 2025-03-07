@@ -95,12 +95,14 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
           setIsDialogOpen,
           setSelectedInsurance: () => setSelectedInsurance(insuranceData),
           setLoading,
-          showToast: () =>
+          showToast: ({ type, message }) => {
             showToast({
               toast,
-              type: "success",
-              message: "Deleted successfully",
-            }),
+              type: type === "success" ? "success" : "error",
+              message,
+            });
+          },
+          // showToast: (args) => showToast({ toast, ...args }),
           fetchInsuranceData: () => fetchInsuranceData(),
           setIsOpenNotesDialog,
         })}

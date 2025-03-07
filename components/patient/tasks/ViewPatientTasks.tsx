@@ -26,20 +26,27 @@ import {
   TasksResponseDataInterface,
   TasksResponseInterface,
   TaskTypeList,
+  TaskTypeResponse,
 } from "@/types/tasksInterface";
 import { filterTasksSchema } from "@/schema/tasksSchema";
-import { priority, status } from "@/constants/data";
+import { priority, taskStatus } from "@/constants/data";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AddTaskComment from "./AddTaskComment";
 import EditPatientTaskDialog from "./EditPatientTaskDialog";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, XCircle } from "lucide-react";
 import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { fetchProviderListDetails } from "@/services/registerServices";
 
 const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
+  const [tasksListData, setTasksListData] = useState<TaskTypeResponse | null>(
+    null
+  );
   const [taskTypes, setTaskTypes] = useState<TaskTypeList[]>([]);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
   const [loading, setLoading] = useState(false);
@@ -70,6 +77,47 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
       userDetailsId: "",
     },
   });
+
+  const fetchOwnersList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+
+      if (response) {
+        setOwnersList(response.data || []);
+      }
+    } catch (err) {
+      console.log(err);
+      showToast({
+        toast,
+        type: "error",
+        message: "Failed to fetch owners list.",
+        icon: XCircle,
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
+
+  const fetchTasksList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getTasksTypes({
+        page: 1,
+        limit: 10,
+      });
+
+      if (response) {
+        setTasksListData(response);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   function onSubmit(values: z.infer<typeof filterTasksSchema>) {
     setFilters((prev) => ({
@@ -102,7 +150,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
     }
   }, []);
 
-  const fetchTasksList = useCallback(
+  const fetchTasks = useCallback(
     async (
       page: number,
       userDetailsId: string,
@@ -117,7 +165,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             providerId: providerDetails.providerId,
             limit: limit,
             page: page,
-            status: status || filters.status,
+            status: status?.toUpperCase() || filters.status.toUpperCase(),
             category: category || filters.category,
             priority: priority || filters.priority,
             userDetailsId: userDetailsId,
@@ -138,9 +186,18 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   );
 
   useEffect(() => {
-    fetchTasksList(page, userDetailsId);
+    fetchTasks(page, userDetailsId);
     fetchTaskTypes();
-  }, [page, fetchTasksList, fetchTaskTypes, userDetailsId]);
+    fetchOwnersList();
+    fetchTasksList();
+  }, [
+    page,
+    fetchTasksList,
+    fetchTasks,
+    fetchTaskTypes,
+    fetchOwnersList,
+    userDetailsId,
+  ]);
 
   if (loading) {
     return <LoadingButton />;
@@ -149,18 +206,18 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const handleCommentDialogClose = () => {
     setIsCommentDialogOpen(false);
     setEditData(null);
-    fetchTasksList(page, userDetailsId);
+    fetchTasks(page, userDetailsId);
   };
 
   const handleEditDialogClose = () => {
     setIsEditDialogOpen(false);
     setEditData(null);
-    fetchTasksList(page, userDetailsId);
+    fetchTasks(page, userDetailsId);
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    fetchTasksList(page, userDetailsId);
+    fetchTasks(page, userDetailsId);
   };
 
   return (
@@ -175,23 +232,20 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem className="flex flex-1">
+                <FormItem className="flex-none">
                   <FormLabel className="w-fit">Category</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-fit text-sm font-medium">
                         <SelectValue placeholder="Choose Category" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
                         {taskTypes.map((type) => (
-                          <SelectItem
-                            key={type.id}
-                            value={type.name}
-                          >
+                          <SelectItem key={type.id} value={type.name}>
                             {type.name}
                           </SelectItem>
                         ))}
@@ -206,19 +260,19 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
               control={form.control}
               name="status"
               render={({ field }) => (
-                <FormItem className="flex flex-1">
+                <FormItem className="flex flex-none">
                   <FormLabel>Status</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-fit text-sm font-medium">
                         <SelectValue placeholder="Select Status" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
-                        {status.map((status) => (
+                        {taskStatus.map((status) => (
                           <SelectItem key={status.value} value={status.value}>
                             {status.label}
                           </SelectItem>
@@ -234,20 +288,24 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
               control={form.control}
               name="priority"
               render={({ field }) => (
-                <FormItem className="flex flex-1">
+                <FormItem className="flex-none">
                   <FormLabel>Priority</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-fit text-sm font-medium">
                         <SelectValue placeholder="Choose Priority" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
                         {priority.map((priority) => (
-                          <SelectItem value={priority} key={priority}>
+                          <SelectItem
+                            value={priority}
+                            key={priority}
+                            className="capitalize"
+                          >
                             {priority}
                           </SelectItem>
                         ))}
@@ -258,7 +316,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             />
             <div className="flex items-end">
-              <Button type="submit" variant={"secondary"}>
+              <Button type="submit" variant={"default"} className="bg-primary">
                 Search <Search />
               </Button>
             </div>
@@ -270,6 +328,8 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             userDetailsId={userDetailsId}
             onClose={handleDialogClose}
             isOpen={isDialogOpen}
+            ownersList={ownersList}
+            tasksListData={tasksListData}
           />
           {resultList?.data && (
             <DefaultDataTable
@@ -280,13 +340,15 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
                 setIsEditDialogOpen,
                 setIsCommentDialogOpen,
                 setLoading,
-                showToast: () =>
+                showToast: ({ type, message }) => {
                   showToast({
                     toast,
-                    type: "success",
-                    message: "Deleted Successfully",
-                  }),
-                fetchTasksList: () => fetchTasksList(page, userDetailsId),
+                    type: type === "success" ? "success" : "error",
+                    message,
+                  });
+                },
+                // showToast: (args) => showToast({ toast, ...args }),
+                fetchTasksList: () => fetchTasks(page, userDetailsId),
                 isPatientTask: true,
               })}
               data={resultList?.data}
@@ -301,11 +363,12 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             onClose={handleCommentDialogClose}
             isOpen={isCommentDialogOpen}
           />
-
           <EditPatientTaskDialog
             tasksData={editData}
             userDetailsId={userDetailsId}
             isOpen={isEditDialogOpen}
+            ownersList={ownersList}
+            tasksListData={tasksListData}
             onClose={handleEditDialogClose}
             onFetchTasks={fetchTasksList}
           />

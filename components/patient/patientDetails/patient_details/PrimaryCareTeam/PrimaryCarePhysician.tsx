@@ -82,7 +82,7 @@ const PrimaryCarePhysician = ({
 
       showToast({
         toast,
-        type: "error",
+        type: "success",
         message: "Primary care physician added successfully",
       });
       onRefresh((prev) => prev + 1);
@@ -211,12 +211,18 @@ const PhysicianData = ({
   return (
     <div className="flex gap-1 flex-col">
       <div className="text-xs font-medium text-gray-500 ">{label}</div>
-      <div className="flex text-sm items-center justify-between gap-2 font-semibold">
-        {value}
-        <Button variant="ghost" onClick={onRemove}>
-          <Trash2Icon color="#84012A" />
-        </Button>
-      </div>
+      {value ? (
+        <div className="flex text-sm items-center justify-between gap-2 font-semibold">
+          {value}
+          {value && (
+            <Button variant="ghost" onClick={onRemove}>
+              <Trash2Icon color="#84012A" />
+            </Button>
+          )}
+        </div>
+      ) : (
+        <div className="text-xs font-semibold text-gray-500">No Assigned Physician found!</div>
+      )}
     </div>
   );
 };

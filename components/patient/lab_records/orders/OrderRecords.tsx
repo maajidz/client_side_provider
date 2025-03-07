@@ -66,7 +66,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
       ...prev,
       orderedby: values.orderedby === "all" ? "" : values.orderedby || "",
       status: values.status === "all" ? "" : values.status || "",
-      patient: "",
+      patient: userDetailsId,
     }));
 
     setPage(1);
@@ -89,7 +89,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
   }, [page]);
 
   const fetchLabOrdersList = useCallback(
-    async (page: number) => {
+    async (page: number, status?: string, providerId?: string) => {
       setLoading(true);
 
       try {
@@ -97,7 +97,8 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
           userDetailsId,
           limit,
           page,
-          providerId: filters.orderedby,
+          providerId: providerId || filters.orderedby,
+          status: status || filters.status,
         });
         if (response) {
           setOrderList(response);
@@ -105,6 +106,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
         }
       } catch (e) {
         console.log("Error", e);
+        setOrderList(undefined);
       } finally {
         setLoading(false);
       }
@@ -113,9 +115,12 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
   );
 
   useEffect(() => {
-    fetchLabOrdersList(page);
     fetchProvidersData();
-  }, [page, fetchLabOrdersList, fetchProvidersData]);
+  }, [fetchProvidersData]);
+
+  useEffect(() => {
+    fetchLabOrdersList(page);
+  }, [page, fetchLabOrdersList, filters]);
 
   if (loading) {
     return <LoadingButton />;

@@ -1,5 +1,5 @@
+import RxPatientDetailsSection from "@/components/charts/Encounters/SOAP/Prescription/RxPatientDetailsSection";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-// import RxPatientDetailsSection from "@/components/charts/Encounters/SOAP/Prescription/RxPatientDetailsSection";
 import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
@@ -22,7 +22,7 @@ interface PastPrescriptionsDialogProps {
 
 const PastPrescriptionsDialog = ({
   isDialogOpen,
-  // userDetailsId,
+  userDetailsId,
   onClose,
 }: PastPrescriptionsDialogProps) => {
   // Data State
@@ -67,7 +67,7 @@ const PastPrescriptionsDialog = ({
         <>
           <div className="flex flex-col gap-4">
             {/* Patient Details Section */}
-            {/* <RxPatientDetailsSection userDetailsId={userDetailsId} /> */}
+            <RxPatientDetailsSection userDetailsId={userDetailsId} />
             {/* Search & Add Rx Section */}
             {/* <div className="flex flex-col p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">

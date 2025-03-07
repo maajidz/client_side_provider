@@ -7,9 +7,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis } from "lucide-react";
-import { InsuranceResponse } from "@/types/insuranceInterface";
-import { deleteInsuranceData } from "@/services/insuranceServices";
+import { EllipsisVertical } from "lucide-react";
+import {
+  InsuranceResponse,
+  UpdateInsuranceType,
+} from "@/types/insuranceInterface";
+import {
+  deleteInsuranceData,
+  updateInsurance,
+} from "@/services/insuranceServices";
 import { Badge } from "@/components/ui/badge";
 
 const handleDeleteInsuranceData = async (
@@ -35,6 +41,38 @@ const handleDeleteInsuranceData = async (
       showToast({
         type: "error",
         message: "Failed to delete insurance data. An unknown error occurred",
+      });
+    }
+  } finally {
+    setLoading(false);
+    fetchInsuranceData();
+  }
+};
+
+const handleStatusUpdate = async (
+  requestData: UpdateInsuranceType,
+  insuranceDataId: string,
+  setLoading: (loading: boolean) => void,
+  showToast: (args: { type: string; message: string }) => void,
+  fetchInsuranceData: () => void
+) => {
+  setLoading(true);
+  try {
+    await updateInsurance({ requestData, id: insuranceDataId });
+    showToast({
+      type: "success",
+      message: "Insurance status updated successfully",
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      showToast({
+        type: "error",
+        message: "Failed to update insurance status",
+      });
+    } else {
+      showToast({
+        type: "error",
+        message: "Failed to update insurance status. An unknown error occurred",
       });
     }
   } finally {
@@ -93,31 +131,29 @@ export const columns = ({
       <div className="cursor-pointer">{row.getValue("idNumber")}</div>
     ),
   },
-  {
-    accessorKey: "dueDate",
-    header: "Due Date",
-    cell: ({ getValue }) => {
-      const dob = getValue() as string;
-      const date = new Date(dob);
-      return (
-        <div className="cursor-pointer">
-          {date.toLocaleDateString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          })}
-        </div>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "dueDate",
+  //   header: "Due Date",
+  //   cell: ({ getValue }) => {
+  //     const dob = getValue() as string;
+  //     const date = new Date(dob);
+  //     return (
+  //       <div className="cursor-pointer">
+  //         {date.toLocaleDateString("en-US", {
+  //           month: "short",
+  //           day: "2-digit",
+  //           year: "numeric",
+  //         })}
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
       <Badge
-        variant={`${
-          row.original.status === "active" ? "success" : "default"
-        }`}
+        variant={`${row.original.status === "active" ? "success" : "default"}`}
       >
         {row.getValue("status")}
       </Badge>
@@ -130,7 +166,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem
@@ -159,9 +195,37 @@ export const columns = ({
             >
               Delete
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              Mark as Inactive
-            </DropdownMenuItem>
+            {row.original.status === "inactive" ? (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() =>
+                  handleStatusUpdate(
+                    { ...row.original, status: "active" },
+                    row.original.id,
+                    setLoading,
+                    showToast,
+                    fetchInsuranceData
+                  )
+                }
+              >
+                Mark as Active
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() =>
+                  handleStatusUpdate(
+                    { ...row.original, status: "inactive" },
+                    row.original.id,
+                    setLoading,
+                    showToast,
+                    fetchInsuranceData
+                  )
+                }
+              >
+                Mark as Inactive
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

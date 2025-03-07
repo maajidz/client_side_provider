@@ -3,8 +3,7 @@
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"
-import { X } from "lucide-react"
-
+import { X, LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const ToastProvider = ToastPrimitives.Provider
@@ -29,30 +28,44 @@ const toastVariants = cva(
   {
     variants: {
       variant: {
-        default: "border bg-background text-foreground",
-        destructive:
-          "destructive group border-destructive bg-destructive text-destructive-foreground",
+        default: "border-green-500 bg-background text-foreground",
+        destructive: "destructive group border-destructive bg-destructive text-destructive-foreground",
+        success: "border-green-500 bg-green-100 text-green-800",
+        error: "border-red-500 bg-red-100 text-red-800",
+        info: "border-blue-500 bg-blue-100 text-blue-800",
       },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
+    }
   }
 )
+
+// // Default icons mapped to their variants
+// const defaultIcons: Record<string, LucideIcon> = {
+//   default: Info,
+//   success: CheckCircle,
+//   error: XCircle,
+//   destructive: XCircle,
+// };
 
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
-    VariantProps<typeof toastVariants>
+    VariantProps<typeof toastVariants> & {
+      icon?: LucideIcon;
+    }
 >(({ className, variant, ...props }, ref) => {
+  // const Icon = icon || defaultIcons[variant as keyof typeof defaultIcons];
+
   return (
     <ToastPrimitives.Root
       ref={ref}
       className={cn(toastVariants({ variant }), className)}
       {...props}
-    />
-  )
-})
+    >
+      {/* {Icon && <Icon className="mr-2 h-5 w-5" />} */}
+      {props.children}
+    </ToastPrimitives.Root>
+  );
+});
 Toast.displayName = ToastPrimitives.Root.displayName
 
 const ToastAction = React.forwardRef<

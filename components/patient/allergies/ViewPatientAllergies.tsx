@@ -62,12 +62,19 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
               setEditData,
               setIsDialogOpen: setIsEditDialogOpen,
               setLoading,
-              showToast: () =>
+              // showToast: () =>
+              //   showToast({
+              //     toast,
+              //     type: "success",
+              //     message: "Data loaded successfully",
+              //   }),
+              showToast: ({ type, message }) => {
                 showToast({
                   toast,
-                  type: "success",
-                  message: "Deleted Successfully",
-                }),
+                  type: type === "success" ? "success" : "error",
+                  message,
+                });
+              },
               fetchAllergies: () => fetchAllergies(page),
             })}
             data={data}
@@ -81,7 +88,7 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
         userDetailsId={userDetailsId}
         onClose={() => {
           setIsDialogOpen(false);
-          fetchAllergies(page)
+          fetchAllergies(page);
         }}
         isOpen={isDialogOpen}
       />

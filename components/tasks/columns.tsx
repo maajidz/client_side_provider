@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteTask, updateTaskStatus } from "@/services/chartDetailsServices";
 import generateTasksPDF from "../patient/tasks/generateTasksPDF";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
+import { Badge } from "../ui/badge";
 
 const handleTasksDelete = async (
   taskId: string,
@@ -49,15 +50,21 @@ const handleTasksStatusUpdate = async (
     await updateTaskStatus({ id: taskId, requestData });
     showToast({
       type: "success",
-      message: "Task deleted successfully",
+      message: "Task updated successfully",
     });
     fetchTasks();
   } catch (error) {
     console.error("Error:", error);
-    showToast({ type: "error", message: "Failed to delete task" });
+    showToast({ type: "error", message: "Failed to update task" });
   } finally {
     setLoading(false);
   }
+};
+
+const priorityBadgeVariants: Record<string, "default" | "warning" | "destructive"> = {
+  low: "default",      
+  medium: "warning",   
+  high: "destructive", 
 };
 
 export const columns = ({
@@ -87,15 +94,20 @@ export const columns = ({
   {
     accessorKey: "priority",
     header: "Priority",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("priority")}</div>
-    ),
+    cell: ({ row }) => {
+      const priorityValue = row.getValue("priority") as keyof typeof priorityBadgeVariants;
+      return (
+        <Badge variant={priorityBadgeVariants[priorityValue] || "default"} showIndicator>
+          {priorityValue}
+        </Badge>
+      );
+    },
   },
   {
-    accessorKey: "userDetailsId",
+    accessorKey: "patientId",
     header: "Patient",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("userDetailsId")}</div>
+      <div className="cursor-pointer">{row.getValue("patientId")}</div>
     ),
   },
   {
@@ -149,11 +161,11 @@ export const columns = ({
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="cursor-pointer capitalize">
-        {row.original.status.toLowerCase()}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const statusColor =
+        row.original.status === "COMPLETED" ? "success" : "warning";
+      return <Badge variant={`${statusColor}`} >{row.original.status}</Badge>;
+    },
   },
   {
     accessorKey: "id",
@@ -162,7 +174,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Ellipsis />
+            <EllipsisVertical size={16} className="text-gray-500"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
@@ -184,18 +196,20 @@ export const columns = ({
             >
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                handleTasksStatusUpdate(
-                  row.original.id,
-                  setLoading,
-                  showToast,
-                  fetchTasksList
-                );
-              }}
-            >
-              Mark as completed
-            </DropdownMenuItem>
+            {row.original.status === "PENDING" && (
+              <DropdownMenuItem
+                onClick={() => {
+                  handleTasksStatusUpdate(
+                    row.original.id,
+                    setLoading,
+                    showToast,
+                    fetchTasksList
+                  );
+                }}
+              >
+                Mark as completed
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onClick={() => {
                 handleTasksDelete(

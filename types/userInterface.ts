@@ -118,6 +118,7 @@ export interface CreateUserDetails {
 
 export interface UserDetails extends CreateUserDetails {
   id: string;
+  patientId: string;
   createdAt: string;
   updatedAt: string;
 }
