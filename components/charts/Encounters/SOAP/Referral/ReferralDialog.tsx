@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -115,6 +116,7 @@ const ReferralDialog = ({
       <DialogContent className="sm:max-w-[98rem]">
         <DialogHeader>
           <DialogTitle>Patient Details</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         {patientDetails && (
           <Form {...form}>
@@ -267,6 +269,7 @@ const ReferralDialog = ({
                           <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
                               <DialogTitle>Diagnoses</DialogTitle>
+                              <DialogDescription></DialogDescription>
                               <DiagnosesClient
                                 onSelectionChange={handleSelectedDiagnoses}
                                 chartID={patientDetails?.chart?.id}
@@ -312,6 +315,7 @@ const ReferralDialog = ({
                                             <DialogContent className="sm:max-w-[425px]">
                                                 <DialogHeader>
                                                     <DialogTitle>Insurance</DialogTitle>
+                                                    <DialogDescription></DialogDescription>
                                                 </DialogHeader>
                                             </DialogContent>
                                         </Dialog>

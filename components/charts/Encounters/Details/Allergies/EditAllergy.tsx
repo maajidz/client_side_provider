@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -143,6 +144,7 @@ function EditAllergy({
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>Edit Allergy</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form className="space-y-2" onSubmit={form.handleSubmit(onSubmit)}>

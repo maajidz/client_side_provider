@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle
@@ -209,6 +210,7 @@ function InjectionOrders({
       <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>
           <DialogTitle>Add Injection Order</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         {loading.get ? (
           <LoadingButton />

@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -163,6 +164,7 @@ function TasksDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{tasksData ? "Edit Task" : "Add Task"}</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[90dvh] h-auto">
           <Form {...form}>

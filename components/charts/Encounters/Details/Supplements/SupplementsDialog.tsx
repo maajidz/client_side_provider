@@ -5,6 +5,7 @@ import { z } from "zod";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -215,6 +216,7 @@ function SupplementsDialog({
           <DialogTitle>
             {selectedSupplement ? "Edit Supplement" : "Add Supplement"}
           </DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[30rem] max-h-[30rem] p-2.5">
           <Form {...form}>

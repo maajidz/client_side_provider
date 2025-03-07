@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -146,6 +147,7 @@ function EditPrescription({
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>Edit Prescription</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form

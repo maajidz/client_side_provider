@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -112,6 +113,7 @@ function AddTaskComment({
       <DialogContent className="w-auto">
         <DialogHeader>
           <DialogTitle>Add comment</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3">
           {/* <div className="flex justify-end">

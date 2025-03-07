@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { PlusCircle } from "lucide-react";
 import React from "react";
@@ -24,6 +25,7 @@ const Payers = () => {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Edit profile</DialogTitle>
+            <DialogDescription></DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <SubmitButton label="Save Changes" />

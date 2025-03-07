@@ -2,6 +2,7 @@ import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -18,6 +19,7 @@ const MapDxDialog = () => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <SubmitButton label="Save Changes" />

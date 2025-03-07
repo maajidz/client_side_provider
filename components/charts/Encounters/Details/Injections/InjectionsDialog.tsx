@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -161,6 +162,7 @@ const InjectionsDialog = ({
           <DialogTitle>
             {injectionsData ? "Edit Injections" : "Add Injections"}
           </DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[80dvh]">
           <Form {...form}>
