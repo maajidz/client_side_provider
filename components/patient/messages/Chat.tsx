@@ -170,8 +170,8 @@ export default function ChatPage({
           {userDetails.firstName} {userDetails.lastName}
         </div>
       </div>
-      <div className="flex flex-col overflow-y-scroll">
-        <div className="flex border-t overflow-auto border-gray-100 relative">
+      <div className="flex flex-col overflow-y-scroll h-[calc(100dvh-28rem)]">
+        <div className="flex border-t border-gray-100 relative">
           {messages && messages.length > 0 ? (
             <div className="flex flex-col flex-1 gap-6">
               {loading && (

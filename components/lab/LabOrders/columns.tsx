@@ -12,10 +12,10 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
     ),
   },
   {
-    accessorKey: "orderedBy",
+    accessorKey: "providerDetails",
     header: "Ordered by",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("orderedBy")}</div>
+      <div className="cursor-pointer">{row.original.providerDetails.providerUniqueId}</div>
     ),
   },
  {

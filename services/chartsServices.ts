@@ -29,6 +29,7 @@ import {
   ImageOrdersResponseInterface,
   DiagnosesResponseInterface,
   PastDiagnosesInterface,
+  DiagnosesTypeDataInterface,
 } from "@/types/chartsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";
 
@@ -242,6 +243,30 @@ export const fetchDiagnosesForUser = async ({
   });
 
   const data: DiagnosesResponseInterface = await response.data;
+  return data;
+};
+
+export const fetchDiagnosesType = async ({
+  page,
+  limit,
+  search,
+}: {
+  page?: number;
+  limit?: number;
+  search: string;
+}) => {
+  const queryParams = new URLSearchParams();
+  if(search) queryParams.append("search", search)
+  if (page) queryParams.append("page", page.toString());
+  if (limit) queryParams.append("limit", limit.toString());
+
+  const response = await ApiFetch({
+    method: "get",
+    url: `/provider/diagnosis/type/all?${queryParams}`,
+  });
+  console.log(response.data);
+  const data: DiagnosesTypeDataInterface = await response.data;
+  console.log(data);
   return data;
 };
 
