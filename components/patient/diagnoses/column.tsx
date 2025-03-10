@@ -85,19 +85,15 @@ export const columns = ({
   fetchDiagnoses: () => void;
 }): ColumnDef<DiagnosesInterface>[] => [
   {
-    accessorKey: "diagnosis_Id",
+    accessorKey: "diagnosisType",
     header: "Diagnosis Name",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("diagnosis_Id")}</div>
+      <div className="cursor-pointer flex flex-row gap-3">
+        <div>{row.original.diagnosisType.name}</div>
+        <div>{row.original.diagnosisType.icdCode}</div>
+      </div>
     ),
   },
-  // {
-  //   accessorKey: "ICD_Code",
-  //   header: "ICD Code",
-  //   cell: ({ row }) => (
-  //     <div className="cursor-pointer">{row.getValue("ICD_Code")}</div>
-  //   ),
-  // },
   {
     accessorKey: "fromDate",
     header: "From Date",
@@ -133,7 +129,7 @@ export const columns = ({
       <div className="cursor-pointer">
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <EllipsisVertical size={16} className="text-gray-500"/>
+            <EllipsisVertical size={16} className="text-gray-500" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
