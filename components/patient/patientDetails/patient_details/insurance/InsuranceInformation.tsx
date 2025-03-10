@@ -110,7 +110,11 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
       />
       <AddOrViewNotes
         isOpen={isOpenNotesDialog}
-        onSetIsOpenNotesDialog={setIsOpenNotesDialog}
+        onClose={() => {
+          setIsOpenNotesDialog(false);
+          fetchInsuranceData();
+        }}
+        selectedInsurance={insuranceData}
       />
     </div>
   );

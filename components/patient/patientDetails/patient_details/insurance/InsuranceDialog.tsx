@@ -108,6 +108,7 @@ function InsuranceDialog({
     formData.append("userDetailsID", userDetailsId);
     formData.append("images", formValues.frontDocumentImage);
     formData.append("images", formValues.backDocumentImage);
+    formData.append("notes", "")
 
     try {
       if (selectedInsurance) {
