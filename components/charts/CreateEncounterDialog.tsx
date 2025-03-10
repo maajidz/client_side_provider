@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -147,6 +148,7 @@ const CreateEncounterDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New Encounter</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <div>
           <div className={formStyles.formBody}>

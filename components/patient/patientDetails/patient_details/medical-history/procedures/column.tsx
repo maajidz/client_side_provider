@@ -1,12 +1,12 @@
-import { ProceduresInterface } from "@/types/procedureInterface";
+import { ProcedureData } from "@/types/procedureInterface";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns = (): ColumnDef<ProceduresInterface>[] => [
+export const columns = (): ColumnDef<ProcedureData>[] => [
   {
-    accessorKey: "nameId",
+    accessorKey: "nameType",
     header: "Name",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("nameId")}</div>
+      <div className="cursor-pointer">{row.original.nameType.name}</div>
     ),
   },
   {

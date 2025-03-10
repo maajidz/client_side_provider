@@ -57,6 +57,7 @@ function LabOrders() {
         const limit = 4;
         if (providerDetails) {
           const response = await getLabOrdersData({
+            orderedBy: providerDetails.providerId,
             providerId: providerDetails.providerId,
             limit: limit,
             page: page,

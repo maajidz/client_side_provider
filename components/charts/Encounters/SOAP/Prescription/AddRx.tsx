@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -201,6 +202,7 @@ const AddRx = ({
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         {showPrescriptionForm ? (
           <Form {...form}>

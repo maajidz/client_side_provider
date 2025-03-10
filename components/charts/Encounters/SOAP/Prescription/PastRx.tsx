@@ -5,6 +5,7 @@ import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -55,6 +56,7 @@ const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         {/* <ScrollArea className="h-[30rem] min-h-30 p-3"> */}
           <div className="flex flex-col p-2 gap-4">

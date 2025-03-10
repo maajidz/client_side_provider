@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -100,18 +101,26 @@ function EditAllergy({
           ? selectedAllergy.reactions
           : [],
       });
-      
     }
   }, [selectedAllergy, form]);
 
-  const onSubmit = async (formData: UpdateAllergenInterface) => {
+  const onSubmit = async (
+    formData: z.infer<typeof updateAllergyFormSchema>
+  ) => {
     setLoading(true);
-
+    const requestData: UpdateAllergenInterface = {
+      Allergen: formData.Allergen,
+      observedOn: formData.observedOn,
+      serverity: formData.serverity,
+      status: formData.status,
+      typeId: formData.type,
+      reactions: formData.reactions,
+    };
     try {
       if (!selectedAllergy) return;
       await updateAllergiesData({
         id: selectedAllergy?.id,
-        requestData: formData,
+        requestData: requestData,
       });
 
       showToast({
@@ -143,6 +152,7 @@ function EditAllergy({
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>Edit Allergy</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form className="space-y-2" onSubmit={form.handleSubmit(onSubmit)}>

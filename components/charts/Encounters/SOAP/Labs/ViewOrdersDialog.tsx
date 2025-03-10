@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -10,8 +11,11 @@ import {
 import { LabOrdersDataInterface } from "@/types/chartsInterface";
 import { getLabOrdersData } from "@/services/chartsServices";
 import LoadingButton from "@/components/LoadingButton";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const ViewOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
+  const providerDetails = useSelector((state: RootState) => state.login);
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<LabOrdersDataInterface>();
@@ -19,7 +23,10 @@ const ViewOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   const fetchAndSetResponse = async () => {
     setLoading(true);
     try {
-      const data = await getLabOrdersData({ userDetailsId: userDetailsId });
+      const data = await getLabOrdersData({
+        userDetailsId: userDetailsId,
+        orderedBy: providerDetails.providerId,
+      });
       if (data) {
         setResponse(data);
       }
@@ -54,6 +61,7 @@ const ViewOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>View Orders</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <table>
           <tr className="border font-semibold text-lg text-[#84012A]">

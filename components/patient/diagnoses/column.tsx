@@ -46,8 +46,8 @@ const handleDiagnosisStatus = async (
 ) => {
   setLoading(true);
   const requestData: UpdateDiagnosesRequestBody = {
-    diagnosis_name: diagnosisData?.diagnosis_name ?? "",
-    ICD_Code: diagnosisData?.ICD_Code,
+    diagnosis_Id: diagnosisData?.diagnosis_Id ?? "",
+    // ICD_Code: diagnosisData?.ICD_Code,
     notes: diagnosisData.notes,
     status: status,
     fromDate: diagnosisData.fromDate,
@@ -85,17 +85,13 @@ export const columns = ({
   fetchDiagnoses: () => void;
 }): ColumnDef<DiagnosesInterface>[] => [
   {
-    accessorKey: "diagnosis_name",
+    accessorKey: "diagnosisType",
     header: "Diagnosis Name",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("diagnosis_name")}</div>
-    ),
-  },
-  {
-    accessorKey: "ICD_Code",
-    header: "ICD Code",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("ICD_Code")}</div>
+      <div className="cursor-pointer flex flex-row gap-3">
+        <div>{row.original.diagnosisType.name}</div>
+        <div>{row.original.diagnosisType.icdCode}</div>
+      </div>
     ),
   },
   {
@@ -133,7 +129,7 @@ export const columns = ({
       <div className="cursor-pointer">
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <EllipsisVertical size={16} className="text-gray-500"/>
+            <EllipsisVertical size={16} className="text-gray-500" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />

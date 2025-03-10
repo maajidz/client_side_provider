@@ -3,7 +3,7 @@ import LoadingButton from "@/components/LoadingButton";
 import { useToast } from "@/hooks/use-toast";
 import { getSupplements } from "@/services/chartDetailsServices";
 import { RootState } from "@/store/store";
-import { SupplementInterface } from "@/types/supplementsInterface";
+import { SupplementInterfaceResponse } from "@/types/supplementsInterface";
 import { showToast } from "@/utils/utils";
 import { columns } from "./columns";
 import React, { useCallback, useEffect, useState } from "react";
@@ -16,7 +16,7 @@ const ViewPatientSupplements = ({
   userDetailsId: string;
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
-  const [resultList, setResultList] = useState<SupplementInterface[]>();
+  const [resultList, setResultList] = useState<SupplementInterfaceResponse[]>();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -24,7 +24,7 @@ const ViewPatientSupplements = ({
     create: false,
     edit: false,
   });
-  const [editData, setEditData] = useState<SupplementInterface | null>(null);
+  const [editData, setEditData] = useState<SupplementInterfaceResponse | null>(null);
   const { toast } = useToast();
 
   const fetchSupplementsList = useCallback(async () => {

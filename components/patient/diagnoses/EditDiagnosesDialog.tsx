@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -87,8 +88,8 @@ export default function EditDiagnosisDialog({
     setLoading(true);
 
     const requestData: UpdateDiagnosesRequestBody = {
-      diagnosis_name: diagnosisData?.diagnosis_name ?? "",
-      ICD_Code: diagnosisData?.ICD_Code,
+      diagnosis_Id: diagnosisData?.diagnosis_Id ?? "",
+      // ICD_Code: diagnosisData?.ICD_Code,
       notes: values.notes,
       status: values.status,
       fromDate: values.fromDate,
@@ -144,26 +145,21 @@ export default function EditDiagnosisDialog({
       <DialogContent className="max-h-[90dvh] h-auto">
         <DialogHeader>
           <DialogTitle>Edit Diagnosis</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[30rem] h-auto flex gap-6 flex-col">
           <div className="flex flex-col gap-6">
           <table className="w-full border rounded-md">
             <thead>
               <tr className="border-b bg-[#eeeeee] ">
-                <th className="px-3 py-2 text-left">Code Type</th>
                 <th className="px-3 py-2 text-left">Code</th>
                 <th className="px-3 py-2 text-left">Name</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b">
-                <td className="px-3 py-2">{diagnosisData?.ICD_Code ?? ""}</td>
-              </tr>
               <tr>
-                <td className="px-3 py-2"></td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2"></td>
+                <td className="px-3 py-2">{diagnosisData?.diagnosisType.icdCode}</td>
+                <td className="px-3 py-2">{diagnosisData?.diagnosisType.name}</td>
               </tr>
             </tbody>
           </table>

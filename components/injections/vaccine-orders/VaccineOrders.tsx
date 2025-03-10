@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle
@@ -195,6 +196,7 @@ function VaccineOrders({
       <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>
           <DialogTitle>Add Vaccine Order</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -156,6 +157,7 @@ const FollowUpDialog = ({
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>Add Follow Up</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="overflow-x-auto p-2">
           <div className="flex flex-col gap-5">

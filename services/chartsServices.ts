@@ -29,6 +29,7 @@ import {
   ImageOrdersResponseInterface,
   DiagnosesResponseInterface,
   PastDiagnosesInterface,
+  DiagnosesTypeDataInterface,
 } from "@/types/chartsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";
 
@@ -242,6 +243,30 @@ export const fetchDiagnosesForUser = async ({
   });
 
   const data: DiagnosesResponseInterface = await response.data;
+  return data;
+};
+
+export const fetchDiagnosesType = async ({
+  page,
+  limit,
+  search,
+}: {
+  page?: number;
+  limit?: number;
+  search: string;
+}) => {
+  const queryParams = new URLSearchParams();
+  if (search) queryParams.append("search", search);
+  if (page) queryParams.append("page", page.toString());
+  if (limit) queryParams.append("limit", limit.toString());
+
+  const response = await ApiFetch({
+    method: "get",
+    url: `/provider/diagnosis/type/all?${queryParams}`,
+  });
+  console.log(response.data);
+  const data: DiagnosesTypeDataInterface = await response.data;
+  console.log(data);
   return data;
 };
 
@@ -489,15 +514,18 @@ export const getLabOrdersData = async ({
   status = "",
   page = 1,
   limit = 10,
+  orderedBy = "",
 }: {
   userDetailsId?: string;
   providerId?: string;
   page?: number;
   status?: string;
   limit?: number;
+  orderedBy: string;
 }) => {
   const queryParams = new URLSearchParams();
   if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
+  if (orderedBy) queryParams.append("orderedBy", orderedBy);
   if (providerId) queryParams.append("providerId", providerId);
   if (status) queryParams.append("status", status);
   if (page) queryParams.append("page", page.toString());

@@ -1,16 +1,17 @@
 export interface InsuranceResponse {
-  id: string
-  type: string
-  companyName: string
-  groupNameOrNumber: string
-  subscriberNumber: string
-  idNumber: string
-  frontDocumentImage: string
-  backDocumentImage: string
-  userDetailsID: string
-  status: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  type: string;
+  companyName: string;
+  groupNameOrNumber: string;
+  subscriberNumber: string;
+  idNumber: string;
+  frontDocumentImage: string;
+  backDocumentImage: string;
+  userDetailsID: string;
+  status: string;
+  notes: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateInsuranceInterface {
@@ -21,14 +22,15 @@ export interface CreateInsuranceInterface {
   idNumber: string;
   status: string;
   userDetailsID: string;
+  notes: string
 }
 
 export type UpdateInsuranceType = CreateInsuranceInterface;
 
-export type IsInsuredType =  {
+export type IsInsuredType = {
   isInsured: string;
-}
+};
 
 export type InsuranceType = {
   type: string;
-}
+};

@@ -6,6 +6,7 @@ import React from 'react'
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -26,6 +27,7 @@ const TabMenu = ({ patientDetails, onClose }: { patientDetails: UserEncounterDat
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Preview SOAP Note</DialogTitle>
+                        <DialogDescription></DialogDescription>
                     </DialogHeader>
                     <div className="flex flex-col gap-4 py-4">
                         <div className='flex flex-col gap-2'>

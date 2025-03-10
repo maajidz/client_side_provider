@@ -15,21 +15,21 @@ export interface UpdateProceduresInterface {
   notes: string;
   userDetailsId: string;
   id: string;
+  nameType: NameType;
 }
 
 export interface ProceduresTypesResponseInterface {
-  data: ProceduresTypesInterface[]
-  total: number
+  data: ProceduresTypesInterface[];
+  total: number;
 }
 
 export interface ProceduresTypesInterface {
-  id: string
-  name: string
-  description: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
 }
-
 
 export interface ProcedureResponse {
   data: ProcedureData[];
@@ -38,7 +38,22 @@ export interface ProcedureResponse {
   limit: string;
 }
 
-export interface ProcedureData extends UpdateProceduresInterface {
+export interface ProcedureData {
+  id: string;
+  type: string;
+  nameId: string;
+  fromDate: string;
+  toDate: string;
+  notes: string;
+  createdAt: string;
+  updatedAt: string;
+  nameType: NameType;
+}
+
+export interface NameType {
+  id: string;
+  name: string;
+  description: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -38,11 +39,11 @@ const AddDx = ({
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
   const [rows, setRows] = useState([
-    { diagnosis_name: "", ICD_Code: "", notes: "" },
+    { diagnosis_Id: "", ICD_Code: "", notes: "" },
   ]);
 
   const handleAddRow = () => {
-    setRows([...rows, { diagnosis_name: "", ICD_Code: "", notes: "" }]);
+    setRows([...rows, { diagnosis_Id: "", ICD_Code: "", notes: "" }]);
   };
 
   const handleDeleteRow = (index: number) => {
@@ -92,6 +93,8 @@ const AddDx = ({
             providerId: providerDetails.providerId,
             diagnoses: rows.map((row) => ({
               ...row,
+              diagnosis_Id: row.diagnosis_Id,
+              notes: row.notes,
               chartId,
             })),
           };
@@ -104,7 +107,7 @@ const AddDx = ({
       showToast({ toast, type: "error", message: "Error while saving" });
       console.log("Error", e);
     } finally {
-      setRows([{ diagnosis_name: "", ICD_Code: "", notes: "" }]);
+      setRows([{ diagnosis_Id: "", ICD_Code: "", notes: "" }]);
       setIsDialogOpen(false);
     }
   };
@@ -117,6 +120,7 @@ const AddDx = ({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Add Diagnoses</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="flex gap-3">
@@ -130,7 +134,7 @@ const AddDx = ({
                 <Input
                   type="text"
                   placeholder="Enter Diagnosis"
-                  value={row.diagnosis_name}
+                  value={row.diagnosis_Id}
                   onChange={(e) =>
                     handleChange(index, "diagnosis_name", e.target.value)
                   }
@@ -170,7 +174,7 @@ const AddDx = ({
             </Button>
             <SubmitButton
               label="Save Changes"
-              disabled={rows[0].diagnosis_name == "" ? true : false}
+              disabled={rows[0].diagnosis_Id == "" ? true : false}
               onClick={handleSubmit}
             />
           </div>

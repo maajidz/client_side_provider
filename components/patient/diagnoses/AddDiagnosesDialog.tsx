@@ -1,12 +1,14 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -26,13 +28,15 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { addDiagnosesSchema } from "@/schema/diagnosesSchema";
-import { createDiagnoses } from "@/services/chartsServices";
+import { createDiagnoses, fetchDiagnosesType } from "@/services/chartsServices";
 import { RootState } from "@/store/store";
-import { CreateDiagnosesRequestBody } from "@/types/chartsInterface";
+import {
+  CreateDiagnosesRequestBody,
+  DiagnosesTypeData,
+} from "@/types/chartsInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash2Icon } from "lucide-react";
-import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
@@ -52,6 +56,11 @@ export default function AddDiagnosesDialog({
 }: AddDiagnosesDialogProps) {
   // Provider Details
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [diagnosesTypeData, setDiagnosesTypeData] = useState<
+    DiagnosesTypeData[]
+  >([]);
+  const [isListVisible, setIsListVisible] = useState<boolean>(false);
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -65,7 +74,7 @@ export default function AddDiagnosesDialog({
     defaultValues: {
       diagnoses: [
         {
-          diagnosis_name: "",
+          diagnosis_Id: "",
           ICD_Code: "1",
           fromDate: new Date().toISOString().split("T")[0],
           toDate: new Date().toISOString().split("T")[0],
@@ -81,6 +90,42 @@ export default function AddDiagnosesDialog({
     name: "diagnoses",
   });
 
+  const handleSearch = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchDiagnosesType({
+        search: searchTerm,
+        page: 1,
+        limit: 10,
+      });
+
+      if (response) {
+        setDiagnosesTypeData(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching diagnoses data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim()) {
+        handleSearch();
+      } else {
+        setDiagnosesTypeData([]);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, handleSearch]);
+
+  const filteredDiagnoses = diagnosesTypeData.filter(
+    (diagnoses) =>
+      diagnoses.diagnosis_name.toLocaleLowerCase().includes(searchTerm) ||
+      diagnoses.ICD_Code.includes(searchTerm)
+  );
+
   // POST Diagnosis Data
   const onSubmit = async (values: z.infer<typeof addDiagnosesSchema>) => {
     setLoading(true);
@@ -89,7 +134,11 @@ export default function AddDiagnosesDialog({
       userDetailsId,
       providerId: providerDetails.providerId,
       diagnoses: values.diagnoses.map((diagnosis) => ({
-        ...diagnosis,
+        diagnosis_Id: diagnosis.diagnosis_Id,
+        status: diagnosis.status,
+        fromDate: diagnosis.fromDate,
+        toDate: diagnosis.toDate,
+        notes: diagnosis.notes,
         chartId,
       })),
     };
@@ -128,11 +177,10 @@ export default function AddDiagnosesDialog({
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>Add Diagnoses</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <ScrollArea className="max-h-[30rem] h-auto">
               <table className=" table-auto">
                 <thead>
@@ -145,20 +193,53 @@ export default function AddDiagnosesDialog({
                     <th className="indent-2">Notes</th>
                   </tr>
                 </thead>
-                <tbody  >
+                <tbody>
                   {fields.map((field, index) => (
-                    <tr key={field.id}  >
-                      <td  >
+                    <tr key={field.id}>
+                      <td>
                         <FormField
                           control={form.control}
-                          name={`diagnoses.${index}.diagnosis_name`}
+                          name={`diagnoses.${index}.diagnosis_Id`}
                           render={({ field }) => (
                             <FormItem>
-                              <Input
-                                {...field}
-                                placeholder="Search by name or code"
-                                value={field.value}
-                              />
+                              <div className="relative">
+                                <Input
+                                  value={searchTerm}
+                                  placeholder="Search by name or code"
+                                  onChange={(e) => {
+                                    setSearchTerm(e.target.value);
+                                    setIsListVisible(true);
+                                  }}
+                                />
+                                {searchTerm && isListVisible && (
+                                  <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
+                                    {filteredDiagnoses.length > 0 ? (
+                                      filteredDiagnoses.map((diagnoses) => (
+                                        <div
+                                          key={diagnoses.id}
+                                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                          onClick={() => {
+                                            field.onChange(
+                                              diagnoses.id
+                                            );
+                                            setSearchTerm(
+                                              diagnoses.diagnosis_name
+                                            );
+                                            setIsListVisible(false);
+                                            form.setValue(`diagnoses.${index}.ICD_Code`, diagnoses.ICD_Code)
+                                          }}
+                                        >
+                                          {diagnoses.diagnosis_name}
+                                        </div>
+                                      ))
+                                    ) : (
+                                      <div className="px-4 py-2 text-gray-500">
+                                        No results found
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -279,7 +360,7 @@ export default function AddDiagnosesDialog({
                   <GhostButton
                     onClick={() =>
                       append({
-                        diagnosis_name: "",
+                        diagnosis_Id: "",
                         ICD_Code: "1",
                         fromDate: "",
                         toDate: "",

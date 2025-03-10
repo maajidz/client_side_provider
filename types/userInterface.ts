@@ -1,14 +1,18 @@
 import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
 import { AllergenResponseInterfae } from "./allergyInterface";
-import { DiagnosesInterface, ImageOrdersData, TransferResponseData, UserChart } from "./chartsInterface";
+import {
+  DiagnosesInterface,
+  ImageOrdersData,
+  TransferResponseData,
+  UserChart,
+} from "./chartsInterface";
 import { VitalsInterface } from "./vitalsInterface";
 import { Family } from "./familyHistoryInterface";
 import { SocialHistoryInterface } from "./socialHistoryInterface";
 import { Device } from "./implantedDevices";
 import { EncounterResponse } from "./encounterInterface";
-import { MedicationResultInterface } from "./medicationInterface";
 import { RecallsData } from "./recallsInterface";
-import { SupplementInterface } from "./supplementsInterface";
+import { SupplementInterfaceResponse } from "./supplementsInterface";
 import { InjectionsInterface } from "./injectionsInterface";
 import { UpdateProceduresInterface } from "./procedureInterface";
 
@@ -70,7 +74,7 @@ export interface PatientDashboardInterface {
   location: string;
   wallet: any;
   encounter: Encounter;
-  diagnoses: DiagnosesInterface
+  diagnoses: DiagnosesInterface;
   medicationPrescriptions: MedicationPrescription;
   medicalHistory: PastMedicalHistoryInterface;
   familyHistory: Family;
@@ -83,7 +87,7 @@ export interface PatientDashboardInterface {
   imageResults: ImageResult[];
   procedures: UpdateProceduresInterface;
   injections_order: InjectionsInterface;
-  supplements: SupplementInterface;
+  supplements: SupplementInterfaceResponse;
   transfers: TransferResponseData;
   recalls: RecallsData;
   imageOrders: ImageOrdersData;

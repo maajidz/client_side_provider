@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { deleteSupplement } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
-import { SupplementInterface } from "@/types/supplementsInterface";
+import { SupplementInterfaceResponse } from "@/types/supplementsInterface";
 import { showToast } from "@/utils/utils";
 import EditSupplement from "./EditSupplement";
 import { Trash2Icon } from "lucide-react";
@@ -14,7 +14,7 @@ interface SupplementListProps {
   error: string;
   isLoading: boolean;
   patientDetails: UserEncounterData;
-  supplementData: SupplementInterface[] | undefined;
+  supplementData: SupplementInterfaceResponse[] | undefined;
   fetchSupplements: () => Promise<void>;
 }
 

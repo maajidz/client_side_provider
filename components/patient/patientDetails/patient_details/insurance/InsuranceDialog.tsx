@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -107,6 +108,7 @@ function InsuranceDialog({
     formData.append("userDetailsID", userDetailsId);
     formData.append("images", formValues.frontDocumentImage);
     formData.append("images", formValues.backDocumentImage);
+    formData.append("notes", "")
 
     try {
       if (selectedInsurance) {
@@ -189,6 +191,7 @@ function InsuranceDialog({
               ? "Add Insurance Data"
               : "Update Insurance Data"}
           </DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[30rem] min-h-30">
           <div className="flex flex-col gap-6 rounded-lg">

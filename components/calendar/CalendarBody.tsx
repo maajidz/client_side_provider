@@ -4,11 +4,9 @@ import { Heading } from "@/components/ui/heading";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
-import { ProviderAvailability } from "@/types/calendarInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import React from "react";
-import { fetchProviderAvaialability } from "@/services/availabilityServices";
 import { PlusIcon } from "lucide-react";
 import CalendarComponent from "@/components/calendar/CalendarComponent";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,13 +15,6 @@ import { fetchProviderAppointments } from "@/services/providerAppointments";
 import { ProviderAppointmentsInterface } from "@/types/appointments";
 import { DateRange } from "react-day-picker";
 import { addDays, format } from "date-fns";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
 import {
   Popover,
   PopoverContent,
@@ -35,8 +26,6 @@ import DefaultButton from "../custom_buttons/buttons/DefaultButton";
 
 export const CalendarBody = () => {
   const [loading, setLoading] = useState(false);
-  const [providerAvailability, setProviderAvailability] =
-    useState<ProviderAvailability | null>(null);
   const [providerAppointment, setProviderAppointment] =
     useState<ProviderAppointmentsInterface | null>(null);
   const router = useRouter();
@@ -50,31 +39,6 @@ export const CalendarBody = () => {
   const handleClick = () => {
     router.push("/dashboard//provider/calendar/availability");
   };
-
-  const fetchAvailability = useCallback(async () => {
-    if (providerID) {
-      setLoading(true);
-      try {
-        const fetchedAvailabilties = await fetchProviderAvaialability({
-          providerID,
-          startDate: "",
-          endDate: "",
-          limit: 7,
-          page: 1,
-        });
-
-        console.log("Fetched Availabilties:", fetchedAvailabilties);
-
-        if (fetchedAvailabilties) {
-          setProviderAvailability(fetchedAvailabilties);
-        }
-      } catch (error) {
-        console.error("Error fetching availability:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-  }, [providerID]);
 
   const fetchAppointments = useCallback(async () => {
     if (providerID && date?.from && date?.to) {
@@ -90,8 +54,6 @@ export const CalendarBody = () => {
           page: 1,
         });
 
-        console.log("Fetched Appointments:", fetchedAppointments);
-
         if (fetchedAppointments) {
           setProviderAppointment(fetchedAppointments);
         }
@@ -104,9 +66,8 @@ export const CalendarBody = () => {
   }, [providerID, date?.from, date?.to]);
 
   useEffect(() => {
-    fetchAvailability();
     fetchAppointments();
-  }, [fetchAvailability, fetchAppointments]);
+  }, [fetchAppointments]);
 
   if (loading) {
     return (
@@ -182,15 +143,18 @@ export const CalendarBody = () => {
               </Popover>
             </div>
             {providerAppointment && (
-              <ListViewBody appointments={providerAppointment.data} />
+              <ListViewBody
+                appointments={providerAppointment.data}
+                onFetch={fetchAppointments}
+              />
             )}
           </div>
         </TabsContent>
         <TabsContent value="calendarView">
-          {providerAvailability && (
+          {providerAppointment && (
             <div>
-              {!loading && providerAvailability && (
-                <CalendarComponent appointments={providerAvailability?.data} />
+              {!loading && providerAppointment && (
+                <CalendarComponent appointments={providerAppointment?.data} />
               )}
             </div>
           )}

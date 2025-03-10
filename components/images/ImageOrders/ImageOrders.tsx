@@ -25,18 +25,34 @@ import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { useRouter } from "next/navigation";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
+import { UserData } from "@/types/userInterface";
+import { fetchUserDataResponse } from "@/services/userServices";
 
 function ImageOrders() {
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [providerListData, setProviderListData] =
+    useState<FetchProviderListInterface>({
+      data: [],
+      total: 0,
+    });
   const [orderList, setOrderList] = useState<ImageOrdersResponseInterface>();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  // Patient State
+  const [patientData, setPatientData] = useState<UserData[]>([]);
+
+  // Search State
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+
   const router = useRouter();
-  
+
   const form = useForm<z.infer<typeof filterLabOrdersSchema>>({
     resolver: zodResolver(filterLabOrdersSchema),
     defaultValues: {
@@ -46,9 +62,40 @@ function ImageOrders() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof filterLabOrdersSchema>) {
-    console.log(values);
-  }
+  const filters = form.watch();
+
+  // GET Providers List
+  const fetchProvidersList = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await fetchProviderListDetails({ page: 1, limit: 10 });
+      if (data) {
+        setProviderListData(() => ({
+          data: data.data,
+          total: data.total,
+        }));
+      }
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // GET Patients' Data
+  const fetchPatientData = useCallback(async (currentPage: number) => {
+    setLoading(true);
+    try {
+      const response = await fetchUserDataResponse({ pageNo: currentPage });
+      if (response) {
+        setPatientData(response.data);
+      }
+    } catch (err) {
+      console.error("Error fetching user data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const fetchImageOrdersList = useCallback(
     async (page: number) => {
@@ -57,7 +104,8 @@ function ImageOrders() {
         const limit = 4;
         if (providerDetails) {
           const response = await getImagesOrdersData({
-            providerId: providerDetails.providerId,
+            providerId: filters.orderedby === "all" ? "" : filters.orderedby,
+            userDetailsId: filters.name,
             limit: limit,
             page: page,
           });
@@ -73,12 +121,20 @@ function ImageOrders() {
         setLoading(false);
       }
     },
-    [providerDetails]
+    [providerDetails, filters.orderedby, filters.name]
   );
 
   useEffect(() => {
     fetchImageOrdersList(page);
-  }, [page, fetchImageOrdersList]);
+    fetchPatientData(page);
+    fetchProvidersList();
+  }, [page, fetchImageOrdersList, fetchPatientData, fetchProvidersList]);
+
+  const filteredPatients = patientData.filter((patient) =>
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   if (loading) {
     return <LoadingButton />;
@@ -87,10 +143,7 @@ function ImageOrders() {
   return (
     <div className="space-y-4">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
-        >
+        <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           <FormField
             control={form.control}
             name="orderedby"
@@ -103,10 +156,20 @@ function ImageOrders() {
                     defaultValue={field.value}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select Reviewer" />
+                      <SelectValue placeholder="Select Ordered By" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="reviewer1">Reviewer</SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      {providerListData.data.map((providerList) => {
+                        const providerId =
+                          providerList.providerDetails?.id ?? providerList.id;
+                        return (
+                          <SelectItem
+                            key={providerList.id}
+                            value={providerId}
+                          >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -147,16 +210,51 @@ function ImageOrders() {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Search Patient" {...field} />
+                  <div className="relative">
+                    <Input
+                      placeholder="Search Patient "
+                      value={searchTerm}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setSearchTerm(value);
+                        setVisibleSearchList(true);
+
+                        if (!value) {
+                          field.onChange("");
+                        }
+                      }}
+                    />
+                    {searchTerm && visibleSearchList && (
+                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                        {filteredPatients.length > 0 ? (
+                          filteredPatients.map((patient) => (
+                            <div
+                              key={patient.id}
+                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                              onClick={() => {
+                                field.onChange(patient.id);
+                                setSearchTerm(
+                                  `${patient.user.firstName} ${patient.user.lastName}`
+                                );
+                                setVisibleSearchList(false);
+                              }}
+                            >
+                              {`${patient.user.firstName} ${patient.user.lastName}`}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="px-4 py-2 text-gray-500">
+                            No results found
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          <div className="flex items-end">
-            <SubmitButton label="Search" />
-          </div>
         </form>
       </Form>
       {orderList?.data && (

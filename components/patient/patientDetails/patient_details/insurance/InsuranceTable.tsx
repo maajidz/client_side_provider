@@ -34,7 +34,7 @@ function InsuranceTable({
   insuranceData,
   setIsDialogOpen,
   setSelectedInsurance,
-  onFetchInsuranceData
+  onFetchInsuranceData,
 }: InsuranceTableProps) {
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -101,14 +101,18 @@ function InsuranceTable({
               <TableCell>{insuranceData.subscriberNumber}</TableCell>
               <TableCell>{insuranceData.idNumber}</TableCell>
               <TableCell>
-                <Badge variant={`${insuranceData.status === "active" ? "success" : "warning"}`}>
-                {insuranceData.status}
+                <Badge
+                  variant={`${
+                    insuranceData.status === "active" ? "success" : "warning"
+                  }`}
+                >
+                  {insuranceData.status}
                 </Badge>
               </TableCell>
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger>
-                    <EllipsisVertical size={16} className="text-gray-500"/>
+                    <EllipsisVertical size={16} className="text-gray-500" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem
@@ -155,7 +159,11 @@ function InsuranceTable({
       {/* Notes Dialog */}
       <AddOrViewNotes
         isOpen={isOpenNotesDialog}
-        onSetIsOpenNotesDialog={setIsOpenNotesDialog}
+        onClose={() => {
+          setIsOpenNotesDialog(false);
+          onFetchInsuranceData();
+        }}
+        selectedInsurance={insuranceData}
       />
     </>
   );

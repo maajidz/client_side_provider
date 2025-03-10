@@ -29,7 +29,7 @@ import {
   TaskTypeList,
 } from "@/types/tasksInterface";
 import { filterTasksSchema } from "@/schema/tasksSchema";
-import { priority, status } from "@/constants/data";
+import { priority, taskStatus } from "@/constants/data";
 import TasksDialog from "./TasksDialog";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -38,12 +38,14 @@ import { fetchUserDataResponse } from "@/services/userServices";
 import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { DefaultDataTable } from "../custom_buttons/table/DefaultDataTable";
+import TableShimmer from "../custom_buttons/table/TableShimmer";
 
 const ViewTasks = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [taskTypes, setTaskTypes] = useState<TaskTypeList[]>([]);
   const [resultList, setResultList] = useState<TasksResponseInterface>();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [patientLoading, setPatientLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const limit = 8;
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -52,7 +54,7 @@ const ViewTasks = () => {
     null
   );
   const [patients, setPatients] = useState<UserData[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
   const [filters, setFilters] = useState({
     status: "",
@@ -140,7 +142,7 @@ const ViewTasks = () => {
 
   const fetchPatientList = useCallback(async () => {
     if (!searchTerm) return;
-    setLoading(true);
+    setPatientLoading(true);
     try {
       const response = await fetchUserDataResponse({
         firstName: searchTerm,
@@ -153,7 +155,7 @@ const ViewTasks = () => {
       console.log("Error", e);
       showToast({ toast, type: "error", message: "Failed to fetch patient" });
     } finally {
-      setLoading(false);
+      setPatientLoading(false);
     }
   }, [searchTerm, toast]);
 
@@ -177,10 +179,6 @@ const ViewTasks = () => {
     setEditData(null);
     fetchTasksList(page);
   };
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <>
@@ -234,8 +232,11 @@ const ViewTasks = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
-                        {status.map((status) => (
-                          <SelectItem key={status.value} value={status.value.toUpperCase()}>
+                        {taskStatus.map((status) => (
+                          <SelectItem
+                            key={status.value}
+                            value={status.value.toUpperCase()}
+                          >
                             {status.label}
                           </SelectItem>
                         ))}
@@ -288,9 +289,11 @@ const ViewTasks = () => {
                           setSearchTerm(e.target.value);
                           setVisibleSearchList(true);
                         }}
+                        className="w-64"
                       />
                       {searchTerm && visibleSearchList && (
-                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
+                          {patientLoading && <LoadingButton />}
                           {filteredPatients.length > 0 ? (
                             filteredPatients.map((patient) => (
                               <div
@@ -304,7 +307,7 @@ const ViewTasks = () => {
                                   setVisibleSearchList(false);
                                 }}
                               >
-                                {`${patient.user.firstName} ${patient.user.lastName} ${patient.id}`}
+                                {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
                               </div>
                             ))
                           ) : (
@@ -328,11 +331,11 @@ const ViewTasks = () => {
 
         {/* Results Table */}
         <div className="space-y-3">
+          {loading && <TableShimmer />}
           {resultList?.data && (
             <DefaultDataTable
               title="Tasks"
               onAddClick={() => {
-                // setEditData(null);
                 setIsDialogOpen(true);
               }}
               columns={columns({

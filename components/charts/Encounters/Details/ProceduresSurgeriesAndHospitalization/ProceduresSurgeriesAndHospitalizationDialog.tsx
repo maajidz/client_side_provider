@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -58,6 +59,9 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isListVisible, setIsListVisible] = useState<boolean>(false);
+  const [filteredProcedures, setFilteredProcedures] = useState<
+    ProceduresTypesInterface[]
+  >([]);
   const { toast } = useToast();
 
   const fetchAllProcedures = useCallback(async () => {
@@ -110,8 +114,11 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
         toDate: procedureData?.toDate || new Date().toISOString().split("T")[0],
         notes: procedureData?.notes || "",
       });
-      if(procedureData.nameId){
-        setProcedureId(procedureData.nameId)
+      if (procedureData.nameId) {
+        setProcedureId(procedureData.nameId);
+      }
+      if(procedureData.nameType.name){
+        setSearchTerm(procedureData.nameType.name);
       }
     }
   }, [procedureData, form]);
@@ -172,9 +179,13 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
     }
   };
 
-  const filteredProcedures = procedureListData.filter((procedure) =>
-    procedure.name.toLocaleLowerCase().includes(searchTerm)
-  );
+  useEffect(() => {
+    setFilteredProcedures(
+      procedureListData.filter((procedure) =>
+        procedure.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+      )
+    );
+  }, [searchTerm, procedureListData]);
 
   if (loading) {
     return <LoadingButton />;
@@ -187,9 +198,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
           <DialogTitle>
             {procedureData ? "Update Procedure" : "Add Procedure"}
           </DialogTitle>
-          {/* <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription> */}
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -228,8 +237,8 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                 control={form.control}
                 name="name"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="w-fit">Name</FormLabel>
+                  <FormItem className="w-full">
+                    <FormLabel className="">Name</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
@@ -240,6 +249,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                             setSearchTerm(event.target.value);
                             setIsListVisible(true);
                           }}
+                          className="w-full"
                         />
                         {searchTerm && isListVisible && (
                           <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
