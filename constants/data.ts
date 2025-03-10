@@ -289,6 +289,7 @@ export const status = [
 
 export const taskStatus = [
   { value: "PENDING", label: "Pending" },
+  { value: "IN_PROGRESS", label: "In Progress" },
   { value: "Completed", label: "Completed" },
 ]; 
 
