@@ -2,25 +2,26 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { EncounterResponse } from '@/types/encounterInterface';
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 
 export const columns = (
   handleRowClick: (id: string) => void
 ): ColumnDef<EncounterResponse | undefined>[] => [
-  {
-    accessorKey: "userDetails",
-    header: "User Details",
-    cell: ({ row }) => {
-      const userDetails = row.original?.userDetails;
-      return userDetails ? (
-        <div
-          className="cursor-pointer"
-          onClick={() => handleRowClick(row.original!.id)}
-        >
-          {userDetails.patientId}
-        </div>
-      ) : null;
-    },
-  },
+  // {
+  //   accessorKey: "userDetails",
+  //   header: "User Details",
+  //   cell: ({ row }) => {
+  //     const userDetails = row.original?.userDetails;
+  //     return userDetails ? (
+  //       <div
+  //         className="cursor-pointer"
+  //         onClick={() => handleRowClick(row.original!.id)}
+  //       >
+  //         {userDetails.patientId}
+  //       </div>
+  //     ) : null;
+  //   },
+  // },
   {
     accessorKey: "visit_type",
     header: "Visit type",
@@ -69,7 +70,7 @@ export const columns = (
   },
   {
     accessorKey: "createdAt",
-    header: "Data",
+    header: "Date",
     cell: ({ row }) => {
       const createdAt = row.original?.createdAt;
       return createdAt ? (
@@ -84,15 +85,14 @@ export const columns = (
   },
   {
     accessorKey: "id",
-    header: "Id",
+    header: "",
     cell: ({ row }) => {
       const id = row.original?.id;
       return id ? (
         <Button
           variant={"link"}
-          className="text-blue-600 underline"
           onClick={() => handleRowClick(id)}
-        >
+        ><Icon name="open_in_new" size={16}/>
           Open Encounter
         </Button>
       ) : null;

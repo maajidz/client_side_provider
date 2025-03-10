@@ -2,14 +2,29 @@
 import { Badge } from "@/components/ui/badge";
 import { LabOrdersData } from "@/types/chartsInterface";
 import { ColumnDef } from "@tanstack/react-table";
+import { Icon } from "@/components/ui/icon";
 
 export const columns = (): ColumnDef<LabOrdersData>[] => [
+  // {
+  //   accessorKey: "id",
+  //   header: "Lab ID",
+  //   cell: ({ row }) => (
+  //     <div className="cursor-pointer">{row.getValue("id")}</div>
+  //   ),
+  // },
   {
-    accessorKey: "id",
-    header: "Lab ID",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("id")}</div>
-    ),
+    accessorKey: "tests",
+    header: "Tests",
+    cell: ({ row }) => {
+      const tests = row.getValue("tests") as LabOrdersData["tests"];
+      return (
+        <div className="cursor-pointer">
+          {tests.map((test) => (
+            <span key={test.id}>{test.name}</span>
+          ))}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "orderedBy",
@@ -18,29 +33,22 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
       <div className="cursor-pointer">{row.getValue("orderedBy")}</div>
     ),
   },
- {
-    accessorKey: "date",
-    header: "Date",
-    cell: ({ getValue }) => {
-      const dob = getValue() as string;
-      const date = new Date(dob);
-      return (
-        <div className="cursor-pointer">
-          {date.toLocaleDateString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          })}
-        </div>
-      );
-    },
-  },
   {
     accessorKey: "isSigned",
-    header: "Is signed",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("isSigned") ? "Yes": "No"}</div>
-    ),
+    header: "Is Signed",
+    cell: ({ row }) => {
+      const isSigned = row.getValue("isSigned");
+      const badgeVariant = isSigned ? "success" : "warning";
+      const statusText = isSigned ? "Signed" : "Not Signed";
+      const iconName = isSigned ? "check" : "warning";
+
+      return (
+        <Badge variant={badgeVariant} className="min-w-fit">
+          <Icon name={iconName} size={16} className="mr-1" />
+          {statusText}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "labs",
@@ -56,20 +64,7 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
       );
     },
   },
-  {
-    accessorKey: "tests",
-    header: "Tests",
-    cell: ({ row }) => {
-      const tests = row.getValue("tests") as LabOrdersData["tests"];
-      return (
-        <div className="cursor-pointer">
-          {tests.map((test) => (
-            <span key={test.id}>{test.name}, </span>
-          ))}
-        </div>
-      );
-    },
-  },
+ 
   {
     accessorKey: "status",
     header: "Status",
@@ -84,6 +79,23 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
         >
           {row.original.status}
         </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: "date",
+    header: "Date",
+    cell: ({ getValue }) => {
+      const dob = getValue() as string;
+      const date = new Date(dob);
+      return (
+        <div className="cursor-pointer">
+          {date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          })}
+        </div>
       );
     },
   },

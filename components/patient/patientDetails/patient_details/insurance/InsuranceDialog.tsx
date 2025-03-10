@@ -182,7 +182,7 @@ function InsuranceDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleIsDialogOpen}>
-      <DialogContent className="flex flex-col gap-8 p-6 max-w-[880px] max-h-[828px] w-full rounded-2xl overflow-x-hidden">
+      <DialogContent className="flex flex-col gap-8 max-w-[880px] max-h-[828px] w-full rounded-2xl overflow-x-hidden">
         <DialogHeader>
           <DialogTitle>
             {!selectedInsurance
@@ -234,7 +234,7 @@ function InsuranceDialog({
                                 Company Name
                               </FormLabel>
                               <FormControl>
-                                <Input {...field} />
+                                <Input {...field} className="w-full" />
                               </FormControl>
                             </FormItem>
                           )}
@@ -249,7 +249,7 @@ function InsuranceDialog({
                                 Group Name/Number
                               </FormLabel>
                               <FormControl>
-                                <Input {...field} />
+                                <Input {...field} className="w-full" />
                               </FormControl>
                             </FormItem>
                           )}
@@ -264,7 +264,7 @@ function InsuranceDialog({
                                 Subscriber Number
                               </FormLabel>
                               <FormControl>
-                                <Input {...field} />
+                                <Input {...field} className="w-full"  />
                               </FormControl>
                             </FormItem>
                           )}
@@ -279,7 +279,7 @@ function InsuranceDialog({
                                 ID Number
                               </FormLabel>
                               <FormControl>
-                                <Input {...field} />
+                                <Input {...field} className="w-full" />
                               </FormControl>
                             </FormItem>
                           )}
@@ -443,7 +443,7 @@ function InsuranceDialog({
                 >
                   Cancel
                 </Button>
-                <Button onClick={toggleEdit} disabled={loading}>
+                <Button variant="default" onClick={toggleEdit} disabled={loading}>
                   Save
                 </Button>
               </>

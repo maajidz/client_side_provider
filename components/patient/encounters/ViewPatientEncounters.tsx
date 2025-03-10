@@ -101,9 +101,8 @@ const ViewPatientEncounters = ({
       defaultValue="lastvisit"
       value={activeTab}
       onValueChange={setActiveTab}
-      className="flex flex-row gap-5"
-    >
-      <TabsList className="flex flex-col h-full w-56 justify-start items-start p-3 gap-3 overflow-hidden">
+      className="flex flex-col gap-5">
+      <TabsList>
         {patientEncountersTab.map((tab) => (
           <CustomTabsTrigger value={tab.value} key={tab.value}>
             {tab.label}
@@ -112,7 +111,7 @@ const ViewPatientEncounters = ({
       </TabsList>
       {patientEncountersTab.map(({ value, component: Component }) => (
         <TabsContent value={value} key={value} className="w-full">
-          <ScrollArea className={cn("h-[calc(60dvh-52px)]")}>
+          <ScrollArea className={cn("min-h-0 flex-grow overflow-y-scroll")}>
             {value === "lastvisit"
               ? chartList &&
                 chartList.response &&

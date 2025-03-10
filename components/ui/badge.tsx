@@ -62,7 +62,7 @@ function Badge({ className, variant, icon: Icon, showIndicator, children, ...pro
   const effectiveVariant = showIndicator ? "indicator" : variant;
 
   return (
-    <span className={cn(badgeVariants({ variant: effectiveVariant }), "capitalize w-fit h-fit inline-flex flex-row items-center gap-1 rounded-2xl px-2 py-1 text-xs hover:cursor-pointer font-semibold", className)} {...props}>
+    <span className={cn(badgeVariants({ variant: effectiveVariant }), "capitalize w-fit h-fit inline-flex flex-row items-center gap-1 rounded-2xl px-2 py-1 text-xs hover:cursor-pointer font-semibold text-nowrap", className)} {...props}>
       {showIndicator && <span className={indicatorStyles}></span>}
       {Icon && <Icon className="mr-1 w-3 h-3" />}
       {children}

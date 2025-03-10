@@ -69,49 +69,64 @@ export const columns = ({
     },
   },
   {
-    accessorKey: "alert",
-    header: "Alert Details",
+    accessorKey: "alertType",
+    header: "Alert Name",
     cell: ({ row }) => {
-      const alertDetails = row.original.alert;
+      const alertName = row.original.alert.alertType.alertName;
       return (
-        <div className="flex flex-row justify-between cursor-pointer">
-          <div className="w-44"> {alertDetails?.alertType.alertName}</div>
-          <div className="w-60"> {alertDetails?.alertDescription}</div>
-          <div>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <EllipsisVertical size={16} className="text-gray-500" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    setEditData({
-                      alertName: row.original.alert.alertType.alertName,
-                      alertDescription: row.original.alert.alertDescription,
-                      alertId: row.original.alert.id,
-                    });
-                    setIsDialogOpen((prev) => ({ ...prev, edit: true }));
-                  }}
-                >
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    handleDeleteAlert(
-                      row.original.alert.id,
-                      setLoading,
-                      showToast,
-                      fetchAlerts
-                    );
-                    fetchAlerts();
-                  }}
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+        <div className="cursor-pointer">{alertName}</div>
+      );
+    },
+  },
+  {
+    accessorKey: "alertDescription",
+    header: "Alert Description",
+    cell: ({ row }) => {
+      const alertDescription = row.original.alert.alertDescription;
+      return (
+        <div className="cursor-pointer">{alertDescription}</div>
+      );
+    },
+  },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      return (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  setEditData({
+                    alertName: row.original.alert.alertType.alertName,
+                    alertDescription: row.original.alert.alertDescription,
+                    alertId: row.original.alert.id,
+                  });
+                  setIsDialogOpen((prev) => ({ ...prev, edit: true }));
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  handleDeleteAlert(
+                    row.original.alert.id,
+                    setLoading,
+                    showToast,
+                    fetchAlerts
+                  );
+                  fetchAlerts();
+                }}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       );
     },

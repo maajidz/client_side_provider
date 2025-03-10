@@ -1,16 +1,16 @@
 "use client";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import { Result } from "@/types/labResults";
 import { ColumnDef } from "@tanstack/react-table";
+import { Badge } from "@/components/ui/badge";
 
 export const columns = (): ColumnDef<Result>[] => [
-  {
-    accessorKey: "id",
-    header: "Result ID",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("id")}</div>
-    ),
-  },
+  // {
+  //   accessorKey: "id",
+  //   header: "Result ID",
+  //   cell: ({ row }) => (
+  //     <div className="cursor-pointer">{row.getValue("id")}</div>
+  //   ),
+  // },
   {
     accessorKey: "tests",
     header: "Tests",
@@ -19,8 +19,53 @@ export const columns = (): ColumnDef<Result>[] => [
       return (
         <div className="cursor-pointer">
           {tests.map((test) => (
-            <span key={test.name}>{test.name}, </span>
+            <span key={test.name}>{test.name}</span>
           ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "testResults",
+    header: "Results",
+    cell: ({ row }) => {
+      const testResults = row.getValue("testResults") as Result["testResults"];
+      return (
+        <div className="cursor-pointer">
+          {testResults.map((results) => (
+            <div key={results.id} className="flex flex-col gap-2">
+              {/* <FormLabels label="Name" value={results.name} /> */}
+                {results.result} {results.unit}
+                <span className="text-xs font-medium text-gray-500">({results.min} - {results.max})</span>
+              {/* <FormLabels label="Group Comment" value={results.groupComment} /> */}
+            </div>
+          ))}
+        </div>
+      );
+    },
+  },
+
+  {
+    accessorKey: "interpretations",
+    header: "Interpretation",
+    cell: ({ row }) => {
+      const testResults = row.getValue("testResults") as Result["testResults"];
+      
+      return (
+        <div className="cursor-pointer">
+          {testResults.length > 0 ? (
+            testResults.map((results) => {
+              // Map interpretation to badge variant
+              const badgeVariant = results.interpretation === "Normal" ? "success" : "destructive";
+              return (
+                <Badge key={results.id} variant={badgeVariant}>
+                  {results.interpretation}
+                </Badge>
+              );
+            })
+          ) : (
+            <span>N/A</span> // Show N/A if there are no test results
+          )}
         </div>
       );
     },
@@ -44,32 +89,25 @@ export const columns = (): ColumnDef<Result>[] => [
   },
   {
     accessorKey: "testResults",
-    header: "Results",
+    header: "Comments",
     cell: ({ row }) => {
       const testResults = row.getValue("testResults") as Result["testResults"];
       return (
         <div className="cursor-pointer">
           {testResults.map((results) => (
-            <div key={results.id} className="flex flex-col gap-2">
-              <FormLabels label="Name" value={results.name} />
-              <div className="flex flex-row gap-3">
-                <FormLabels label="Result" value={`${results.result} ${results.unit}`} />
-                <FormLabels label="Range" value={`${results.min}- ${results.max}`} />
-              </div>
-              <FormLabels label="Interpretation" value={results.interpretation} />
-              <FormLabels label="Comment" value={results.comment} />
-              <FormLabels label="Group Comment" value={results.groupComment} />
+            <div key={results.id}>
+              {results.comment}
             </div>
           ))}
         </div>
       );
     },
   },
-  {
-    accessorKey: "tags",
-    header: "Tags",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("tags")}</div>
-    ),
-  },
+  // {
+  //   accessorKey: "tags",
+  //   header: "Tags",
+  //   cell: ({ row }) => (
+  //     <div className="cursor-pointer">{row.getValue("tags")}</div>
+  //   ),
+  // },
 ];

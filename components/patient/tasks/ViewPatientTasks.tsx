@@ -51,7 +51,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const [resultList, setResultList] = useState<TasksResponseInterface>();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
-  const limit = 5;
+  const limit = 10;
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
