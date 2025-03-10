@@ -17,25 +17,26 @@ import {
 } from "@/components/ui/select";
 import { filterLabOrdersSchema } from "@/schema/createLabOrderSchema";
 import { getLabOrdersData } from "@/services/chartsServices";
-// import { RootState } from "@/store/store";
 import { LabOrdersDataInterface } from "@/types/chartsInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { columns } from "../../../lab/LabOrders/columns";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-// import { useSelector } from "react-redux";
 import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { useRouter } from "next/navigation";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { labOrderStatus } from "@/constants/data";
 
 interface OrderRecordsProps {
   userDetailsId: string;
 }
 
 function OrderRecords({ userDetailsId }: OrderRecordsProps) {
-  // const providerDetails = useSelector((state: RootState) => state.login);
+  const providerDetails = useSelector((state: RootState) => state.login);
   const [orderList, setOrderList] = useState<LabOrdersDataInterface>();
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
   const router = useRouter();
@@ -99,6 +100,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
           page,
           providerId: providerId || filters.orderedby,
           status: status || filters.status,
+          orderedBy: providerDetails.providerId,
         });
         if (response) {
           setOrderList(response);
@@ -111,7 +113,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
         setLoading(false);
       }
     },
-    [userDetailsId, filters]
+    [userDetailsId, filters, providerDetails.providerId]
   );
 
   useEffect(() => {
@@ -189,8 +191,12 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
                       <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="signed">Signed</SelectItem>
-                      <SelectItem value="unsigned">Unsigned</SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      {labOrderStatus.map((status) => (
+                        <SelectItem value={status.value} key={status.value}>
+                          {status.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>

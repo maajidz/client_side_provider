@@ -11,8 +11,11 @@ import {
 import { LabOrdersDataInterface } from "@/types/chartsInterface";
 import { getLabOrdersData } from "@/services/chartsServices";
 import LoadingButton from "@/components/LoadingButton";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const PastOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
+  const providerDetails = useSelector((state: RootState) => state.login);
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<LabOrdersDataInterface>();
@@ -20,7 +23,10 @@ const PastOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   const fetchAndSetResponse = async () => {
     setLoading(true);
     try {
-      const data = await getLabOrdersData({ userDetailsId: userDetailsId });
+      const data = await getLabOrdersData({
+        userDetailsId: userDetailsId,
+        orderedBy: providerDetails.providerId,
+      });
       if (data) {
         setResponse(data);
       }
