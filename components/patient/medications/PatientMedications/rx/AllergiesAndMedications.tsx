@@ -8,7 +8,7 @@ import { format } from "date-fns"; // Import format from date-fns
 import { getUserPrescriptionsData } from "@/services/prescriptionsServices";
 import { AllergenResponseInterfae } from "@/types/allergyInterface";
 import { PrescriptionDataInterface } from "@/types/prescriptionInterface";
-import { SupplementInterface } from "@/types/supplementsInterface";
+import { SupplementInterfaceResponse } from "@/types/supplementsInterface";
 import { useCallback, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
@@ -28,7 +28,7 @@ function AllergiesAndMedications({
     PrescriptionDataInterface[]
   >([]);
 
-  const [supplementsData, setSupplementsData] = useState<SupplementInterface[]>(
+  const [supplementsData, setSupplementsData] = useState<SupplementInterfaceResponse[]>(
     []
   );
 

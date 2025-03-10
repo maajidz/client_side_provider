@@ -7,7 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { getSupplements } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
-import { SupplementInterface } from "@/types/supplementsInterface";
+import { SupplementInterfaceResponse } from "@/types/supplementsInterface";
 import SupplementsDialog from "./SupplementsDialog";
 import SupplementList from "./SupplementsList";
 import { PlusCircle } from "lucide-react";
@@ -22,7 +22,7 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   // Data States
-  const [supplementData, setSupplementData] = useState<SupplementInterface[]>();
+  const [supplementData, setSupplementData] = useState<SupplementInterfaceResponse[]>();
 
   // Loading State
   const [loading, setLoading] = useState(false);

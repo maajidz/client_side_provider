@@ -14,6 +14,7 @@ import {
 } from "@/services/chartDetailsServices";
 import {
   SupplementInterface,
+  SupplementInterfaceResponse,
   UpdateSupplementType,
 } from "@/types/supplementsInterface";
 import { EllipsisVertical } from "lucide-react";
@@ -90,7 +91,7 @@ export const columns = ({
   showToast,
   fetchSupplementsList,
 }: {
-  setEditData: (data: SupplementInterface | null) => void;
+  setEditData: (data: SupplementInterfaceResponse | null) => void;
   setIsDialogOpen: Dispatch<
     SetStateAction<{
       create: boolean;
@@ -100,12 +101,12 @@ export const columns = ({
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchSupplementsList: () => void;
-}): ColumnDef<SupplementInterface>[] => [
+}): ColumnDef<SupplementInterfaceResponse>[] => [
   {
-    accessorKey: "supplement",
-    header: "Supplement",
+    accessorKey: "supplementType",
+    header: "Supplement Name",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("supplement")}</div>
+      <div className="cursor-pointer">{row.original.supplementType.name}</div>
     ),
   },
   {
