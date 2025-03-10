@@ -48,10 +48,10 @@ export const columns = ({
   fetchAllergies: () => void;
 }): ColumnDef<AllergenResponseInterfae>[] => [
   {
-    accessorKey: "typeId",
+    accessorKey: "allergyType",
     header: "Allergy Type",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("typeId")}</div>
+      <div className="cursor-pointer">{row.original.allergyType.name}</div>
     ),
   },
   {
@@ -93,10 +93,10 @@ export const columns = ({
     },
   },
   {
-    accessorKey: "providerId",
-    header: "Provider Id",
+    accessorKey: "providerName",
+    header: "Provider ID",
     cell: ({ row }) => {
-      return <div className="cursor-pointer">{row.getValue("providerId")}</div>;
+      return <div className="cursor-pointer">{row.original.providerName}</div>;
     },
   },
   {

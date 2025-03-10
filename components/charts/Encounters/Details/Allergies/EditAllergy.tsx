@@ -101,11 +101,12 @@ function EditAllergy({
           ? selectedAllergy.reactions
           : [],
       });
-      
     }
   }, [selectedAllergy, form]);
 
-  const onSubmit = async (formData: z.infer<typeof updateAllergyFormSchema>) => {
+  const onSubmit = async (
+    formData: z.infer<typeof updateAllergyFormSchema>
+  ) => {
     setLoading(true);
     const requestData: UpdateAllergenInterface = {
       Allergen: formData.Allergen,
@@ -113,8 +114,8 @@ function EditAllergy({
       serverity: formData.serverity,
       status: formData.status,
       typeId: formData.type,
-      reactions: formData.reactions
-    }
+      reactions: formData.reactions,
+    };
     try {
       if (!selectedAllergy) return;
       await updateAllergiesData({
