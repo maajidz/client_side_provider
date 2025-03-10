@@ -62,12 +62,6 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
               setEditData,
               setIsDialogOpen: setIsEditDialogOpen,
               setLoading,
-              // showToast: () =>
-              //   showToast({
-              //     toast,
-              //     type: "success",
-              //     message: "Data loaded successfully",
-              //   }),
               showToast: ({ type, message }) => {
                 showToast({
                   toast,

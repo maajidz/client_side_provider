@@ -190,6 +190,14 @@ export interface DiagnosesInterface {
   createdAt: string;
   updatedAt: string;
   chart: ChartInterface;
+  diagnosisType: DiagnosisType;
+  providerUniqueId: string;
+}
+export interface DiagnosisType {
+  id: string;
+  name: string;
+  icdCode: string;
+  description: string;
 }
 
 export interface DiagnosesResponseInterface {
@@ -380,7 +388,7 @@ export interface LabOrdersData {
 
 export interface LabUserDetails {
   id: string;
-  patientId: string
+  patientId: string;
   gender: string;
 }
 

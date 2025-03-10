@@ -36,7 +36,7 @@ import {
   updateSupplement,
 } from "@/services/chartDetailsServices";
 import {
-  SupplementInterface,
+  SupplementInterfaceResponse,
   SupplementTypesInterface,
   UpdateSupplementType,
 } from "@/types/supplementsInterface";
@@ -53,15 +53,15 @@ function SupplementsDialog({
   userDetailsId: string;
   onClose: () => void;
   isOpen: boolean;
-  selectedSupplement?: SupplementInterface | null;
+  selectedSupplement?: SupplementInterfaceResponse | null;
 }) {
   // Supplements State
   const [supplementsData, setSupplementsData] = useState<
     SupplementTypesInterface[]
   >([]);
   // Search Supplement States
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isListVisible, setIsListVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isListVisible, setIsListVisible] = useState<boolean>(false);
 
   // Loading State
   const [loading, setLoading] = useState({ get: false, post: false });
@@ -132,12 +132,6 @@ function SupplementsDialog({
     };
 
     try {
-      // const supplementData: CreateSupplementType = {
-      //   ...values,
-      //   supplementId: supplementId,
-      //   userDetailsId: userDetailsId,
-      // };
-
       if (!selectedSupplement) {
         await createSupplement({ requestData: requestData });
 
@@ -172,7 +166,6 @@ function SupplementsDialog({
     }
   };
 
-  // * Effects
   useEffect(() => {
     fetchAllSupplements();
   }, [fetchAllSupplements]);
@@ -195,8 +188,9 @@ function SupplementsDialog({
         intake_type: selectedSupplement?.intake_type || "",
         comments: selectedSupplement?.comments || "",
       });
-      if (selectedSupplement.manufacturer) {
-        form.setValue("manufacturer", selectedSupplement?.manufacturer);
+
+      if (selectedSupplement.supplementType.name) {
+        setSearchTerm(selectedSupplement.supplementType.name);
       }
     }
   }, [selectedSupplement, form]);
@@ -231,6 +225,7 @@ function SupplementsDialog({
                       <FormControl>
                         <div className="relative">
                           <Input
+                          disabled
                             {...field}
                             value={searchTerm || field.value}
                             placeholder="Search Supplement..."
@@ -238,6 +233,7 @@ function SupplementsDialog({
                               setSearchTerm(event.target.value);
                               setIsListVisible(true);
                             }}
+                            className="w-full"
                           />
                           {searchTerm && isListVisible && (
                             <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
@@ -248,7 +244,7 @@ function SupplementsDialog({
                                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                     onClick={() => {
                                       field.onChange(
-                                        supplement.supplement_name
+                                        supplement.id
                                       );
                                       setSearchTerm(supplement.supplement_name);
                                       setIsListVisible(false);
@@ -278,8 +274,8 @@ function SupplementsDialog({
                       <FormLabel className="w-fit">Manufacturer</FormLabel>
                       <FormControl>
                         <Select
-                          defaultValue={field.value}
                           onValueChange={field.onChange}
+                          defaultValue={field.value}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Choose Manufacturer" />

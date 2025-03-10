@@ -256,7 +256,7 @@ export const fetchDiagnosesType = async ({
   search: string;
 }) => {
   const queryParams = new URLSearchParams();
-  if(search) queryParams.append("search", search)
+  if (search) queryParams.append("search", search);
   if (page) queryParams.append("page", page.toString());
   if (limit) queryParams.append("limit", limit.toString());
 
@@ -514,15 +514,18 @@ export const getLabOrdersData = async ({
   status = "",
   page = 1,
   limit = 10,
+  orderedBy = "",
 }: {
   userDetailsId?: string;
   providerId?: string;
   page?: number;
   status?: string;
   limit?: number;
+  orderedBy: string;
 }) => {
   const queryParams = new URLSearchParams();
   if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
+  if (orderedBy) queryParams.append("orderedBy", orderedBy);
   if (providerId) queryParams.append("providerId", providerId);
   if (status) queryParams.append("status", status);
   if (page) queryParams.append("page", page.toString());

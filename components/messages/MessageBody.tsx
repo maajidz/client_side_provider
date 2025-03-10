@@ -11,17 +11,21 @@ import { RootState } from "@/store/store";
 import LoadingButton from "../LoadingButton";
 import { fetchUserConversations } from "@/services/messageService";
 import ConversationBody from "./ConversationBody";
+import NewMessageDialog from "./NewMessageDialog";
 
 const MessageBody = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [conversations, setConversations] = useState<ConversationInterface[]>(
     []
   );
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const inboxConversations = conversations.filter((convo) => !convo.status);
   const archiveConversations = conversations.filter((convo) => convo.status);
   const defaultConversation = undefined;
-  const [selectedConversation, setSelectedConversation] = useState<ConversationInterface | undefined>();
+  const [selectedConversation, setSelectedConversation] = useState<
+    ConversationInterface | undefined
+  >();
 
   const messagesTab = [
     {
@@ -68,7 +72,22 @@ const MessageBody = () => {
         <div className={`${styles.section} ${styles.listBody}`}>
           <div className={styles.listHeader}>
             <div className={styles.listTitle}>All Messages</div>
-            <DefaultButton>New Message</DefaultButton>
+            <DefaultButton
+              onClick={() => {
+                setIsDialogOpen(true);
+              }}
+            >
+              <div className="flex justify-center items-center bg-[#84012A] text-white rounded-lg px-4 text-center h-10">
+                New Message
+              </div>
+            </DefaultButton>
+            <NewMessageDialog
+              isOpen={isDialogOpen}
+              onClose={() => {
+                setIsDialogOpen(false);
+                userConversation();
+              }}
+            />
           </div>
           <div>
             <Tabs defaultValue="inbox" className="">
@@ -112,7 +131,9 @@ const MessageBody = () => {
               selectedConversation={selectedConversation}
             />
           ) : (
-            <div className={`${styles.listTitle} flex flex-1 h-full`}>No Conversation Selected</div>
+            <div className={`${styles.listTitle} flex flex-1 h-full`}>
+              No Conversation Selected
+            </div>
           )}
         </div>
       </div>

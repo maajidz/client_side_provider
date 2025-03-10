@@ -23,10 +23,14 @@ export interface AllergenResponseInterfae {
   reactions: ReactionResponse[];
   userDetailsId: string;
   providerId: string;
+  createdAt: string;
+  updatedAt: string;
+  allergyType: AllergyType;
+  providerName: string;
 }
 
 export interface UpdateAllergenInterface {
-  type: string;
+  typeId: string;
   serverity: string;
   observedOn: string;
   Allergen: string;

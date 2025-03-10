@@ -152,20 +152,14 @@ export default function EditDiagnosisDialog({
           <table className="w-full border rounded-md">
             <thead>
               <tr className="border-b bg-[#eeeeee] ">
-                <th className="px-3 py-2 text-left">Code Type</th>
                 <th className="px-3 py-2 text-left">Code</th>
                 <th className="px-3 py-2 text-left">Name</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b">
-                {/* <td className="px-3 py-2">{diagnosisData?.ICD_Code ?? ""}</td> */}
-              </tr>
               <tr>
-                <td className="px-3 py-2"></td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">{diagnosisData?.diagnosis_Id}</td>
+                <td className="px-3 py-2">{diagnosisData?.diagnosisType.icdCode}</td>
+                <td className="px-3 py-2">{diagnosisData?.diagnosisType.name}</td>
               </tr>
             </tbody>
           </table>

@@ -287,8 +287,16 @@ export const status = [
   { value: "Cancelled", label: "Cancelled" },
 ];
 
+export const labOrderStatus = [
+  { value: "pending", label: "Pending" },
+  { value: "active", label: "Active" },
+  { value: "Completed", label: "Completed" },
+  { value: "Cancelled", label: "Cancelled" },
+];
+
 export const taskStatus = [
   { value: "PENDING", label: "Pending" },
+  { value: "IN_PROGRESS", label: "In Progress" },
   { value: "Completed", label: "Completed" },
 ]; 
 

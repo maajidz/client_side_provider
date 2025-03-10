@@ -301,7 +301,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                     className={styles.dataContainer}
                   >
                     <div className={`${styles.infoTextLabel}`}>
-                      {userDashboardData?.supplements?.supplement} {" - "}
+                      {userDashboardData?.supplements?.supplementType?.name} {" - "}
                       {userDashboardData?.supplements?.manufacturer} {""}
                     </div>
                     <div className={styles.infoSub}>

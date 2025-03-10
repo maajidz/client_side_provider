@@ -36,7 +36,7 @@ import {
 } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
 import {
-  SupplementInterface,
+  SupplementInterfaceResponse,
   SupplementTypesInterface,
 } from "@/types/supplementsInterface";
 import { showToast } from "@/utils/utils";
@@ -47,7 +47,7 @@ import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface EditSupplementProps {
-  selectedSupplement: SupplementInterface;
+  selectedSupplement: SupplementInterfaceResponse;
   patientDetails: UserEncounterData;
   fetchSupplements: () => void;
 }

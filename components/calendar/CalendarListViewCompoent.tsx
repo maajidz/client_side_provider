@@ -24,8 +24,10 @@ import LoadingButton from "../LoadingButton";
 
 export const CalendarListViewComponent = ({
   appointment,
+  onFetch
 }: {
   appointment: ProviderAppointmentsData;
+  onFetch: () => Promise<void>;
 }) => {
   // 8d17ab-purple cde1cf-confirmed b0ce0c-consu
   const [statusValue, setStatusValue] = useState(appointment.status);
@@ -60,6 +62,8 @@ export const CalendarListViewComponent = ({
       });
     } catch (error) {
       console.log("Failed to update status:", error);
+    } finally {
+      await onFetch();
     }
   };
 

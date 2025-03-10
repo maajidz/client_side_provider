@@ -18,9 +18,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import LoadingButton from "@/components/LoadingButton";
-import { Separator } from "@/components/ui/separator";
-import AddImagesDrawer from "@/components/charts/Encounters/SOAP/Images/AddImagesDrawer";
-import PastImageOrders from "@/components/charts/Encounters/SOAP/Images/PastImageOrders";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
@@ -389,11 +386,6 @@ const CreateImageResults = () => {
             </div>
           </form>
         </Form>
-        <div className="flex h-5 items-center py-5 text-sm">
-          <AddImagesDrawer userDetailsId="97f41397-3fe3-4f0b-a242-d3370063db33" />
-          <Separator orientation="vertical" />
-          <PastImageOrders userDetailsId="97f41397-3fe3-4f0b-a242-d3370063db33" />
-        </div>
       </div>
     </>
   );
