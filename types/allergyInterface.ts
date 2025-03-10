@@ -26,7 +26,7 @@ export interface AllergenResponseInterfae {
 }
 
 export interface UpdateAllergenInterface {
-  type: string;
+  typeId: string;
   serverity: string;
   observedOn: string;
   Allergen: string;
