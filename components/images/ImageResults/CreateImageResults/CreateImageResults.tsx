@@ -16,7 +16,10 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { getImagesTestsData } from "@/services/chartsServices";
-import { ImagesTestsResponseInterface } from "@/types/chartsInterface";
+import {
+  ImagesTestsResponseInterface,
+  TestInterface,
+} from "@/types/chartsInterface";
 import LoadingButton from "@/components/LoadingButton";
 import { createImageResultsSchema } from "@/schema/createImageResultsSchema";
 import UploadImageResults from "./UploadImageResults";
@@ -30,24 +33,18 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
-import { useRouter } from "next/navigation";
 
 const CreateImageResults = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [patients, setPatients] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
-  const [selectedTests, setSelectedTests] = useState<string[]>([]);
-  const [loading, setLoading] = useState({
-    images: false,
-    patient: false,
-  });
+  const [selectedTests, setSelectedTests] = useState<TestInterface[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [imageTestResponse, setImageTestResponse] =
     useState<ImagesTestsResponseInterface>();
   const providerDetails = useSelector((state: RootState) => state.login);
   const { toast } = useToast();
-
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof createImageResultsSchema>>({
     resolver: zodResolver(createImageResultsSchema),
@@ -62,7 +59,7 @@ const CreateImageResults = () => {
   });
 
   const fetchPatientList = useCallback(async () => {
-    setLoading((prev) => ({ ...prev, patient: true }));
+    setLoading(true);
     try {
       const response = await fetchUserDataResponse({
         pageNo: 1,
@@ -76,7 +73,7 @@ const CreateImageResults = () => {
     } catch (e) {
       console.log("Error", e);
     } finally {
-      setLoading((prev) => ({ ...prev, patient: false }));
+      setLoading(false);
     }
   }, [searchTerm]);
 
@@ -86,8 +83,7 @@ const CreateImageResults = () => {
   };
 
   const fetchImageTestsData = useCallback(async () => {
-    setLoading((prev) => ({ ...prev, images: true }));
-
+    setLoading(true);
     try {
       const responseData = await getImagesTestsData({ limit: 10, page: 1 });
       if (responseData) {
@@ -95,8 +91,9 @@ const CreateImageResults = () => {
       }
     } catch (e) {
       console.log("Error", e);
+      setLoading(false);
     } finally {
-      setLoading((prev) => ({ ...prev, images: false }));
+      setLoading(false);
     }
   }, []);
 
@@ -117,9 +114,9 @@ const CreateImageResults = () => {
       const requestData: CreateImageResultInterface = {
         userDetailsId: values.patient,
         reviewerId: providerDetails.providerId,
-        testResults: values.testResults.map((test, index) => ({
-          imageTestId: selectedTests[index],
-          interpretation: test.interpretation ? `${test.interpretation}` : "",
+        testResults: selectedTests.map((test) => ({
+          imageTestId: test.id,
+          interpretation: test.name ? `${test.name}` : "",
           documents: uploadedImages,
         })),
       };
@@ -127,7 +124,7 @@ const CreateImageResults = () => {
       const response = await createImageResultRequest({
         requestData: requestData,
       });
-      if (response) { 
+      if (response) {
         showToast({
           toast,
           type: "success",
@@ -136,7 +133,6 @@ const CreateImageResults = () => {
         form.reset();
         setUploadedImages([]);
       }
-      router.replace(`/dashboard/provider/images`);
     } catch (e) {
       console.log("Error", e);
       showToast({
@@ -147,6 +143,10 @@ const CreateImageResults = () => {
     } finally {
     }
   };
+
+  if (loading) {
+    return <LoadingButton />;
+  }
 
   return (
     <>
@@ -173,14 +173,6 @@ const CreateImageResults = () => {
                           setVisibleSearchList(true);
                         }}
                       />
-
-                      {/* Loading Button */}
-                      {loading.patient && (
-                        <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                          <LoadingButton />
-                        </div>
-                      )}
-
                       {searchTerm && visibleSearchList && (
                         <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
                           {filteredPatients.length > 0 ? (
@@ -212,7 +204,6 @@ const CreateImageResults = () => {
                 </FormItem>
               )}
             />
-            {loading.images && <LoadingButton />}
             {imageTestResponse?.data && (
               <TestsField
                 form={form}
@@ -226,8 +217,8 @@ const CreateImageResults = () => {
                 key={index}
                 className="border border-gray-300 rounded-lg p-4 mb-4"
               >
-                <h3 className="text-lg font-semibold">{`Test Results for ${test}`}</h3>
-                <div key={test}>
+                <h3 className="text-lg font-semibold">{`Test Results for ${test.name}`}</h3>
+                <div key={test.id}>
                   <UploadImageResults
                     onUploadComplete={(images) => handleUploadComplete(images)}
                     userDetailsId={form.getValues().patient}

@@ -24,7 +24,6 @@ import { useCallback, useEffect, useState } from "react";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { useForm } from "react-hook-form";
 import { columns } from "./columns";
-import LoadingButton from "@/components/LoadingButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -33,6 +32,7 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { labOrderStatus } from "@/constants/data";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 function LabOrders() {
   // Provider Details
@@ -48,11 +48,15 @@ function LabOrders() {
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
 
   // Search State
-  const [searchTerm, setSearchTerm] = useState("");
-  const [visibleSearchList, setVisibleSearchList] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
 
   // Loading State
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({
+    patients: false,
+    providers: false,
+    labOrders: false,
+  });
 
   // Pagination State
   const limit = 4;
@@ -84,7 +88,7 @@ function LabOrders() {
       ...prev,
       orderedby: values.orderedby === "all" ? "" : values.orderedby || "",
       status: values.status === "all" ? "" : values.status || "",
-      name: filters.name,
+      name: values.name ? values.name : "",
     }));
 
     setPage(1);
@@ -93,7 +97,7 @@ function LabOrders() {
   const fetchLabOrdersList = useCallback(
     async (page: number) => {
       try {
-        setLoading(true);
+        setLoading((prev) => ({ ...prev, labOrders: true }));
         if (providerDetails) {
           const response = await getLabOrdersData({
             providerId: providerDetails.providerId,
@@ -110,15 +114,16 @@ function LabOrders() {
         }
       } catch (e) {
         console.log("Error", e);
+        setOrderList(undefined);
       } finally {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, labOrders: false }));
       }
     },
     [providerDetails, filters]
   );
 
   const fetchProvidersData = useCallback(async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, providers: true }));
 
     try {
       const response = await fetchProviderListDetails({
@@ -129,13 +134,13 @@ function LabOrders() {
     } catch (err) {
       console.error("Error fetching providers data:", err);
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, providers: false }));
     }
   }, [page]);
 
   // GET Patients' Data
   const fetchPatientData = useCallback(async (currentPage: number) => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, patients: true }));
 
     try {
       const response = await fetchUserDataResponse({ pageNo: currentPage });
@@ -145,7 +150,7 @@ function LabOrders() {
     } catch (err) {
       console.error("Error fetching user data:", err);
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, patients: false }));
     }
   }, []);
 
@@ -160,10 +165,6 @@ function LabOrders() {
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <div className="space-y-4">
@@ -188,23 +189,27 @@ function LabOrders() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {providersList
-                        .filter(
-                          (
-                            provider
-                          ): provider is typeof provider & {
-                            providerDetails: { id: string };
-                          } => Boolean(provider?.providerDetails?.id)
-                        )
-                        .map((provider) => (
-                          <SelectItem
-                            key={provider.providerDetails.id}
-                            value={provider.providerDetails.id}
-                            className="cursor-pointer"
-                          >
-                            {provider.firstName} {provider.lastName}
-                          </SelectItem>
-                        ))}
+                      {loading.providers ? (
+                        <div>Loading...</div>
+                      ) : (
+                        providersList
+                          .filter(
+                            (
+                              provider
+                            ): provider is typeof provider & {
+                              providerDetails: { id: string };
+                            } => Boolean(provider?.providerDetails?.id)
+                          )
+                          .map((provider) => (
+                            <SelectItem
+                              key={provider.providerDetails.id}
+                              value={provider.providerDetails.id}
+                              className="cursor-pointer"
+                            >
+                              {provider.firstName} {provider.lastName}
+                            </SelectItem>
+                          ))
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -265,7 +270,9 @@ function LabOrders() {
                     />
                     {searchTerm && visibleSearchList && (
                       <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
-                        {filteredPatients.length > 0 ? (
+                        {loading.patients ? (
+                          <div>Loading...</div>
+                        ) : filteredPatients.length > 0 ? (
                           filteredPatients.map((patient) => (
                             <div
                               key={patient.id}
@@ -300,7 +307,9 @@ function LabOrders() {
           </div>
         </form>
       </Form>
-      {orderList?.data ? (
+      {loading.labOrders ? (
+        <TableShimmer />
+      ) : orderList?.data ? (
         <DefaultDataTable
           title={"Labs Order"}
           onAddClick={() => {

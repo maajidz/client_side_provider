@@ -292,6 +292,7 @@ export const labOrderStatus = [
   { value: "active", label: "Active" },
   { value: "Completed", label: "Completed" },
   { value: "Cancelled", label: "Cancelled" },
+  { value: "ended", label: "Ended" },
 ];
 
 export const imagesStatus = [

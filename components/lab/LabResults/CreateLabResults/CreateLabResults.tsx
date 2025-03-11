@@ -37,8 +37,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { getLabsData } from "@/services/chartsServices";
-import { LabsDataResponse, Test } from "@/types/chartsInterface";
-import LoadingButton from "@/components/LoadingButton";
+import { LabsDataResponse, Test, TestInterface } from "@/types/chartsInterface";
 import { createLabResultRequest } from "@/services/labResultServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -82,8 +81,12 @@ const CreateLabResults = () => {
   const [patients, setPatients] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
-  const [selectedTests, setSelectedTests] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedTests, setSelectedTests] = useState<TestInterface[]>([]);
+  const [loading, setLoading] = useState({
+    lab: false,
+    provider: false,
+    patient: false,
+  });
   const [labResponse, setLabResponse] = useState<LabsDataResponse>({
     data: [],
     total: 0,
@@ -99,7 +102,7 @@ const CreateLabResults = () => {
   const { toast } = useToast();
 
   const fetchLabsData = useCallback(async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, lab: true }));
     try {
       const data = await getLabsData({ page: 1, limit: 10 });
       if (data) {
@@ -114,12 +117,12 @@ const CreateLabResults = () => {
     } catch (e) {
       console.log("Error", e);
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, lab: false }));
     }
   }, [labResponse.total]);
 
   const fetchProvidersList = useCallback(async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, provider: true }));
     try {
       const data = await fetchProviderListDetails({ page: 1, limit: 10 });
       if (data) {
@@ -131,7 +134,7 @@ const CreateLabResults = () => {
     } catch (e) {
       console.log("Error", e);
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, provider: false }));
     }
   }, []);
 
@@ -147,7 +150,7 @@ const CreateLabResults = () => {
   );
 
   const fetchPatientList = useCallback(async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, patient: true }));
     try {
       const response = await fetchUserDataResponse({
         pageNo: 1,
@@ -161,7 +164,7 @@ const CreateLabResults = () => {
     } catch (e) {
       console.log("Error", e);
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, patient: false }));
     }
   }, [searchTerm]);
 
@@ -222,10 +225,6 @@ const CreateLabResults = () => {
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <>
       <div>
@@ -268,7 +267,9 @@ const CreateLabResults = () => {
                         />
                         {searchTerm && visibleSearchList && (
                           <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                            {filteredPatients.length > 0 ? (
+                            {loading.patient ? (
+                              <div>Loading...</div>
+                            ) : filteredPatients.length > 0 ? (
                               filteredPatients.map((patient) => (
                                 <div
                                   key={patient.id}
@@ -315,17 +316,21 @@ const CreateLabResults = () => {
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
-                            {providerListData.data.map((providerList) => {
-                              const providerId =
-                                providerList.providerDetails?.id ??
-                                providerList.id;
-                              return (
-                                <SelectItem
-                                  key={providerList.id}
-                                  value={providerId}
-                                >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
-                              );
-                            })}
+                            {loading.provider ? (
+                              <div>Loading...</div>
+                            ) : (
+                              providerListData.data.map((providerList) => {
+                                const providerId =
+                                  providerList.providerDetails?.id ??
+                                  providerList.id;
+                                return (
+                                  <SelectItem
+                                    key={providerList.id}
+                                    value={providerId}
+                                  >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
+                                );
+                              })
+                            )}
                           </SelectContent>
                         </Select>
                       </div>
@@ -371,14 +376,18 @@ const CreateLabResults = () => {
                         <SelectValue placeholder="Select a lab" />
                       </SelectTrigger>
                       <SelectContent>
-                        {labResponse &&
+                        {loading.lab ? (
+                          <div>Loading...</div>
+                        ) : (
+                          labResponse &&
                           labResponse.data &&
                           labResponse.data.length > 0 &&
                           labResponse.data.map((lab) => (
                             <SelectItem key={lab.id} value={lab.id}>
                               {lab.name}
                             </SelectItem>
-                          ))}
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -396,7 +405,7 @@ const CreateLabResults = () => {
               <div className="test-groups">
                 {selectedTests.map((test, index) => (
                   <div key={index}>
-                    <h3 className="text-lg font-semibold">{`Test Results for ${test}`}</h3>
+                    <h3 className="text-lg font-semibold">{`Test Results for ${test.name}`}</h3>
                     {testGroupFields.map((group, groupIndex) => (
                       <div
                         key={`${group.id}-${groupIndex}`}
@@ -548,20 +557,21 @@ export function DropdownMenuCheckboxesField({
   tests,
 }: {
   field: FieldValues;
-  selectedTests: string[];
-  setSelectedTests: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedTests: TestInterface[];
+  setSelectedTests: React.Dispatch<React.SetStateAction<TestInterface[]>>;
   tests: Test[];
 }) {
-  const handleTestChange = (value: string, checked: boolean) => {
+  const handleTestChange = (value: TestInterface, checked: boolean) => {
+    let updatedTests: TestInterface[];
+
     if (checked) {
-      const updatedTests = [...selectedTests, value];
-      setSelectedTests(updatedTests);
-      field.onChange(updatedTests);
+      updatedTests = [...selectedTests, value];
     } else {
-      const updatedTests = selectedTests.filter((test) => test !== value);
-      setSelectedTests(updatedTests);
-      field.onChange(updatedTests);
+      updatedTests = selectedTests.filter((test) => test.id !== value.id);
     }
+
+    setSelectedTests(updatedTests);
+    field.onChange(updatedTests.map((test) => test.id));
   };
 
   return (
@@ -572,7 +582,7 @@ export function DropdownMenuCheckboxesField({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="overflow-hidden">
               {selectedTests.length > 0
-                ? `${selectedTests.join(", ")}`
+                ? selectedTests.map((test) => test.name).join(", ")
                 : "Select tests"}
             </Button>
           </DropdownMenuTrigger>
@@ -582,10 +592,8 @@ export function DropdownMenuCheckboxesField({
             {tests.map((test) => (
               <DropdownMenuCheckboxItem
                 key={test.id}
-                checked={selectedTests.includes(test.id)}
-                onCheckedChange={(checked) =>
-                  handleTestChange(test.id, checked)
-                }
+                checked={selectedTests.includes(test)}
+                onCheckedChange={(checked) => handleTestChange(test, checked)}
               >
                 {test.name}
               </DropdownMenuCheckboxItem>
@@ -605,8 +613,8 @@ function TestsField({
   tests,
 }: {
   form: UseFormReturn<z.infer<typeof createLabResultsSchema>>;
-  selectedTests: string[];
-  setSelectedTests: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedTests: TestInterface[];
+  setSelectedTests: React.Dispatch<React.SetStateAction<TestInterface[]>>;
   tests: Test[];
 }) {
   return (

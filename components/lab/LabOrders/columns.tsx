@@ -5,20 +5,29 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export const columns = (): ColumnDef<LabOrdersData>[] => [
   {
-    accessorKey: "id",
-    header: "Lab ID",
+    accessorKey: "userDetails",
+    header: "Patient ID",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("id")}</div>
+      <div className="cursor-pointer">{row.original.userDetails.patientId}</div>
     ),
   },
+  // {
+  //   accessorKey: "id",
+  //   header: "Lab ID",
+  //   cell: ({ row }) => (
+  //     <div className="cursor-pointer">{row.getValue("id")}</div>
+  //   ),
+  // },
   {
     accessorKey: "providerDetails",
     header: "Ordered by",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.original.providerDetails.providerUniqueId}</div>
+      <div className="cursor-pointer">
+        {row.original.providerDetails.providerUniqueId}
+      </div>
     ),
   },
- {
+  {
     accessorKey: "date",
     header: "Date",
     cell: ({ getValue }) => {
@@ -39,7 +48,9 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
     accessorKey: "isSigned",
     header: "Is signed",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("isSigned") ? "Yes": "No"}</div>
+      <div className="cursor-pointer">
+        {row.getValue("isSigned") ? "Yes" : "No"}
+      </div>
     ),
   },
   {
@@ -77,8 +88,10 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
       return (
         <Badge
           variant={
-            row.original.status === "completed"
+            row.original.status === "ended"
               ? "success"
+              : row.original.status === "active"
+              ? "blue"
               : "default"
           }
         >
