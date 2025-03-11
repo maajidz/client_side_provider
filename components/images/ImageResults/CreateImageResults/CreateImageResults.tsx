@@ -16,7 +16,10 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { getImagesTestsData } from "@/services/chartsServices";
-import { ImagesTestsResponseInterface, TestInterface } from "@/types/chartsInterface";
+import {
+  ImagesTestsResponseInterface,
+  TestInterface,
+} from "@/types/chartsInterface";
 import LoadingButton from "@/components/LoadingButton";
 import { createImageResultsSchema } from "@/schema/createImageResultsSchema";
 import UploadImageResults from "./UploadImageResults";
