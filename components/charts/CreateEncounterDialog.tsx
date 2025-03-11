@@ -43,7 +43,6 @@ import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
 import { createEncounterRequest } from "@/services/chartsServices";
 import { fetchUserDataResponse } from "@/services/userServices";
-import LoadingButton from "../LoadingButton";
 import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 
@@ -135,14 +134,6 @@ const CreateEncounterDialog = ({
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <LoadingButton />
-      </div>
-    );
-  }
-
   return (
     <Dialog open={isDialogOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -185,7 +176,9 @@ const CreateEncounterDialog = ({
                                 userData?.user?.lastName
                                   ?.toLowerCase()
                                   .includes(term) ||
-                                userData?.patientId?.toLowerCase().includes(term)
+                                userData?.patientId
+                                  ?.toLowerCase()
+                                  .includes(term)
                             );
                           })
                           .map((userData) => (
@@ -350,7 +343,7 @@ const CreateEncounterDialog = ({
                       )}
                     />
                     <div className="flex justify-center mt-3">
-                      <SubmitButton label="Create" />
+                      <SubmitButton label="Create" disabled={loading} />
                     </div>
                   </div>
                 </form>
