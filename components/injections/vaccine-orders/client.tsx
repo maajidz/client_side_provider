@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { getVaccinesData } from "@/services/injectionsServices";
 import { VaccinesInterface } from "@/types/injectionsInterface";
 import { columns } from "./column";
@@ -32,6 +31,8 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import VaccineOrders from "./VaccineOrders";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import { status } from "@/constants/data";
 
 function VaccinesClient() {
   // Data State
@@ -42,6 +43,8 @@ function VaccinesClient() {
     useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
 
   // Pagination State
   const itemsPerPage = 10;
@@ -55,9 +58,6 @@ function VaccinesClient() {
     userDetailsId: "",
     status: "",
   });
-
-  // Loading State
-  const [loading, setLoading] = useState(false);
 
   const fetchUserData = useCallback(async () => {
     setLoading(true);
@@ -123,8 +123,7 @@ function VaccinesClient() {
 
   // GET Injections Data
   const fetchInjectionsData = useCallback(async () => {
-    setLoading(true);
-
+    setDataLoading(true);
     try {
       const response = await getVaccinesData({
         userDetailsId: filters.userDetailsId,
@@ -141,7 +140,7 @@ function VaccinesClient() {
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
   }, [pageNo, filters.userDetailsId, filters.providerId, filters.status]);
 
@@ -164,8 +163,6 @@ function VaccinesClient() {
   useEffect(() => {
     fetchInjectionsData();
   }, [fetchInjectionsData]);
-
-  if (loading) return <LoadingButton />;
 
   return (
     <div className="space-y-2">
@@ -190,23 +187,27 @@ function VaccinesClient() {
                         <SelectItem value="all" className="cursor-pointer">
                           All
                         </SelectItem>
-                        {providersList
-                          .filter(
-                            (
-                              provider
-                            ): provider is typeof provider & {
-                              providerDetails: { id: string };
-                            } => Boolean(provider?.providerDetails?.id)
-                          )
-                          .map((provider) => (
-                            <SelectItem
-                              key={provider.id}
-                              value={provider.providerDetails.id}
-                              className="cursor-pointer"
-                            >
-                              {provider.firstName} {provider.lastName}
-                            </SelectItem>
-                          ))}
+                        {loading ? (
+                          <div>Loading...</div>
+                        ) : (
+                          providersList
+                            .filter(
+                              (
+                                provider
+                              ): provider is typeof provider & {
+                                providerDetails: { id: string };
+                              } => Boolean(provider?.providerDetails?.id)
+                            )
+                            .map((provider) => (
+                              <SelectItem
+                                key={provider.id}
+                                value={provider.providerDetails.id}
+                                className="cursor-pointer"
+                              >
+                                {provider.firstName} {provider.lastName}
+                              </SelectItem>
+                            ))
+                        )}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -233,17 +234,13 @@ function VaccinesClient() {
                         <SelectItem value="all" className="cursor-pointer">
                           All
                         </SelectItem>
-                        {Array.from(
-                          new Set(
-                            vaccinesData?.map((vaccine) => vaccine?.status)
-                          )
-                        ).map((status) => (
+                        {status.map((status) => (
                           <SelectItem
-                            key={status}
-                            value={status}
+                            key={status.value}
+                            value={status.value}
                             className="cursor-pointer"
                           >
-                            {status}
+                            {status.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -276,8 +273,10 @@ function VaccinesClient() {
                         }}
                       />
                       {searchTerm && visibleSearchList && (
-                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                          {filteredPatients.length > 0 ? (
+                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
+                          {loading ? (
+                            <div>Loading...</div>
+                          ) : filteredPatients.length > 0 ? (
                             filteredPatients.map((patient) => (
                               <div
                                 key={patient.id}
@@ -311,31 +310,31 @@ function VaccinesClient() {
             </div>
           </form>
         </Form>
-        {/* <FilterVaccines
-          vaccinesData={vaccinesData}
-          onHandleSearch={handleSearch}
-        /> */}
       </div>
-      <DefaultDataTable
-        title={"Vaccine Orders"}
-        onAddClick={() => {
-          setIsVaccineDialogOpen(true);
-        }}
-        columns={columns({
-          setLoading,
-          showToast: () =>
-            showToast({
-              toast,
-              type: "success",
-              message: "Deleted Successfully",
-            }),
-          fetchInjectionsData: () => fetchInjectionsData(),
-        })}
-        data={vaccinesData}
-        pageNo={pageNo}
-        totalPages={totalPages}
-        onPageChange={(newPage) => setPageNo(newPage)}
-      />
+      {dataLoading ? (
+        <TableShimmer />
+      ) : (
+        <DefaultDataTable
+          title={"Vaccine Orders"}
+          onAddClick={() => {
+            setIsVaccineDialogOpen(true);
+          }}
+          columns={columns({
+            setLoading,
+            showToast: () =>
+              showToast({
+                toast,
+                type: "success",
+                message: "Deleted Successfully",
+              }),
+            fetchInjectionsData: () => fetchInjectionsData(),
+          })}
+          data={vaccinesData}
+          pageNo={pageNo}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPageNo(newPage)}
+        />
+      )}
       <VaccineOrders
         isOpen={isVaccineDialogOpen}
         onClose={handleVaccineDialogClose}

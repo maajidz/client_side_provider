@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { getInjectionsData } from "@/services/injectionsServices";
 import { InjectionsInterface } from "@/types/injectionsInterface";
 import { columns } from "./column";
@@ -31,12 +30,14 @@ import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import InjectionOrders from "./InjectionOrders";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 export const status = [
   { value: "Pending", label: "Pending" },
-  { value: "Inprogress", label: "In Progress" },
+  { value: "active", label: "Active" },
+  // { value: "Inprogress", label: "In Progress" },
   { value: "Completed", label: "Completed" },
-  { value: "Cancelled", label: "Cancelled" },
+  // { value: "Cancelled", label: "Cancelled" },
 ];
 
 function InjectionsClient() {
@@ -51,7 +52,8 @@ function InjectionsClient() {
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
   const [pageNo, setPageNo] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
   const itemsPerPage = 10;
   const { toast } = useToast();
   const [filters, setFilters] = useState({
@@ -130,7 +132,7 @@ function InjectionsClient() {
       providerId?: string,
       userDetailsId?: string
     ) => {
-      setLoading(true);
+      setDataLoading(true);
 
       try {
         const response = await getInjectionsData({
@@ -148,7 +150,7 @@ function InjectionsClient() {
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        setDataLoading(false);
       }
     },
     [filters.userDetailsId, filters.providerId, filters.status]
@@ -190,8 +192,6 @@ function InjectionsClient() {
     setPageNo(1);
   }
 
-  if (loading) return <LoadingButton />;
-
   return (
     <div className="space-y-4">
       <Form {...form}>
@@ -217,23 +217,27 @@ function InjectionsClient() {
                       <SelectItem value="all" className="cursor-pointer">
                         All
                       </SelectItem>
-                      {providersList
-                        .filter(
-                          (
-                            provider
-                          ): provider is typeof provider & {
-                            providerDetails: { id: string };
-                          } => Boolean(provider?.providerDetails?.id)
-                        )
-                        .map((provider) => (
-                          <SelectItem
-                            key={provider.id}
-                            value={provider.providerDetails.id}
-                            className="cursor-pointer"
-                          >
-                            {provider.firstName} {provider.lastName}
-                          </SelectItem>
-                        ))}
+                      {loading ? (
+                        <div>Loading...</div>
+                      ) : (
+                        providersList
+                          .filter(
+                            (
+                              provider
+                            ): provider is typeof provider & {
+                              providerDetails: { id: string };
+                            } => Boolean(provider?.providerDetails?.id)
+                          )
+                          .map((provider) => (
+                            <SelectItem
+                              key={provider.id}
+                              value={provider.providerDetails.id}
+                              className="cursor-pointer"
+                            >
+                              {provider.firstName} {provider.lastName}
+                            </SelectItem>
+                          ))
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -295,8 +299,10 @@ function InjectionsClient() {
                       }}
                     />
                     {searchTerm && visibleSearchList && (
-                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                        {filteredPatients.length > 0 ? (
+                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
+                        {loading ? (
+                          <div>Loading...</div>
+                        ) : filteredPatients.length > 0 ? (
                           filteredPatients.map((patient) => (
                             <div
                               key={patient.id}
@@ -330,26 +336,30 @@ function InjectionsClient() {
           </div>
         </form>
       </Form>
-      <DefaultDataTable
-        title={"Injection Orders"}
-        onAddClick={() => {
-          setIsInjectionDialogOpen(true);
-        }}
-        columns={columns({
-          setLoading,
-          showToast: () =>
-            showToast({
-              toast,
-              type: "success",
-              message: "Deleted Successfully",
-            }),
-          fetchInjectionList: () => fetchInjectionsData(pageNo),
-        })}
-        data={injectionsData}
-        pageNo={pageNo}
-        totalPages={totalPages}
-        onPageChange={(newPage) => setPageNo(newPage)}
-      />
+      {dataLoading ? (
+        <TableShimmer />
+      ) : (
+        <DefaultDataTable
+          title={"Injection Orders"}
+          onAddClick={() => {
+            setIsInjectionDialogOpen(true);
+          }}
+          columns={columns({
+            setLoading,
+            showToast: () =>
+              showToast({
+                toast,
+                type: "success",
+                message: "Deleted Successfully",
+              }),
+            fetchInjectionList: () => fetchInjectionsData(pageNo),
+          })}
+          data={injectionsData}
+          pageNo={pageNo}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPageNo(newPage)}
+        />
+      )}
       <InjectionOrders
         isOpen={isInjectionDialogOpen}
         onClose={handleInjectionDialogClose}
