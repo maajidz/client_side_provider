@@ -328,42 +328,43 @@ const ViewTasks = () => {
             </div>
           </form>
         </Form>
-
+        <TasksDialog
+          tasksData={editData}
+          onClose={handleEditDialogClose}
+          isOpen={isDialogOpen}
+        />
         {/* Results Table */}
         <div className="space-y-3">
-          {loading && <TableShimmer />}
-          {resultList?.data && (
-            <DefaultDataTable
-              title="Tasks"
-              onAddClick={() => {
-                setIsDialogOpen(true);
-              }}
-              columns={columns({
-                setEditData,
-                setIsCommentDialogOpen: () => {},
-                setIsEditDialogOpen: setIsDialogOpen,
-                setLoading,
-                showToast: () =>
-                  showToast({
-                    toast,
-                    type: "success",
-                    message: "Deleted Successfully",
-                  }),
-                fetchTasksList: () => fetchTasksList(page),
-                isPatientTask: false,
-              })}
-              data={resultList?.data}
-              pageNo={page}
-              totalPages={totalPages}
-              onPageChange={(newPage: number) => setPage(newPage)}
-            />
+          {loading ? (
+            <TableShimmer />
+          ) : (
+            resultList?.data && (
+              <DefaultDataTable
+                title="Tasks"
+                onAddClick={() => {
+                  setIsDialogOpen(true);
+                }}
+                columns={columns({
+                  setEditData,
+                  setIsCommentDialogOpen: () => {},
+                  setIsEditDialogOpen: setIsDialogOpen,
+                  setLoading,
+                  showToast: () =>
+                    showToast({
+                      toast,
+                      type: "success",
+                      message: "Deleted Successfully",
+                    }),
+                  fetchTasksList: () => fetchTasksList(page),
+                  isPatientTask: false,
+                })}
+                data={resultList?.data}
+                pageNo={page}
+                totalPages={totalPages}
+                onPageChange={(newPage: number) => setPage(newPage)}
+              />
+            )
           )}
-
-          <TasksDialog
-            tasksData={editData}
-            onClose={handleEditDialogClose}
-            isOpen={isDialogOpen}
-          />
         </div>
       </div>
     </>
