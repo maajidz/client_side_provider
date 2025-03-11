@@ -135,7 +135,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
               ? response.allergies.map((allergy, index) => (
                   <Badge variant={"destructive"} key={allergy.id}>
                     {index === 0 ? "" : ""}
-                    {allergy.Allergen}
+                    {allergy.allergen}
                   </Badge>
                 ))
               : "N/A"}

@@ -59,10 +59,10 @@ function EditAllergy({
 
   const form = useForm<z.infer<typeof updateAllergyFormSchema>>({
     defaultValues: {
-      type: selectedAllergy?.typeId || "",
-      Allergen: selectedAllergy?.Allergen || "",
+      type: selectedAllergy?.type.id || "",
+      Allergen: selectedAllergy?.allergen || "",
       observedOn: selectedAllergy?.observedOn.split("T")[0],
-      serverity: selectedAllergy?.serverity || "",
+      serverity: selectedAllergy?.severity || "",
       status: selectedAllergy?.status || "",
       reactions: Array.isArray(selectedAllergy?.reactions)
         ? selectedAllergy.reactions
@@ -92,10 +92,10 @@ function EditAllergy({
   useEffect(() => {
     if (selectedAllergy) {
       form.reset({
-        type: selectedAllergy.typeId,
-        Allergen: selectedAllergy.Allergen,
+        type: selectedAllergy.type.id,
+        Allergen: selectedAllergy.allergen,
         observedOn: selectedAllergy.observedOn.split("T")[0],
-        serverity: selectedAllergy.serverity,
+        serverity: selectedAllergy.severity,
         status: selectedAllergy.status,
         reactions: Array.isArray(selectedAllergy.reactions)
           ? selectedAllergy.reactions

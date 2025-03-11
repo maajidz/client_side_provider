@@ -125,9 +125,9 @@ function AllergiesDialog({
         const requestData: AllergeyRequestInterface = {
           allergies: data.allergens.map((allergen) => ({
             typeId: allergen.type,
-            serverity: allergen.serverity,
+            severity: allergen.serverity,
             observedOn: allergen.observedOn,
-            Allergen: allergen.Allergen,
+            allergen: allergen.Allergen,
             status: allergen.status,
             reactions: allergen.reactions
               ? allergen.reactions.split(",").map((reaction) => ({
