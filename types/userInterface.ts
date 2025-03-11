@@ -3,6 +3,8 @@ import { AllergenResponseInterfae } from "./allergyInterface";
 import {
   DiagnosesInterface,
   ImageOrdersData,
+  LabOrdersData,
+  LabOrdersDataInterface,
   TransferResponseData,
   UserChart,
 } from "./chartsInterface";
@@ -83,10 +85,11 @@ export interface PatientDashboardInterface {
   vaccines: Vaccine;
   injections: Injection;
   labResults: LabResult;
-  implantedDevices: Device[];
+  labOrders: LabOrdersData[];
+  // implantedDevices: Device[];
   imageResults: ImageResult[];
   procedures: UpdateProceduresInterface;
-  injections_order: InjectionsInterface;
+  // injections_order: InjectionsInterface;
   supplements: SupplementInterfaceResponse;
   transfers: TransferResponseData;
   recalls: RecallsData;
