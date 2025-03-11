@@ -13,11 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import LoadingButton from "@/components/LoadingButton";
-import SearchAndAddDrawer from "@/components/charts/Encounters/SOAP/Labs/SearchAndAddDrawer";
-import { Separator } from "@/components/ui/separator";
-import AddLabsDialog from "@/components/charts/Encounters/SOAP/Labs/AddLabsDialog";
-import PastOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/PastOrdersDialog";
-import ViewOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/ViewOrdersDialog";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -362,7 +357,7 @@ const CreateOrderRecord = () => {
             </div>
           </form>
         </Form>
-        {userDetailsId && (
+        {/* {userDetailsId && (
           <div className="flex py-5 items-center space-x-4 text-sm">
             <SearchAndAddDrawer userDetailsId={userDetailsId} />
             <Separator orientation="vertical" />
@@ -372,7 +367,7 @@ const CreateOrderRecord = () => {
             <Separator orientation="vertical" />
             <ViewOrdersDialog userDetailsId={userDetailsId} />
           </div>
-        )}
+        )} */}
       </div>
     </>
   );

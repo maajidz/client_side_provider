@@ -26,12 +26,12 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "./columns";
-import LoadingButton from "@/components/LoadingButton";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useRouter } from "next/navigation";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 interface ILabResultsProps {
   userDetailsId?: string;
@@ -79,10 +79,14 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
   });
 
   function onSubmit(values: z.infer<typeof filterLabResultsSchema>) {
+    console.log(values.reviewer);
     setFilters((prev) => ({
       ...prev,
 
-      reviewer: values.reviewer || providerDetails?.providerId || "",
+      reviewer:
+        values.reviewer === "all"
+          ? ""
+          : values.reviewer || providerDetails?.providerId || "",
       status: values.status === "all" ? "" : values.status || "",
       patient: values.name || "",
     }));
@@ -160,10 +164,6 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
       .includes(searchTerm.toLowerCase())
   );
 
-  if (loading.labResults || loading.patients || loading.providers) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className="space-y-4">
       <Form {...form}>
@@ -187,15 +187,8 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {Array.from(
-                        new Set(
-                          resultList?.results.map((result) => result?.status)
-                        )
-                      ).map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {status}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -212,30 +205,38 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
                 <FormLabel>Reviewer</FormLabel>
                 <FormControl>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(v) => {
+                      field.onChange(v);
+                      console.log(v);
+                    }}
                     defaultValue={field.value}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Reviewer" />
                     </SelectTrigger>
                     <SelectContent>
-                      {providersList
-                        .filter(
-                          (
-                            provider
-                          ): provider is typeof provider & {
-                            providerDetails: { id: string };
-                          } => Boolean(provider?.providerDetails?.id)
-                        )
-                        .map((provider) => (
-                          <SelectItem
-                            key={provider.providerDetails.id}
-                            value={provider.providerDetails.id}
-                            className="cursor-pointer"
-                          >
-                            {provider.firstName} {provider.lastName}
-                          </SelectItem>
-                        ))}
+                      <SelectItem value="all">All</SelectItem>
+                      {loading.providers ? (
+                        <div>Loading...</div>
+                      ) : (
+                        providersList
+                          .filter(
+                            (
+                              provider
+                            ): provider is typeof provider & {
+                              providerDetails: { id: string };
+                            } => Boolean(provider?.providerDetails?.id)
+                          )
+                          .map((provider) => (
+                            <SelectItem
+                              key={provider.providerDetails.id}
+                              value={provider.providerDetails.id}
+                              className="cursor-pointer"
+                            >
+                              {provider.firstName} {provider.lastName}
+                            </SelectItem>
+                          ))
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -267,8 +268,10 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
                         }}
                       />
                       {searchTerm && visibleSearchList && (
-                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                          {filteredPatients.length > 0 ? (
+                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
+                          {loading.patients ? (
+                            <div>Loading...</div>
+                          ) : filteredPatients.length > 0 ? (
                             filteredPatients.map((patient) => (
                               <div
                                 key={patient.id}
@@ -304,18 +307,22 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
           </div>
         </form>
       </Form>
-      {resultList?.results && (
-        <DefaultDataTable
-          title={"Labs Results"}
-          onAddClick={() => {
-            router.push("/dashboard/provider/labs/create_lab_results");
-          }}
-          columns={columns()}
-          data={resultList?.results}
-          pageNo={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: number) => setPage(newPage)}
-        />
+      {loading.labResults ? (
+        <TableShimmer />
+      ) : (
+        resultList?.results && (
+          <DefaultDataTable
+            title={"Labs Results"}
+            onAddClick={() => {
+              router.push("/dashboard/provider/labs/create_lab_results");
+            }}
+            columns={columns()}
+            data={resultList?.results}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
+        )
       )}
     </div>
   );

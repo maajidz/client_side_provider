@@ -141,14 +141,14 @@ function AllergiesAndMedications({
                 className={`${allergy.status.toLowerCase() === "inactive" ? "opacity-60" : ""} flex-1`}
               >
                 <CardTitle className="font-medium gap-2 justify-between w-full">
-                  {allergy.Allergen}
+                  {allergy.allergen}
                   <Badge variant={statusBadgeMap[allergy.status.toLowerCase() as keyof typeof statusBadgeMap]} showIndicator>
                     {allergy.status}
                   </Badge>
                 </CardTitle>
                 <CardDescription className="flex flex-col gap-1">
-                  <div className={`${severityBadgeMap[allergy.serverity.toLowerCase() as keyof typeof severityBadgeMap]} font-bold uppercase tracking-wider text-xs`}>
-                    {allergy.serverity}
+                  <div className={`${severityBadgeMap[allergy.severity.toLowerCase() as keyof typeof severityBadgeMap]} font-bold uppercase tracking-wider text-xs`}>
+                    {allergy.severity}
                   </div>
                   <span className="text-xs text-gray-600 font-medium">{allergy.reactions.map((reaction) => reaction.name).join(", ")}</span>
                   <div className="flex items-center gap-2">

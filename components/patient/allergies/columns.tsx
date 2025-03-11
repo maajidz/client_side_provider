@@ -55,17 +55,17 @@ export const columns = ({
     ),
   },
   {
-    accessorKey: "serverity",
+    accessorKey: "severity",
     header: "Severity",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("serverity")}</div>
+      <div className="cursor-pointer">{row.getValue("severity")}</div>
     ),
   },
   {
-    accessorKey: "Allergen",
+    accessorKey: "allergen",
     header: "Allergen",
     cell: ({ row }) => {
-      return <div className="cursor-pointer">{row.getValue("Allergen")}</div>;
+      return <div className="cursor-pointer">{row.getValue("allergen")}</div>;
     },
   },
   {

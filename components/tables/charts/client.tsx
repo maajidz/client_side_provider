@@ -9,7 +9,7 @@ import CreateEncounterDialog from "@/components/charts/CreateEncounterDialog";
 import { useCallback, useEffect, useState } from "react";
 import { getEncounterList } from "@/services/chartsServices";
 import { EncounterInterface } from "@/types/encounterInterface";
-import LoadingButton from "@/components/LoadingButton";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 export const ChartsClient = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -54,10 +54,6 @@ export const ChartsClient = () => {
     router.push(`/encounter/${id}`);
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <>
       <div className="flex items-start justify-between">
@@ -69,6 +65,7 @@ export const ChartsClient = () => {
         />
       </div>
 
+      {loading && <TableShimmer />}
       {chartList?.response && (
         <DefaultDataTable
           onAddClick={() => {

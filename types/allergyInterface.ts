@@ -4,9 +4,9 @@ export interface AllergeyRequestInterface {
 
 export interface AllergenInterface {
   typeId: string;
-  serverity: string;
+  severity: string;
   observedOn: string;
-  Allergen: string;
+  allergen: string;
   status: string;
   reactions: Reaction[];
   userDetailsId: string;
@@ -15,17 +15,19 @@ export interface AllergenInterface {
 
 export interface AllergenResponseInterfae {
   id: string;
-  typeId: string;
-  serverity: string;
+  severity: string;
   observedOn: string;
-  Allergen: string;
+  allergen: string;
   status: string;
-  reactions: ReactionResponse[];
-  userDetailsId: string;
   providerId: string;
   createdAt: string;
   updatedAt: string;
-  allergyType: AllergyType;
+  reactions: ReactionResponse[];
+  type: AllergyType;
+  allergyType: {
+    name: string;
+    description: string;
+  };
   providerName: string;
 }
 

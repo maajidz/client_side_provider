@@ -114,7 +114,7 @@ const Allergies = ({
                 >
                   <div className="flex items-center justify-between">
                     <div className="text-base font-semibold">
-                      {allergy?.Allergen}
+                      {allergy?.allergen}
                     </div>
                     <div className="flex">
                       <Button
@@ -144,7 +144,7 @@ const Allergies = ({
                       label="Observed On"
                       value={new Date(allergy.observedOn).toLocaleDateString()}
                     />
-                    <FormLabels label="Severity" value={allergy.serverity} />
+                    <FormLabels label="Severity" value={allergy.severity} />
                     <FormLabels label="Status" value={allergy.status} />
                     <FormLabels
                       label="Reaction"

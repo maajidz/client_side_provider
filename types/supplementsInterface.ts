@@ -16,8 +16,8 @@ export interface SupplementInterface {
 export interface SupplementInterfaceResponse extends SupplementInterface {
   id: string;
   supplementType: {
-    name: "Vitamin B12";
-    description: "Boosts metabolism";
+    name: string;
+    description: string;
   };
 }
 
