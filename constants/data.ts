@@ -310,6 +310,15 @@ export const injectionStatus = [
   { value: "active", label: "Active" },
 ];
 
+export const referralResponseStatus = [
+  { value: "pending", label: "Pending" },
+  { value: "completed", label: "Completed" },
+];
+
+export const referralRequestStatus = [
+  { value: "sent", label: "Sent" },
+];
+
 export const US_STATES = [
   { name: "Alabama" },
   { name: "Alaska" },

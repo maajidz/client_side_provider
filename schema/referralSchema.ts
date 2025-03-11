@@ -31,15 +31,15 @@ export const referralFormSchema = z.object({
 export const referralOutSearchParams = z.object({
   referralFrom: z.string().optional(),
   referralTo: z.enum(["internal", "external", ""]).optional(),
-  referralProviderId: z.string().optional(), 
-  requestStatus: z.string().optional(),
-  responseStatus: z.string().optional(),
+  referralProviderId: z.string().optional(),
+  statusType: z.enum(["responseStatus", "requestStatus", "all"]).optional(),
+  status: z.string().optional(),
 });
 
 export const referralInSearchParams = z.object({
   referralTo: z.string().optional(),
   referralFrom: z.enum(["internal", "external", ""]).optional(),
   referralProviderId: z.string().optional(),
-  requestStatus: z.string().optional(),
-  responseStatus: z.string().optional(),
+  statusType: z.enum(["responseStatus", "requestStatus", "all"]).optional(),
+  status: z.string().optional(),
 });

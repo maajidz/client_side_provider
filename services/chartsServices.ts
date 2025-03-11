@@ -642,7 +642,7 @@ export const getTransferData = async ({
     | "Referring to ProviderID"
     | "Referring from ProviderID";
   referralType?: "external" | "internal";
-  statusType?: "responseStatus" | "requestStatus";
+  statusType?: "responseStatus" | "requestStatus" | '';
   status?: string;
 }) => {
   const queryParams = new URLSearchParams();

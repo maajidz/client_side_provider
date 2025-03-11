@@ -1,5 +1,4 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import LoadingButton from "@/components/LoadingButton";
 import {
   Form,
   FormControl,
@@ -19,6 +18,10 @@ import { getTransferData } from "@/services/chartsServices";
 import { RootState } from "@/store/store";
 import { TransferResponseData } from "@/types/chartsInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  referralRequestStatus,
+  referralResponseStatus,
+} from "@/constants/data";
 import { columns } from "./columns";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -29,6 +32,7 @@ import formStyles from "@/components/formStyles.module.css";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import ReferralOutDialog from "./ReferralOutDialog";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 const ViewReferralOut = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -39,18 +43,22 @@ const ViewReferralOut = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<{
+    referralFrom: string;
+    statusType: "responseStatus" | "requestStatus" | "";
+    status: string;
+  }>({
     referralFrom: "",
-    requestStatus: "",
-    responseStatus: "",
+    statusType: "",
+    status: "",
   });
 
   const form = useForm<z.infer<typeof referralOutSearchParams>>({
     resolver: zodResolver(referralOutSearchParams),
     defaultValues: {
       referralFrom: "",
-      requestStatus: "",
-      responseStatus: "",
+      statusType: "all",
+      status: "",
     },
   });
 
@@ -79,10 +87,8 @@ const ViewReferralOut = () => {
       ...prev,
       referralFrom:
         values.referralFrom === "all" ? "" : values.referralFrom || "",
-      requestStatus:
-        values.requestStatus === "all" ? "" : values.requestStatus || "",
-      responseStatus:
-        values.responseStatus === "all" ? "" : values.responseStatus || "",
+      statusType: values.statusType === "all" ? "" : values.statusType || "",
+      status: values.status === "all" ? "" : values.status || "",
     }));
 
     setPage(1);
@@ -90,22 +96,21 @@ const ViewReferralOut = () => {
 
   const fetchReferralsList = useCallback(async () => {
     try {
-      if (providerDetails) {
-        const response = await getTransferData({
-          id: providerDetails.providerId,
-          idType: "Referring from ProviderID",
-          status: filters.responseStatus ?? "",
-        });
-        if (response) {
-          setResultList(response);
-          setTotalPages(Math.ceil(response.length / 10));
-        }
-        setLoading(false);
+      const response = await getTransferData({
+        id: providerDetails.providerId,
+        idType: "Referring from ProviderID",
+        statusType: filters.statusType ?? "responseStatus",
+        status: filters.status,
+      });
+      if (response) {
+        setResultList(response);
+        setTotalPages(Math.ceil(response.length / 10));
       }
+      setLoading(false);
     } catch (e) {
       console.log("Error", e);
     }
-  }, [providerDetails, filters]);
+  }, [filters, providerDetails]);
 
   useEffect(() => {
     fetchReferralsList();
@@ -116,10 +121,6 @@ const ViewReferralOut = () => {
     fetchReferralsList();
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className="space-y-4">
       <Form {...form}>
@@ -127,25 +128,6 @@ const ViewReferralOut = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className={formStyles.formFilterBody}
         >
-          {/* Referral From Filter */}
-          {/* <FormField
-              control={form.control}
-              name="referralFrom"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by Referral From" />
-                      </SelectTrigger>
-                      <SelectContent></SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            /> */}
-
           {/* Referral To Filter */}
           <FormField
             control={form.control}
@@ -208,20 +190,32 @@ const ViewReferralOut = () => {
             }}
           />
 
-          {/* Request Status Filter */}
+          {/* Status Type Filter */}
           <FormField
             control={form.control}
-            name="requestStatus"
+            name="statusType"
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
                 <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      form.setValue("status", "");
+                    }}
+                  >
                     <SelectTrigger>
-                      <SelectValue placeholder="Filter by Request Status" />
+                      <SelectValue placeholder="Status Type" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all" className="cursor-pointer">
                         All
+                      </SelectItem>
+                      <SelectItem value="requestStatus">
+                        Request Status
+                      </SelectItem>
+                      <SelectItem value="responseStatus">
+                        Response Status
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -231,21 +225,32 @@ const ViewReferralOut = () => {
             )}
           />
 
-          {/* Response Status Filter */}
+          {/* Status Filter */}
           <FormField
             control={form.control}
-            name="responseStatus"
+            name="status"
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Filter by Response Status" />
+                      <SelectValue placeholder="Filter by Status" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all" className="cursor-pointer">
                         All
                       </SelectItem>
+                      {form.getValues("statusType") === "requestStatus"
+                        ? referralRequestStatus.map((status) => (
+                            <SelectItem key={status.value} value={status.value}>
+                              {status.label}
+                            </SelectItem>
+                          ))
+                        : referralResponseStatus.map((status) => (
+                            <SelectItem key={status.value} value={status.value}>
+                              {status.label}
+                            </SelectItem>
+                          ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -259,7 +264,8 @@ const ViewReferralOut = () => {
           </div>
         </form>
       </Form>
-      {resultList && (
+      {loading && <TableShimmer />}
+      {!loading && resultList && (
         <DefaultDataTable
           title={"Referral Out"}
           onAddClick={() => {
