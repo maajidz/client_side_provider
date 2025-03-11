@@ -43,7 +43,6 @@ import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
-import LoadingButton from "../LoadingButton";
 import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "../ui/scroll-area";
 import formStyles from "@/components/formStyles.module.css";
@@ -206,10 +205,6 @@ const TasksDialog = ({
       .includes(searchTerm.toLowerCase())
   );
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -237,14 +232,18 @@ const TasksDialog = ({
                               <SelectValue placeholder="Choose Category" />
                             </SelectTrigger>
                             <SelectContent>
-                              {categoryOptions.map((option) => (
-                                <SelectItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.label}
-                                </SelectItem>
-                              ))}
+                              {loading ? (
+                                <div>Loading...</div>
+                              ) : (
+                                categoryOptions.map((option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </SelectItem>
+                                ))
+                              )}
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -285,11 +284,15 @@ const TasksDialog = ({
                               <SelectValue placeholder="Select Owner" />
                             </SelectTrigger>
                             <SelectContent>
-                              {ownersList.map((owner) => (
-                                <SelectItem key={owner.id} value={owner.id}>
-                                  {owner.firstName} {owner.lastName}
-                                </SelectItem>
-                              ))}
+                              {loading ? (
+                                <div>Loading...</div>
+                              ) : (
+                                ownersList.map((owner) => (
+                                  <SelectItem key={owner.id} value={owner.id}>
+                                    {owner.firstName} {owner.lastName}
+                                  </SelectItem>
+                                ))
+                              )}
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -358,7 +361,9 @@ const TasksDialog = ({
                                 />
                                 {searchTerm && visibleSearchList && (
                                   <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                                    {filteredPatients.length > 0 ? (
+                                    {loading ? (
+                                      <div>Loading...</div>
+                                    ) : filteredPatients.length > 0 ? (
                                       filteredPatients.map((patient) => (
                                         <div
                                           key={patient.id}
@@ -409,59 +414,59 @@ const TasksDialog = ({
                         <h4 className="text-lg font-semibold">
                           Date and Reminder Settings
                         </h4>
-                      <div className="flex flex-row">
-                        <FormField
-                          control={form.control}
-                          name="dueDate"
-                          render={({ field }) => (
-                            <FormItem className={formStyles.formItem}>
-                              <FormLabel>From Date:</FormLabel>
-                              <FormControl>
-                                <Input type="date" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="sendReminder"
-                          render={({ field }) => (
-                            <FormItem className={formStyles.formItem}>
-                              <FormLabel>Send Reminder Mail</FormLabel>
-                              {reminderOptions.map((option) => (
-                                <div
-                                  key={option}
-                                  className="flex items-center space-x-3"
-                                >
-                                  <Checkbox
-                                    id={option}
-                                    checked={field.value?.includes(option)}
-                                    onCheckedChange={(checked) => {
-                                      return checked
-                                        ? field.onChange([
-                                            ...(field.value || []),
-                                            option,
-                                          ])
-                                        : field.onChange(
-                                            field.value?.filter(
-                                              (value) => value !== option
-                                            )
-                                          );
-                                    }}
-                                  />
-                                  <label
-                                    htmlFor={option}
-                                    className="text-sm font-medium"
+                        <div className="flex flex-row">
+                          <FormField
+                            control={form.control}
+                            name="dueDate"
+                            render={({ field }) => (
+                              <FormItem className={formStyles.formItem}>
+                                <FormLabel>From Date:</FormLabel>
+                                <FormControl>
+                                  <Input type="date" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="sendReminder"
+                            render={({ field }) => (
+                              <FormItem className={formStyles.formItem}>
+                                <FormLabel>Send Reminder Mail</FormLabel>
+                                {reminderOptions.map((option) => (
+                                  <div
+                                    key={option}
+                                    className="flex items-center space-x-3"
                                   >
-                                    {option}
-                                  </label>
-                                </div>
-                              ))}
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                                    <Checkbox
+                                      id={option}
+                                      checked={field.value?.includes(option)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...(field.value || []),
+                                              option,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== option
+                                              )
+                                            );
+                                      }}
+                                    />
+                                    <label
+                                      htmlFor={option}
+                                      className="text-sm font-medium"
+                                    >
+                                      {option}
+                                    </label>
+                                  </div>
+                                ))}
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                         </div>
                       </div>
                     </>

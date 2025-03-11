@@ -24,13 +24,14 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "@/components/images/ImageOrders/columns";
-import LoadingButton from "@/components/LoadingButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { useRouter } from "next/navigation";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { imagesStatus } from "@/constants/data";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -72,8 +73,9 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
         if (providerDetails) {
           const response = await getImagesOrdersData({
             providerId: filters.orderedby || providerDetails.providerId,
-            limit: limit,
-            page: page,
+            status: filters.status,
+            limit,
+            page,
             userDetailsId,
           });
           if (response) {
@@ -111,10 +113,6 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
     fetchLabOrdersList(page);
     fetchOwnersList();
   }, [page, fetchLabOrdersList, fetchOwnersList]);
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <PageContainer>
@@ -170,14 +168,9 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="alghjl">Accll</SelectItem>
-                      {Array.from(
-                        new Set(
-                          orderList?.data.map((order) => order?.status)
-                        )
-                      ).map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {status}
+                      {imagesStatus.map((status) => (
+                        <SelectItem key={status.value} value={status.value}>
+                          {status.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -195,19 +188,22 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
         </form>
       </Form>
       <div className="space-y-5">
-        <DefaultDataTable
-          title={"Patient Image Orders"}
-          onAddClick={() =>
-            router.push(
-              `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_orders`
-            )
-          }
-          columns={columns()}
-          data={orderList?.data || []}
-          pageNo={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: number) => setPage(newPage)}
-        />
+        {loading && <TableShimmer />}
+        {!loading && (
+          <DefaultDataTable
+            title={"Patient Image Orders"}
+            onAddClick={() =>
+              router.push(
+                `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_orders`
+              )
+            }
+            columns={columns()}
+            data={orderList?.data || []}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
+        )}
       </div>
     </PageContainer>
   );

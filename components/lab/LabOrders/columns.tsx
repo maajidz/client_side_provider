@@ -27,10 +27,26 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
     },
   },
   {
+    accessorKey: "userDetails",
+    header: "Patient ID",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">{row.original.userDetails.patientId}</div>
+    ),
+  },
+  // {
+  //   accessorKey: "id",
+  //   header: "Lab ID",
+  //   cell: ({ row }) => (
+  //     <div className="cursor-pointer">{row.getValue("id")}</div>
+  //   ),
+  // },
+  {
     accessorKey: "providerDetails",
     header: "Ordered by",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.original.providerDetails.providerUniqueId}</div>
+      <div className="cursor-pointer">
+        {row.original.providerDetails.providerUniqueId}
+      </div>
     ),
   },
   {
@@ -63,8 +79,7 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
         </div>
       );
     },
-  },
- 
+  }, 
   {
     accessorKey: "status",
     header: "Status",

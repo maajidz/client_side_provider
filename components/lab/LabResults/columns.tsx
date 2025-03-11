@@ -2,7 +2,7 @@
 import { Result } from "@/types/labResults";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-
+import FormLabels from "@/components/custom_buttons/FormLabels";
 export const columns = (): ColumnDef<Result>[] => [
   // {
   //   accessorKey: "id",
@@ -95,19 +95,44 @@ export const columns = (): ColumnDef<Result>[] => [
       return (
         <div className="cursor-pointer">
           {testResults.map((results) => (
-            <div key={results.id}>
-              {results.comment}
+            <div key={results.id} className="flex flex-col gap-2">
+              <FormLabels label="Name" value={results.name} />
+              <div className="flex flex-row gap-3">
+                <FormLabels
+                  label="Result"
+                  value={`${results.result} ${results.unit}`}
+                />
+                <FormLabels
+                  label="Range"
+                  value={`${results.min}- ${results.max}`}
+                />
+              </div>
+              <FormLabels
+                label="Interpretation"
+                value={results.interpretation}
+              />
+              <FormLabels label="Comment" value={results.comment} />
+              <FormLabels label="Group Comment" value={results.groupComment} />
             </div>
           ))}
         </div>
       );
     },
   },
-  // {
-  //   accessorKey: "tags",
-  //   header: "Tags",
-  //   cell: ({ row }) => (
-  //     <div className="cursor-pointer">{row.getValue("tags")}</div>
-  //   ),
-  // },
+  {
+    accessorKey: "tags",
+    header: "Tags",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">{row.getValue("tags")}</div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const statusColor =
+        row.original.status === "completed" ? "success" : "warning";
+      return <Badge variant={`${statusColor}`}>{row.original.status}</Badge>;
+    },
+  },
 ];

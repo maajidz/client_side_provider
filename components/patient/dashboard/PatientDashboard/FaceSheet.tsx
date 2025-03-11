@@ -80,7 +80,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                   userData?.allergies.map((allergies, index) => (
                     <Badge variant="destructive" key={allergies?.id}>
                       {index === 0 ? "" : ""}
-                      {allergies?.Allergen}
+                      {allergies?.allergen}
                     </Badge>
                   ))
                 ) : (
@@ -107,7 +107,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                   >
                     <div className="flex flex-row gap-2">
                       <div className="text-sm font-medium">
-                        {userDashboardData?.diagnoses?.diagnosis_Id}
+                        {userDashboardData?.diagnoses?.diagnosisType?.name}
                         {/* <Badge className="inline-flex ml-2">
                           {userDashboardData?.diagnoses.ICD_Code}
                         </Badge> */}

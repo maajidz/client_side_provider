@@ -40,7 +40,7 @@ export const columns = ({
     accessorKey: "userDetails.user.firstName",
     header: "Patient",
     cell: ({ row }) => (
-      <div className="cursor-pointer">
+      <div className="cursor-pointer capitalize">
         {row.original.userDetails.user.firstName}{" "}
         {row.original.userDetails.user.lastName}
       </div>

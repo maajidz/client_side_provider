@@ -17,11 +17,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import LoadingButton from "@/components/LoadingButton";
-import SearchAndAddDrawer from "@/components/charts/Encounters/SOAP/Labs/SearchAndAddDrawer";
-import { Separator } from "@/components/ui/separator";
-import AddLabsDialog from "@/components/charts/Encounters/SOAP/Labs/AddLabsDialog";
-import PastOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/PastOrdersDialog";
-import ViewOrdersDialog from "@/components/charts/Encounters/SOAP/Labs/ViewOrdersDialog";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
@@ -434,7 +429,7 @@ const CreateLabResults = () => {
             </div>
           </form>
         </Form>
-        <div className="flex py-5 items-center space-x-4 text-sm">
+        {/* <div className="flex py-5 items-center space-x-4 text-sm">
           <SearchAndAddDrawer userDetailsId={""} />
           <Separator orientation="vertical" />
           <AddLabsDialog userDetailsId={""} />
@@ -442,7 +437,7 @@ const CreateLabResults = () => {
           <PastOrdersDialog userDetailsId={""} />
           <Separator orientation="vertical" />
           <ViewOrdersDialog userDetailsId={""} />
-        </div>
+        </div> */}
       </div>
     </>
   );

@@ -20,23 +20,20 @@ import { getLabOrdersData } from "@/services/chartsServices";
 import { LabOrdersDataInterface } from "@/types/chartsInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { columns } from "../../../lab/LabOrders/columns";
-import { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { useRouter } from "next/navigation";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 import { labOrderStatus } from "@/constants/data";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 interface OrderRecordsProps {
   userDetailsId: string;
 }
 
 function OrderRecords({ userDetailsId }: OrderRecordsProps) {
-  const providerDetails = useSelector((state: RootState) => state.login);
   const [orderList, setOrderList] = useState<LabOrdersDataInterface>();
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
   const router = useRouter();
@@ -98,9 +95,9 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
           userDetailsId,
           limit,
           page,
-          providerId: providerId || filters.orderedby,
+          providerId,
           status: status || filters.status,
-          orderedBy: providerDetails.providerId,
+          orderedBy: filters.orderedby,
         });
         if (response) {
           setOrderList(response);
@@ -113,7 +110,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
         setLoading(false);
       }
     },
-    [userDetailsId, filters, providerDetails.providerId]
+    [userDetailsId, filters]
   );
 
   useEffect(() => {
@@ -147,7 +144,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
                     defaultValue={field.value}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select Reviewer" />
+                      <SelectValue placeholder="Select Ordered By" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>

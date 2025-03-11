@@ -43,7 +43,6 @@ import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
 import { createEncounterRequest } from "@/services/chartsServices";
 import { fetchUserDataResponse } from "@/services/userServices";
-import LoadingButton from "../LoadingButton";
 import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 
@@ -135,14 +134,6 @@ const CreateEncounterDialog = ({
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <LoadingButton />
-      </div>
-    );
-  }
-
   return (
     <Dialog open={isDialogOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -185,7 +176,9 @@ const CreateEncounterDialog = ({
                                 userData?.user?.lastName
                                   ?.toLowerCase()
                                   .includes(term) ||
-                                userData?.id?.toLowerCase().includes(term)
+                                userData?.patientId
+                                  ?.toLowerCase()
+                                  .includes(term)
                             );
                           })
                           .map((userData) => (
@@ -202,7 +195,7 @@ const CreateEncounterDialog = ({
                               }}
                             >
                               {userData.user.firstName} {userData.user.lastName}{" "}
-                              (ID: {userData.id})
+                              (Patient ID: {userData.patientId})
                             </li>
                           ))}
                       </ul>
@@ -219,7 +212,7 @@ const CreateEncounterDialog = ({
                       {selectedPatient.user.lastName}
                     </p>
                     <p>
-                      <strong>ID:</strong> {selectedPatient.id}
+                      <strong>Patient ID:</strong> {selectedPatient.patientId}
                     </p>
                     <p>
                       <strong>Email:</strong> {selectedPatient.user.email}
@@ -294,7 +287,7 @@ const CreateEncounterDialog = ({
                       name="vist_type"
                       render={({ field }) => (
                         <FormItem className={formStyles.formItem}>
-                          <FormLabel>Encounter Mode:</FormLabel>
+                          <FormLabel>Visit Type:</FormLabel>
                           <FormControl>
                             <Select
                               value={field.value}
@@ -350,7 +343,7 @@ const CreateEncounterDialog = ({
                       )}
                     />
                     <div className="flex justify-center mt-3">
-                      <SubmitButton label="Create" />
+                      <SubmitButton label="Create" disabled={loading} />
                     </div>
                   </div>
                 </form>

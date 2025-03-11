@@ -29,6 +29,8 @@ import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
 import { useRouter } from "next/navigation";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import { imagesStatus } from "@/constants/data";
 
 interface ImageResultsProps {
   userDetailsId?: string;
@@ -114,10 +116,6 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
       .includes(searchTerm.toLowerCase())
   );
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className="space-y-4">
       <Form {...form}>
@@ -138,8 +136,11 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="signed">Signed</SelectItem>
-                      <SelectItem value="unsigned">Unsigned</SelectItem>
+                      {imagesStatus.map((status) => (
+                        <SelectItem key={status.value} value={status.value}>
+                          {status.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -158,7 +159,7 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
                   <FormControl>
                     <div className="relative">
                       <Input
-                        placeholder="Search Patient "
+                        placeholder="Search Patient"
                         value={searchTerm}
                         onChange={(e) => {
                           const value = e.target.value;
@@ -170,8 +171,16 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
                           }
                         }}
                       />
+
+                      {/* Loading Button */}
+                      {loading && (
+                        <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                          <LoadingButton />
+                        </div>
+                      )}
+
                       {searchTerm && visibleSearchList && (
-                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
                           {filteredPatients.length > 0 ? (
                             filteredPatients.map((patient) => (
                               <div
@@ -204,7 +213,8 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
           )}
         </form>
       </Form>
-      {resultList?.data && (
+      {loading && <TableShimmer />}
+      {!loading && resultList?.data && (
         <DefaultDataTable
           title={"Image Results"}
           onAddClick={() => {
