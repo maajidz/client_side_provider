@@ -72,7 +72,7 @@ export const columns = (): ColumnDef<LabOrdersData>[] => [
       return (
         <Badge
           variant={
-            row.original.status === "completed"
+            row.original.status === "active"
               ? "success"
               : "default"
           }

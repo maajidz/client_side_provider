@@ -98,7 +98,7 @@ const ViewPatientMedications = ({
 
   return (
     <>
-      <div className="">
+      <div className="flex flex-col gap-4">
         {resultList && (
           <DefaultDataTable
             className="flex flex-col gap-4"

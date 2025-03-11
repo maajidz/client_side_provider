@@ -90,8 +90,16 @@ export const columns = ({
     cell: ({ row }) => (
       <div className="cursor-pointer flex flex-row gap-3">
         <div>{row.original.diagnosisType.name}</div>
-        <div>{row.original.diagnosisType.icdCode}</div>
       </div>
+    ),
+  },
+  {
+    accessorKey: "icdCode",
+    header: "ICD Code",
+    cell: ({ row }) => (
+      <Badge className="cursor-pointer">
+        {row.original.diagnosisType.icdCode}
+      </Badge>
     ),
   },
   {
