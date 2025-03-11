@@ -187,15 +187,8 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {Array.from(
-                        new Set(
-                          resultList?.results.map((result) => result?.status)
-                        )
-                      ).map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {status}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -267,7 +260,7 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
                         }}
                       />
                       {searchTerm && visibleSearchList && (
-                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
                           {filteredPatients.length > 0 ? (
                             filteredPatients.map((patient) => (
                               <div

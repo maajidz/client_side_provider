@@ -21,20 +21,55 @@ import { RootState } from "@/store/store";
 import { LabOrdersDataInterface } from "@/types/chartsInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useState } from "react";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { z } from "zod";
 import { columns } from "./columns";
 import LoadingButton from "@/components/LoadingButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { z } from "zod";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { UserData } from "@/types/userInterface";
+import { fetchUserDataResponse } from "@/services/userServices";
+import { labOrderStatus } from "@/constants/data";
 
 function LabOrders() {
+  // Provider Details
   const providerDetails = useSelector((state: RootState) => state.login);
+
+  // Lab Orders State
   const [orderList, setOrderList] = useState<LabOrdersDataInterface>();
+
+  // Patient State
+  const [patientData, setPatientData] = useState<UserData[]>([]);
+
+  // Providers State
+  const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
+
+  // Search State
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleSearchList, setVisibleSearchList] = useState(false);
+
+  // Loading State
   const [loading, setLoading] = useState(false);
+
+  // Pagination State
+  const limit = 4;
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  // Filter State
+  const [filters, setFilters] = useState({
+    orderedby: "",
+    status: "",
+    name: "",
+  });
+
+  // Router Function
+  const router = useRouter();
+
+  // Form State
   const form = useForm<z.infer<typeof filterLabOrdersSchema>>({
     resolver: zodResolver(filterLabOrdersSchema),
     defaultValues: {
@@ -45,22 +80,28 @@ function LabOrders() {
   });
 
   function onSubmit(values: z.infer<typeof filterLabOrdersSchema>) {
-    console.log(values);
-  }
+    setFilters((prev) => ({
+      ...prev,
+      orderedby: values.orderedby === "all" ? "" : values.orderedby || "",
+      status: values.status === "all" ? "" : values.status || "",
+      name: filters.name,
+    }));
 
-  const router = useRouter();
+    setPage(1);
+  }
 
   const fetchLabOrdersList = useCallback(
     async (page: number) => {
       try {
         setLoading(true);
-        const limit = 4;
         if (providerDetails) {
           const response = await getLabOrdersData({
-            orderedBy: providerDetails.providerId,
             providerId: providerDetails.providerId,
-            limit: limit,
-            page: page,
+            userDetailsId: filters.name,
+            orderedBy: filters.orderedby,
+            status: filters.status,
+            limit,
+            page,
           });
           if (response) {
             setOrderList(response);
@@ -73,12 +114,52 @@ function LabOrders() {
         setLoading(false);
       }
     },
-    [providerDetails]
+    [providerDetails, filters]
   );
+
+  const fetchProvidersData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({
+        page: page,
+        limit: 10,
+      });
+      setProvidersList(response.data);
+    } catch (err) {
+      console.error("Error fetching providers data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page]);
+
+  // GET Patients' Data
+  const fetchPatientData = useCallback(async (currentPage: number) => {
+    setLoading(true);
+
+    try {
+      const response = await fetchUserDataResponse({ pageNo: currentPage });
+      if (response) {
+        setPatientData(response.data);
+      }
+    } catch (err) {
+      console.error("Error fetching user data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchLabOrdersList(page);
-  }, [page, fetchLabOrdersList]);
+    fetchProvidersData();
+    fetchPatientData(page);
+  }, [page, fetchLabOrdersList, fetchProvidersData, fetchPatientData]);
+
+  const filteredPatients = patientData.filter((patient) =>
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   if (loading) {
     return <LoadingButton />;
@@ -103,10 +184,27 @@ function LabOrders() {
                     defaultValue={field.value}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select Reviewer" />
+                      <SelectValue placeholder="Select Ordered By" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="reviewer1">Reviewer</SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      {providersList
+                        .filter(
+                          (
+                            provider
+                          ): provider is typeof provider & {
+                            providerDetails: { id: string };
+                          } => Boolean(provider?.providerDetails?.id)
+                        )
+                        .map((provider) => (
+                          <SelectItem
+                            key={provider.providerDetails.id}
+                            value={provider.providerDetails.id}
+                            className="cursor-pointer"
+                          >
+                            {provider.firstName} {provider.lastName}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -130,8 +228,12 @@ function LabOrders() {
                       <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="signed">Signed</SelectItem>
-                      <SelectItem value="unsigned">Unsigned</SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      {labOrderStatus.map((status) => (
+                        <SelectItem value={status.value} key={status.value}>
+                          {status.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -147,7 +249,46 @@ function LabOrders() {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Search Patient" {...field} />
+                  <div className="relative">
+                    <Input
+                      placeholder="Search Patient "
+                      value={searchTerm}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setSearchTerm(value);
+                        setVisibleSearchList(true);
+
+                        if (!value) {
+                          field.onChange("");
+                        }
+                      }}
+                    />
+                    {searchTerm && visibleSearchList && (
+                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
+                        {filteredPatients.length > 0 ? (
+                          filteredPatients.map((patient) => (
+                            <div
+                              key={patient.id}
+                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                              onClick={() => {
+                                field.onChange(patient.id);
+                                setSearchTerm(
+                                  `${patient.user.firstName} ${patient.user.lastName}`
+                                );
+                                setVisibleSearchList(false);
+                              }}
+                            >
+                              {`${patient.user.firstName} ${patient.user.lastName}`}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="px-4 py-2 text-gray-500">
+                            No results found
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
