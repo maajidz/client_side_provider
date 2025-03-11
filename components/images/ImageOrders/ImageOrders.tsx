@@ -31,6 +31,8 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import { imagesStatus } from "@/constants/data";
 
 function ImageOrders() {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -106,8 +108,9 @@ function ImageOrders() {
           const response = await getImagesOrdersData({
             providerId: filters.orderedby === "all" ? "" : filters.orderedby,
             userDetailsId: filters.name,
-            limit: limit,
-            page: page,
+            status: filters.status,
+            limit,
+            page,
           });
           if (response) {
             setOrderList(response);
@@ -121,7 +124,7 @@ function ImageOrders() {
         setLoading(false);
       }
     },
-    [providerDetails, filters.orderedby, filters.name]
+    [providerDetails, filters.orderedby, filters.name, filters.status]
   );
 
   useEffect(() => {
@@ -135,10 +138,6 @@ function ImageOrders() {
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <div className="space-y-4">
@@ -193,8 +192,12 @@ function ImageOrders() {
                       <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="signed">Signed</SelectItem>
-                      <SelectItem value="unsigned">Unsigned</SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      {imagesStatus.map((status) => (
+                        <SelectItem key={status.value} value={status.value}>
+                          {status.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -224,8 +227,16 @@ function ImageOrders() {
                         }
                       }}
                     />
+
+                    {/* Loading Button */}
+                    {loading && (
+                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                        <LoadingButton />
+                      </div>
+                    )}
+
                     {searchTerm && visibleSearchList && (
-                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
                         {filteredPatients.length > 0 ? (
                           filteredPatients.map((patient) => (
                             <div
@@ -257,7 +268,8 @@ function ImageOrders() {
           />
         </form>
       </Form>
-      {orderList?.data && (
+      {loading && <TableShimmer />}
+      {!loading && orderList?.data && (
         <DefaultDataTable
           title={"Image Orders"}
           onAddClick={() => {

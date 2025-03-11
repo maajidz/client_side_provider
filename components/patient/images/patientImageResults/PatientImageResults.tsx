@@ -1,4 +1,5 @@
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 import {
   Form,
   FormField,
@@ -21,12 +22,12 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "@/components/images/ImageResults/columns";
-import LoadingButton from "@/components/LoadingButton";
 import { getImageResults } from "@/services/imageResultServices";
 import { ImageResultResponseInterface } from "@/types/imageResults";
 import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
 import PageContainer from "@/components/layout/page-container";
 import { useRouter } from "next/navigation";
+import { imagesStatus } from "@/constants/data";
 
 function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -78,10 +79,6 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
     fetchImageResultsList(page);
   }, [page, fetchImageResultsList]);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <PageContainer>
       <Form {...form}>
@@ -104,12 +101,11 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
                       <SelectItem value="all" className="cursor-pointer">
                         All
                       </SelectItem>
-                      <SelectItem value="signed" className="cursor-pointer">
-                        Signed
-                      </SelectItem>
-                      <SelectItem value="unsigned" className="cursor-pointer">
-                        Unsigned
-                      </SelectItem>
+                      {imagesStatus.map((status) => (
+                        <SelectItem key={status.value} value={status.value}>
+                          {status.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -120,19 +116,22 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
         </form>
       </Form>
       <div className="space-y-5">
-        <DefaultDataTable
-          title={"Patient Image Results"}
-          onAddClick={() =>
-            router.push(
-              `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_results`
-            )
-          }
-          columns={columns()}
-          data={resultList?.data || []}
-          pageNo={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: number) => setPage(newPage)}
-        />
+        {loading && <TableShimmer />}
+        {!loading && (
+          <DefaultDataTable
+            title={"Patient Image Results"}
+            onAddClick={() =>
+              router.push(
+                `/dashboard/provider/patient/${userDetailsId}/images/create_patient_image_results`
+              )
+            }
+            columns={columns()}
+            data={resultList?.data || []}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
+        )}
       </div>
     </PageContainer>
   );

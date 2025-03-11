@@ -117,7 +117,7 @@ export const navItems: NavItem[] = [
     label: "Injections",
     badgeIcon: "arrowUp",
     badgeColor: "blue",
-    badgeLabel: "5 new"
+    badgeLabel: "5 new",
   },
   {
     title: "Referrals",
@@ -126,7 +126,7 @@ export const navItems: NavItem[] = [
     label: "Referrals",
     badgeIcon: "arrowUp",
     badgeColor: "blue",
-    badgeLabel: "15 new"
+    badgeLabel: "15 new",
   },
   // {
   //   title: "Profile",
@@ -294,16 +294,21 @@ export const labOrderStatus = [
   { value: "Cancelled", label: "Cancelled" },
 ];
 
+export const imagesStatus = [
+  { value: "pending", label: "Pending" },
+  { value: "completed", label: "Completed" },
+];
+
 export const taskStatus = [
   { value: "PENDING", label: "Pending" },
   { value: "IN_PROGRESS", label: "In Progress" },
   { value: "Completed", label: "Completed" },
-]; 
+];
 
 export const injectionStatus = [
   { value: "Pending", label: "Pending" },
   { value: "active", label: "Active" },
-]; 
+];
 
 export const US_STATES = [
   { name: "Alabama" },
@@ -425,9 +430,9 @@ export const timeZonesList = [
 
 // Is Insured
 export const insuranceType = [
-    "Not Insured",
-    "Private Commercial type",
-    "Others",
+  "Not Insured",
+  "Private Commercial type",
+  "Others",
 ];
 
 // Insurance Type

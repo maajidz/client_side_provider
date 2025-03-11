@@ -546,17 +546,20 @@ export const getLabOrdersData = async ({
 export const getImagesOrdersData = async ({
   userDetailsId,
   providerId,
+  status,
   page,
   limit,
 }: {
   userDetailsId?: string;
   providerId?: string;
+  status?: string;
   page?: number;
   limit?: number;
 }) => {
   const queryParams = new URLSearchParams();
   if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
   if (providerId) queryParams.append("providerId", providerId);
+  if (status) queryParams.append('status', status);
   if (page) queryParams.append("page", page.toString());
   if (limit) queryParams.append("limit", limit.toString());
 
