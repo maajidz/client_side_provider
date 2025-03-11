@@ -185,7 +185,7 @@ const CreateEncounterDialog = ({
                                 userData?.user?.lastName
                                   ?.toLowerCase()
                                   .includes(term) ||
-                                userData?.id?.toLowerCase().includes(term)
+                                userData?.patientId?.toLowerCase().includes(term)
                             );
                           })
                           .map((userData) => (
@@ -202,7 +202,7 @@ const CreateEncounterDialog = ({
                               }}
                             >
                               {userData.user.firstName} {userData.user.lastName}{" "}
-                              (ID: {userData.id})
+                              (Patient ID: {userData.patientId})
                             </li>
                           ))}
                       </ul>
@@ -219,7 +219,7 @@ const CreateEncounterDialog = ({
                       {selectedPatient.user.lastName}
                     </p>
                     <p>
-                      <strong>ID:</strong> {selectedPatient.id}
+                      <strong>Patient ID:</strong> {selectedPatient.patientId}
                     </p>
                     <p>
                       <strong>Email:</strong> {selectedPatient.user.email}
@@ -294,7 +294,7 @@ const CreateEncounterDialog = ({
                       name="vist_type"
                       render={({ field }) => (
                         <FormItem className={formStyles.formItem}>
-                          <FormLabel>Encounter Mode:</FormLabel>
+                          <FormLabel>Visit Type:</FormLabel>
                           <FormControl>
                             <Select
                               value={field.value}

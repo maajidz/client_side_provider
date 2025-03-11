@@ -62,7 +62,7 @@ export const columns = (
           className="cursor-pointer"
           onClick={() => id && handleRowClick(id)}
         >
-          {isVerified ? "True" : "False"}
+          {isVerified ? "Yes" : "No"}
         </div>
       );
     },

@@ -44,7 +44,7 @@ const DetailsBody = ({
           />
           <FormLabels
             label="DOB"
-            value={patientDetails.userDetails?.dob.split("T")[0]}
+            value={patientDetails.userDetails?.dob?.split("T")[0]}
           />
         </div>
       </div>
