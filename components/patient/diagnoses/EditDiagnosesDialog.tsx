@@ -82,13 +82,14 @@ export default function EditDiagnosisDialog({
     },
   });
 
+  console.log(diagnosisData);
   const onSubmit: SubmitHandler<z.infer<typeof editDiagnosisSchema>> = async (
     values: z.infer<typeof editDiagnosisSchema>
   ) => {
     setLoading(true);
 
     const requestData: UpdateDiagnosesRequestBody = {
-      diagnosis_Id: diagnosisData?.diagnosis_Id ?? "",
+      id: diagnosisData?.id ?? "",
       // ICD_Code: diagnosisData?.ICD_Code,
       notes: values.notes,
       status: values.status,
@@ -158,8 +159,8 @@ export default function EditDiagnosisDialog({
             </thead>
             <tbody>
               <tr>
-                <td className="px-3 py-2">{diagnosisData?.diagnosisType.icdCode}</td>
-                <td className="px-3 py-2">{diagnosisData?.diagnosisType.name}</td>
+                <td className="px-3 py-2">{diagnosisData?.type.ICD_Code}</td>
+                <td className="px-3 py-2">{diagnosisData?.type.diagnosis_name}</td>
               </tr>
             </tbody>
           </table>
