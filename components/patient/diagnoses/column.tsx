@@ -46,7 +46,7 @@ const handleDiagnosisStatus = async (
 ) => {
   setLoading(true);
   const requestData: UpdateDiagnosesRequestBody = {
-    diagnosis_Id: diagnosisData?.diagnosis_Id ?? "",
+    id: diagnosisData?.diagnosis_Id ?? "",
     // ICD_Code: diagnosisData?.ICD_Code,
     notes: diagnosisData.notes,
     status: status,
@@ -89,8 +89,8 @@ export const columns = ({
     header: "Diagnosis Name",
     cell: ({ row }) => (
       <div className="cursor-pointer flex flex-row gap-3">
-        <div>{row.original.diagnosisType.name}</div>
-        <div>{row.original.diagnosisType.icdCode}</div>
+        <div>{row.original.type.diagnosis_name}</div>
+        <div>{row.original.type.ICD_Code}</div>
       </div>
     ),
   },

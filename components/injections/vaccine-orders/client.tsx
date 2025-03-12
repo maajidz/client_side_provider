@@ -170,17 +170,17 @@ function VaccinesClient() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+            className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4 w-full"
           >
             {/* Ordered By Filter */}
             <FormField
               control={form.control}
               name="providerId"
               render={({ field }) => (
-                <FormItem className="flex items-center">
+                <FormItem className="flex items-center w-full">
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Filter by Ordered by" />
                       </SelectTrigger>
                       <SelectContent>
@@ -221,14 +221,17 @@ function VaccinesClient() {
               control={form.control}
               name="status"
               render={({ field }) => (
-                <FormItem className="flex items-center">
+                <FormItem className="flex items-center w-full">
                   <FormControl>
                     <Select
                       defaultValue={field.value}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by Status" />
+                      <SelectTrigger className="w-full">
+                        <SelectValue
+                          placeholder="Filter by Status"
+                          className="w-full"
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all" className="cursor-pointer">
@@ -256,10 +259,11 @@ function VaccinesClient() {
               control={form.control}
               name="userDetailsId"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormControl>
-                    <div className="relative">
+                    <div className="relative w-full">
                       <Input
+                        className="w-full"
                         placeholder="Search Patient "
                         value={searchTerm}
                         onChange={(e) => {

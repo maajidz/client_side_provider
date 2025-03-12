@@ -15,7 +15,10 @@ export const uploadDocument = async ({
   formData.append("document_type", requestData.document_type);
   formData.append("provderId", requestData.provderId);
   formData.append("date", requestData.date);
-  formData.append("file_for_review", requestData.file_for_review?.toString() || "false");
+  formData.append(
+    "file_for_review",
+    requestData.file_for_review?.toString() || "false"
+  );
   formData.append("userDetailsId", requestData.userDetailsId);
 
   // Append each file in the `images` array
@@ -40,14 +43,20 @@ export const getDocumentsData = async ({
   userDetailsId,
   reviewerId,
   status,
+  limit,
+  page,
 }: {
   userDetailsId: string;
   reviewerId?: string;
   status?: string;
+  limit: number;
+  page: number;
 }) => {
   const queryParams = new URLSearchParams();
   if (reviewerId) queryParams.append("reviewerId", reviewerId);
   if (status) queryParams.append("status", status);
+  if (limit) queryParams.append("limit", limit.toString());
+  if (page) queryParams.append("page", page.toString());
 
   const response = await ApiFetch({
     url: `/provider/documents/all/${userDetailsId}?${queryParams}`,

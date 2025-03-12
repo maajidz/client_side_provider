@@ -38,7 +38,7 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
         setLoading(true);
         try {
             await deleteDiagnoses({ diagnosisId: diagnosesId });
-            showToast({ toast, type: "success", message: "Deleted succesfully!" })
+            showToast({ toast, type: "success", message: "Deleted successfully!" })
             setPrevDiagnosis((prev) =>
                 prev.filter((diagnosis) => diagnosis.id !== diagnosesId)
             );
@@ -49,7 +49,6 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
             setLoading(false)
         }
     }
-
     const handleChange = (index: number, field: string, value: string) => {
         const updatedDiagnoses = [...prevDiagnosis];
         updatedDiagnoses[index] = { ...updatedDiagnoses[index], [field]: value };
@@ -73,6 +72,7 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
                     )
                 );
             }
+            console.log(response);
         } catch (e) {
             console.log("Error", e);
             showToast({ toast, type: "error", message: "Failed to update Diagnosis" })
@@ -103,14 +103,14 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
                         <Input
                             type="text"
                             placeholder="Enter Diagnosis"
-                            value={diagnoses.diagnosis_name}
+                            value={diagnoses.type.diagnosis_name}
                             onChange={(e) => handleChange(index, 'name', e.target.value)}
                             className="col-span-4 border rounded sm:max-w-32"
                         />
                         <Input
                             type="text"
                             placeholder="ICD Codes"
-                            value={diagnoses.ICD_Code}
+                            value={diagnoses.type.ICD_Code}
                             onChange={(e) => handleChange(index, 'ICD_Code', e.target.value)}
                             className="col-span-4 border rounded sm:max-w-32 "
                         />

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -44,6 +44,7 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
+import { getDosageUnits } from "@/services/enumServices";
 
 const InjectionsDialog = ({
   userDetailsId,
@@ -57,8 +58,40 @@ const InjectionsDialog = ({
   isOpen: boolean;
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState(false);
   const { toast } = useToast();
+
+  // Dosage Units
+  const [dosageUnits, setDosageUnits] = useState<string[]>([]);
+
+  // GET Dosage Units
+  const fetchDosageUnits = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getDosageUnits();
+
+      if (response) {
+        setDosageUnits(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch dosage units",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
 
   const form = useForm<z.infer<typeof createInjectionSchema>>({
     resolver: zodResolver(createInjectionSchema),
@@ -151,6 +184,10 @@ const InjectionsDialog = ({
     }
   };
 
+  useEffect(() => {
+    fetchDosageUnits();
+  }, [fetchDosageUnits]);
+
   if (loading) {
     return <LoadingButton />;
   }
@@ -219,9 +256,11 @@ const InjectionsDialog = ({
                                 <SelectValue placeholder="Select Unit" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="mg">mg</SelectItem>
-                                <SelectItem value="unit2">Unit 2</SelectItem>
-                                <SelectItem value="unit3">Unit 3</SelectItem>
+                                {dosageUnits.map((unit) => (
+                                  <SelectItem key={unit} value={unit}>
+                                    {unit}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           </FormControl>
