@@ -1,4 +1,6 @@
+import { Provider } from "./alertInterface";
 import { ProviderDetails } from "./loginInterface";
+import { User } from "./userInterface";
 
 export interface CreateEncounterInterface {
   visit_type: string;
@@ -527,6 +529,12 @@ export interface ImageOrdersData {
   updatedAt: string;
   imageType: ImageType;
   imageTests: ImagesTestData[];
+  userDetails: {
+    id: string
+    patientId: any
+    user: User
+  }
+  providerDetails: Provider
 }
 
 export interface ImageType {

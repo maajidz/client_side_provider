@@ -244,7 +244,7 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
                                   setSelectedUser(patient);
                                 }}
                               >
-                                {`${patient.user.firstName} ${patient.user.lastName}`}
+                                {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
                               </div>
                             ))
                           ) : (
