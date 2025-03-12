@@ -90,7 +90,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
   };
 
   return (
-    <div style={{ height: "80vh" }}>
+    <div className="md:h-[calc(100vh-20rem)]">
       <BigCalendar
         localizer={localizer}
         events={events}
@@ -98,7 +98,6 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
         onNavigate={handleNavigate}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: "100%" }}
         views={[Views.MONTH, Views.WEEK, Views.DAY]}
         view={currentView}
         onView={handleViewChange}
@@ -107,9 +106,21 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
         onSelectEvent={handleSelectEvent}
         eventPropGetter={(event) => ({
           style: {
-            borderColor: "#84012A",
+            borderColor: "text-gray-100",
             backgroundColor: event.backgroundColor,
             color: "#84012A",
+          },
+        })}
+        slotPropGetter={() => ({
+          style: {
+            backgroundColor: "red",
+            borderColor: "text-red-500",
+          },
+        })}
+        dayPropGetter={() => ({
+          style: {
+            borderColor: "#f5f5f5",
+            display: "flex",
           },
         })}
       />
