@@ -210,7 +210,7 @@ function InjectionsClient() {
                     defaultValue={field.value}
                     onValueChange={field.onChange}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Filter by Ordered by" />
                     </SelectTrigger>
                     <SelectContent>
@@ -257,7 +257,7 @@ function InjectionsClient() {
                     defaultValue={field.value}
                     onValueChange={field.onChange}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Filter by Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -284,10 +284,11 @@ function InjectionsClient() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <div className="relative">
+                  <div className="relative w-full">
                     <Input
                       placeholder="Search Patient "
                       value={searchTerm}
+                      className="w-full"
                       onChange={(e) => {
                         const value = e.target.value;
                         setSearchTerm(value);
