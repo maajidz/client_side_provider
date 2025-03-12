@@ -45,6 +45,7 @@ import { useForm } from "react-hook-form";
 import { useCallback, useEffect, useState } from "react";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getDosageUnits } from "@/services/enumServices";
 
 interface EditSupplementProps {
   selectedSupplement: SupplementInterfaceResponse;
@@ -70,7 +71,12 @@ function EditSupplement({
   const [supplementsData, setSupplementsData] = useState<
     SupplementTypesInterface[]
   >([]);
+
+  // Dosage Units
+  const [dosageUnits, setDosageUnits] = useState<string[]>([]);
+
   const [supplementId, setSupplementId] = useState("");
+
   // Search Supplement States
   const [searchTerm, setSearchTerm] = useState("");
   const [isListVisible, setIsListVisible] = useState(false);
@@ -124,6 +130,35 @@ function EditSupplement({
     }
   }, [toast]);
 
+  // GET Dosage Units
+  const fetchDosageUnits = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getDosageUnits();
+
+      if (response) {
+        setDosageUnits(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch dosage units",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
+
   // PATCH Supplement
   const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
     setLoading(true);
@@ -162,7 +197,8 @@ function EditSupplement({
   // * Effects
   useEffect(() => {
     fetchAllSupplements();
-  }, [fetchAllSupplements]);
+    fetchDosageUnits();
+  }, [fetchAllSupplements, fetchDosageUnits]);
 
   const filteredSupplements = supplementsData.filter((supplement) =>
     supplement.supplement_name.toLocaleLowerCase().includes(searchTerm)
@@ -341,10 +377,21 @@ function EditSupplement({
                     <FormItem className="flex gap-2 justify-center items-center">
                       <FormLabel className="w-fit">Unit</FormLabel>
                       <FormControl>
-                        <Input
-                          defaultValue={selectedSupplement.unit}
-                          onChange={field.onChange}
-                        />
+                        <Select
+                          defaultValue={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {dosageUnits.map((unit) => (
+                              <SelectItem key={unit} value={unit}>
+                                {unit}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -43,6 +43,7 @@ import {
 import { showToast } from "@/utils/utils";
 import { useForm } from "react-hook-form";
 import { useCallback, useEffect, useState } from "react";
+import { getDosageUnits } from "@/services/enumServices";
 
 function SupplementsDialog({
   userDetailsId,
@@ -63,8 +64,15 @@ function SupplementsDialog({
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isListVisible, setIsListVisible] = useState<boolean>(false);
 
+  // Dosage Units
+  const [dosageUnits, setDosageUnits] = useState<string[]>([]);
+
   // Loading State
-  const [loading, setLoading] = useState({ get: false, post: false });
+  const [loading, setLoading] = useState({
+    get: false,
+    post: false,
+    dosage: false,
+  });
 
   // Toast State
   const { toast } = useToast();
@@ -111,6 +119,35 @@ function SupplementsDialog({
       comments: selectedSupplement?.comments || "",
     },
   });
+
+  // GET Dosage Units
+  const fetchDosageUnits = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, dosage: true }));
+
+    try {
+      const response = await getDosageUnits();
+
+      if (response) {
+        setDosageUnits(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch dosage units",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, dosage: false }));
+    }
+  }, [toast]);
 
   // POST Supplement
   const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
@@ -168,7 +205,8 @@ function SupplementsDialog({
 
   useEffect(() => {
     fetchAllSupplements();
-  }, [fetchAllSupplements]);
+    fetchDosageUnits();
+  }, [fetchAllSupplements, fetchDosageUnits]);
 
   useEffect(() => {
     if (selectedSupplement) {
@@ -225,7 +263,6 @@ function SupplementsDialog({
                       <FormControl>
                         <div className="relative">
                           <Input
-                          disabled
                             {...field}
                             value={searchTerm || field.value}
                             placeholder="Search Supplement..."
@@ -243,9 +280,7 @@ function SupplementsDialog({
                                     key={supplement.id}
                                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                     onClick={() => {
-                                      field.onChange(
-                                        supplement.id
-                                      );
+                                      field.onChange(supplement.id);
                                       setSearchTerm(supplement.supplement_name);
                                       setIsListVisible(false);
                                     }}
@@ -377,10 +412,11 @@ function SupplementsDialog({
                             <SelectValue placeholder="Select Unit" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="gram">gram</SelectItem>
-                            <SelectItem value="mg">mg</SelectItem>
-                            <SelectItem value="ml">ml</SelectItem>
-                            <SelectItem value="tablet(s)">tablet(s)</SelectItem>
+                            {dosageUnits.map((unit) => (
+                              <SelectItem key={unit} value={unit}>
+                                {unit}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </FormControl>
