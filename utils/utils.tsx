@@ -1,4 +1,5 @@
 import { LucideIcon } from "lucide-react";
+import { format } from "date-fns";
 
 export const formatDate = (date: Date) => {
   let day = `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}`;
@@ -41,3 +42,18 @@ export const calculateAge = (dob: string): number => {
 
   return isBeforeBirthdayThisYear ? yearsDifference - 1 : yearsDifference;
 };
+
+
+export const renderAppointmentTime = (timeOfAppointment: string, endtimeOfAppointment: string) => {
+  const startTime = new Date(`1970-01-01T${timeOfAppointment}Z`);
+  const endTime = new Date(`1970-01-01T${endtimeOfAppointment}Z`);
+  
+  const durationInMinutes = Math.round((endTime.getTime() - startTime.getTime()) / 60000);
+  const durationHours = Math.floor(durationInMinutes / 60);
+  const remainingMinutes = durationInMinutes % 60;
+
+  const timeRange = `${format(startTime, 'hh:mm a')} - ${format(endTime, 'hh:mm a')}`;
+  return durationHours >= 1 
+    ? `${timeRange} (${durationHours} hour${durationHours > 1 ? 's' : ''} ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''})` 
+    : `${timeRange} (${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''})`;
+}; 

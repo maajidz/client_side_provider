@@ -8,6 +8,7 @@ export interface ProviderAppointmentsInterface {
 }
 
 export interface ProviderAppointmentsData {
+  duration: any;
   id: string
   patientName: string
   patientEmail: string

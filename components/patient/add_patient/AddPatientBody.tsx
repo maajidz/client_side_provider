@@ -86,7 +86,7 @@ const AddPatientBody = () => {
         typeof addNewPatientSchema.shape.weight
       >,
       phoneNumber: "",
-      dob: "",
+      dob: String(new Date()),
       state: "",
       gender: "",
       email: "",
@@ -120,8 +120,6 @@ const AddPatientBody = () => {
       firstNameRef.current.focus();
     }
   }, []);
-
-
 
   const onSubmit = async (data: z.infer<typeof addNewPatientSchema>) => {
     setLoading(true);
@@ -258,7 +256,7 @@ const AddPatientBody = () => {
               }}
             />
             
-            <div ref={basicSectionRef} className={`flex flex-row gap-4 p-4 ${activeSection === "basic" ? 'relative z-10 opacity-100' : ''} ${isBasicFilled && activeSection !== "basic" ? 'opacity-80' : ''} ${!isBasicFilled && activeSection !== "basic" ? 'opacity-70' : ''}`}>
+            <div ref={basicSectionRef} className={`hover:opacity-100 flex flex-row gap-4 p-4 ${activeSection === "basic" ? 'relative z-10 opacity-100' : ''} ${isBasicFilled && activeSection !== "basic" ? 'opacity-80' : ''} ${!isBasicFilled && activeSection !== "basic" ? 'opacity-70' : ''}`}>
               <div 
                 className={`
                   flex flex-col gap-1 items-center justify-center w-11 h-11 rounded-lg
@@ -393,7 +391,9 @@ const AddPatientBody = () => {
                               className="text-center justify-center w-[174px]"
                               onFocus={() => handleInputFocus("basic")}
                               onChange={(e) => {
-                                field.onChange(e.target.value);
+                                const selectedDate = new Date(e.target.value);
+                                const formattedDate = selectedDate.toISOString().split('T')[0];
+                                field.onChange(formattedDate);
                                 handleInputChange("basic");
                                 checkBasicFilled();
                               }}
@@ -408,7 +408,7 @@ const AddPatientBody = () => {
               </div>
             </div>
 
-            <div ref={contactSectionRef} className={`flex flex-row gap-4 p-4 ${activeSection === "contact" ? 'relative z-10 opacity-100' : ''} ${isContactFilled && activeSection !== "contact" ? 'opacity-80' : ''} ${!isContactFilled && activeSection !== "contact" ? 'opacity-70' : ''}`}>
+            <div ref={contactSectionRef} className={`hover:opacity-100 flex flex-row gap-4 p-4 ${activeSection === "contact" ? 'relative z-10 opacity-100' : ''} ${isContactFilled && activeSection !== "contact" ? 'opacity-80' : ''} ${!isContactFilled && activeSection !== "contact" ? 'opacity-70' : ''}`}>
               <div 
                 className={`
                   flex flex-col gap-1 items-center justify-center w-11 h-11 rounded-lg
@@ -546,7 +546,7 @@ const AddPatientBody = () => {
               </div>
             </div>
 
-            <div ref={vitalsSectionRef} className={`flex flex-row gap-4 p-4 ${activeSection === "vitals" ? 'relative z-10 opacity-100' : ''} ${isVitalsFilled && activeSection !== "vitals" ? 'opacity-80' : ''} ${!isVitalsFilled && activeSection !== "vitals" ? 'opacity-70' : ''}`}>
+            <div ref={vitalsSectionRef} className={`hover:opacity-100 flex flex-row gap-4 p-4 ${activeSection === "vitals" ? 'relative z-10 opacity-100' : ''} ${isVitalsFilled && activeSection !== "vitals" ? 'opacity-80' : ''} ${!isVitalsFilled && activeSection !== "vitals" ? 'opacity-70' : ''}`}>
               <div 
                 className={`
                   flex flex-col gap-1 items-center justify-center w-11 h-11 rounded-lg

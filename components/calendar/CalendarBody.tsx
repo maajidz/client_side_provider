@@ -7,9 +7,9 @@ import LoadingButton from "@/components/LoadingButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import React from "react";
-import { PlusIcon } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import CalendarComponent from "@/components/calendar/CalendarComponent";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList } from "@/components/ui/tabs";
 import ListViewBody from "@/components/calendar/ListViewBody";
 import { fetchProviderAppointments } from "@/services/providerAppointments";
 import { ProviderAppointmentsInterface } from "@/types/appointments";
@@ -22,8 +22,15 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
-import DefaultButton from "../custom_buttons/buttons/DefaultButton";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "../ui/button";
+import CustomTabsTrigger from "../custom_buttons/buttons/CustomTabsTrigger";
 export const CalendarBody = () => {
   const [loading, setLoading] = useState(false);
   const [providerAppointment, setProviderAppointment] =
@@ -35,9 +42,10 @@ export const CalendarBody = () => {
     to: addDays(new Date(), 20),
   });
   const [customRange, setCustomRange] = useState(false);
+  const [activeView, setActiveView] = useState("listView");
 
   const handleClick = () => {
-    router.push("/dashboard//provider/calendar/availability");
+    router.push("/dashboard/provider/calendar/availability");
   };
 
   const fetchAppointments = useCallback(async () => {
@@ -71,95 +79,146 @@ export const CalendarBody = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center min-h-[400px]">
         <LoadingButton />
       </div>
     );
   }
 
+  const formatDateRange = () => {
+    if (!date?.from) return "";
+    if (!date?.to) return format(date.from, "MMM dd, yyyy");
+    return `${format(date.from, "MMM dd, yyyy")} - ${format(
+      date.to,
+      "MMM dd, yyyy"
+    )}`;
+  };
+
   return (
-    <>
-      <div className="flex items-start justify-between">
-        <Heading title={`Calendar`} description="" />
-        <div>
-          <DefaultButton onClick={handleClick}>
-            <PlusIcon size={24} />
-            <div className="hidden md:block lg:block">
-              Update my availability
-            </div>
-          </DefaultButton>
+    <div className="flex flex-col space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-1">
+          <Heading
+            title="Calendar"
+          />
+          <span className="font-semibold text-gray-500">
+            {" "}
+            {format(new Date(), "MMMM dd, yyyy")}
+          </span>
+        </div>
+        <Button onClick={handleClick}>
+          <Icon name="calendar_add_on"/>
+          <span>Update my availability</span>
+        </Button>
+      </div>
+      <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between mb-6">
+        <Tabs
+          value={activeView}
+          onValueChange={setActiveView}
+          className="w-full md:w-auto"
+        >
+          <TabsList className="grid w-full md:w-[400px] grid-cols-2">
+            <CustomTabsTrigger
+              value="listView">
+              <Icon name="list" />
+              List View
+            </CustomTabsTrigger>
+            <CustomTabsTrigger
+              value="calendarView">
+              <Icon name="calendar_month" />
+              Calendar View
+            </CustomTabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <Select
+            onValueChange={(value) => {
+              if (value === "custom") {
+                setCustomRange(true);
+              } else {
+                setCustomRange(false);
+                const days = parseInt(value);
+                setDate({
+                  from: new Date(),
+                  to: addDays(new Date(), days),
+                });
+              }
+            }}
+          >
+            <SelectTrigger className="w-fit">
+              <SelectValue placeholder={formatDateRange()} />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem value="0">Today</SelectItem>
+              <SelectItem value="1">Tomorrow</SelectItem>
+              <SelectItem value="3">Next 3 days</SelectItem>
+              <SelectItem value="7">Next week</SelectItem>
+              <SelectItem value="14">Next 2 weeks</SelectItem>
+              <SelectItem value="30">Next month</SelectItem>
+              <SelectItem value="custom">Custom range</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Popover open={customRange} onOpenChange={setCustomRange}>
+            <PopoverTrigger asChild>
+              <Button
+                className={cn(
+                  "p-2 rounded-md hover:bg-gray-100",
+                  customRange && "bg-blue-50 text-blue-700"
+                )}
+                variant="outline"
+              >
+                <Icon name="date_range" className="w-5 h-5" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <Calendar
+                mode="range"
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={(newDate) => {
+                  setDate(newDate);
+                  if (newDate?.from && newDate?.to) {
+                    setCustomRange(false);
+                  }
+                }}
+                numberOfMonths={2}
+                className="rounded-md border"
+              />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
-      <Tabs defaultValue="listView" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="listView">List View</TabsTrigger>
-          <TabsTrigger value="calendarView">Calendar View</TabsTrigger>
-        </TabsList>
-        <TabsContent value="listView">
-          <div className="flex flex-col gap-3 ">
-            <div className={cn("grid gap-2")}>
-              <Popover open={customRange} onOpenChange={setCustomRange}>
-                <PopoverTrigger asChild>
-                  {/* <div>
-                    <Select
-                      onValueChange={(value) => {
-                        if (value === "custom") {
-                          setCustomRange(true);
-                        } else {
-                          setCustomRange(false);
-                          const days = parseInt(value);
-                          const newDate = addDays(new Date(), days);
-                          setDate({
-                            from: newDate,
-                            to: addDays(newDate, days),
-                          });
-                        }
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        <SelectItem value="0">Today</SelectItem>
-                        <SelectItem value="1">Tomorrow</SelectItem>
-                        <SelectItem value="3">In 3 days</SelectItem>
-                        <SelectItem value="7">In a week</SelectItem>
-                        <SelectItem value="14">In two week</SelectItem>
-                        <SelectItem value="30">In a month</SelectItem>
-                        <SelectItem value="custom">Custom</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div> */}
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="range"
-                    defaultMonth={date?.from}
-                    selected={date}
-                    onSelect={setDate}
-                    numberOfMonths={2}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-            {providerAppointment && (
+
+      <div className="mt-4">
+        {activeView === "listView" ? (
+          <div className="space-y-4">
+            {providerAppointment?.data &&
+            providerAppointment.data.length > 0 ? (
               <ListViewBody
                 appointments={providerAppointment.data}
                 onFetch={fetchAppointments}
               />
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                <Icon name="event_busy" className="w-12 h-12 mb-4" />
+                <p className="text-lg font-medium">No appointments found</p>
+                <p className="text-sm">
+                  There are no appointments scheduled for the selected date
+                  range
+                </p>
+              </div>
             )}
           </div>
-        </TabsContent>
-        <TabsContent value="calendarView">
-          {providerAppointment && (
-            <div>
-              {!loading && providerAppointment && (
-                <CalendarComponent appointments={providerAppointment?.data} />
-              )}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
-    </>
+        ) : (
+          <div className="min-h-[600px]">
+            {providerAppointment?.data && (
+              <CalendarComponent appointments={providerAppointment.data} />
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
