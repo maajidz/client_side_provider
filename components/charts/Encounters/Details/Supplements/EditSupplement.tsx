@@ -45,7 +45,7 @@ import { useForm } from "react-hook-form";
 import { useCallback, useEffect, useState } from "react";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getDosageUnits } from "@/services/enumServices";
+import { getDosageUnits, getIntakeTypes } from "@/services/enumServices";
 
 interface EditSupplementProps {
   selectedSupplement: SupplementInterfaceResponse;
@@ -75,6 +75,9 @@ function EditSupplement({
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
 
+  // Intake Types
+  const [intakeTypes, setIntakeTypes] = useState<string[]>([]);
+
   const [supplementId, setSupplementId] = useState("");
 
   // Search Supplement States
@@ -82,7 +85,12 @@ function EditSupplement({
   const [isListVisible, setIsListVisible] = useState(false);
 
   // Loading State
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState({
+    get: false,
+    patch: false,
+    dosage: false,
+    intake: false,
+  });
 
   // Toast State
   const { toast } = useToast();
@@ -109,7 +117,7 @@ function EditSupplement({
 
   // GET Supplements List
   const fetchAllSupplements = useCallback(async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, get: true }));
 
     try {
       const response = await getAllSupplementTypes();
@@ -126,13 +134,13 @@ function EditSupplement({
         });
       }
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, get: false }));
     }
   }, [toast]);
 
   // GET Dosage Units
   const fetchDosageUnits = useCallback(async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, dosage: true }));
 
     try {
       const response = await getDosageUnits();
@@ -155,13 +163,43 @@ function EditSupplement({
         });
       }
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, dosage: true }));
+    }
+  }, [toast]);
+
+  // GET Intake Types
+  const fetchIntakeTypes = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, intake: true }));
+
+    try {
+      const response = await getIntakeTypes();
+
+      if (response) {
+        setIntakeTypes(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch intake types data",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, dosage: true }));
     }
   }, [toast]);
 
   // PATCH Supplement
   const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, patch: true }));
+
     try {
       const supplementData = {
         ...values,
@@ -188,7 +226,7 @@ function EditSupplement({
         });
       }
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, patch: false }));
       fetchSupplements();
       form.reset();
     }
@@ -198,13 +236,14 @@ function EditSupplement({
   useEffect(() => {
     fetchAllSupplements();
     fetchDosageUnits();
-  }, [fetchAllSupplements, fetchDosageUnits]);
+    fetchIntakeTypes();
+  }, [fetchAllSupplements, fetchDosageUnits, fetchIntakeTypes]);
 
   const filteredSupplements = supplementsData.filter((supplement) =>
     supplement.supplement_name.toLocaleLowerCase().includes(searchTerm)
   );
 
-  if (loading) {
+  if (loading.get) {
     return <LoadingButton />;
   }
 
@@ -420,10 +459,25 @@ function EditSupplement({
                     <FormItem className="flex gap-2 justify-center items-center">
                       <FormLabel className="w-fit">Intake type</FormLabel>
                       <FormControl>
-                        <Input
-                          defaultValue={selectedSupplement.intake_type}
-                          onChange={field.onChange}
-                        />
+                        <Select
+                          defaultValue={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {loading.intake ? (
+                              <div>Loading...</div>
+                            ) : (
+                              intakeTypes.map((type) => (
+                                <SelectItem key={type} value={type}>
+                                  {type}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -445,7 +499,7 @@ function EditSupplement({
                     </FormItem>
                   )}
                 />
-                <SubmitButton label="Save" disabled={loading} />
+                <SubmitButton label="Save" disabled={loading.patch} />
               </div>
             </form>
           </Form>

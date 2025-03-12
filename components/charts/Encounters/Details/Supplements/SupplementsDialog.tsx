@@ -43,7 +43,7 @@ import {
 import { showToast } from "@/utils/utils";
 import { useForm } from "react-hook-form";
 import { useCallback, useEffect, useState } from "react";
-import { getDosageUnits } from "@/services/enumServices";
+import { getDosageUnits, getIntakeTypes } from "@/services/enumServices";
 
 function SupplementsDialog({
   userDetailsId,
@@ -67,11 +67,15 @@ function SupplementsDialog({
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
 
+  // Intake Types
+  const [intakeTypes, setIntakeTypes] = useState<string[]>([]);
+
   // Loading State
   const [loading, setLoading] = useState({
     get: false,
     post: false,
     dosage: false,
+    intake: false,
   });
 
   // Toast State
@@ -149,6 +153,35 @@ function SupplementsDialog({
     }
   }, [toast]);
 
+  // GET Intake Types
+  const fetchIntakeTypes = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, intake: true }));
+
+    try {
+      const response = await getIntakeTypes();
+
+      if (response) {
+        setIntakeTypes(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch intake types data",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, intake: false }));
+    }
+  }, [toast]);
+
   // POST Supplement
   const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
@@ -206,7 +239,8 @@ function SupplementsDialog({
   useEffect(() => {
     fetchAllSupplements();
     fetchDosageUnits();
-  }, [fetchAllSupplements, fetchDosageUnits]);
+    fetchIntakeTypes();
+  }, [fetchAllSupplements, fetchDosageUnits, fetchIntakeTypes]);
 
   useEffect(() => {
     if (selectedSupplement) {
@@ -466,21 +500,18 @@ function SupplementsDialog({
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Choose Intake Type" />
+                            <SelectValue placeholder="Select Unit" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="away_from_meals">
-                              Away From Meals
-                            </SelectItem>
-                            <SelectItem value="with_breakfast">
-                              With Breakfast
-                            </SelectItem>
-                            <SelectItem value="with_dinner">
-                              With Dinner
-                            </SelectItem>
-                            <SelectItem value="at_bedtime">
-                              At Bedtime
-                            </SelectItem>
+                            {loading.intake ? (
+                              <div>Loading...</div>
+                            ) : (
+                              intakeTypes.map((type) => (
+                                <SelectItem key={type} value={type}>
+                                  {type}
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>
