@@ -1,5 +1,6 @@
 "use client";
 import FormLabels from "@/components/custom_buttons/FormLabels";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ImageResultDataResponse } from "@/types/imageResults";
 import { ColumnDef } from "@tanstack/react-table";
@@ -13,10 +14,19 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
     ),
   },
   {
-    accessorKey: "reviewerId",
+    accessorKey: "userDetails",
+    header: "Patient ID",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">{`${row.original.userDetails.user.firstName} ${row.original.userDetails.user.lastName} - ${row.original.userDetails.patientId}`}</div>
+    ),
+  },
+  {
+    accessorKey: "providerDetails",
     header: "Reviewer id",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("reviewerId")}</div>
+      <div className="cursor-pointer">
+        {row.original.providerDetails.providerDetails.providerUniqueId}
+      </div>
     ),
   },
   {
@@ -59,7 +69,14 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
                 <FormLabels
                   label="Documents"
                   value={results.documents?.map((docs, index) => (
-                    <Button key={index} variant={"link"} onClick={()=> window.open(docs, "_blank")} className="text-blue-500">{docs.split('/').pop()}</Button>
+                    <Button
+                      key={index}
+                      variant={"link"}
+                      onClick={() => window.open(docs, "_blank")}
+                      className="text-blue-500"
+                    >
+                      {docs.split("/").pop()}
+                    </Button>
                   ))}
                 />
               </div>
@@ -69,18 +86,17 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
       );
     },
   },
-  // {
-  //   accessorKey: "tests",
-  //   header: "Tests",
-  //   cell: ({ row }) => {
-  //     const tests = row.getValue("tests") as Result["tests"];
-  //     return (
-  //       <div className="cursor-pointer">
-  //         {tests.map((test) => (
-  //           <span key={test.name}>{test.name}, </span>
-  //         ))}
-  //       </div>
-  //     );
-  //   },
-  // },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      return (
+        <Badge
+          variant={row.original.status === "Confirmed" ? "success" : "default"}
+        >
+          {row.original.status}
+        </Badge>
+      );
+    },
+  },
 ];
