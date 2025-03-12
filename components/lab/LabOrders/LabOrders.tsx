@@ -33,6 +33,8 @@ import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { labOrderStatus } from "@/constants/data";
 import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import { useToast } from "@/hooks/use-toast";
+import { showToast } from "@/utils/utils";
 
 function LabOrders() {
   // Provider Details
@@ -41,22 +43,20 @@ function LabOrders() {
   // Lab Orders State
   const [orderList, setOrderList] = useState<LabOrdersDataInterface>();
 
-  // Patient State
+  // Patient List State
   const [patientData, setPatientData] = useState<UserData[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
 
-  // Providers State
+  // Provider List State
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
 
-  // Search State
+  // Search States
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
 
-  // Loading State
-  const [loading, setLoading] = useState({
-    patients: false,
-    providers: false,
-    labOrders: false,
-  });
+  // Loading States
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
 
   // Pagination State
   const limit = 4;
@@ -70,10 +70,10 @@ function LabOrders() {
     name: "",
   });
 
-  // Router Function
   const router = useRouter();
+  const { toast } = useToast();
 
-  // Form State
+  // Form Definition
   const form = useForm<z.infer<typeof filterLabOrdersSchema>>({
     resolver: zodResolver(filterLabOrdersSchema),
     defaultValues: {
@@ -83,27 +83,75 @@ function LabOrders() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof filterLabOrdersSchema>) {
-    setFilters((prev) => ({
-      ...prev,
-      orderedby: values.orderedby === "all" ? "" : values.orderedby || "",
-      status: values.status === "all" ? "" : values.status || "",
-      name: values.name ? values.name : "",
-    }));
+  // GET Patients Data
+  const fetchPatientData = useCallback(async () => {
+    setLoading(true);
 
-    setPage(1);
-  }
+    try {
+      const response = await fetchUserDataResponse({
+        pageNo: 1,
+        pageSize: 10,
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
 
+      if (response) {
+        setPatientData(response.data);
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch patients",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, toast]);
+
+  // Fetch Providers Data
+  const fetchProvidersData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({
+        page: page,
+        limit: 10,
+      });
+      setProvidersList(response.data);
+    } catch (err) {
+      console.error("Error fetching providers data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page]);
+
+  // Fetch Lab Orders Data
   const fetchLabOrdersList = useCallback(
-    async (page: number) => {
+    async (
+      page: number,
+      orderedBy?: string,
+      userDetailsId?: string,
+      status?: string
+    ) => {
       try {
-        setLoading((prev) => ({ ...prev, labOrders: true }));
+        setDataLoading(true);
         if (providerDetails) {
           const response = await getLabOrdersData({
             providerId: providerDetails.providerId,
-            userDetailsId: filters.name,
-            orderedBy: filters.orderedby,
-            status: filters.status,
+            userDetailsId: userDetailsId || filters.name,
+            orderedBy: orderedBy || filters.orderedby,
+            status: status || filters.status,
             limit,
             page,
           });
@@ -116,55 +164,49 @@ function LabOrders() {
         console.log("Error", e);
         setOrderList(undefined);
       } finally {
-        setLoading((prev) => ({ ...prev, labOrders: false }));
+        setDataLoading(false);
       }
     },
-    [providerDetails, filters]
+    [providerDetails, filters.name, filters.orderedby, filters.status]
   );
 
-  const fetchProvidersData = useCallback(async () => {
-    setLoading((prev) => ({ ...prev, providers: true }));
-
-    try {
-      const response = await fetchProviderListDetails({
-        page: page,
-        limit: 10,
-      });
-      setProvidersList(response.data);
-    } catch (err) {
-      console.error("Error fetching providers data:", err);
-    } finally {
-      setLoading((prev) => ({ ...prev, providers: false }));
-    }
-  }, [page]);
-
-  // GET Patients' Data
-  const fetchPatientData = useCallback(async (currentPage: number) => {
-    setLoading((prev) => ({ ...prev, patients: true }));
-
-    try {
-      const response = await fetchUserDataResponse({ pageNo: currentPage });
-      if (response) {
-        setPatientData(response.data);
-      }
-    } catch (err) {
-      console.error("Error fetching user data:", err);
-    } finally {
-      setLoading((prev) => ({ ...prev, patients: false }));
-    }
-  }, []);
-
+  // Patient useEffect
   useEffect(() => {
-    fetchLabOrdersList(page);
-    fetchProvidersData();
-    fetchPatientData(page);
-  }, [page, fetchLabOrdersList, fetchProvidersData, fetchPatientData]);
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim()) {
+        fetchPatientData();
+      } else {
+        setPatientData([]);
+      }
+    }, 300);
 
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchPatientData]);
+
+  //Filter Patients
   const filteredPatients = patientData.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
+
+  // Lab Orders useEffect
+  useEffect(() => {
+    fetchLabOrdersList(page, filters.orderedby, filters.name, filters.status);
+    fetchProvidersData();
+  }, [page, fetchLabOrdersList, fetchProvidersData, filters]);
+
+  //  Submit handler function
+  function onSubmit(values: z.infer<typeof filterLabOrdersSchema>) {
+    setFilters((prev) => ({
+      ...prev,
+      orderedby: values.orderedby === "all" ? "" : values.orderedby || "",
+      status: values.status === "all" ? "" : values.status || "",
+      name: values.name ? values.name : "",
+    }));
+
+    setPage(1);
+  }
 
   return (
     <div className="space-y-4">
@@ -189,7 +231,7 @@ function LabOrders() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {loading.providers ? (
+                      {loading ? (
                         <div>Loading...</div>
                       ) : (
                         providersList
@@ -217,7 +259,6 @@ function LabOrders() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="status"
@@ -246,7 +287,6 @@ function LabOrders() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="name"
@@ -255,22 +295,26 @@ function LabOrders() {
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <div className="relative">
-                    <Input
-                      placeholder="Search Patient "
-                      value={searchTerm}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setSearchTerm(value);
-                        setVisibleSearchList(true);
+                    <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                      <Input
+                        placeholder="Search Patient "
+                        value={searchTerm}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setSearchTerm(value);
+                          setVisibleSearchList(true);
 
-                        if (!value) {
-                          field.onChange("");
-                        }
-                      }}
-                    />
+                          if (!value) {
+                            field.onChange("");
+                          }
+                        }}
+                        className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                      />
+                      <div className="px-3 py-1 text-base"> {selectedUser?.patientId}</div>
+                    </div>
                     {searchTerm && visibleSearchList && (
                       <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
-                        {loading.patients ? (
+                        {loading ? (
                           <div>Loading...</div>
                         ) : filteredPatients.length > 0 ? (
                           filteredPatients.map((patient) => (
@@ -283,9 +327,10 @@ function LabOrders() {
                                   `${patient.user.firstName} ${patient.user.lastName}`
                                 );
                                 setVisibleSearchList(false);
+                                setSelectedUser(patient);
                               }}
                             >
-                              {`${patient.user.firstName} ${patient.user.lastName}`}
+                              {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
                             </div>
                           ))
                         ) : (
@@ -301,13 +346,12 @@ function LabOrders() {
               </FormItem>
             )}
           />
-
           <div className="flex items-end">
             <SubmitButton label="Search" />
           </div>
         </form>
       </Form>
-      {loading.labOrders ? (
+      {dataLoading ? (
         <TableShimmer />
       ) : orderList?.data ? (
         <DefaultDataTable
