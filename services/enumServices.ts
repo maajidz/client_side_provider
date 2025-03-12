@@ -12,3 +12,16 @@ export const getDosageUnits = async () => {
   const data = await response.data;
   return data;
 };
+
+export const getIntakeTypes = async () => {
+  const response = await ApiFetch({
+    url: "/enums/intake-type",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.data;
+  return data;
+};
