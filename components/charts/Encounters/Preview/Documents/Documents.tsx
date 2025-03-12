@@ -26,6 +26,8 @@ function Documents({ patientDetails }: { patientDetails: UserEncounterData }) {
       if (patientDetails.userDetails.id) {
         const response = await getDocumentsData({
           userDetailsId: patientDetails.userDetails.id,
+          page: page,
+          limit: 10
         });
 
         setDocumentsData(response.data);

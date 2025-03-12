@@ -1,7 +1,6 @@
 "use client";
 
 import { DefaultDataTable } from "../custom_buttons/table/DefaultDataTable";
-import LoadingButton from "@/components/LoadingButton";
 import { getDocumentsData } from "@/services/documentsServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { fetchUserDataResponse } from "@/services/userServices";
@@ -12,15 +11,42 @@ import { UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { columns } from "./column";
-import FilterDocuments from "./FilterDocuments";
 import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
+import TableShimmer from "../custom_buttons/table/TableShimmer";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 
 function DocumentsClient() {
-  // Data States
+  // Documents List State
   const [documentsData, setDocumentsData] = useState<DocumentsInterface[]>([]);
+
+  //Patient State
   const [userInfo, setUserInfo] = useState<UserData[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+
+  // Provider List State
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
+
+  // Search State
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
 
   // Filter State
   const [filters, setFilters] = useState({
@@ -35,63 +61,61 @@ function DocumentsClient() {
   const [totalPages, setTotalPages] = useState(1);
 
   // Loading States
-  const [loading, setLoading] = useState({
-    documents: false,
-    users: false,
-    providers: false,
-  });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
 
   // Toast State
   const { toast } = useToast();
 
-  // Fetch Documents Data
-  const fetchDocumentsData = useCallback(async () => {
-    setLoading((prev) => ({ ...prev, documents: true }));
+  // Form Definition
+  const form = useForm<z.infer<typeof searchParamsForDocumentsSchema>>({
+    resolver: zodResolver(searchParamsForDocumentsSchema),
+    defaultValues: {
+      patient: "",
+      reviewer: "",
+      status: "",
+    },
+  });
+
+  // GET Patients Data
+  const fetchUserData = useCallback(async () => {
+    setLoading(true);
 
     try {
-      if (filters.patient) {
-        const response = await getDocumentsData({
-          userDetailsId: filters.patient,
-          reviewerId: filters.reviewer,
-          status: filters.status,
-        });
-        setDocumentsData(response.data);
+      const response = await fetchUserDataResponse({
+        pageNo: 1,
+        pageSize: 10,
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
+
+      if (response) {
+        setUserInfo(response.data);
       } else {
-        showToast({ toast, type: "error", message: "Please select a patient" });
+        throw new Error();
       }
     } catch (err) {
       if (err instanceof Error) {
         showToast({
           toast,
           type: "error",
-          message: "Could not fetch documents for selected patient",
+          message: "Could not fetch patients",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
         });
       }
     } finally {
-      setLoading((prev) => ({ ...prev, documents: false }));
+      setLoading(false);
     }
-  }, [filters, toast]);
-
-  // Fetch User Data
-  const fetchUserData = useCallback(async () => {
-    setLoading((prev) => ({ ...prev, users: true }));
-
-    try {
-      const response = await fetchUserDataResponse({ pageNo });
-
-      if (response) {
-        setUserInfo(response.data);
-      }
-    } catch (err) {
-      console.error("Error fetching user data:", err);
-    } finally {
-      setLoading((prev) => ({ ...prev, users: false }));
-    }
-  }, [pageNo]);
+  }, [searchTerm, toast]);
 
   // Fetch Providers Data
   const fetchProvidersData = useCallback(async () => {
-    setLoading((prev) => ({ ...prev, providers: true }));
+    setLoading(true);
 
     try {
       const response = await fetchProviderListDetails({
@@ -102,67 +126,261 @@ function DocumentsClient() {
     } catch (err) {
       console.error("Error fetching providers data:", err);
     } finally {
-      setLoading((prev) => ({ ...prev, providers: false }));
+      setLoading(false);
     }
   }, [pageNo]);
 
-  const handleSearch = (
-    filterValues: z.infer<typeof searchParamsForDocumentsSchema>
-  ) => {
-    if (filterValues.status === "all") {
-      filterValues.status = "";
-    }
+  // Fetch Documents Data
+  const fetchDocumentsData = useCallback(
+    async (
+      page: number,
+      userDetailsId: string,
+      reviewerId?: string,
+      status?: string
+    ) => {
+      setDataLoading(true);
 
-    if (filterValues.reviewer === "all") {
-      filterValues.reviewer = "";
-    }
+      try {
+        const response = await getDocumentsData({
+          userDetailsId: userDetailsId || filters.patient,
+          reviewerId: reviewerId || filters.reviewer,
+          status: status || filters.status,
+          limit: 10,
+          page: page,
+        });
+        setDocumentsData(response.data);
+        setTotalPages(response.meta.totalPages);
+      } catch (err) {
+        if (err instanceof Error) {
+          showToast({
+            toast,
+            type: "error",
+            message: "Could not fetch documents for selected patient",
+          });
+        }
+      } finally {
+        setDataLoading(false);
+      }
+    },
+    [filters.patient, filters.reviewer, filters.status, toast]
+  );
 
-    setFilters({
-      reviewer: filterValues.reviewer || "",
-      status: filterValues.status || "",
-      patient: filterValues.patient || "",
-    });
-    setPageNo(1);
-  };
+  // Patient useEffect
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim()) {
+        fetchUserData();
+      } else {
+        setUserInfo([]);
+        setSelectedUser(null);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchUserData]);
+
+  // Filter Patients
+  const filteredPatients = userInfo.filter((patient) =>
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   // Effects
   useEffect(() => {
-    fetchUserData();
     fetchProvidersData();
-    fetchDocumentsData();
-  }, [fetchUserData, fetchProvidersData, fetchDocumentsData]);
+    fetchDocumentsData(
+      pageNo,
+      filters.patient,
+      filters.reviewer,
+      filters.status
+    );
+  }, [
+    fetchProvidersData,
+    fetchDocumentsData,
+    filters.patient,
+    filters.reviewer,
+    filters.status,
+    pageNo
+  ]);
 
-  useEffect(() => {
-    setTotalPages(Math.ceil(documentsData.length / itemsPerPage));
-  }, [documentsData.length]);
+  //  Submit handler function
+  function onSubmit(values: z.infer<typeof searchParamsForDocumentsSchema>) {
+    setFilters((prev) => ({
+      ...prev,
 
-  const paginatedData = documentsData.slice(
-    (pageNo - 1) * itemsPerPage,
-    pageNo * itemsPerPage
-  );
+      reviewer: values.reviewer === "all" ? "" : values.reviewer || "",
+      status: values.status === "all" ? "" : values.status || "",
+      patient: values.patient || "",
+    }));
+
+    setPageNo(1);
+  }
 
   return (
     <div className="space-y-4">
-      <FilterDocuments
-        userInfo={userInfo}
-        providersData={providersList}
-        onSearch={handleSearch}
-      />
+      <Form {...form}>
+        <form
+          className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          {/* Reviewer Filter */}
+          <FormField
+            control={form.control}
+            name="reviewer"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Filter by Reviewer" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="cursor-pointer">
+                    All
+                  </SelectItem>
+                  {loading ? (
+                    <div>Loading... </div>
+                  ) : (
+                    providersList
+                      .filter(
+                        (
+                          provider
+                        ): provider is typeof provider & {
+                          providerDetails: { id: string };
+                        } => Boolean(provider?.providerDetails?.id)
+                      )
+                      .map((provider) => (
+                        <SelectItem
+                          key={provider.id}
+                          value={provider.providerDetails.id}
+                          className="cursor-pointer"
+                        >
+                          {provider.firstName} {provider.lastName}
+                        </SelectItem>
+                      ))
+                  )}
+                </SelectContent>
+              </Select>
+            )}
+          />
 
-      {loading.documents || loading.providers || loading.users ? (
-        <LoadingButton />
-      ) : (
-        <>
+          {/* Patient Filter */}
+          <FormField
+            control={form.control}
+            name="patient"
+            render={() => (
+              <div>
+                <FormItem>
+                  {/* Patient Filter */}
+                  <FormField
+                    control={form.control}
+                    name="patient"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                              <Input
+                                placeholder="Search Patient "
+                                value={searchTerm}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  setSearchTerm(value);
+                                  setVisibleSearchList(true);
+
+                                  if (!value) {
+                                    field.onChange("");
+                                  }
+                                }}
+                                className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                              />
+                              <div className="px-3 py-1 text-base">
+                                {" "}
+                                {selectedUser?.patientId}
+                              </div>
+                            </div>
+                            {searchTerm && visibleSearchList && (
+                              <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-[100]">
+                                {loading ? (
+                                  <div>Loading... </div>
+                                ) : filteredPatients.length > 0 ? (
+                                  filteredPatients.map((patient) => (
+                                    <div
+                                      key={patient.id}
+                                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                      onClick={() => {
+                                        field.onChange(patient.id);
+                                        setSearchTerm(
+                                          `${patient.user.firstName} ${patient.user.lastName}`
+                                        );
+                                        setVisibleSearchList(false);
+                                        setSelectedUser(patient);
+                                      }}
+                                    >
+                                      {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="px-4 py-2 text-gray-500">
+                                    No results found
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </FormItem>
+              </div>
+            )}
+          />
+
+          {/* Status Filter */}
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Filter by Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="cursor-pointer">
+                    All
+                  </SelectItem>
+                  <SelectItem value="completed" className="cursor-pointer">
+                    Completed
+                  </SelectItem>
+                  <SelectItem value="pending" className="cursor-pointer">
+                    Pending
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+
+          {/* Search Button */}
+          <div className="flex justify-center items-center w-full sm:w-auto">
+            <SubmitButton label="Search" />
+          </div>
+        </form>
+      </Form>
+      <>
+        {dataLoading ? (
+          <TableShimmer />
+        ) : (
           <DefaultDataTable
             title="Document"
             columns={columns()}
-            data={paginatedData}
+            data={documentsData || []}
             pageNo={pageNo}
             totalPages={totalPages}
             onPageChange={(newPage) => setPageNo(newPage)}
           />
-        </>
-      )}
+        )}
+      </>
     </div>
   );
 }
