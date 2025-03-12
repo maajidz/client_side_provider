@@ -89,8 +89,8 @@ export const columns = ({
     header: "Diagnosis Name",
     cell: ({ row }) => (
       <div className="cursor-pointer flex flex-row gap-3">
-        <div>{row.original.diagnosisType.name}</div>
-        <div>{row.original.diagnosisType.icdCode}</div>
+        <div>{row.original.type.diagnosis_name}</div>
+        <div>{row.original.type.ICD_Code}</div>
       </div>
     ),
   },

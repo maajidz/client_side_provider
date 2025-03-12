@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,12 +13,14 @@ import { Input } from "@/components/ui/input";
 import { TrashIcon } from "lucide-react";
 import {
   CreateDiagnosesRequestBody,
+  DiagnosesTypeData,
   UserEncounterData,
 } from "@/types/chartsInterface";
 import { useToast } from "@/hooks/use-toast";
 import {
   createDiagnoses,
   createSOAPChart,
+  fetchDiagnosesType,
   updateSOAPChart,
 } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
@@ -26,6 +28,7 @@ import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
+import LoadingButton from "@/components/LoadingButton";
 
 const AddDx = ({
   patientDetails,
@@ -36,6 +39,14 @@ const AddDx = ({
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
 
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [diagnosesTypeData, setDiagnosesTypeData] = useState<
+    DiagnosesTypeData[]
+  >([]);
+  const [isListVisible, setIsListVisible] = useState<boolean>(false);
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
   const [rows, setRows] = useState([
@@ -52,14 +63,44 @@ const AddDx = ({
   };
 
   const handleChange = (index: number, field: string, value: string) => {
-    const updatedRows = rows.map((row, i) =>
-      i === index ? { ...row, [field]: value } : row
+    setRows((prevRows) =>
+      prevRows.map((row, i) => (i === index ? { ...row, [field]: value } : row))
     );
-    setRows(updatedRows);
   };
 
+  const handleSearch = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchDiagnosesType({
+        search: searchTerm,
+        page: 1,
+        limit: 10,
+      });
+
+      if (response) {
+        setDiagnosesTypeData(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching diagnoses data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim()) {
+        handleSearch();
+        setIsListVisible(true);
+      } else {
+        setDiagnosesTypeData([]);
+        setIsListVisible(false);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, handleSearch]);
+
   const handleSubmit = async () => {
-    console.log("Diagnoses:", rows);
     try {
       if (patientDetails.chart?.id) {
         const chartId = patientDetails.chart?.id;
@@ -117,13 +158,13 @@ const AddDx = ({
       <DialogTrigger asChild>
         <GhostButton>Add Dx</GhostButton>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg sm:h-56">
         <DialogHeader>
           <DialogTitle>Add Diagnoses</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-3">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex gap-4">
             <div className="w-32">Diagnosis</div>
             <div className="w-32">ICD Codes</div>
             <div className="w-32">Notes</div>
@@ -131,15 +172,41 @@ const AddDx = ({
           <div className="flex flex-col gap-2">
             {rows.map((row, index) => (
               <div className="flex justify-between" key={index}>
-                <Input
-                  type="text"
-                  placeholder="Enter Diagnosis"
-                  value={row.diagnosis_Id}
-                  onChange={(e) =>
-                    handleChange(index, "diagnosis_name", e.target.value)
-                  }
-                  className="col-span-4 border rounded sm:max-w-32"
-                />
+                <div className="relative">
+                  <Input
+                    type="text"
+                    placeholder="Enter Diagnosis"
+                    value={
+                      diagnosesTypeData.find((d) => d.id === row.diagnosis_Id)
+                        ?.diagnosis_name || searchTerm
+                    }
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setIsListVisible(true);
+                    }}
+                    className="col-span-4 border rounded"
+                  />
+
+                  {loading && <LoadingButton />}
+                  {isListVisible && (
+                    <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
+                      {diagnosesTypeData.map((diagnosis) => (
+                        <div
+                          key={diagnosis.id}
+                          className="p-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => {
+                            handleChange(index, "diagnosis_Id", diagnosis.id);
+                            handleChange(index, "ICD_Code", diagnosis.ICD_Code);
+                            setSearchTerm(diagnosis.diagnosis_name);
+                            setIsListVisible(false);
+                          }}
+                        >
+                          {diagnosis.diagnosis_name} ({diagnosis.ICD_Code})
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <Input
                   type="text"
                   placeholder="ICD Codes"

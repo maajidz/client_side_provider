@@ -158,8 +158,8 @@ export default function EditDiagnosisDialog({
             </thead>
             <tbody>
               <tr>
-                <td className="px-3 py-2">{diagnosisData?.diagnosisType.icdCode}</td>
-                <td className="px-3 py-2">{diagnosisData?.diagnosisType.name}</td>
+                <td className="px-3 py-2">{diagnosisData?.type.ICD_Code}</td>
+                <td className="px-3 py-2">{diagnosisData?.type.diagnosis_name}</td>
               </tr>
             </tbody>
           </table>
