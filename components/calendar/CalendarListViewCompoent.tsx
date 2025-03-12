@@ -137,7 +137,7 @@ export const CalendarListViewComponent = ({
                       className={`${getStatusBadgeStyles(statusValue)}`}
                     >
                       <SelectValue placeholder={statusValue}>
-                        <span className="flex items-center gap-1 justify-center">
+                        <span className="flex items-center gap-1 justify-center text-xs">
                           {getStatusIcon(statusValue)}
                           {statusValue}
                         </span>
@@ -159,7 +159,7 @@ export const CalendarListViewComponent = ({
               {appointment.providerId}
             </CardDescription>
           </CardHeader>
-          <CardContent className="border-t border-gray-200 pt-4 w-full text-sm text-gray-900 items-center">
+          <CardContent className="border-t border-gray-100 pt-4 w-full text-sm text-gray-900 items-center">
             <div className="flex flex-row gap-2 justify-between w-full">
               <div className="flex flex-col gap-4 text-xs font-medium">
                 <span className="text-gray-600 line-clamp-1">

@@ -101,6 +101,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
         views={[Views.MONTH, Views.WEEK, Views.DAY]}
         view={currentView}
         onView={handleViewChange}
+        className="font-medium"
         selectable
         popup
         onSelectEvent={handleSelectEvent}

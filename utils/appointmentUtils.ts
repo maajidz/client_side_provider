@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/icon";
 
 export const getStatusBadgeStyles = (status: string) => {
-  const baseStyles = "shadow-none rounded-full gap-2 w-fit border-0 h-fit px-2 py-1 text-[11px] font-medium transition-colors duration-200 font-semibold items-center justify-center focus:ring-0 active:ring-0";
+  const baseStyles = "shadow-none rounded-full gap-2 w-fit border-0 h-fit px-2 py-1 font-medium transition-colors duration-200 font-semibold items-center justify-center focus:ring-0 active:ring-0";
 
   switch (status) {
     case "Confirmed":
