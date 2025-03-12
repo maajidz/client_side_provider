@@ -156,6 +156,18 @@ function InjectionsClient() {
     [filters.userDetailsId, filters.providerId, filters.status]
   );
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim()) {
+        fetchUserData();
+      } else {
+        setPatientData([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchUserData]);
+
   const filteredPatients = patientData.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
       .toLowerCase()
@@ -163,9 +175,8 @@ function InjectionsClient() {
   );
 
   useEffect(() => {
-    fetchUserData();
     fetchProvidersData();
-  }, [fetchUserData, fetchProvidersData]);
+  }, [fetchProvidersData]);
 
   // Effects
   useEffect(() => {

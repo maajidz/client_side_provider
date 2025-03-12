@@ -21,7 +21,7 @@ import { RootState } from "@/store/store";
 import { LabResultsInterface } from "@/types/labResults";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserData } from "@/types/userInterface";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
@@ -32,6 +32,8 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useRouter } from "next/navigation";
 import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import { useToast } from "@/hooks/use-toast";
+import { showToast } from "@/utils/utils";
 
 interface ILabResultsProps {
   userDetailsId?: string;
@@ -44,6 +46,7 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
   const [totalPages, setTotalPages] = useState<number>(1);
 
   const router = useRouter();
+  const { toast } = useToast();
 
   // Patient State
   const [patientData, setPatientData] = useState<UserData[]>([]);
@@ -52,7 +55,7 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
 
   // Search State
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
 
   // Filter State
@@ -63,11 +66,8 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
   });
 
   // Loading State
-  const [loading, setLoading] = useState({
-    patients: false,
-    providers: false,
-    labResults: false,
-  });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof filterLabResultsSchema>>({
     resolver: zodResolver(filterLabResultsSchema),
@@ -77,6 +77,120 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
       name: "",
     },
   });
+
+  // GET Patients Data
+  const fetchPatientData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchUserDataResponse({
+        pageNo: 1,
+        pageSize: 10,
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
+
+      if (response) {
+        setPatientData(response.data);
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch patients",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, toast]);
+
+  // Fetch Providers Data
+  const fetchProvidersData = useCallback(async (currentPage: number) => {
+    setLoading(true);
+    try {
+      const response = await fetchProviderListDetails({
+        page: currentPage,
+        limit: 10,
+      });
+      setProvidersList(response.data);
+    } catch (err) {
+      console.error("Error fetching providers data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchLabResultsList = useCallback(
+    async (
+      page: number,
+      providerId?: string,
+      userDetailsId?: string,
+      status?: string
+    ) => {
+      setDataLoading(true);
+
+      try {
+        const response = await getLabResultList({
+          providerId: providerId || filters.reviewer,
+          userDetailsId: userDetailsId || filters.patient,
+          status: status || filters.status,
+          limit: 4,
+          page: page,
+        });
+        if (response) {
+          setResultList(response);
+          setTotalPages(Math.ceil(response.total / Number(response.limit)));
+        }
+      } catch (e) {
+        console.log("Error", e);
+      } finally {
+        setDataLoading(false);
+      }
+    },
+    [filters.patient, filters.reviewer, filters.status]
+  );
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim()) {
+        fetchPatientData();
+      } else {
+        setPatientData([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchPatientData]);
+
+  const filteredPatients = useMemo(
+    () =>
+      patientData.filter((patient) =>
+        `${patient.user.firstName} ${patient.user.lastName}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      ),
+    [patientData, searchTerm]
+  );
+
+  useEffect(() => {
+    fetchLabResultsList(
+      page,
+      filters.reviewer,
+      filters.patient,
+      filters.status
+    );
+    fetchProvidersData(page);
+  }, [page, fetchLabResultsList, fetchProvidersData, filters]);
 
   function onSubmit(values: z.infer<typeof filterLabResultsSchema>) {
     console.log(values.reviewer);
@@ -93,76 +207,6 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
 
     setPage(1);
   }
-
-  // GET Patients' Data
-  const fetchPatientData = useCallback(async (currentPage: number) => {
-    setLoading((prev) => ({ ...prev, patients: true }));
-    try {
-      const response = await fetchUserDataResponse({ pageNo: currentPage });
-      if (response) {
-        setPatientData(response.data);
-      }
-    } catch (err) {
-      console.error("Error fetching user data:", err);
-    } finally {
-      setLoading((prev) => ({ ...prev, patients: false }));
-    }
-  }, []);
-
-  // Fetch Providers Data
-  const fetchProvidersData = useCallback(async (currentPage: number) => {
-    setLoading((prev) => ({ ...prev, providers: true }));
-    try {
-      const response = await fetchProviderListDetails({
-        page: currentPage,
-        limit: 10,
-      });
-      setProvidersList(response.data);
-    } catch (err) {
-      console.error("Error fetching providers data:", err);
-    } finally {
-      setLoading((prev) => ({ ...prev, providers: false }));
-    }
-  }, []);
-
-  const fetchLabResultsList = useCallback(
-    async (page: number) => {
-      setLoading((prev) => ({ ...prev, labResults: true }));
-
-      try {
-        if (providerDetails) {
-          const response = await getLabResultList({
-            providerId: filters.reviewer,
-            userDetailsId: filters.patient,
-            status: filters.status,
-            limit: 4,
-            page: page,
-          });
-          if (response) {
-            setResultList(response);
-            setTotalPages(Math.ceil(response.total / Number(response.limit)));
-          }
-        }
-      } catch (e) {
-        console.log("Error", e);
-      } finally {
-        setLoading((prev) => ({ ...prev, labResults: false }));
-      }
-    },
-    [providerDetails, filters]
-  );
-
-  useEffect(() => {
-    fetchLabResultsList(page);
-    fetchPatientData(page);
-    fetchProvidersData(page);
-  }, [page, fetchLabResultsList, fetchPatientData, fetchProvidersData]);
-
-  const filteredPatients = patientData.filter((patient) =>
-    `${patient.user.firstName} ${patient.user.lastName}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="space-y-4">
@@ -216,7 +260,7 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {loading.providers ? (
+                      {loading ? (
                         <div>Loading...</div>
                       ) : (
                         providersList
@@ -269,7 +313,7 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
                       />
                       {searchTerm && visibleSearchList && (
                         <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
-                          {loading.patients ? (
+                          {loading ? (
                             <div>Loading...</div>
                           ) : filteredPatients.length > 0 ? (
                             filteredPatients.map((patient) => (
@@ -307,22 +351,20 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
           </div>
         </form>
       </Form>
-      {loading.labResults ? (
+      {dataLoading ? (
         <TableShimmer />
       ) : (
-        resultList?.results && (
-          <DefaultDataTable
-            title={"Labs Results"}
-            onAddClick={() => {
-              router.push("/dashboard/provider/labs/create_lab_results");
-            }}
-            columns={columns()}
-            data={resultList?.results}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
-          />
-        )
+        <DefaultDataTable
+          title={"Labs Results"}
+          onAddClick={() => {
+            router.push("/dashboard/provider/labs/create_lab_results");
+          }}
+          columns={columns()}
+          data={resultList?.results || []}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
       )}
     </div>
   );
