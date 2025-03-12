@@ -41,6 +41,7 @@ import { createPrescriptions } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { getDosageUnits } from "@/services/enumServices";
 
 const PatientMedicationDialog = ({
   // userDetailsId,
@@ -57,6 +58,9 @@ const PatientMedicationDialog = ({
     useState<boolean>(false);
   const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
   const { toast } = useToast();
+
+  // Dosage Units
+  const [dosageUnits, setDosageUnits] = useState<string[]>([]);
 
   // Chart State
   const chartId = useSelector((state: RootState) => state.user.chartId);
@@ -112,16 +116,54 @@ const PatientMedicationDialog = ({
       .join(" ")
       .trim();
     return directions;
-  }, [dosageQuantity, dosageUnit, frequency, durationQuantity, durationUnit, route, watch]);
+  }, [
+    dosageQuantity,
+    dosageUnit,
+    frequency,
+    durationQuantity,
+    durationUnit,
+    route,
+    watch,
+  ]);
+
+  // GET Dosage Units
+  const fetchDosageUnits = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getDosageUnits();
+
+      if (response) {
+        setDosageUnits(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch dosage units",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
 
   // Update the directions field whenever the relevant fields change
   useEffect(() => {
     const directions = generateDirections();
     form.setValue("directions", directions); // Update the directions field
-  }, [
-    form,
-    generateDirections,
-  ]);
+  }, [form, generateDirections]);
+
+  useEffect(() => {
+    fetchDosageUnits();
+  }, [fetchDosageUnits]);
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
     console.log(values);
@@ -312,8 +354,11 @@ const PatientMedicationDialog = ({
                                   <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="mg">mg</SelectItem>
-                                  <SelectItem value="ml">ml</SelectItem>
+                                  {dosageUnits.map((unit) => (
+                                    <SelectItem key={unit} value={unit}>
+                                      {unit}
+                                    </SelectItem>
+                                  ))}
                                 </SelectContent>
                               </Select>
                             </FormControl>
