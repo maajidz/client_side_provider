@@ -40,23 +40,30 @@ interface ILabResultsProps {
 }
 
 function LabResults({ userDetailsId }: ILabResultsProps) {
+  //Provider Details
   const providerDetails = useSelector((state: RootState) => state.login);
+
+  //Lab Results State
   const [resultList, setResultList] = useState<LabResultsInterface>();
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
 
-  const router = useRouter();
-  const { toast } = useToast();
-
-  // Patient State
+  //Patient List State
   const [patientData, setPatientData] = useState<UserData[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
 
-  // Providers State
+  //Provider List State
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
 
-  // Search State
+  //Search States
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+
+  // Loading States
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
+
+  // Pagination State
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   // Filter State
   const [filters, setFilters] = useState({
@@ -65,10 +72,10 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
     patient: userDetailsId ?? "",
   });
 
-  // Loading State
-  const [loading, setLoading] = useState<boolean>(false);
-  const [dataLoading, setDataLoading] = useState<boolean>(false);
+  const router = useRouter();
+  const { toast } = useToast();
 
+  // Form Definition
   const form = useForm<z.infer<typeof filterLabResultsSchema>>({
     resolver: zodResolver(filterLabResultsSchema),
     defaultValues: {
@@ -130,6 +137,7 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
     }
   }, []);
 
+  // Fetch Lab Results Data
   const fetchLabResultsList = useCallback(
     async (
       page: number,
@@ -160,18 +168,21 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
     [filters.patient, filters.reviewer, filters.status]
   );
 
+  // Patient useEffect
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm.trim()) {
         fetchPatientData();
       } else {
         setPatientData([]);
+        setSelectedUser(null);
       }
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, fetchPatientData]);
 
+  // Filter Patients
   const filteredPatients = useMemo(
     () =>
       patientData.filter((patient) =>
@@ -182,6 +193,7 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
     [patientData, searchTerm]
   );
 
+  // Lab Results useEffect
   useEffect(() => {
     fetchLabResultsList(
       page,
@@ -192,6 +204,7 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
     fetchProvidersData(page);
   }, [page, fetchLabResultsList, fetchProvidersData, filters]);
 
+  //  Submit handler function
   function onSubmit(values: z.infer<typeof filterLabResultsSchema>) {
     console.log(values.reviewer);
     setFilters((prev) => ({
@@ -298,19 +311,26 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Input
-                        placeholder="Search Patient "
-                        value={searchTerm}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setSearchTerm(value);
-                          setVisibleSearchList(true);
+                      <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                        <Input
+                          placeholder="Search Patient "
+                          value={searchTerm}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setSearchTerm(value);
+                            setVisibleSearchList(true);
 
-                          if (!value) {
-                            field.onChange("");
-                          }
-                        }}
-                      />
+                            if (!value) {
+                              field.onChange("");
+                            }
+                          }}
+                          className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                        />
+                        <div className="px-3 py-1 text-base">
+                          {" "}
+                          {selectedUser?.patientId}
+                        </div>
+                      </div>
                       {searchTerm && visibleSearchList && (
                         <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
                           {loading ? (
@@ -326,9 +346,10 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
                                     `${patient.user.firstName} ${patient.user.lastName}`
                                   );
                                   setVisibleSearchList(false);
+                                  setSelectedUser(patient);
                                 }}
                               >
-                                {`${patient.user.firstName} ${patient.user.lastName}`}
+                                {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
                               </div>
                             ))
                           ) : (

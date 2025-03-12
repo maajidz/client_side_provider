@@ -177,6 +177,7 @@ function LabOrders() {
         fetchPatientData();
       } else {
         setPatientData([]);
+        setSelectedUser(null);
       }
     }, 300);
 
@@ -310,7 +311,10 @@ function LabOrders() {
                         }}
                         className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
                       />
-                      <div className="px-3 py-1 text-base"> {selectedUser?.patientId}</div>
+                      <div className="px-3 py-1 text-base">
+                        {" "}
+                        {selectedUser?.patientId}
+                      </div>
                     </div>
                     {searchTerm && visibleSearchList && (
                       <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
