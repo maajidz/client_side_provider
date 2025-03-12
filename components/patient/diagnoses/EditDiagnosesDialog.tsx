@@ -82,13 +82,14 @@ export default function EditDiagnosisDialog({
     },
   });
 
+  console.log(diagnosisData);
   const onSubmit: SubmitHandler<z.infer<typeof editDiagnosisSchema>> = async (
     values: z.infer<typeof editDiagnosisSchema>
   ) => {
     setLoading(true);
 
     const requestData: UpdateDiagnosesRequestBody = {
-      diagnosis_Id: diagnosisData?.diagnosis_Id ?? "",
+      id: diagnosisData?.id ?? "",
       // ICD_Code: diagnosisData?.ICD_Code,
       notes: values.notes,
       status: values.status,

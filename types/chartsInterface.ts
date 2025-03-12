@@ -149,7 +149,7 @@ export interface CreateDiagnosesRequestBody {
 }
 
 export interface UpdateDiagnosesRequestBody {
-  diagnosis_Id?: string;
+  id?: string;
   ICD_Code?: string;
   notes?: string;
   status?: "active" | "inactive";

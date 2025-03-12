@@ -46,7 +46,7 @@ const handleDiagnosisStatus = async (
 ) => {
   setLoading(true);
   const requestData: UpdateDiagnosesRequestBody = {
-    diagnosis_Id: diagnosisData?.diagnosis_Id ?? "",
+    id: diagnosisData?.diagnosis_Id ?? "",
     // ICD_Code: diagnosisData?.ICD_Code,
     notes: diagnosisData.notes,
     status: status,
