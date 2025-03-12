@@ -24,7 +24,6 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "./columns";
-import LoadingButton from "@/components/LoadingButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { useRouter } from "next/navigation";
 import { fetchProviderListDetails } from "@/services/registerServices";
@@ -33,28 +32,43 @@ import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 import { imagesStatus } from "@/constants/data";
+import { useToast } from "@/hooks/use-toast";
+import { showToast } from "@/utils/utils";
 
 function ImageOrders() {
+  // Provider Details
   const providerDetails = useSelector((state: RootState) => state.login);
+
+  // Image Orders State
+  const [orderList, setOrderList] = useState<ImageOrdersResponseInterface>();
+
+  // Patient State
+  const [patientData, setPatientData] = useState<UserData[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+
+  // Provider List State
   const [providerListData, setProviderListData] =
     useState<FetchProviderListInterface>({
       data: [],
       total: 0,
     });
-  const [orderList, setOrderList] = useState<ImageOrdersResponseInterface>();
-  const [loading, setLoading] = useState(false);
+
+  // Search State
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+
+  // Loading States
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
+
+  // Pagination State
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
-  // Patient State
-  const [patientData, setPatientData] = useState<UserData[]>([]);
-
-  // Search State
-  const [searchTerm, setSearchTerm] = useState("");
-  const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
-
   const router = useRouter();
+  const { toast } = useToast();
 
+  // Form Definition
   const form = useForm<z.infer<typeof filterLabOrdersSchema>>({
     resolver: zodResolver(filterLabOrdersSchema),
     defaultValues: {
@@ -65,6 +79,42 @@ function ImageOrders() {
   });
 
   const filters = form.watch();
+
+  // GET Patients Data
+  const fetchPatientData = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchUserDataResponse({
+        pageNo: 1,
+        pageSize: 10,
+        firstName: searchTerm,
+        lastName: searchTerm,
+      });
+
+      if (response) {
+        setPatientData(response.data);
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch patients",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, toast]);
 
   // GET Providers List
   const fetchProvidersList = useCallback(async () => {
@@ -84,29 +134,20 @@ function ImageOrders() {
     }
   }, []);
 
-  // GET Patients' Data
-  const fetchPatientData = useCallback(async (currentPage: number) => {
-    setLoading(true);
-    try {
-      const response = await fetchUserDataResponse({ pageNo: currentPage });
-      if (response) {
-        setPatientData(response.data);
-      }
-    } catch (err) {
-      console.error("Error fetching user data:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
+  // Fetch Image Orders Data
   const fetchImageOrdersList = useCallback(
     async (page: number) => {
       try {
-        setLoading(true);
+        setDataLoading(true);
         const limit = 4;
         if (providerDetails) {
           const response = await getImagesOrdersData({
-            providerId: filters.orderedby === "all" ? "" : filters.orderedby,
+            providerId:
+              filters.orderedby === "all"
+                ? ""
+                : filters.orderedby
+                ? filters.orderedby
+                : providerDetails.providerId,
             userDetailsId: filters.name,
             status: filters.status,
             limit,
@@ -117,27 +158,41 @@ function ImageOrders() {
             setTotalPages(Math.ceil(response.total / limit));
           }
         }
-        setLoading(false);
+        setDataLoading(false);
       } catch (e) {
         console.log("Error", e);
       } finally {
-        setLoading(false);
+        setDataLoading(false);
       }
     },
     [providerDetails, filters.orderedby, filters.name, filters.status]
   );
 
+  // Patient useEffect
   useEffect(() => {
-    fetchImageOrdersList(page);
-    fetchPatientData(page);
-    fetchProvidersList();
-  }, [page, fetchImageOrdersList, fetchPatientData, fetchProvidersList]);
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim()) {
+        fetchPatientData();
+      } else {
+        setPatientData([]);
+        setSelectedUser(null);
+      }
+    }, 300);
 
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchPatientData]);
+
+  // Filter Patients
   const filteredPatients = patientData.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
+
+  useEffect(() => {
+    fetchImageOrdersList(page);
+    fetchProvidersList();
+  }, [page, fetchImageOrdersList, fetchProvidersList]);
 
   return (
     <div className="space-y-4">
@@ -159,16 +214,20 @@ function ImageOrders() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {providerListData.data.map((providerList) => {
-                        const providerId =
-                          providerList.providerDetails?.id ?? providerList.id;
-                        return (
-                          <SelectItem
-                            key={providerList.id}
-                            value={providerId}
-                          >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
-                        );
-                      })}
+                      {loading ? (
+                        <div>Loading...</div>
+                      ) : (
+                        providerListData.data.map((providerList) => {
+                          const providerId =
+                            providerList.providerDetails?.id ?? providerList.id;
+                          return (
+                            <SelectItem
+                              key={providerList.id}
+                              value={providerId}
+                            >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
+                          );
+                        })
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -214,30 +273,31 @@ function ImageOrders() {
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <div className="relative">
-                    <Input
-                      placeholder="Search Patient "
-                      value={searchTerm}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setSearchTerm(value);
-                        setVisibleSearchList(true);
+                    <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                      <Input
+                        placeholder="Search Patient "
+                        value={searchTerm}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setSearchTerm(value);
+                          setVisibleSearchList(true);
 
-                        if (!value) {
-                          field.onChange("");
-                        }
-                      }}
-                    />
-
-                    {/* Loading Button */}
-                    {loading && (
-                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                        <LoadingButton />
+                          if (!value) {
+                            field.onChange("");
+                          }
+                        }}
+                        className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                      />
+                      <div className="px-3 py-1 text-base">
+                        {" "}
+                        {selectedUser?.patientId}
                       </div>
-                    )}
-
+                    </div>
                     {searchTerm && visibleSearchList && (
                       <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
-                        {filteredPatients.length > 0 ? (
+                        {loading ? (
+                          <div>Loading...</div>
+                        ) : filteredPatients.length > 0 ? (
                           filteredPatients.map((patient) => (
                             <div
                               key={patient.id}
@@ -248,9 +308,10 @@ function ImageOrders() {
                                   `${patient.user.firstName} ${patient.user.lastName}`
                                 );
                                 setVisibleSearchList(false);
+                                setSelectedUser(patient);
                               }}
                             >
-                              {`${patient.user.firstName} ${patient.user.lastName}`}
+                              {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
                             </div>
                           ))
                         ) : (
@@ -268,15 +329,16 @@ function ImageOrders() {
           />
         </form>
       </Form>
-      {loading && <TableShimmer />}
-      {!loading && orderList?.data && (
+      {dataLoading ? (
+        <TableShimmer />
+      ) : (
         <DefaultDataTable
           title={"Image Orders"}
           onAddClick={() => {
             router.push("/dashboard/provider/images/create_image_orders");
           }}
           columns={columns()}
-          data={orderList?.data}
+          data={orderList?.data || []}
           pageNo={page}
           totalPages={totalPages}
           onPageChange={(newPage: number) => setPage(newPage)}

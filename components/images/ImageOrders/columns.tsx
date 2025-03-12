@@ -11,7 +11,7 @@ export const columns = (): ColumnDef<ImageOrdersData>[] => [
       <div className="cursor-pointer">{row.getValue("id")}</div>
     ),
   },
- {
+  {
     accessorKey: "ordered_date",
     header: "Ordered On",
     cell: ({ getValue }) => {
@@ -29,20 +29,31 @@ export const columns = (): ColumnDef<ImageOrdersData>[] => [
     },
   },
   {
-    accessorKey: "providerId",
+    accessorKey: "userDetails",
+    header: "Patient",
+    cell: ({ row }) => (
+      <div className="cursor-pointer">{`${row.original.userDetails.user.firstName} ${row.original.userDetails.user.lastName}-${row.original.userDetails.patientId}`}</div>
+    ),
+  },
+  {
+    accessorKey: "providerDetails",
     header: "Ordered By",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("providerId")}</div>
+      <div className="cursor-pointer">
+        {row.original.providerDetails.providerDetails.providerUniqueId}
+      </div>
     ),
   },
   {
     accessorKey: "imageType",
     header: "Image Type",
     cell: ({ row }) => {
-      const imageType = row.getValue("imageType") as ImageOrdersData["imageType"];
+      const imageType = row.getValue(
+        "imageType"
+      ) as ImageOrdersData["imageType"];
       return (
         <div className="cursor-pointer">
-            <span key={imageType?.id}>{imageType?.name} </span>
+          <span key={imageType?.id}>{imageType?.name} </span>
         </div>
       );
     },
@@ -51,7 +62,9 @@ export const columns = (): ColumnDef<ImageOrdersData>[] => [
     accessorKey: "imageTests",
     header: "Image Tests",
     cell: ({ row }) => {
-      const imageTests = row.getValue("imageTests") as ImageOrdersData["imageTests"];
+      const imageTests = row.getValue(
+        "imageTests"
+      ) as ImageOrdersData["imageTests"];
       return (
         <div className="cursor-pointer">
           {imageTests?.map((imageTests) => (
@@ -67,11 +80,7 @@ export const columns = (): ColumnDef<ImageOrdersData>[] => [
     cell: ({ row }) => {
       return (
         <Badge
-          variant={
-            row.original.status === "Confirmed"
-              ? "success"
-              : "default"
-          }
+          variant={row.original.status === "Confirmed" ? "success" : "default"}
         >
           {row.original.status}
         </Badge>

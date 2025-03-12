@@ -16,6 +16,10 @@ export const columns = (): ColumnDef<DocumentsInterface>[] => [
     header: "Internal Comments",
   },
   {
+    accessorKey: "reviewerId",
+    header: "Reviewer Id",
+  },
+  {
     accessorKey: "createdAt",
     header: "Date",
     cell: ({ row }) => {

@@ -31,6 +31,8 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
       if (userDetailsId) {
         const response = await getDocumentsData({
           userDetailsId: userDetailsId,
+          limit: 10,
+          page: page
         });
         if (response) {
           setDocumentsData(response.data);
@@ -43,7 +45,7 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
     } finally {
       setLoading(false);
     }
-  }, [userDetailsId]);
+  }, [page,userDetailsId]);
 
   useEffect(() => {
     fetchDocumentsData();
