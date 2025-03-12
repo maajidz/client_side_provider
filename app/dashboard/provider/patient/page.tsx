@@ -10,8 +10,8 @@ const breadcrumbItems = [
 export default function Patients() {
   return (
     <PageContainer>
-        <SearchInput />
         <Breadcrumbs items={breadcrumbItems} />
+        <SearchInput />
         <PatientClient />
     </PageContainer>
   );
