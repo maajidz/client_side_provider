@@ -1,5 +1,5 @@
 import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -42,6 +42,7 @@ import { Switch } from "@/components/ui/switch";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { getDosageUnits } from "@/services/enumServices";
 
 const AddRx = ({
   patientDetails,
@@ -57,6 +58,9 @@ const AddRx = ({
   const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
+
+  // Dosage Units
+  const [dosageUnits, setDosageUnits] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof prescriptionSchema>>({
     resolver: zodResolver(prescriptionSchema),
@@ -82,6 +86,35 @@ const AddRx = ({
       Note_to_Pharmacy: "",
     },
   });
+
+  // GET Dosage Units
+  const fetchDosageUnits = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getDosageUnits();
+
+      if (response) {
+        setDosageUnits(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch dosage units",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
     console.log(values);
@@ -185,6 +218,11 @@ const AddRx = ({
       }
     }
   };
+
+  // * Effects
+  useEffect(() => {
+    fetchDosageUnits();
+  }, [fetchDosageUnits]);
 
   if (loading) {
     return (
@@ -322,8 +360,11 @@ const AddRx = ({
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="mg">mg</SelectItem>
-                            <SelectItem value="ml">ml</SelectItem>
+                            {dosageUnits.map((unit) => (
+                              <SelectItem key={unit} value={unit}>
+                                {unit}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -642,7 +683,9 @@ const AddRx = ({
           </Form>
         ) : (
           <div className="flex flex-col gap-2">
-            <RxPatientDetailsSection userDetailsId={patientDetails.userDetails.id} />
+            <RxPatientDetailsSection
+              userDetailsId={patientDetails.userDetails.id}
+            />
             <div className="flex flex-col p-3 rounded-lg border">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-lg font-semibold text-gray-700">

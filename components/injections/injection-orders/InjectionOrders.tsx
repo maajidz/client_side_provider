@@ -8,7 +8,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -30,6 +30,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { addInjectionSchema } from "@/schema/injectionsAndVaccinesSchema";
+import { getDosageUnits } from "@/services/enumServices";
 import { createInjectionOrder } from "@/services/injectionsServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { fetchUserDataResponse } from "@/services/userServices";
@@ -57,6 +58,9 @@ function InjectionOrders({
     ? userDetailsId[0]
     : userDetailsId;
 
+  // Dosage Units
+  const [dosageUnits, setDosageUnits] = useState<string[]>([]);
+
   // Data State
   const [patientData, setPatientData] = useState<UserData[]>([]);
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
@@ -65,11 +69,12 @@ function InjectionOrders({
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
 
-  // Dialog State
-  
-
   // Loading State
-  const [loading, setLoading] = useState({ get: false, post: false });
+  const [loading, setLoading] = useState({
+    get: false,
+    post: false,
+    dosage: false,
+  });
 
   // Form State
   const form = useForm<z.infer<typeof addInjectionSchema>>({
@@ -142,6 +147,35 @@ function InjectionOrders({
     }
   }, [toast]);
 
+  // GET Dosage Units
+  const fetchDosageUnits = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, dosage: true }));
+
+    try {
+      const response = await getDosageUnits();
+
+      if (response) {
+        setDosageUnits(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch dosage units",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, dosage: false }));
+    }
+  }, [toast]);
+
   useEffect(() => {
     if (userDetailsIdString) {
       form.setValue("userDetailsId", userDetailsIdString);
@@ -197,7 +231,8 @@ function InjectionOrders({
     }
 
     fetchProvidersData();
-  }, [fetchUserData, fetchProvidersData, userDetailsId]);
+    fetchDosageUnits();
+  }, [fetchUserData, fetchProvidersData, fetchDosageUnits, userDetailsId]);
 
   const filteredPatients = patientData.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
@@ -224,7 +259,7 @@ function InjectionOrders({
                       control={form.control}
                       name="userDetailsId"
                       render={({ field }) => (
-                        <FormItem >
+                        <FormItem>
                           <FormLabel>Patient</FormLabel>
                           <FormControl>
                             <div className="relative">
@@ -272,7 +307,7 @@ function InjectionOrders({
                     control={form.control}
                     name="injection_name"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel>Injection</FormLabel>
                         <FormControl>
                           <Input
@@ -288,7 +323,7 @@ function InjectionOrders({
                     control={form.control}
                     name="providerId"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel>Ordered By</FormLabel>
                         <FormControl>
                           <Select
@@ -323,14 +358,14 @@ function InjectionOrders({
                       </FormItem>
                     )}
                   />
-                  <div >
+                  <div>
                     <div className="flex gap-3 items-end">
                       <FormField
                         control={form.control}
                         name="dosage.dosage_quantity"
                         render={({ field }) => (
-                          <FormItem >
-                          <FormLabel>Dosage</FormLabel>
+                          <FormItem>
+                            <FormLabel>Dosage</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
@@ -359,9 +394,11 @@ function InjectionOrders({
                                   <SelectValue placeholder="Select Unit" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="mg">mg</SelectItem>
-                                  <SelectItem value="unit2">Unit 2</SelectItem>
-                                  <SelectItem value="unit3">Unit 3</SelectItem>
+                                  {dosageUnits.map((unit) => (
+                                    <SelectItem key={unit} value={unit}>
+                                      {unit}
+                                    </SelectItem>
+                                  ))}
                                 </SelectContent>
                               </Select>
                             </FormControl>
@@ -375,7 +412,7 @@ function InjectionOrders({
                     control={form.control}
                     name="frequency"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel className="w-full">Frequency</FormLabel>
                         <FormControl>
                           <Select
@@ -402,14 +439,14 @@ function InjectionOrders({
                       </FormItem>
                     )}
                   />
-                  <div >
+                  <div>
                     <div className="flex gap-3 items-end">
                       <FormField
                         control={form.control}
                         name="period.period_number"
                         render={({ field }) => (
-                          <FormItem >
-                          <FormLabel className="w-full">Period</FormLabel>
+                          <FormItem>
+                            <FormLabel className="w-full">Period</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
@@ -457,7 +494,7 @@ function InjectionOrders({
                     control={form.control}
                     name="parental_route"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel className="w-full">Parental Route</FormLabel>
                         <FormControl>
                           <Select
@@ -485,7 +522,7 @@ function InjectionOrders({
                     control={form.control}
                     name="note_to_nurse"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel className="w-full">Note to Nurse</FormLabel>
                         <FormControl>
                           <Textarea
@@ -501,7 +538,7 @@ function InjectionOrders({
                     control={form.control}
                     name="comments"
                     render={({ field }) => (
-                      <FormItem >
+                      <FormItem>
                         <FormLabel className="w-full">Comments</FormLabel>
                         <FormControl>
                           <Textarea
@@ -516,10 +553,7 @@ function InjectionOrders({
 
                   <DialogFooter>
                     <div className="flex justify-end gap-2 w-fit">
-                      <Button
-                        variant="outline"
-                        onClick={onClose}
-                      >
+                      <Button variant="outline" onClick={onClose}>
                         Cancel
                       </Button>
                       <SubmitButton label="Save" disabled={loading.post} />
