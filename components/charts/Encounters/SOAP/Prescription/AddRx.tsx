@@ -42,7 +42,7 @@ import { Switch } from "@/components/ui/switch";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import { getDosageUnits } from "@/services/enumServices";
+import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
 
 const AddRx = ({
   patientDetails,
@@ -51,13 +51,20 @@ const AddRx = ({
   patientDetails: UserEncounterData;
   encounterId: string;
 }) => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState({
+    post: false,
+    dosage: false,
+    frequency: false,
+  });
   const [drugName, setDrugName] = useState<string>("");
   const [showPrescriptionForm, setShowPrescriptionForm] =
     useState<boolean>(false);
   const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
+
+  // Frequency Data
+  const [frequencyData, setFrequencyData] = useState<string[]>([]);
 
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
@@ -87,9 +94,38 @@ const AddRx = ({
     },
   });
 
+  // GET Frequency Data
+  const fetchFrequency = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, frequency: true }));
+
+    try {
+      const response = await getFrequencyData();
+
+      if (response) {
+        setFrequencyData(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch frequency data",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, frequency: false }));
+    }
+  }, [toast]);
+
   // GET Dosage Units
   const fetchDosageUnits = useCallback(async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, dosage: true }));
 
     try {
       const response = await getDosageUnits();
@@ -112,12 +148,11 @@ const AddRx = ({
         });
       }
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, dosage: false }));
     }
   }, [toast]);
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
-    console.log(values);
     if (patientDetails.chart?.id) {
       const requestData = {
         drug_name: drugName,
@@ -153,7 +188,8 @@ const AddRx = ({
         encounterId: encounterId,
       };
       try {
-        setLoading(true);
+        setLoading((prev) => ({ ...prev, post: true }));
+
         await createPrescriptions({ requestData: requestData });
         await updateSOAPChart({
           requestData: data,
@@ -165,7 +201,7 @@ const AddRx = ({
       } catch (e) {
         console.log("Error", e);
       } finally {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, post: false }));
         setIsDialogOpen(false);
       }
     } else {
@@ -175,7 +211,7 @@ const AddRx = ({
         encounterId: encounterId,
       };
       try {
-        setLoading(true);
+        setLoading((prev) => ({ ...prev, post: true }));
         const response = await createSOAPChart({ requestData: data });
         if (response) {
           const chartId = response.id;
@@ -214,17 +250,18 @@ const AddRx = ({
       } catch (e) {
         console.log("Error", e);
       } finally {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, post: false }));
       }
     }
   };
 
   // * Effects
   useEffect(() => {
+    fetchFrequency();
     fetchDosageUnits();
-  }, [fetchDosageUnits]);
+  }, [fetchFrequency, fetchDosageUnits]);
 
-  if (loading) {
+  if (loading.post) {
     return (
       <div>
         <LoadingButton />
@@ -411,12 +448,15 @@ const AddRx = ({
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="frequency1">
-                              Frequency 1
-                            </SelectItem>
-                            <SelectItem value="frequency2">
-                              Frequency 2
-                            </SelectItem>
+                            {loading.frequency ? (
+                              <div>Loading...</div>
+                            ) : (
+                              frequencyData.map((frequency) => (
+                                <SelectItem key={frequency} value={frequency}>
+                                  {frequency}
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>

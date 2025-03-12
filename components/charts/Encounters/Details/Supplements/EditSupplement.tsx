@@ -45,7 +45,11 @@ import { useForm } from "react-hook-form";
 import { useCallback, useEffect, useState } from "react";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getDosageUnits, getIntakeTypes } from "@/services/enumServices";
+import {
+  getDosageUnits,
+  getFrequencyData,
+  getIntakeTypes,
+} from "@/services/enumServices";
 
 interface EditSupplementProps {
   selectedSupplement: SupplementInterfaceResponse;
@@ -72,6 +76,9 @@ function EditSupplement({
     SupplementTypesInterface[]
   >([]);
 
+  // Frequency Data
+  const [frequencyData, setFrequencyData] = useState<string[]>([]);
+
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
 
@@ -89,6 +96,7 @@ function EditSupplement({
     get: false,
     patch: false,
     dosage: false,
+    frequency: false,
     intake: false,
   });
 
@@ -135,6 +143,35 @@ function EditSupplement({
       }
     } finally {
       setLoading((prev) => ({ ...prev, get: false }));
+    }
+  }, [toast]);
+
+  // GET Frequency Data
+  const fetchFrequency = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, frequency: true }));
+
+    try {
+      const response = await getFrequencyData();
+
+      if (response) {
+        setFrequencyData(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch frequency data",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, frequency: false }));
     }
   }, [toast]);
 
@@ -235,9 +272,10 @@ function EditSupplement({
   // * Effects
   useEffect(() => {
     fetchAllSupplements();
+    fetchFrequency();
     fetchDosageUnits();
     fetchIntakeTypes();
-  }, [fetchAllSupplements, fetchDosageUnits, fetchIntakeTypes]);
+  }, [fetchAllSupplements, fetchFrequency, fetchDosageUnits, fetchIntakeTypes]);
 
   const filteredSupplements = supplementsData.filter((supplement) =>
     supplement.supplement_name.toLocaleLowerCase().includes(searchTerm)
@@ -443,10 +481,25 @@ function EditSupplement({
                     <FormItem className="flex  gap-2 items-center">
                       <FormLabel className="w-fit">Frequency</FormLabel>
                       <FormControl>
-                        <Input
-                          defaultValue={selectedSupplement.frequency}
-                          onChange={field.onChange}
-                        />
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Frequency" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {loading.frequency ? (
+                              <div>Loading...</div>
+                            ) : (
+                              frequencyData.map((frequency) => (
+                                <SelectItem key={frequency} value={frequency}>
+                                  {frequency}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
