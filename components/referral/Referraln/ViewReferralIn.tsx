@@ -41,14 +41,15 @@ const ViewReferralIn = () => {
   const [resultList, setResultList] = useState<TransferResponseData[]>([]);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [filters, setFilters] = useState<{
-    referralFrom: string;
+    referralTo: string;
     statusType: "responseStatus" | "requestStatus" | "";
     status: string;
   }>({
-    referralFrom: "",
+    referralTo: "",
     statusType: "",
     status: "",
   });
@@ -85,7 +86,7 @@ const ViewReferralIn = () => {
   function onSubmit(values: z.infer<typeof referralInSearchParams>) {
     setFilters((prev) => ({
       ...prev,
-      referralFrom: values.referralFrom || "",
+      referralTo: values.referralTo || "",
       statusType: values.statusType === "all" ? "" : values.statusType || "",
       status: values.status === "all" ? "" : values.status || "",
     }));
@@ -94,22 +95,25 @@ const ViewReferralIn = () => {
   }
 
   const fetchReferralsList = useCallback(async () => {
+    setDataLoading(true);
     try {
       if (providerDetails) {
         const response = await getTransferData({
-          id: providerDetails.providerId,
-          idType: "Referring to ProviderID",
+          id: filters.referralTo ?? providerDetails.providerId,
+          idType: "referringToProviderID",
+          referralType: "internal",
           statusType: filters.statusType ?? "responseStatus",
           status: filters.status,
         });
         if (response) {
           setResultList(response);
-          setTotalPages(response.length / 10);
+          setTotalPages(Math.ceil(response.length / 10));
         }
-        setLoading(false);
       }
     } catch (e) {
       console.log("Error", e);
+    } finally {
+      setDataLoading(false);
     }
   }, [providerDetails, filters]);
 
@@ -141,14 +145,18 @@ const ViewReferralIn = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {ownersList.map((owner) => (
-                        <SelectItem
-                          key={owner.id}
-                          value={owner.providerDetails?.id || owner.id}
-                        >
-                          {owner.firstName} {owner.lastName}
-                        </SelectItem>
-                      ))}
+                      {loading ? (
+                        <div>Loading...</div>
+                      ) : (
+                        ownersList.map((owner) => (
+                          <SelectItem
+                            key={owner.id}
+                            value={owner.providerDetails?.id || owner.id}
+                          >
+                            {owner.firstName} {owner.lastName}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -199,7 +207,11 @@ const ViewReferralIn = () => {
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
                 <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={form.getValues("statusType") === "all"}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Filter by Status" />
                     </SelectTrigger>
@@ -231,8 +243,8 @@ const ViewReferralIn = () => {
           </div>
         </form>
       </Form>
-      {loading && <TableShimmer />}
-      {!loading && resultList && (
+      {dataLoading && <TableShimmer />}
+      {!dataLoading && resultList && (
         <DefaultDataTable
           title={"Referral In"}
           onAddClick={() => setIsReferralInDialogOpen(true)}

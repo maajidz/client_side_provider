@@ -639,8 +639,8 @@ export const getTransferData = async ({
   idType:
     | "id"
     | "encounterId"
-    | "Referring to ProviderID"
-    | "Referring from ProviderID";
+    | "referringToProviderID"
+    | "referringFromProviderID";
   referralType?: "external" | "internal";
   statusType?: "responseStatus" | "requestStatus" | '';
   status?: string;

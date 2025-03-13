@@ -41,6 +41,7 @@ const ViewReferralOut = () => {
     useState<boolean>(false);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [filters, setFilters] = useState<{
@@ -95,10 +96,13 @@ const ViewReferralOut = () => {
   }
 
   const fetchReferralsList = useCallback(async () => {
+    setDataLoading(true);
+
     try {
       const response = await getTransferData({
         id: providerDetails.providerId,
-        idType: "Referring from ProviderID",
+        idType: "referringFromProviderID",
+        referralType: "internal",
         statusType: filters.statusType ?? "responseStatus",
         status: filters.status,
       });
@@ -106,9 +110,10 @@ const ViewReferralOut = () => {
         setResultList(response);
         setTotalPages(Math.ceil(response.length / 10));
       }
-      setLoading(false);
     } catch (e) {
       console.log("Error", e);
+    } finally {
+      setDataLoading(false);
     }
   }, [filters, providerDetails]);
 
@@ -140,9 +145,9 @@ const ViewReferralOut = () => {
                       <SelectValue placeholder="Filter by Referral To" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="external" className="cursor-pointer">
+                      {/* <SelectItem value="external" className="cursor-pointer">
                         External
-                      </SelectItem>
+                      </SelectItem> */}
                       <SelectItem value="internal" className="cursor-pointer">
                         Internal
                       </SelectItem>
@@ -173,14 +178,18 @@ const ViewReferralOut = () => {
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent>
-                        {ownersList.map((owner) => (
-                          <SelectItem
-                            key={owner.id}
-                            value={owner.providerDetails?.id || owner.id}
-                          >
-                            {owner.firstName} {owner.lastName}
-                          </SelectItem>
-                        ))}
+                        {loading ? (
+                          <div>Loading...</div>
+                        ) : (
+                          ownersList.map((owner) => (
+                            <SelectItem
+                              key={owner.id}
+                              value={owner.providerDetails?.id || owner.id}
+                            >
+                              {owner.firstName} {owner.lastName}
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -232,7 +241,11 @@ const ViewReferralOut = () => {
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
                 <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={form.getValues("statusType") === "all"}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Filter by Status" />
                     </SelectTrigger>
@@ -264,8 +277,8 @@ const ViewReferralOut = () => {
           </div>
         </form>
       </Form>
-      {loading && <TableShimmer />}
-      {!loading && resultList && (
+      {dataLoading && <TableShimmer />}
+      {!dataLoading && resultList && (
         <DefaultDataTable
           title={"Referral Out"}
           onAddClick={() => {

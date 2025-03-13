@@ -38,6 +38,7 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [orderList, setOrderList] = useState<ImageOrdersResponseInterface>();
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [filters, setFilters] = useState({
@@ -67,8 +68,9 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
 
   const fetchLabOrdersList = useCallback(
     async (page: number) => {
+      setDataLoading(true);
+
       try {
-        setLoading(true);
         const limit = 4;
         if (providerDetails) {
           const response = await getImagesOrdersData({
@@ -83,11 +85,10 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
             setTotalPages(Math.ceil(response.total / limit));
           }
         }
-        setLoading(false);
       } catch (e) {
         console.log("Error", e);
       } finally {
-        setLoading(false);
+        setDataLoading(false);
       }
     },
     [providerDetails, userDetailsId, filters]
@@ -137,14 +138,18 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {ownersList.map((owner) => (
-                        <SelectItem
-                          key={owner.id}
-                          value={owner.providerDetails?.id || owner.id}
-                        >
-                          {owner.firstName} {owner.lastName}
-                        </SelectItem>
-                      ))}
+                      {loading ? (
+                        <div>Loading...</div>
+                      ) : (
+                        ownersList.map((owner) => (
+                          <SelectItem
+                            key={owner.id}
+                            value={owner.providerDetails?.id || owner.id}
+                          >
+                            {owner.firstName} {owner.lastName}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -188,8 +193,8 @@ const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
         </form>
       </Form>
       <div className="space-y-5">
-        {loading && <TableShimmer />}
-        {!loading && (
+        {dataLoading && <TableShimmer />}
+        {!dataLoading && (
           <DefaultDataTable
             title={"Patient Image Orders"}
             onAddClick={() =>

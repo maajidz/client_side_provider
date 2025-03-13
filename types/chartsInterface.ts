@@ -1,6 +1,6 @@
 import { Provider } from "./alertInterface";
 import { ProviderDetails } from "./loginInterface";
-import { User } from "./userInterface";
+import { User, UserData } from "./userInterface";
 
 export interface CreateEncounterInterface {
   visit_type: string;
@@ -496,7 +496,16 @@ export interface TransferResponseData {
   createdAt: string;
   updatedAt: string;
   relatedEncounter: RelatedEncounter;
+  userDetails: UserData;
+  referringFromProvider: ReferringProvider;
+  referringToProvider: ReferringProvider;
   diagnoses: PastDiagnosesInterface[];
+}
+
+export interface ReferringProvider {
+  id: string;
+  providerUniqueId: string;
+  address: string;
 }
 
 export interface RelatedEncounter {
@@ -530,11 +539,11 @@ export interface ImageOrdersData {
   imageType: ImageType;
   imageTests: ImagesTestData[];
   userDetails: {
-    id: string
-    patientId: any
-    user: User
-  }
-  providerDetails: Provider
+    id: string;
+    patientId: any;
+    user: User;
+  };
+  providerDetails: Provider;
 }
 
 export interface ImageType {

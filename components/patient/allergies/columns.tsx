@@ -51,7 +51,7 @@ export const columns = ({
     accessorKey: "allergyType",
     header: "Allergy Type",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.original.allergyType.name}</div>
+      <div className="cursor-pointer">{row.original?.type?.name}</div>
     ),
   },
   {

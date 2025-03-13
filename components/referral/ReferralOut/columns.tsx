@@ -7,21 +7,25 @@ export const columns = (): ColumnDef<TransferResponseData>[] => [
     accessorKey: "userDetailsID",
     header: "Patient ID",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("userDetailsID")}</div>
+      <div className="cursor-pointer">{row.original.userDetails.patientId}</div>
     ),
   },
   {
     accessorKey: "referringFromProviderID",
     header: "Referral from ",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("referringFromProviderID")}</div>
+      <div className="cursor-pointer">
+        {row.original.referringFromProvider.providerUniqueId}
+      </div>
     ),
   },
   {
     accessorKey: "referringToProviderID",
     header: "Referral to",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("referringToProviderID")}</div>
+      <div className="cursor-pointer">
+        {row.original.referringToProvider.providerUniqueId}
+      </div>
     ),
   },
   {
