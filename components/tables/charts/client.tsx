@@ -12,15 +12,25 @@ import { EncounterInterface } from "@/types/encounterInterface";
 import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 export const ChartsClient = () => {
+  // Provider Details
   const providerDetails = useSelector((state: RootState) => state.login);
+
+  // Encounter Dialog State
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
+  // Chart List Data State
   const [chartList, setChartList] = useState<EncounterInterface>();
+
+  // Loading State
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Pagination States
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
   const router = useRouter();
 
+  // Fetch Encounter List
   const fetchEncounterList = useCallback(
     async (page: number) => {
       const limit = 14;
@@ -46,10 +56,12 @@ export const ChartsClient = () => {
     [providerDetails]
   );
 
+  //Effects
   useEffect(() => {
     fetchEncounterList(page);
   }, [page, fetchEncounterList]);
 
+  // Navigation handler
   const handleRowClick = (id: string) => {
     router.push(`/encounter/${id}`);
   };
@@ -57,23 +69,27 @@ export const ChartsClient = () => {
   return (
     <>
       <div className="flex items-start justify-between">
+        {/* Create Encounter Dialog */}
         <CreateEncounterDialog
           isDialogOpen={isDialogOpen}
           onClose={() => {
             setIsDialogOpen(false);
+            fetchEncounterList(page);
           }}
         />
       </div>
 
-      {loading && <TableShimmer />}
-      {chartList?.response && (
+      {/* Chart List Table */}
+      {loading ? (
+        <TableShimmer />
+      ) : (
         <DefaultDataTable
           onAddClick={() => {
             setIsDialogOpen(true);
           }}
           title="Chart Notes"
           columns={columns(handleRowClick)}
-          data={chartList.response}
+          data={chartList?.response || []}
           pageNo={page}
           totalPages={totalPages}
           onPageChange={(newPage: number) => setPage(newPage)}
