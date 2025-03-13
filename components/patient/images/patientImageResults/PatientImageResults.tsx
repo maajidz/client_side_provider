@@ -32,7 +32,8 @@ import { imagesStatus } from "@/constants/data";
 function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<ImageResultResponseInterface>();
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
@@ -49,8 +50,8 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
 
   const fetchImageResultsList = useCallback(
     async (page: number) => {
+      setDataLoading(true);
       try {
-        setLoading(true);
         const limit = 5;
         if (providerDetails) {
           const response = await getImageResults({
@@ -64,12 +65,11 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
             setResultList(response);
             setTotalPages(Math.ceil(response.total / limit));
           }
-          setLoading(false);
         }
       } catch (e) {
         console.log("Error", e);
       } finally {
-        setLoading(false);
+        setDataLoading(false);
       }
     },
     [filters.status, providerDetails, userDetailsId]
@@ -116,8 +116,8 @@ function PatientImageResults({ userDetailsId }: { userDetailsId: string }) {
         </form>
       </Form>
       <div className="space-y-5">
-        {loading && <TableShimmer />}
-        {!loading && (
+        {dataLoading && <TableShimmer />}
+        {!dataLoading && (
           <DefaultDataTable
             title={"Patient Image Results"}
             onAddClick={() =>

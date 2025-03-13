@@ -101,7 +101,8 @@ const ViewReferralOut = () => {
     try {
       const response = await getTransferData({
         id: providerDetails.providerId,
-        idType: "Referring from ProviderID",
+        idType: "referringFromProviderID",
+        referralType: "internal",
         statusType: filters.statusType ?? "responseStatus",
         status: filters.status,
       });
@@ -144,9 +145,9 @@ const ViewReferralOut = () => {
                       <SelectValue placeholder="Filter by Referral To" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="external" className="cursor-pointer">
+                      {/* <SelectItem value="external" className="cursor-pointer">
                         External
-                      </SelectItem>
+                      </SelectItem> */}
                       <SelectItem value="internal" className="cursor-pointer">
                         Internal
                       </SelectItem>
@@ -240,7 +241,11 @@ const ViewReferralOut = () => {
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
                 <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={form.getValues("statusType") === "all"}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Filter by Status" />
                     </SelectTrigger>

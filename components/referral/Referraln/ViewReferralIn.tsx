@@ -45,11 +45,11 @@ const ViewReferralIn = () => {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [filters, setFilters] = useState<{
-    referralFrom: string;
+    referralTo: string;
     statusType: "responseStatus" | "requestStatus" | "";
     status: string;
   }>({
-    referralFrom: "",
+    referralTo: "",
     statusType: "",
     status: "",
   });
@@ -86,7 +86,7 @@ const ViewReferralIn = () => {
   function onSubmit(values: z.infer<typeof referralInSearchParams>) {
     setFilters((prev) => ({
       ...prev,
-      referralFrom: values.referralFrom || "",
+      referralTo: values.referralTo || "",
       statusType: values.statusType === "all" ? "" : values.statusType || "",
       status: values.status === "all" ? "" : values.status || "",
     }));
@@ -99,14 +99,15 @@ const ViewReferralIn = () => {
     try {
       if (providerDetails) {
         const response = await getTransferData({
-          id: providerDetails.providerId,
-          idType: "Referring to ProviderID",
+          id: filters.referralTo ?? providerDetails.providerId,
+          idType: "referringToProviderID",
+          referralType: "internal",
           statusType: filters.statusType ?? "responseStatus",
           status: filters.status,
         });
         if (response) {
           setResultList(response);
-          setTotalPages(response.length / 10);
+          setTotalPages(Math.ceil(response.length / 10));
         }
       }
     } catch (e) {
@@ -206,7 +207,11 @@ const ViewReferralIn = () => {
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
                 <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={form.getValues("statusType") === "all"}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Filter by Status" />
                     </SelectTrigger>
