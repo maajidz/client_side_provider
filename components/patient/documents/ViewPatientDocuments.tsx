@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { getDocumentsData } from "@/services/documentsServices";
 import { DocumentsInterface } from "@/types/documentsInterface";
 import { columns } from "./column";
@@ -6,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import DragAndDrop from "./DragAndDrop";
 import UploadDocumentDialog from "./UploadDocumentDialog";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
   const [documentsData, setDocumentsData] = useState<DocumentsInterface[]>([]);
@@ -56,13 +56,10 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
     page * itemsPerPage
   ).filter(document => document.documents.documents);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className="flex flex-col gap-3">
-      {paginatedData ? (
+      {loading && <TableShimmer />}
+      {!loading && paginatedData ? (
         <DefaultDataTable
           title={
             <div className="flex flex-row gap-5 items-center">

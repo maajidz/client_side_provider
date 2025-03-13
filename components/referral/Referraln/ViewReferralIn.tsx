@@ -41,6 +41,7 @@ const ViewReferralIn = () => {
   const [resultList, setResultList] = useState<TransferResponseData[]>([]);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [filters, setFilters] = useState<{
@@ -94,6 +95,7 @@ const ViewReferralIn = () => {
   }
 
   const fetchReferralsList = useCallback(async () => {
+    setDataLoading(true);
     try {
       if (providerDetails) {
         const response = await getTransferData({
@@ -106,10 +108,11 @@ const ViewReferralIn = () => {
           setResultList(response);
           setTotalPages(response.length / 10);
         }
-        setLoading(false);
       }
     } catch (e) {
       console.log("Error", e);
+    } finally {
+      setDataLoading(false);
     }
   }, [providerDetails, filters]);
 
@@ -141,14 +144,18 @@ const ViewReferralIn = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {ownersList.map((owner) => (
-                        <SelectItem
-                          key={owner.id}
-                          value={owner.providerDetails?.id || owner.id}
-                        >
-                          {owner.firstName} {owner.lastName}
-                        </SelectItem>
-                      ))}
+                      {loading ? (
+                        <div>Loading...</div>
+                      ) : (
+                        ownersList.map((owner) => (
+                          <SelectItem
+                            key={owner.id}
+                            value={owner.providerDetails?.id || owner.id}
+                          >
+                            {owner.firstName} {owner.lastName}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -231,8 +238,8 @@ const ViewReferralIn = () => {
           </div>
         </form>
       </Form>
-      {loading && <TableShimmer />}
-      {!loading && resultList && (
+      {dataLoading && <TableShimmer />}
+      {!dataLoading && resultList && (
         <DefaultDataTable
           title={"Referral In"}
           onAddClick={() => setIsReferralInDialogOpen(true)}

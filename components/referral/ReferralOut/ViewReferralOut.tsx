@@ -41,6 +41,7 @@ const ViewReferralOut = () => {
     useState<boolean>(false);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [filters, setFilters] = useState<{
@@ -95,6 +96,8 @@ const ViewReferralOut = () => {
   }
 
   const fetchReferralsList = useCallback(async () => {
+    setDataLoading(true);
+
     try {
       const response = await getTransferData({
         id: providerDetails.providerId,
@@ -106,9 +109,10 @@ const ViewReferralOut = () => {
         setResultList(response);
         setTotalPages(Math.ceil(response.length / 10));
       }
-      setLoading(false);
     } catch (e) {
       console.log("Error", e);
+    } finally {
+      setDataLoading(false);
     }
   }, [filters, providerDetails]);
 
@@ -173,14 +177,18 @@ const ViewReferralOut = () => {
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent>
-                        {ownersList.map((owner) => (
-                          <SelectItem
-                            key={owner.id}
-                            value={owner.providerDetails?.id || owner.id}
-                          >
-                            {owner.firstName} {owner.lastName}
-                          </SelectItem>
-                        ))}
+                        {loading ? (
+                          <div>Loading...</div>
+                        ) : (
+                          ownersList.map((owner) => (
+                            <SelectItem
+                              key={owner.id}
+                              value={owner.providerDetails?.id || owner.id}
+                            >
+                              {owner.firstName} {owner.lastName}
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -264,8 +272,8 @@ const ViewReferralOut = () => {
           </div>
         </form>
       </Form>
-      {loading && <TableShimmer />}
-      {!loading && resultList && (
+      {dataLoading && <TableShimmer />}
+      {!dataLoading && resultList && (
         <DefaultDataTable
           title={"Referral Out"}
           onAddClick={() => {
