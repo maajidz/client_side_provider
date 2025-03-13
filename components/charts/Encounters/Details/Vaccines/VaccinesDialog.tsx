@@ -25,6 +25,7 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { vaccinesSource } from "@/constants/data";
 import { useToast } from "@/hooks/use-toast";
 import { vaccinesFormSchema } from "@/schema/vaccinesSchema";
 import {
@@ -167,7 +168,7 @@ function VaccinesDialog({
                 control={form.control}
                 name="vaccine_name"
                 render={({ field }) => (
-                  <FormItem >
+                  <FormItem>
                     <FormLabel>Vaccine</FormLabel>
                     <FormControl>
                       <Input {...field} />
@@ -180,7 +181,7 @@ function VaccinesDialog({
                 control={form.control}
                 name="in_series"
                 render={({ field }) => (
-                  <FormItem >
+                  <FormItem>
                     <FormLabel className="w-fit"># in Series</FormLabel>
                     <FormControl>
                       <Input {...field} />
@@ -193,7 +194,7 @@ function VaccinesDialog({
                 control={form.control}
                 name="date"
                 render={({ field }) => (
-                  <FormItem >
+                  <FormItem>
                     <FormLabel>From Date:</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} className="w-fit" />
@@ -206,7 +207,7 @@ function VaccinesDialog({
                 control={form.control}
                 name="source"
                 render={({ field }) => (
-                  <FormItem >
+                  <FormItem>
                     <FormLabel className="w-fit">Source</FormLabel>
                     <FormControl>
                       <Select
@@ -217,9 +218,15 @@ function VaccinesDialog({
                           <SelectValue placeholder="Choose Source" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="source1">Source 1</SelectItem>
-                          <SelectItem value="source2">Source 2</SelectItem>
-                          <SelectItem value="source3">Source 3</SelectItem>
+                          {vaccinesSource.map((source) => (
+                            <SelectItem
+                              key={source}
+                              value={source}
+                              className="cursor-pointer"
+                            >
+                              {source}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -231,7 +238,7 @@ function VaccinesDialog({
                 control={form.control}
                 name="notes"
                 render={({ field }) => (
-                  <FormItem >
+                  <FormItem>
                     <FormLabel>Notes</FormLabel>
                     <FormControl>
                       <Textarea {...field} />
