@@ -1,5 +1,6 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import LoadingButton from "@/components/LoadingButton";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 import {
   Form,
   FormField,
@@ -22,11 +23,10 @@ import { LabResultsInterface } from "@/types/labResults";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { columns } from "../../../lab/LabResults/columns";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import { useRouter } from "next/navigation";
 
 interface ResultRecordsProps {
   userDetailsId: string;
@@ -52,10 +52,8 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
   });
 
   // Loading State
-  const [loading, setLoading] = useState({
-    providers: false,
-    labResults: false,
-  });
+  const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
 
   const form = useForm<z.infer<typeof filterLabResultsSchema>>({
     resolver: zodResolver(filterLabResultsSchema),
@@ -79,7 +77,7 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
 
   // Fetch Providers Data
   const fetchProvidersData = useCallback(async () => {
-    setLoading((prev) => ({ ...prev, providers: true }));
+    setLoading(true);
 
     try {
       const response = await fetchProviderListDetails({
@@ -90,13 +88,13 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
     } catch (err) {
       console.error("Error fetching providers data:", err);
     } finally {
-      setLoading((prev) => ({ ...prev, providers: false }));
+      setLoading(false);
     }
   }, [page]);
 
   const fetchLabResultsList = useCallback(
     async (page: number) => {
-      setLoading((prev) => ({ ...prev, labResults: true }));
+      setDataLoading(true);
 
       try {
         const response = await getLabResultList({
@@ -113,7 +111,7 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
       } catch (e) {
         console.log("Error", e);
       } finally {
-        setLoading((prev) => ({ ...prev, labResults: false }));
+        setDataLoading(false);
       }
     },
     [filters, userDetailsId]
@@ -123,10 +121,6 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
     fetchLabResultsList(page);
     fetchProvidersData();
   }, [page, fetchLabResultsList, fetchProvidersData]);
-
-  if (loading.labResults || loading.providers) {
-    return <LoadingButton />;
-  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -152,23 +146,27 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {providersList
-                        .filter(
-                          (
-                            provider
-                          ): provider is typeof provider & {
-                            providerDetails: { id: string };
-                          } => Boolean(provider?.providerDetails?.id)
-                        )
-                        .map((provider) => (
-                          <SelectItem
-                            key={provider.providerDetails.id}
-                            value={provider.providerDetails.id}
-                            className="cursor-pointer"
-                          >
-                            {provider.firstName} {provider.lastName}
-                          </SelectItem>
-                        ))}
+                      {loading ? (
+                        <div>Loading...</div>
+                      ) : (
+                        providersList
+                          .filter(
+                            (
+                              provider
+                            ): provider is typeof provider & {
+                              providerDetails: { id: string };
+                            } => Boolean(provider?.providerDetails?.id)
+                          )
+                          .map((provider) => (
+                            <SelectItem
+                              key={provider.providerDetails.id}
+                              value={provider.providerDetails.id}
+                              className="cursor-pointer"
+                            >
+                              {provider.firstName} {provider.lastName}
+                            </SelectItem>
+                          ))
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -211,7 +209,8 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
 
       {/* Results Table */}
       <div className="flex flex-col gap-6">
-        {resultList?.results && (
+        {dataLoading && <TableShimmer />}
+        {!dataLoading && resultList?.results && (
           <DefaultDataTable
             title={"Lab Results"}
             onAddClick={() => {
