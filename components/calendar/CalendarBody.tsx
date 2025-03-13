@@ -100,11 +100,8 @@ export const CalendarBody = () => {
         <div className="flex flex-col gap-1">
           <Heading
             title="Calendar"
+            description={format(new Date(), "MMMM dd, yyyy")}
           />
-          <span className="font-semibold text-gray-500">
-            {" "}
-            {format(new Date(), "MMMM dd, yyyy")}
-          </span>
         </div>
         <Button onClick={handleClick}>
           <Icon name="calendar_add_on"/>
@@ -146,7 +143,7 @@ export const CalendarBody = () => {
               }
             }}
           >
-            <SelectTrigger className="w-fit">
+            <SelectTrigger className="w-fit font-medium text-xs">
               <SelectValue placeholder={formatDateRange()} />
             </SelectTrigger>
             <SelectContent position="popper">
