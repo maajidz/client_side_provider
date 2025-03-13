@@ -10,9 +10,11 @@ const breadcrumbItems = [
 export default function Patients() {
   return (
     <PageContainer>
+      <div className="flex flex-col gap-10">
         <SearchInput />
         <Breadcrumbs items={breadcrumbItems} />
         <PatientClient />
+      </div>
     </PageContainer>
   );
 }
