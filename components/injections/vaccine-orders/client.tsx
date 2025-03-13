@@ -35,22 +35,32 @@ import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 import { status } from "@/constants/data";
 
 function VaccinesClient() {
-  // Data State
-  const [vaccinesData, setVaccinesData] = useState<VaccinesInterface[]>([]);
-  const [patientData, setPatientData] = useState<UserData[]>([]);
-  const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
+  // Vaccine Dialog State
   const [isVaccineDialogOpen, setIsVaccineDialogOpen] =
     useState<boolean>(false);
+
+  // Vaccines Data State
+  const [vaccinesData, setVaccinesData] = useState<VaccinesInterface[]>([]);
+
+  // Patient List State
+  const [patientData, setPatientData] = useState<UserData[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+
+  // Provider List State
+  const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
+
+  // Search States
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+
+  // Loading States
   const [loading, setLoading] = useState<boolean>(false);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
 
-  // Pagination State
+  // Pagination States
   const itemsPerPage = 10;
   const [pageNo, setPageNo] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const { toast } = useToast();
 
   // Filters State
   const [filters, setFilters] = useState({
@@ -59,6 +69,14 @@ function VaccinesClient() {
     status: "",
   });
 
+  const { toast } = useToast();
+
+  // Form Definition
+  const form = useForm<z.infer<typeof vaccineSearchParams>>({
+    resolver: zodResolver(vaccineSearchParams),
+  });
+
+  // Fetch Patient Data
   const fetchUserData = useCallback(async () => {
     setLoading(true);
 
@@ -87,6 +105,7 @@ function VaccinesClient() {
     }
   }, [searchTerm, toast]);
 
+  // Fetch Provider Data
   const fetchProvidersData = useCallback(async () => {
     setLoading(true);
 
@@ -106,44 +125,83 @@ function VaccinesClient() {
     }
   }, [toast]);
 
-  useEffect(() => {
-    fetchUserData();
-    fetchProvidersData();
-  }, [fetchUserData, fetchProvidersData]);
+  // GET Vaccines Data
+  const fetchVaccinesData = useCallback(
+    async (
+      page: number,
+      userDetailsId?: string,
+      providerId?: string,
+      status?: string
+    ) => {
+      setDataLoading(true);
+      try {
+        const response = await getVaccinesData({
+          userDetailsId: userDetailsId || filters.userDetailsId,
+          providerId: providerId || filters.providerId,
+          status: status || filters.status,
+          page: page,
+          limit: itemsPerPage,
+        });
 
+        if (response) {
+          setVaccinesData(response.data);
+          setTotalPages(Math.ceil(response.total / itemsPerPage));
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setDataLoading(false);
+      }
+    },
+    [filters.userDetailsId, filters.providerId, filters.status]
+  );
+
+  // Patient useEffect
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim()) {
+        fetchUserData();
+      } else {
+        setPatientData([]);
+        setSelectedUser(null);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchUserData]);
+
+  // Filter Patients
   const filteredPatients = patientData.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
 
-  const form = useForm<z.infer<typeof vaccineSearchParams>>({
-    resolver: zodResolver(vaccineSearchParams),
-  });
+  // Effects
+  useEffect(() => {
+    fetchVaccinesData(
+      pageNo,
+      filters.userDetailsId,
+      filters.providerId,
+      filters.status
+    );
+    fetchProvidersData();
+  }, [
+    fetchVaccinesData,
+    fetchProvidersData,
+    pageNo,
+    filters.userDetailsId,
+    filters.providerId,
+    filters.status,
+  ]);
 
-  // GET Injections Data
-  const fetchInjectionsData = useCallback(async () => {
-    setDataLoading(true);
-    try {
-      const response = await getVaccinesData({
-        userDetailsId: filters.userDetailsId,
-        providerId: filters.providerId,
-        status: filters.status,
-        page: pageNo,
-        limit: itemsPerPage,
-      });
+  // Dialog Close Function
+  const handleVaccineDialogClose = () => {
+    setIsVaccineDialogOpen(false);
+    fetchVaccinesData(1);
+  };
 
-      if (response) {
-        setVaccinesData(response.data);
-        setTotalPages(Math.ceil(response.total / itemsPerPage));
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setDataLoading(false);
-    }
-  }, [pageNo, filters.userDetailsId, filters.providerId, filters.status]);
-
+  // Submit handler function
   function onSubmit(values: z.infer<typeof vaccineSearchParams>) {
     setFilters({
       providerId: values.providerId === "all" ? "" : values.providerId || "",
@@ -154,19 +212,10 @@ function VaccinesClient() {
     setPageNo(1);
   }
 
-  const handleVaccineDialogClose = () => {
-    setIsVaccineDialogOpen(false);
-    fetchInjectionsData();
-  };
-
-  // Effects
-  useEffect(() => {
-    fetchInjectionsData();
-  }, [fetchInjectionsData]);
-
   return (
     <div className="space-y-2">
       <div className="space-y-2">
+        {/* Filter Form */}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -262,20 +311,26 @@ function VaccinesClient() {
                 <FormItem className="w-full">
                   <FormControl>
                     <div className="relative w-full">
-                      <Input
-                        className="w-full"
-                        placeholder="Search Patient "
-                        value={searchTerm}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setSearchTerm(value);
-                          setVisibleSearchList(true);
+                      <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                        <Input
+                          placeholder="Search Patient "
+                          value={searchTerm}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setSearchTerm(value);
+                            setVisibleSearchList(true);
 
-                          if (!value) {
-                            field.onChange("");
-                          }
-                        }}
-                      />
+                            if (!value) {
+                              field.onChange("");
+                            }
+                          }}
+                          className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                        />
+                        <div className="px-3 py-1 text-base">
+                          {" "}
+                          {selectedUser?.patientId}
+                        </div>
+                      </div>
                       {searchTerm && visibleSearchList && (
                         <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
                           {loading ? (
@@ -291,9 +346,10 @@ function VaccinesClient() {
                                     `${patient.user.firstName} ${patient.user.lastName}`
                                   );
                                   setVisibleSearchList(false);
+                                  setSelectedUser(patient);
                                 }}
                               >
-                                {`${patient.user.firstName} ${patient.user.lastName}`}
+                                {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
                               </div>
                             ))
                           ) : (
@@ -331,7 +387,7 @@ function VaccinesClient() {
                 type: "success",
                 message: "Deleted Successfully",
               }),
-            fetchInjectionsData: () => fetchInjectionsData(),
+            fetchVaccinesData: () => fetchVaccinesData(1),
           })}
           data={vaccinesData}
           pageNo={pageNo}
