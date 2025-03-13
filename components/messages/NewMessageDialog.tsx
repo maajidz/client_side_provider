@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
 import { v4 as uuidv4 } from "uuid";
 import { Input } from "@/components/ui/input";
@@ -19,7 +18,8 @@ import { fetchUserDataResponse } from "@/services/userServices";
 import { Label } from "../ui/label";
 import { UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
-
+import { Icon } from "../ui/icon";
+import { Textarea } from "../ui/textarea";
 const NewMessageDialog = ({
   isOpen,
   onClose,
@@ -143,15 +143,19 @@ const NewMessageDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="flex flex-col gap-6 p-6">
-        <DialogHeader>
-          <DialogTitle className="text-[#84012A] text-xl font-semibold text-center">
-            New Message
-          </DialogTitle>
-          <DialogDescription className="text-[#475467] text-sm font-normal text-center border-b pb-6">
-            Start your new conversation by providing following details
-          </DialogDescription>
-          <div className="flex flex-col gap-6 pt-6 h-[20rem]">
+      <DialogContent className="flex flex-col gap-6 overflow-visible">
+        <DialogHeader className="w-full border-b border-gray-200">
+          <div className="flex flex-row gap-2 w-full">
+            <Icon name="message" size={24} className="text-[#84012A]"/>
+            <div className="flex flex-col gap-2 w-full flex-1">
+              New Message
+            <DialogDescription className="text-xs tracking-normal">
+              Start your new conversation with a patient
+              </DialogDescription>
+            </div>
+          </div>
+          </DialogHeader>
+          <div className="flex flex-col gap-6 py-4 overflow-visible">
             {!selectedUser && (
               <div className="flex flex-col relative w-full">
                 <div className="flex flex-col w-full relative justify-center gap-2">
@@ -179,7 +183,7 @@ const NewMessageDialog = ({
                 </div>
               </div>
             )}
-            <div className="absolute w-full flex justify-center">
+            <div className="absolute w-full flex justify-center overflow-visible">
               {loading && <UserCardShimmer />}
               {!selectedUser && userData.length > 0 ? (
                 <div className="absolute top-14 left-0 shadow-md rounded-lg space-y-2 w-full p-2 bg-white z-50">
@@ -215,12 +219,11 @@ const NewMessageDialog = ({
             {selectedUser && (
               <div className="flex flex-col gap-3 w-full">
                 <div className="flex gap-1 w-full items-baseline font-medium">
-                  Sending message to{" "}
-                  <span className="capitalize">
+                  <span className="capitalize text-xs">
                     {selectedUser.user.firstName} {selectedUser.user.lastName}
                   </span>
                 </div>
-                <Input
+                <Textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type a message..."
@@ -235,7 +238,6 @@ const NewMessageDialog = ({
               </div>
             )}
           </div>
-        </DialogHeader>
       </DialogContent>
     </Dialog>
   );

@@ -47,7 +47,7 @@ const ViewTasks = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [patientLoading, setPatientLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const limit = 8;
+  const limit = 15;
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
@@ -182,7 +182,6 @@ const ViewTasks = () => {
 
   return (
     <>
-      <div className="">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -366,7 +365,6 @@ const ViewTasks = () => {
             )
           )}
         </div>
-      </div>
     </>
   );
 };

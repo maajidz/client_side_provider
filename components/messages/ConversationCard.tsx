@@ -3,7 +3,7 @@ import { formatSentAt } from "@/utils/dateUtils";
 import React from "react";
 import styles from "@/components/messages/styles.module.css";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { User } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardFooter, CardContent } from "../ui/card";
 
 const ConversationCard = ({
   conversation,
@@ -15,31 +15,40 @@ const ConversationCard = ({
   onClick?: () => void;
 }) => {
   return (
-    <div
+    <Card
       onClick={onClick}
-      className={`${styles.conversationCard} ${
-        highlighted ? "border border-[#84012A]" : "border border-[#D0D5DD]"
+      className={`${
+        highlighted ? "border border-[#84012A]" : ""
       }`}
       key={conversation.recentMessageSenderId}
     >
-      <div className={styles.conversationCardHeader}>
-        <div>{conversation.partnerUsername}</div>
-        <div> {formatSentAt(conversation.recentMessageTime)}</div>
-      </div>
-      <div className={styles.message}>{conversation.recentMessage}</div>
-      <div className={styles.userDetailsBody}>
+      <CardHeader className="flex flex-row items-center gap-2">
         <Avatar className="flex h-10 w-10 rounded-full border-2 border-[#FFE7E7]">
           <AvatarImage src="" />
-          <AvatarFallback className="text-[#84012A] bg-[#FFE7E7] p-1">
-            <User />
+          <AvatarFallback className="text-[#84012A] bg-[#FFE7E7] text-xs font-semibold">
+            {conversation.partnerUsername?.split(" ")[0].charAt(0)}
+            {conversation.partnerUsername?.split(" ")[1].charAt(0)}
           </AvatarFallback>
         </Avatar>
+        <CardTitle className="flex flex-col">
+          {conversation.partnerUsername}
+          <span className="text-xs text-gray-500 font-medium">
+            {conversation.partnerEmail}
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className={styles.message}>{conversation.recentMessage}</div>
+      </CardContent>
+      {/* <div className={styles.userDetailsBody}>
         <div className={styles.userDetails}>
           <div className={styles.userName}>{conversation.partnerUsername}</div>
-          <div className={styles.userEmail}>{conversation.partnerEmail}</div>
         </div>
-      </div>
-    </div>
+      </div> */}
+      <CardFooter className="text-[11px] text-gray-500 font-medium">
+      {formatSentAt(conversation.recentMessageTime)}
+      </CardFooter>
+    </Card>
   );
 };
 

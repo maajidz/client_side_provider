@@ -120,7 +120,7 @@ const PatientHeader = ({ userId }: { userId: string }) => {
                     : "N/A"}
                 </CardDescription>
                 <CardFooter>
-                  <div className="text-xs font-semibold text-gray-500">{response?.patientId ? response.patientId : "N/A"}</div>
+                  <div className="font-semibold">{response?.patientId ? response.patientId : "N/A"}</div>
                 </CardFooter>
               </div>
             </div>

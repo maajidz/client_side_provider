@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import CustomTabsTrigger from "../custom_buttons/buttons/CustomTabsTrigger";
 import Inbox from "./Inbox/Inbox";
@@ -12,6 +11,8 @@ import LoadingButton from "../LoadingButton";
 import { fetchUserConversations } from "@/services/messageService";
 import ConversationBody from "./ConversationBody";
 import NewMessageDialog from "./NewMessageDialog";
+import { Button } from "../ui/button";
+import { Icon } from "../ui/icon";
 
 const MessageBody = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -30,12 +31,14 @@ const MessageBody = () => {
   const messagesTab = [
     {
       value: "inbox",
+      icon: "inbox",
       label: "Inbox",
       component: Inbox,
       data: inboxConversations,
     },
     {
       value: "archived",
+      icon: "archive",
       label: "Archived",
       component: Archive,
       data: archiveConversations,
@@ -72,15 +75,15 @@ const MessageBody = () => {
         <div className={`${styles.section} ${styles.listBody}`}>
           <div className={styles.listHeader}>
             <div className={styles.listTitle}>All Messages</div>
-            <DefaultButton
+            <Button
+              size="icon"
+              className="px-0"
               onClick={() => {
                 setIsDialogOpen(true);
               }}
             >
-              <div className="flex justify-center items-center bg-[#84012A] text-white rounded-lg px-4 text-center h-10">
-                New Message
-              </div>
-            </DefaultButton>
+              <Icon name="message" />
+            </Button>
             <NewMessageDialog
               isOpen={isDialogOpen}
               onClose={() => {
@@ -94,6 +97,7 @@ const MessageBody = () => {
               <TabsList className={styles.tabList}>
                 {messagesTab.map((tab) => (
                   <CustomTabsTrigger value={tab.value} key={tab.value}>
+                    <Icon name={tab.icon} />
                     {tab.label}
                   </CustomTabsTrigger>
                 ))}
