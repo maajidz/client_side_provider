@@ -1,5 +1,5 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import LoadingButton from "@/components/LoadingButton";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 import {
   Form,
   FormControl,
@@ -15,16 +15,16 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
+import { labOrderStatus } from "@/constants/data";
 import { filterLabOrdersSchema } from "@/schema/createLabOrderSchema";
 import { getLabOrdersData } from "@/services/chartsServices";
 import { LabOrdersDataInterface } from "@/types/chartsInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { columns } from "../../../lab/LabOrders/columns";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import { useRouter } from "next/navigation";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
-import { labOrderStatus } from "@/constants/data";
+import { columns } from "../../../lab/LabOrders/columns";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -40,6 +40,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
 
   // Loading State
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
 
   // Pagination State
   const limit = 5;
@@ -88,7 +89,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
 
   const fetchLabOrdersList = useCallback(
     async (page: number, status?: string, providerId?: string) => {
-      setLoading(true);
+      setDataLoading(true);
 
       try {
         const response = await getLabOrdersData({
@@ -107,7 +108,7 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
         console.log("Error", e);
         setOrderList(undefined);
       } finally {
-        setLoading(false);
+        setDataLoading(false);
       }
     },
     [userDetailsId, filters]
@@ -120,10 +121,6 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
   useEffect(() => {
     fetchLabOrdersList(page);
   }, [page, fetchLabOrdersList, filters]);
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -148,23 +145,27 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      {providersList
-                        .filter(
-                          (
-                            provider
-                          ): provider is typeof provider & {
-                            providerDetails: { id: string };
-                          } => Boolean(provider?.providerDetails?.id)
-                        )
-                        .map((provider) => (
-                          <SelectItem
-                            key={provider.providerDetails.id}
-                            value={provider.providerDetails.id}
-                            className="cursor-pointer"
-                          >
-                            {provider.firstName} {provider.lastName}
-                          </SelectItem>
-                        ))}
+                      {loading ? (
+                        <div>Loading...</div>
+                      ) : (
+                        providersList
+                          .filter(
+                            (
+                              provider
+                            ): provider is typeof provider & {
+                              providerDetails: { id: string };
+                            } => Boolean(provider?.providerDetails?.id)
+                          )
+                          .map((provider) => (
+                            <SelectItem
+                              key={provider.providerDetails.id}
+                              value={provider.providerDetails.id}
+                              className="cursor-pointer"
+                            >
+                              {provider.firstName} {provider.lastName}
+                            </SelectItem>
+                          ))
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -208,19 +209,22 @@ function OrderRecords({ userDetailsId }: OrderRecordsProps) {
         </form>
       </Form>
       <div className="space-y-5">
-        <DefaultDataTable
-          title={"Lab Orders"}
-          onAddClick={() =>
-            router.push(
-              `/dashboard/provider/patient/${userDetailsId}/lab_records/create-lab-order`
-            )
-          }
-          columns={columns()}
-          data={orderList?.data || []}
-          pageNo={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: number) => setPage(newPage)}
-        />
+        {dataLoading && <TableShimmer />}
+        {!dataLoading && (
+          <DefaultDataTable
+            title={"Lab Orders"}
+            onAddClick={() =>
+              router.push(
+                `/dashboard/provider/patient/${userDetailsId}/lab_records/create-lab-order`
+              )
+            }
+            columns={columns()}
+            data={orderList?.data || []}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
+        )}
       </div>
     </div>
   );
