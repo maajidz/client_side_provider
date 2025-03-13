@@ -41,27 +41,45 @@ export const status = [
 ];
 
 function InjectionsClient() {
+  // Injections Dialog State
   const [isInjectionDialogOpen, setIsInjectionDialogOpen] =
     useState<boolean>(false);
+
+  // Injections Data State
   const [injectionsData, setInjectionsData] = useState<InjectionsInterface[]>(
     []
   );
+
+  // Provider List State
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
+
+  // Patient List State
   const [patientData, setPatientData] = useState<UserData[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+
+  // Search States
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+
+  // Pagination States
   const [pageNo, setPageNo] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const itemsPerPage = 10;
+
+  // Loading States
   const [loading, setLoading] = useState<boolean>(false);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
-  const itemsPerPage = 10;
-  const { toast } = useToast();
+
+  // Filter State
   const [filters, setFilters] = useState({
     providerId: "",
     userDetailsId: "",
     status: "",
   });
 
+  const { toast } = useToast();
+
+  // Form Definition
   const form = useForm<z.infer<typeof injectionsSearchParams>>({
     resolver: zodResolver(injectionsSearchParams),
     defaultValues: {
@@ -71,6 +89,7 @@ function InjectionsClient() {
     },
   });
 
+  // Fetch Patient Data
   const fetchUserData = useCallback(async () => {
     setLoading(true);
 
@@ -106,6 +125,7 @@ function InjectionsClient() {
     }
   }, [searchTerm, toast]);
 
+  // Fetch Provider Data
   const fetchProvidersData = useCallback(async () => {
     setLoading(true);
 
@@ -156,27 +176,26 @@ function InjectionsClient() {
     [filters.userDetailsId, filters.providerId, filters.status]
   );
 
+  // Patient useEffect
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm.trim()) {
         fetchUserData();
       } else {
         setPatientData([]);
+        setSelectedUser(null);
       }
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, fetchUserData]);
 
+  // Filter Patients
   const filteredPatients = patientData.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
-
-  useEffect(() => {
-    fetchProvidersData();
-  }, [fetchProvidersData]);
 
   // Effects
   useEffect(() => {
@@ -186,13 +205,16 @@ function InjectionsClient() {
       filters.providerId,
       filters.userDetailsId
     );
-  }, [filters, fetchInjectionsData, pageNo]);
+    fetchProvidersData();
+  }, [filters, fetchInjectionsData, pageNo, fetchProvidersData]);
 
+  // Dialog Close Function
   const handleInjectionDialogClose = () => {
     setIsInjectionDialogOpen(false);
     fetchInjectionsData(pageNo);
   };
 
+  // Submit handler function
   function onSubmit(values: z.infer<typeof injectionsSearchParams>) {
     setFilters({
       providerId: values.providerId === "all" ? "" : values.providerId || "",
@@ -205,6 +227,7 @@ function InjectionsClient() {
 
   return (
     <div className="space-y-4">
+      {/* Filter Form */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -295,21 +318,27 @@ function InjectionsClient() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <div className="relative w-full">
-                    <Input
-                      placeholder="Search Patient "
-                      value={searchTerm}
-                      className="w-full"
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setSearchTerm(value);
-                        setVisibleSearchList(true);
+                  <div className="relative">
+                    <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                      <Input
+                        placeholder="Search Patient "
+                        value={searchTerm}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setSearchTerm(value);
+                          setVisibleSearchList(true);
 
-                        if (!value) {
-                          field.onChange("");
-                        }
-                      }}
-                    />
+                          if (!value) {
+                            field.onChange("");
+                          }
+                        }}
+                        className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                      />
+                      <div className="px-3 py-1 text-base">
+                        {" "}
+                        {selectedUser?.patientId}
+                      </div>
+                    </div>
                     {searchTerm && visibleSearchList && (
                       <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
                         {loading ? (
@@ -325,9 +354,10 @@ function InjectionsClient() {
                                   `${patient.user.firstName} ${patient.user.lastName}`
                                 );
                                 setVisibleSearchList(false);
+                                setSelectedUser(patient);
                               }}
                             >
-                              {`${patient.user.firstName} ${patient.user.lastName}`}
+                              {`${patient.user.firstName} ${patient.user.lastName}  - ${patient.patientId}`}
                             </div>
                           ))
                         ) : (
@@ -366,7 +396,7 @@ function InjectionsClient() {
               }),
             fetchInjectionList: () => fetchInjectionsData(pageNo),
           })}
-          data={injectionsData}
+          data={injectionsData || []}
           pageNo={pageNo}
           totalPages={totalPages}
           onPageChange={(newPage) => setPageNo(newPage)}

@@ -9,7 +9,7 @@ const handleVaccineDelete = async (
   vaccineId: string,
   setLoading: (loading: boolean) => void,
   showToast: (args: { type: string; message: string }) => void,
-  fetchInjectionsData: () => void
+  fetchVaccinesData: () => void
 ) => {
   setLoading(true);
   try {
@@ -18,7 +18,7 @@ const handleVaccineDelete = async (
       type: "success",
       message: "Vaccine order deleted successfully",
     });
-    fetchInjectionsData();
+    fetchVaccinesData();
   } catch (error) {
     console.error("Error:", error);
     showToast({ type: "error", message: "Failed to delete Vaccine order" });
@@ -30,11 +30,11 @@ const handleVaccineDelete = async (
 export const columns = ({
   setLoading,
   showToast,
-  fetchInjectionsData,
+  fetchVaccinesData,
 }: {
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
-  fetchInjectionsData: () => void;
+  fetchVaccinesData: () => void;
 }): ColumnDef<VaccinesInterface>[] => [
   {
     accessorKey: "userDetails.user.firstName",
@@ -96,9 +96,9 @@ export const columns = ({
             row.original.id,
             setLoading,
             showToast,
-            fetchInjectionsData
+            fetchVaccinesData
           );
-          fetchInjectionsData();
+          fetchVaccinesData();
         }}
       >
         <Trash2Icon color="#84012A" />
