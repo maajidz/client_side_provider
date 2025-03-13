@@ -30,7 +30,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { addInjectionSchema } from "@/schema/injectionsAndVaccinesSchema";
-import { getDosageUnits } from "@/services/enumServices";
+import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
 import { createInjectionOrder } from "@/services/injectionsServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { fetchUserDataResponse } from "@/services/userServices";
@@ -58,6 +58,9 @@ function InjectionOrders({
     ? userDetailsId[0]
     : userDetailsId;
 
+  // Frequency Data
+  const [frequencyData, setFrequencyData] = useState<string[]>([]);
+
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
 
@@ -73,6 +76,7 @@ function InjectionOrders({
   const [loading, setLoading] = useState({
     get: false,
     post: false,
+    frequency: false,
     dosage: false,
   });
 
@@ -144,6 +148,35 @@ function InjectionOrders({
       }
     } finally {
       setLoading((prev) => ({ ...prev, get: false }));
+    }
+  }, [toast]);
+
+  // GET Frequency Data
+  const fetchFrequency = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, frequency: true }));
+
+    try {
+      const response = await getFrequencyData();
+
+      if (response) {
+        setFrequencyData(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch frequency data",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, frequency: false }));
     }
   }, [toast]);
 
@@ -231,8 +264,15 @@ function InjectionOrders({
     }
 
     fetchProvidersData();
+    fetchFrequency();
     fetchDosageUnits();
-  }, [fetchUserData, fetchProvidersData, fetchDosageUnits, userDetailsId]);
+  }, [
+    fetchFrequency,
+    fetchUserData,
+    fetchProvidersData,
+    fetchDosageUnits,
+    userDetailsId,
+  ]);
 
   const filteredPatients = patientData.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
@@ -423,15 +463,15 @@ function InjectionOrders({
                               <SelectValue placeholder="Select Frequency" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="frequency1">
-                                Frequency 1
-                              </SelectItem>
-                              <SelectItem value="frequency2">
-                                Frequency 2
-                              </SelectItem>
-                              <SelectItem value="frequency3">
-                                Frequency 3
-                              </SelectItem>
+                              {loading.frequency ? (
+                                <div>Loading...</div>
+                              ) : (
+                                frequencyData.map((frequency) => (
+                                  <SelectItem key={frequency} value={frequency}>
+                                    {frequency}
+                                  </SelectItem>
+                                ))
+                              )}
                             </SelectContent>
                           </Select>
                         </FormControl>

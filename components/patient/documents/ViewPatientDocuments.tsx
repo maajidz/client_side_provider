@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { getDocumentsData } from "@/services/documentsServices";
 import { DocumentsInterface } from "@/types/documentsInterface";
 import { columns } from "./column";
@@ -6,13 +5,14 @@ import { useCallback, useEffect, useState } from "react";
 import DragAndDrop from "./DragAndDrop";
 import UploadDocumentDialog from "./UploadDocumentDialog";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
   const [documentsData, setDocumentsData] = useState<DocumentsInterface[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -31,38 +31,35 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
       if (userDetailsId) {
         const response = await getDocumentsData({
           userDetailsId: userDetailsId,
-          limit: 10,
-          page: page
+          limit: itemsPerPage,
+          page,
         });
         if (response) {
           setDocumentsData(response.data);
-          setTotalPages(Math.ceil(response.meta.totalPages / itemsPerPage));
+          setTotalPages(
+            Math.ceil((response.meta?.totalCount ?? 0) / itemsPerPage)
+          );
         }
-        setLoading(false);
       }
     } catch (e) {
       console.log("Error", e);
     } finally {
       setLoading(false);
     }
-  }, [page,userDetailsId]);
+  }, [page, userDetailsId]);
 
   useEffect(() => {
     fetchDocumentsData();
   }, [fetchDocumentsData]);
 
-  const paginatedData = documentsData.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  ).filter(document => document.documents.documents);
-
-  if (loading) {
-    return <LoadingButton />;
-  }
+  const filteredData = documentsData.filter(
+    (document) => document.documents?.documents
+  );
 
   return (
     <div className="flex flex-col gap-3">
-      {paginatedData ? (
+      {loading && <TableShimmer />}
+      {!loading && filteredData ? (
         <DefaultDataTable
           title={
             <div className="flex flex-row gap-5 items-center">
@@ -79,7 +76,7 @@ function ViewPatientDocuments({ userDetailsId }: { userDetailsId: string }) {
             </div>
           }
           columns={columns()}
-          data={paginatedData}
+          data={filteredData}
           pageNo={page}
           totalPages={totalPages}
           onPageChange={(newPage: number) => setPage(newPage)}

@@ -21,7 +21,6 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { columns } from "./columns";
-import LoadingButton from "@/components/LoadingButton";
 import { getTasks, getTasksTypes } from "@/services/chartDetailsServices";
 import {
   TasksResponseDataInterface,
@@ -41,21 +40,42 @@ import { DefaultDataTable } from "../custom_buttons/table/DefaultDataTable";
 import TableShimmer from "../custom_buttons/table/TableShimmer";
 
 const ViewTasks = () => {
+  // Provider Details
   const providerDetails = useSelector((state: RootState) => state.login);
-  const [taskTypes, setTaskTypes] = useState<TaskTypeList[]>([]);
-  const [resultList, setResultList] = useState<TasksResponseInterface>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [patientLoading, setPatientLoading] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
-  const limit = 8;
-  const [totalPages, setTotalPages] = useState<number>(1);
+
+  // Tasks Dialog State
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
+  // Task Types List Data State
+  const [taskTypes, setTaskTypes] = useState<TaskTypeList[]>([]);
+
+  // Tasks Data List State
+  const [resultList, setResultList] = useState<TasksResponseInterface>();
+
+  // Edit Task Data State
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
     null
   );
+
+  // Patient List state
   const [patients, setPatients] = useState<UserData[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+
+  // search States
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
+
+  // Loading States
+  const [loading, setLoading] = useState<boolean>(false);
+  const [patientLoading, setPatientLoading] = useState<boolean>(false);
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
+
+  // Pagination States
+  const [page, setPage] = useState<number>(1);
+  const limit = 8;
+  const [totalPages, setTotalPages] = useState<number>(1);
+
+  // Filter State
   const [filters, setFilters] = useState({
     status: "",
     category: "",
@@ -65,6 +85,7 @@ const ViewTasks = () => {
 
   const { toast } = useToast();
 
+  // Form Definition
   const form = useForm<z.infer<typeof filterTasksSchema>>({
     resolver: zodResolver(filterTasksSchema),
     defaultValues: {
@@ -75,20 +96,7 @@ const ViewTasks = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof filterTasksSchema>) {
-    setFilters((prev) => ({
-      ...prev,
-
-      status: values.status === "all" ? "" : values.status || "",
-      category: values.category === "all" ? "" : values.category || "",
-      priority: values.priority === "all" ? "" : values.priority || "",
-      userDetailsId:
-        values.userDetailsId === "all" ? "" : values.userDetailsId || "",
-    }));
-
-    setPage(1);
-  }
-
+  // Fetch Task Types Data
   const fetchTaskTypes = useCallback(async () => {
     setLoading(true);
 
@@ -108,38 +116,7 @@ const ViewTasks = () => {
     }
   }, []);
 
-  const fetchTasksList = useCallback(
-    async (
-      page: number,
-      status?: string,
-      category?: string,
-      priority?: string,
-      userDetailsId?: string
-    ) => {
-      try {
-        if (providerDetails) {
-          const response = await getTasks({
-            providerId: providerDetails.providerId,
-            limit: limit,
-            page: page,
-            status: status || filters.status,
-            category: category || filters.category,
-            priority: priority || filters.priority,
-            userDetailsId: userDetailsId || filters.userDetailsId,
-          });
-          if (response) {
-            setResultList(response);
-            setTotalPages(Math.ceil(response.total / Number(response.limit)));
-          }
-          setLoading(false);
-        }
-      } catch (e) {
-        console.log("Error", e);
-      }
-    },
-    [providerDetails, filters]
-  );
-
+  // Fetch Patient Data
   const fetchPatientList = useCallback(async () => {
     if (!searchTerm) return;
     setPatientLoading(true);
@@ -159,56 +136,132 @@ const ViewTasks = () => {
     }
   }, [searchTerm, toast]);
 
+  // Fetch Tasks Data
+  const fetchTasksList = useCallback(
+    async (
+      page: number,
+      status?: string,
+      category?: string,
+      priority?: string,
+      userDetailsId?: string
+    ) => {
+      try {
+        setDataLoading(true);
+        if (providerDetails) {
+          const response = await getTasks({
+            providerId: providerDetails.providerId,
+            limit: limit,
+            page: page,
+            status: status || filters.status,
+            category: category || filters.category,
+            priority: priority || filters.priority,
+            userDetailsId: userDetailsId || filters.userDetailsId,
+          });
+          if (response) {
+            setResultList(response);
+            setTotalPages(Math.ceil(response.total / Number(response.limit)));
+          }
+          setDataLoading(false);
+        }
+      } catch (e) {
+        console.log("Error", e);
+      } finally {
+        setDataLoading(false);
+      }
+    },
+    [providerDetails, filters]
+  );
+
+  // Patient useEffect
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim()) {
+        fetchPatientList();
+      } else {
+        setPatients([]);
+        setSelectedUser(null);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchPatientList]);
+
+  // Filter Patients
   const filteredPatients = patients.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
 
+  //Effects
   useEffect(() => {
-    fetchPatientList();
+    fetchTasksList(
+      page,
+      filters.status,
+      filters.category,
+      filters.priority,
+      filters.userDetailsId
+    );
     fetchTaskTypes();
-  }, [fetchPatientList, fetchTaskTypes]);
+  }, [filters, fetchTasksList, page, fetchTaskTypes]);
 
-  useEffect(() => {
-    fetchTasksList(page);
-  }, [filters, fetchTasksList, page]);
-
+  // Dialog Close Function
   const handleEditDialogClose = () => {
     setIsDialogOpen(false);
     setEditData(null);
     fetchTasksList(page);
   };
 
+  // Submit handler Function
+  function onSubmit(values: z.infer<typeof filterTasksSchema>) {
+    setFilters((prev) => ({
+      ...prev,
+
+      status: values.status === "all" ? "" : values.status || "",
+      category: values.category === "all" ? "" : values.category || "",
+      priority: values.priority === "all" ? "" : values.priority || "",
+      userDetailsId:
+        values.userDetailsId === "all" ? "" : values.userDetailsId || "",
+    }));
+
+    setPage(1);
+  }
+
   return (
     <>
       <div className="">
+        {/* Filter Form */}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className={formStyles.formFilterBody}
           >
+            {/* Category Filter */}
             <FormField
               control={form.control}
               name="category"
               render={({ field }) => (
                 <FormItem className={formStyles.formFilterItem}>
-                  <FormLabel className="w-fit">Category</FormLabel>
+                  <FormLabel>Category</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Choose Category" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
-                        {taskTypes.map((type) => (
-                          <SelectItem key={type.id} value={type.name}>
-                            {type.name}
-                          </SelectItem>
-                        ))}
+                        {loading ? (
+                          <div>Loading...</div>
+                        ) : (
+                          taskTypes.map((type) => (
+                            <SelectItem key={type.id} value={type.name}>
+                              {type.name}
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -216,6 +269,8 @@ const ViewTasks = () => {
                 </FormItem>
               )}
             />
+
+            {/* Status Filter */}
             <FormField
               control={form.control}
               name="status"
@@ -227,7 +282,7 @@ const ViewTasks = () => {
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select Status" />
                       </SelectTrigger>
                       <SelectContent>
@@ -247,6 +302,8 @@ const ViewTasks = () => {
                 </FormItem>
               )}
             />
+
+            {/* Priority Filter */}
             <FormField
               control={form.control}
               name="priority"
@@ -258,7 +315,7 @@ const ViewTasks = () => {
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Choose Priority" />
                       </SelectTrigger>
                       <SelectContent>
@@ -274,6 +331,8 @@ const ViewTasks = () => {
                 </FormItem>
               )}
             />
+
+            {/* Patient Filter */}
             <FormField
               control={form.control}
               name="userDetailsId"
@@ -282,19 +341,31 @@ const ViewTasks = () => {
                   <FormLabel>Patient</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Input
-                        placeholder="Search Patient "
-                        value={searchTerm}
-                        onChange={(e) => {
-                          setSearchTerm(e.target.value);
-                          setVisibleSearchList(true);
-                        }}
-                        className="w-64"
-                      />
+                      <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                        <Input
+                          placeholder="Search Patient "
+                          value={searchTerm}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setSearchTerm(value);
+                            setVisibleSearchList(true);
+
+                            if (!value) {
+                              field.onChange("");
+                            }
+                          }}
+                          className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                        />
+                        <div className="px-3 py-1 text-base">
+                          {" "}
+                          {selectedUser?.patientId}
+                        </div>
+                      </div>
                       {searchTerm && visibleSearchList && (
                         <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
-                          {patientLoading && <LoadingButton />}
-                          {filteredPatients.length > 0 ? (
+                          {patientLoading ? (
+                            <div>Loading...</div>
+                          ) : filteredPatients.length > 0 ? (
                             filteredPatients.map((patient) => (
                               <div
                                 key={patient.id}
@@ -305,6 +376,7 @@ const ViewTasks = () => {
                                     `${patient.user.firstName} ${patient.user.lastName}`
                                   );
                                   setVisibleSearchList(false);
+                                  setSelectedUser(patient);
                                 }}
                               >
                                 {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
@@ -335,7 +407,7 @@ const ViewTasks = () => {
         />
         {/* Results Table */}
         <div className="space-y-3">
-          {loading ? (
+          {dataLoading ? (
             <TableShimmer />
           ) : (
             resultList?.data && (

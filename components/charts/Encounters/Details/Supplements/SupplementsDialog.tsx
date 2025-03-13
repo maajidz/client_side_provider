@@ -43,7 +43,11 @@ import {
 import { showToast } from "@/utils/utils";
 import { useForm } from "react-hook-form";
 import { useCallback, useEffect, useState } from "react";
-import { getDosageUnits, getIntakeTypes } from "@/services/enumServices";
+import {
+  getDosageUnits,
+  getFrequencyData,
+  getIntakeTypes,
+} from "@/services/enumServices";
 
 function SupplementsDialog({
   userDetailsId,
@@ -62,7 +66,10 @@ function SupplementsDialog({
   >([]);
   // Search Supplement States
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isListVisible, setIsListVisible] = useState<boolean>(false);
+  const [isListVisible, setIsListVisible] = useState(false);
+
+  // Frequency Data
+  const [frequencyData, setFrequencyData] = useState<string[]>([]);
 
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
@@ -74,6 +81,7 @@ function SupplementsDialog({
   const [loading, setLoading] = useState({
     get: false,
     post: false,
+    frequency: false,
     dosage: false,
     intake: false,
   });
@@ -123,6 +131,35 @@ function SupplementsDialog({
       comments: selectedSupplement?.comments || "",
     },
   });
+
+  // GET Frequency Data
+  const fetchFrequency = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, frequency: true }));
+
+    try {
+      const response = await getFrequencyData();
+
+      if (response) {
+        setFrequencyData(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch frequency data",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, frequency: false }));
+    }
+  }, [toast]);
 
   // GET Dosage Units
   const fetchDosageUnits = useCallback(async () => {
@@ -238,9 +275,10 @@ function SupplementsDialog({
 
   useEffect(() => {
     fetchAllSupplements();
+    fetchFrequency();
     fetchDosageUnits();
     fetchIntakeTypes();
-  }, [fetchAllSupplements, fetchDosageUnits, fetchIntakeTypes]);
+  }, [fetchAllSupplements, fetchFrequency, fetchDosageUnits, fetchIntakeTypes]);
 
   useEffect(() => {
     if (selectedSupplement) {
@@ -466,21 +504,22 @@ function SupplementsDialog({
                       <FormLabel className="w-fit">Frequency</FormLabel>
                       <FormControl>
                         <Select
-                          defaultValue={field.value}
+                          value={field.value}
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select Frequency" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="once_day">Once a day</SelectItem>
-                            <SelectItem value="twice_day">
-                              Twice a day
-                            </SelectItem>
-                            <SelectItem value="three_day">
-                              Three times a day
-                            </SelectItem>
-                            <SelectItem value="week">Once a week</SelectItem>
+                            {loading.frequency ? (
+                              <div>Loading...</div>
+                            ) : (
+                              frequencyData.map((frequency) => (
+                                <SelectItem key={frequency} value={frequency}>
+                                  {frequency}
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>
