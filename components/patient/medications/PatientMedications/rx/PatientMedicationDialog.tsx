@@ -41,7 +41,7 @@ import { createPrescriptions } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
-import { getDosageUnits } from "@/services/enumServices";
+import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
 
 const PatientMedicationDialog = ({
   // userDetailsId,
@@ -52,12 +52,19 @@ const PatientMedicationDialog = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState({
+    post: false,
+    dosage: false,
+    frequency: false,
+  });
   const [drugName, setDrugName] = useState<string>("");
   const [showPrescriptionForm, setShowPrescriptionForm] =
     useState<boolean>(false);
   const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
   const { toast } = useToast();
+
+  // Frequency Data
+  const [frequencyData, setFrequencyData] = useState<string[]>([]);
 
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
@@ -126,9 +133,38 @@ const PatientMedicationDialog = ({
     watch,
   ]);
 
+  // GET Frequency Data
+  const fetchFrequency = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, frequency: true }));
+
+    try {
+      const response = await getFrequencyData();
+
+      if (response) {
+        setFrequencyData(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch frequency data",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, frequency: false }));
+    }
+  }, [toast]);
+
   // GET Dosage Units
   const fetchDosageUnits = useCallback(async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, dosage: true }));
 
     try {
       const response = await getDosageUnits();
@@ -151,7 +187,7 @@ const PatientMedicationDialog = ({
         });
       }
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, dosage: false }));
     }
   }, [toast]);
 
@@ -162,12 +198,13 @@ const PatientMedicationDialog = ({
   }, [form, generateDirections]);
 
   useEffect(() => {
+    fetchFrequency();
     fetchDosageUnits();
-  }, [fetchDosageUnits]);
+  }, [fetchFrequency, fetchDosageUnits]);
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
-    console.log(values);
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, post: true }));
+
     if (chartId) {
       const requestData = {
         drug_name: drugName,
@@ -199,21 +236,20 @@ const PatientMedicationDialog = ({
       };
       console.log(requestData);
       try {
-        setLoading(true);
         await createPrescriptions({ requestData });
         setShowPrescriptionForm(!showPrescriptionForm);
         showToast({ toast, type: "success", message: "Saved!" });
       } catch (e) {
         console.log("Error", e);
       } finally {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, post: false }));
         form.reset();
         onClose();
       }
     }
   };
 
-  if (loading) {
+  if (loading.post) {
     return <LoadingButton />;
   }
 
@@ -409,12 +445,18 @@ const PatientMedicationDialog = ({
                                   <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="frequency1">
-                                    Frequency 1
-                                  </SelectItem>
-                                  <SelectItem value="frequency2">
-                                    Frequency 2
-                                  </SelectItem>
+                                  {loading.frequency ? (
+                                    <div>Loading...</div>
+                                  ) : (
+                                    frequencyData.map((frequency) => (
+                                      <SelectItem
+                                        key={frequency}
+                                        value={frequency}
+                                      >
+                                        {frequency}
+                                      </SelectItem>
+                                    ))
+                                  )}
                                 </SelectContent>
                               </Select>
                             </FormControl>

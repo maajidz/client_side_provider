@@ -35,7 +35,6 @@ import {
 } from "@/types/injectionsInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import LoadingButton from "@/components/LoadingButton";
 import {
   createInjection,
   updateInjection,
@@ -44,7 +43,7 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
-import { getDosageUnits } from "@/services/enumServices";
+import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
 
 const InjectionsDialog = ({
   userDetailsId,
@@ -58,15 +57,51 @@ const InjectionsDialog = ({
   isOpen: boolean;
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState({
+    post: false,
+    dosage: false,
+    frequency: false,
+  });
   const { toast } = useToast();
+
+  // Frequency Data
+  const [frequencyData, setFrequencyData] = useState<string[]>([]);
 
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
 
+  // GET Frequency Data
+  const fetchFrequency = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, frequency: true }));
+
+    try {
+      const response = await getFrequencyData();
+
+      if (response) {
+        setFrequencyData(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch frequency data",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, frequency: false }));
+    }
+  }, [toast]);
+
   // GET Dosage Units
   const fetchDosageUnits = useCallback(async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, dosage: true }));
 
     try {
       const response = await getDosageUnits();
@@ -89,7 +124,7 @@ const InjectionsDialog = ({
         });
       }
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, dosage: false }));
     }
   }, [toast]);
 
@@ -137,7 +172,8 @@ const InjectionsDialog = ({
   const onSubmit = async (values: z.infer<typeof createInjectionSchema>) => {
     console.log(values);
     try {
-      setLoading(true);
+      setLoading((prev) => ({ ...prev, post: true }));
+
       if (injectionsData) {
         const requestBody: UpdateInjectionInterface = {
           ...values,
@@ -178,19 +214,16 @@ const InjectionsDialog = ({
         message: " Error while adding Injection",
       });
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, post: false }));
       form.reset();
       onClose();
     }
   };
 
   useEffect(() => {
+    fetchFrequency();
     fetchDosageUnits();
-  }, [fetchDosageUnits]);
-
-  if (loading) {
-    return <LoadingButton />;
-  }
+  }, [fetchDosageUnits, fetchFrequency]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -285,15 +318,15 @@ const InjectionsDialog = ({
                             <SelectValue placeholder="Select Frequency" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="frequency1">
-                              Frequency 1
-                            </SelectItem>
-                            <SelectItem value="frequency2">
-                              Frequency 2
-                            </SelectItem>
-                            <SelectItem value="frequency3">
-                              Frequency 3
-                            </SelectItem>
+                            {loading.frequency ? (
+                              <div>Loading...</div>
+                            ) : (
+                              frequencyData.map((frequency) => (
+                                <SelectItem key={frequency} value={frequency}>
+                                  {frequency}
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -487,7 +520,7 @@ const InjectionsDialog = ({
                     </FormItem>
                   )}
                 />
-                <SubmitButton label="Submit" />
+                <SubmitButton label="Submit" disabled={loading.post} />
               </div>
             </form>
           </Form>
