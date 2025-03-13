@@ -43,10 +43,14 @@ export const calculateAge = (dob: string): number => {
   return isBeforeBirthdayThisYear ? yearsDifference - 1 : yearsDifference;
 };
 
-
-export const renderAppointmentTime = (timeOfAppointment: string, endtimeOfAppointment: string) => {
+export const renderAppointmentTime = (
+  timeOfAppointment: string,
+  endtimeOfAppointment?: string
+) => {
   const startTime = new Date(`1970-01-01T${timeOfAppointment}Z`);
-  const endTime = new Date(`1970-01-01T${endtimeOfAppointment}Z`);
+  const endTime = endtimeOfAppointment
+    ? new Date(`1970-01-01T${endtimeOfAppointment}Z`)
+    : startTime; // Use startTime if endtimeOfAppointment is not provided
   
   const durationInMinutes = Math.round((endTime.getTime() - startTime.getTime()) / 60000);
   const durationHours = Math.floor(durationInMinutes / 60);

@@ -10,7 +10,6 @@ import { ProviderAppointmentsData } from "@/types/appointments";
 import ViewAppointment from "./ViewAppointment";
 import moment from "moment";
 import "./css/big-calendar.css";
-import { renderAppointmentTime } from "@/utils/utils";
 
 interface EventData {
   id: string;
@@ -41,7 +40,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
   useEffect(() => {
     const events = appointments.map((appointment) => ({
       id: appointment.id,
-      title: `${renderAppointmentTime(appointment.timeOfAppointment || "", appointment.endtimeOfAppointment || "")}`,
+      title: `${appointment.patientName}`,
       start: new Date(
         `${appointment.dateOfAppointment}T${appointment.timeOfAppointment}`
       ),
@@ -100,20 +99,19 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
         views={[Views.MONTH, Views.WEEK, Views.DAY]}
         view={currentView}
         onView={handleViewChange}
-        className="calendar" 
+        className="calendar"
         selectable
         popup
         onSelectEvent={handleSelectEvent}
         eventPropGetter={() => ({
-          className: "event", 
-          style: {
-          },
+          className: "event",
+          style: {},
         })}
         slotPropGetter={() => ({
-          className: "slot", 
+          className: "slot",
         })}
         dayPropGetter={() => ({
-          className: "day", 
+          className: "day",
         })}
       />
       <ViewAppointment

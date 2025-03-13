@@ -205,7 +205,7 @@
     cursor: pointer;
     background-color: #008cff22;
     font-size: 9px;
-    z-index: 999;
+    z-index: 3;
     width: calc(100% - .5rem);
     margin: 4px;
     border-radius: 4px;
@@ -477,7 +477,9 @@
     flex: none;
   }
   .rbc-label {
-    padding: 0 5px;
+    font-size: 11px;
+    padding: 0 8px;
+    font-weight: 600;
   }
   .rbc-day-slot {
     position: relative;
@@ -590,7 +592,9 @@
     flex: 0 0 auto;
     -webkit-flex-direction: row;
     -ms-flex-direction: row;
+    border-bottom: 1px solid hsl(var(--border));
     flex-direction: row;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
   }
   .rbc-rtl .rbc-time-header.rbc-overflowing {
     border-right-width: 0;
@@ -627,7 +631,6 @@
     -ms-flex-align: start;
     align-items: flex-start;
     width: 100%;
-    border-top: 2px solid hsl(var(--border));
     overflow-y: auto;
     position: relative;
   }
@@ -738,3 +741,9 @@
     justify-content: center;
   }
   
+
+  /* Single Date Picker */
+
+  .rdp-month_caption {
+    display: flex;
+  }
