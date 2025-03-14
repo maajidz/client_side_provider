@@ -38,3 +38,16 @@ export const getIntakeTypes = async () => {
   const data = await response.data;
   return data;
 };
+
+export const getVisitTypes = async () => {
+  const response = await ApiFetch({
+    url: "/enums/visit-type",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.data;
+  return data;
+};
