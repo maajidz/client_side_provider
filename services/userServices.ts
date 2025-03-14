@@ -27,7 +27,7 @@ export const fetchUserDataResponse = async ({
 }) => {
   try {
     const queryParams = new URLSearchParams();
-    if (pageNo) queryParams.append("pageNo", pageNo.toString());
+    if (pageNo) queryParams.append("page", pageNo.toString());
     if (pageSize) queryParams.append("pageSize", pageSize.toString());
     if (firstName) queryParams.append("firstName", firstName);
     if (lastName) queryParams.append("lastName", lastName);
