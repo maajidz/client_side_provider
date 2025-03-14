@@ -32,14 +32,16 @@ import {
   createHistoricalVaccine,
   updateHistoricalVaccine,
 } from "@/services/chartDetailsServices";
+import { getVaccinesType } from "@/services/injectionsServices";
 import { RootState } from "@/store/store";
 import {
   CreateHistoricalVaccineType,
   HistoricalVaccineInterface,
 } from "@/types/chartsInterface";
+import { VaccinesTypesInterface } from "@/types/injectionsInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
@@ -69,11 +71,52 @@ function VaccinesDialog({
   // Provider Details
   const providerDetails = useSelector((state: RootState) => state.login);
 
+  // Vaccines Types State
+  const [vaccinesTypes, setVaccinesTypes] = useState<VaccinesTypesInterface[]>(
+    []
+  );
+
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Search States
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isListVisible, setIsListVisible] = useState<boolean>(false);
+
   // Toast State
   const { toast } = useToast();
+
+  // GET Vaccines Types
+  const fetchVaccineTypes = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getVaccinesType({
+        search: searchTerm,
+        limit: 10,
+      });
+
+      if (response) {
+        setVaccinesTypes(response.data);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch vaccines types",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, toast]);
 
   // Form State
   const form = useForm<z.infer<typeof vaccinesFormSchema>>({
@@ -152,6 +195,21 @@ function VaccinesDialog({
     }
   }, [form, vaccinesData]);
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim()) {
+        fetchVaccineTypes();
+      } else {
+        setVaccinesTypes([]);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchVaccineTypes]);
+
+  const filteredVaccineTypes = vaccinesTypes.filter((vaccine) =>
+    vaccine.vaccine_name.toLocaleLowerCase().includes(searchTerm)
+  );
+
   return (
     <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[425px] flex flex-col gap-6">
@@ -171,7 +229,44 @@ function VaccinesDialog({
                   <FormItem>
                     <FormLabel>Vaccine</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      {loading ? (
+                        <div>Loading...</div>
+                      ) : (
+                        <div className="relative">
+                          <Input
+                            value={searchTerm}
+                            placeholder="Search by name or code"
+                            className="w-full"
+                            onChange={(e) => {
+                              setSearchTerm(e.target.value);
+                              setIsListVisible(true);
+                            }}
+                          />
+                          {searchTerm && isListVisible && (
+                            <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
+                              {filteredVaccineTypes.length > 0 ? (
+                                filteredVaccineTypes.map((vaccineType) => (
+                                  <div
+                                    key={vaccineType.id}
+                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                    onClick={() => {
+                                      field.onChange(vaccineType.vaccine_name);
+                                      setSearchTerm(vaccineType.vaccine_name);
+                                      setIsListVisible(false);
+                                    }}
+                                  >
+                                    {vaccineType.vaccine_name}
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="px-4 py-2 text-gray-500">
+                                  No results found
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </FormControl>
                     <FormMessage />
                   </FormItem>

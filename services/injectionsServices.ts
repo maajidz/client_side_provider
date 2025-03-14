@@ -9,6 +9,7 @@ import {
   UpdateInjectionInterface,
   VaccinesResponseInterface,
   VaccinesSearchParamsType,
+  VaccineTypesResponseInterface,
 } from "@/types/injectionsInterface";
 
 export const createInjectionOrder = async ({
@@ -113,6 +114,25 @@ export const getVaccinesData = async (params: VaccinesSearchParamsType) => {
   return data;
 };
 
+export const getVaccinesType = async ({
+  search,
+  limit,
+}: {
+  search: string;
+  limit: number;
+}) => {
+  const response = await ApiFetch({
+    url: `/injections/vaccine/type?search=${search}&limit=${limit}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: VaccineTypesResponseInterface = await response.data;
+  return data;
+};
+
 export const deleteVaccineOrder = async ({
   vaccineOrderId,
 }: {
@@ -123,13 +143,12 @@ export const deleteVaccineOrder = async ({
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-    }
+    },
   });
 
   const data = await response.data;
   return data;
 };
-
 
 export const createInjection = async ({
   requestBody,
@@ -184,7 +203,6 @@ export const getInjection = async ({
   return data;
 };
 
-
 export const deleteInjection = async ({
   injectionId,
 }: {
@@ -204,9 +222,9 @@ export const deleteInjection = async ({
 
 export const updateInjection = async ({
   requestBody,
-  id
+  id,
 }: {
-  id: string
+  id: string;
   requestBody: UpdateInjectionInterface;
 }) => {
   const response = await ApiFetch({
@@ -221,5 +239,3 @@ export const updateInjection = async ({
   const data = await response.data;
   return data;
 };
-
-

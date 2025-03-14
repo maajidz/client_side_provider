@@ -37,9 +37,10 @@ export const injectionsSearchParams = z.object({
 //   });
 
 export const addVaccineSchema = z.object({
-  providerId: z.string({required_error: "Select a provider"}),
+  providerId: z.string({ required_error: "Select a provider" }),
   userDetailsId: z.string().optional(),
-  vaccine_name: z.string({required_error: "Vaccine name is required"})
+  vaccine_name: z.string({ required_error: "Vaccine name is required" }),
+  source: z.string({ required_error: "Source is required" }),
 });
 
 export const vaccineSearchParams = injectionsSearchParams;
