@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { useToast } from "@/hooks/use-toast";
 import { fetchDiagnosesForUser } from "@/services/chartsServices";
 import { DiagnosesInterface } from "@/types/chartsInterface";
@@ -10,6 +9,7 @@ import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataT
 import AddDiagnosesDialog from "./AddDiagnosesDialog";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 interface DiagnosesClientProps {
   userDetailsId: string;
@@ -80,33 +80,35 @@ function DiagnosesClient({ userDetailsId }: DiagnosesClientProps) {
     fetchDiagnoses(page);
   };
 
-  if (loading) return <LoadingButton />;
-
   return (
     <div className="flex flex-col gap-4">
-      <DefaultDataTable
-        title={"Diagnoses"}
-        onAddClick={() => {
-          setIsDialogOpen(true);
-        }}
-        columns={columns({
-          setEditData,
-          setIsDialogOpen: setIsEditDialogOpen,
-          setLoading,
-          showToast: ({ type, message }) => {
-            showToast({
-              toast,
-              type: type === "success" ? "success" : "error",
-              message,
-            });
-          },
-          fetchDiagnoses: () => fetchDiagnoses(page),
-        })}
-        data={diagnosesData}
-        pageNo={page}
-        totalPages={totalPages}
-        onPageChange={(newPage) => setPage(newPage)}
-      />
+      {loading ? (
+        <TableShimmer />
+      ) : (
+        <DefaultDataTable
+          title={"Diagnoses"}
+          onAddClick={() => {
+            setIsDialogOpen(true);
+          }}
+          columns={columns({
+            setEditData,
+            setIsDialogOpen: setIsEditDialogOpen,
+            setLoading,
+            showToast: ({ type, message }) => {
+              showToast({
+                toast,
+                type: type === "success" ? "success" : "error",
+                message,
+              });
+            },
+            fetchDiagnoses: () => fetchDiagnoses(page),
+          })}
+          data={diagnosesData || []}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+      )}
       <AddDiagnosesDialog
         isOpen={isDialogOpen}
         userDetailsId={userDetailsId}

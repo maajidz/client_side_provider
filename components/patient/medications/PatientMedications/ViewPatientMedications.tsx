@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { useToast } from "@/hooks/use-toast";
 import { getUserPrescriptionsData } from "@/services/prescriptionsServices";
 import { RootState } from "@/store/store";
@@ -15,6 +14,7 @@ import { PlusIcon } from "lucide-react";
 import { getMedicationData } from "@/services/chartDetailsServices";
 import { MedicationResultInterface } from "@/types/medicationInterface";
 import { MedicationColumn } from "./medicationColumn";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 const ViewPatientMedications = ({
   userDetailsId,
@@ -25,7 +25,8 @@ const ViewPatientMedications = ({
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<PrescriptionDataInterface[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [medicationLoading, setMedicationLoading] = useState<boolean>(false);
 
   // Medications State
   const [medications, setMedicationsData] = useState<
@@ -44,7 +45,7 @@ const ViewPatientMedications = ({
 
   // Get Medication Data
   const fetchMedicationData = useCallback(async () => {
-    setLoading(true);
+    setMedicationLoading(true);
 
     try {
       const response = await getMedicationData({
@@ -57,7 +58,7 @@ const ViewPatientMedications = ({
     } catch (err) {
       console.error("Error fetching pharmacy data:", err);
     } finally {
-      setLoading(false);
+      setMedicationLoading(false);
     }
   }, [page, itemsPerPage]);
 
@@ -92,14 +93,12 @@ const ViewPatientMedications = ({
     fetchMedicationData();
   }, [fetchPrescriptionsList, fetchMedicationData, userDetailsId]);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <>
       <div className="">
-        {resultList && (
+        {loading ? (
+          <TableShimmer />
+        ) : (
           <DefaultDataTable
             className="flex flex-col gap-4"
             title={
@@ -121,17 +120,17 @@ const ViewPatientMedications = ({
               setIsDialogOpen,
               setLoading,
               showToast: ({ type, message }) => {
-                          showToast({
-                            toast,
-                            type: type === "success" ? "success" : "error",
-                            message,
-                          });
-                        },
+                showToast({
+                  toast,
+                  type: type === "success" ? "success" : "error",
+                  message,
+                });
+              },
               // showToast: (args) => showToast({ toast, ...args }),
               fetchPrescriptionsList: () =>
                 fetchPrescriptionsList(userDetailsId),
             })}
-            data={resultList}
+            data={resultList || []}
             pageNo={page}
             totalPages={totalPages}
             onPageChange={(newPage: number) => setPage(newPage)}
@@ -139,13 +138,17 @@ const ViewPatientMedications = ({
         )}
 
         {/* Medication DatTable */}
-        <DefaultDataTable
-          columns={MedicationColumn()}
-          data={medications}
-          pageNo={page}
-          totalPages={totalPages}
-          onPageChange={(newPage) => setPage(newPage)}
-        />
+        {medicationLoading ? (
+          <TableShimmer />
+        ) : (
+          <DefaultDataTable
+            columns={MedicationColumn()}
+            data={medications || []}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
+        )}
 
         <EditPrescription
           userDetailsId={userDetailsId}
