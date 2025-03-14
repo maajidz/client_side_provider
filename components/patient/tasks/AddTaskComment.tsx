@@ -14,7 +14,6 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import LoadingButton from "@/components/LoadingButton";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { addCommentToTasksSchema } from "@/schema/tasksSchema";
@@ -104,10 +103,6 @@ function AddTaskComment({
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-auto">
@@ -137,13 +132,19 @@ function AddTaskComment({
                     <FormItem className={formStyles.formItem}>
                       <FormLabel>Comments</FormLabel>
                       <FormControl>
-                        <Textarea {...field} className="md:min-h-24 md:min-w-96"/>
+                        <Textarea
+                          {...field}
+                          className="md:min-h-24 md:min-w-96"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <SubmitButton label={"Save"} />
+                <SubmitButton
+                  label={loading ? "Saving..." : "Save"}
+                  disabled={loading}
+                />
               </div>
             </form>
           </Form>

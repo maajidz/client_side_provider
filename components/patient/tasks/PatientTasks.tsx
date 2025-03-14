@@ -11,4 +11,3 @@ const PatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
 };
 
 export default PatientTasks;
-// add => ghost plus. blue-600

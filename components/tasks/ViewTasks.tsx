@@ -420,7 +420,7 @@ const ViewTasks = () => {
                   setEditData,
                   setIsCommentDialogOpen: () => {},
                   setIsEditDialogOpen: setIsDialogOpen,
-                  setLoading,
+                  setTaskLoading: setLoading,
                   showToast: () =>
                     showToast({
                       toast,

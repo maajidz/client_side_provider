@@ -17,7 +17,6 @@ import { RootState } from "@/store/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import LoadingButton from "@/components/LoadingButton";
 import { getRecallsData } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -32,11 +31,12 @@ import ViewRecallDialog from "./ViewRecallsDialog";
 import React, { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [resultList, setResultList] = useState<RecallsResponseInterface>();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const limit = 8;
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -170,7 +170,7 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
       {/* Results Table */}
       <div className="flex gap-6 flex-col">
         {loading ? (
-          <LoadingButton />
+          <TableShimmer />
         ) : (
           resultList?.data && (
             <DefaultDataTable
@@ -189,10 +189,9 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
                     message,
                   });
                 },
-                // showToast: (args) => showToast({ toast, ...args }),
                 fetchRecalls: () => fetchRecalls(),
               })}
-              data={resultList?.data}
+              data={resultList?.data || []}
               pageNo={page}
               totalPages={totalPages}
               onPageChange={(newPage: number) => setPage(newPage)}

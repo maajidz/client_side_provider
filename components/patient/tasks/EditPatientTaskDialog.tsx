@@ -1,5 +1,4 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -151,10 +150,6 @@ const EditPatientTaskDialog = ({
       await onFetchTasks(1, userDetailsId);
     }
   };
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -404,8 +399,8 @@ const EditPatientTaskDialog = ({
                   Cancel
                 </Button>
                 <SubmitButton
-                  label={"Update"}
-                  onClick={() => console.log(form.getValues())}
+                  label={loading ? "Updating..." : "Update"}
+                  disabled={loading}
                 />
               </div>
             </div>

@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import LoadingButton from "@/components/LoadingButton";
 import { recallFormSchema } from "@/schema/recallFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector } from "react-redux";
@@ -136,10 +135,6 @@ const RecallsDialog = ({
       form.reset();
     }
   };
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -310,7 +305,10 @@ const RecallsDialog = ({
                   <Button variant="outline" onClick={onClose}>
                     Cancel
                   </Button>
-                  <SubmitButton label="Add" />
+                  <SubmitButton
+                    label={loading ? "Adding..." : "Add"}
+                    disabled={loading}
+                  />
                 </div>
               </div>
             </DialogFooter>

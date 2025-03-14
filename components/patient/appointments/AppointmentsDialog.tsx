@@ -30,7 +30,6 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { showToast } from "@/utils/utils";
 import { Textarea } from "@/components/ui/textarea";
-import LoadingButton from "@/components/LoadingButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { UserAppointmentInterface } from "@/types/userInterface";
 import FormLabels from "@/components/custom_buttons/FormLabels";
@@ -223,10 +222,6 @@ export function AppointmentsDialog({
       }
     }
   };
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
