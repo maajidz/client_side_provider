@@ -16,7 +16,7 @@ export const columns = (): ColumnDef<Result>[] => [
     accessorKey: "userDetails",
     header: "Patient ID",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.original.userDetails.id}</div>
+      <div className="cursor-pointer">{row.original.userDetails.patientId}</div>
     ),
   },
   {

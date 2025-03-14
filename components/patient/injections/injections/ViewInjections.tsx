@@ -178,4 +178,3 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
 };
 
 export default ViewInjections;
-

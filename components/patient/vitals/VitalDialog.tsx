@@ -24,7 +24,7 @@ import { RootState } from "@/store/store";
 import { CreateVitalType, VitalsInterface } from "@/types/vitalsInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
@@ -125,6 +125,19 @@ function VitalDialog({
     }
   };
 
+  useEffect(() => {
+    form.reset({
+      BMI: vitalsData?.BMI,
+      dateTime: vitalsData?.dateTime ? formatDate(vitalsData.dateTime) : "",
+      goalWeight: vitalsData?.goalWeight,
+      heightFeets: vitalsData?.heightFeets,
+      heightInches: vitalsData?.heightInches,
+      startingWeight: vitalsData?.startingWeight,
+      weightLbs: vitalsData?.weightLbs,
+      weightOzs: vitalsData?.weightOzs,
+    });
+  }, [form, vitalsData]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[780px]">
@@ -140,7 +153,7 @@ function VitalDialog({
                 control={form.control}
                 name="dateTime"
                 render={({ field }) => (
-                  <FormItem >
+                  <FormItem>
                     <FormLabel className="w-fit">Date</FormLabel>
                     <FormControl>
                       <Input
@@ -163,17 +176,19 @@ function VitalDialog({
                     name="weightLbs"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                      <FormLabel className="w-fit">Weight</FormLabel>
+                        <FormLabel className="w-fit">Weight</FormLabel>
                         <FormControl>
                           <div className="relative">
-                          <Input
-                            type="number"
-                            value={field.value ?? ""}
-                            onChange={(event) =>
-                              field.onChange(event.target.valueAsNumber)
-                            }
-                          />
-                          <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">lbs</span>
+                            <Input
+                              type="number"
+                              value={field.value ?? ""}
+                              onChange={(event) =>
+                                field.onChange(event.target.valueAsNumber)
+                              }
+                            />
+                            <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                              lbs
+                            </span>
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -187,15 +202,17 @@ function VitalDialog({
                       <FormItem className="w-full">
                         <FormControl>
                           <div className="relative">
-                          <Input
-                            {...field}
-                            type="number"
-                            value={field.value ?? ""}
-                            onChange={(event) =>
-                              field.onChange(event.target.valueAsNumber)
-                            }
-                          />
-                          <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">ozs</span>
+                            <Input
+                              {...field}
+                              type="number"
+                              value={field.value ?? ""}
+                              onChange={(event) =>
+                                field.onChange(event.target.valueAsNumber)
+                              }
+                            />
+                            <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                              ozs
+                            </span>
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -207,19 +224,21 @@ function VitalDialog({
                     name="heightFeets"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                      <FormLabel className="w-fit">Height</FormLabel>
+                        <FormLabel className="w-fit">Height</FormLabel>
                         <FormControl>
                           <div className="relative">
-                          <Input
-                            {...field}
-                            type="number"
-                            value={field.value ?? ""}
-                            onChange={(event) =>
-                              field.onChange(event.target.valueAsNumber)
-                            }
-                          />
-                        <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">feet</span>
-                        </div>
+                            <Input
+                              {...field}
+                              type="number"
+                              value={field.value ?? ""}
+                              onChange={(event) =>
+                                field.onChange(event.target.valueAsNumber)
+                              }
+                            />
+                            <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                              feet
+                            </span>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -232,15 +251,17 @@ function VitalDialog({
                       <FormItem className="w-full">
                         <FormControl>
                           <div className="relative">
-                          <Input
-                            {...field}
-                            type="number"
-                            value={field.value ?? ""}
-                            onChange={(event) =>
-                              field.onChange(event.target.valueAsNumber)
-                            }
-                          />
-                          <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">inches</span>
+                            <Input
+                              {...field}
+                              type="number"
+                              value={field.value ?? ""}
+                              onChange={(event) =>
+                                field.onChange(event.target.valueAsNumber)
+                              }
+                            />
+                            <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                              inches
+                            </span>
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -255,7 +276,7 @@ function VitalDialog({
                 control={form.control}
                 name="BMI"
                 render={({ field }) => (
-                  <FormItem >
+                  <FormItem>
                     <FormLabel>BMI</FormLabel>
                     <FormControl>
                       <Input
@@ -283,15 +304,17 @@ function VitalDialog({
                       <FormLabel>Starting Weight</FormLabel>
                       <FormControl>
                         <div className="relative">
-                        <Input
-                          {...field}
-                          type="number"
-                          value={field.value ?? ""}
-                          onChange={(event) =>
-                            field.onChange(event.target.valueAsNumber)
-                          }
-                        />
-                        <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">lbs</span>
+                          <Input
+                            {...field}
+                            type="number"
+                            value={field.value ?? ""}
+                            onChange={(event) =>
+                              field.onChange(event.target.valueAsNumber)
+                            }
+                          />
+                          <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                            lbs
+                          </span>
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -308,15 +331,17 @@ function VitalDialog({
                       <FormLabel>Goal Weight</FormLabel>
                       <FormControl>
                         <div className="relative">
-                        <Input
-                          {...field}
-                          type="number"
-                          value={field.value ?? ""}
-                          onChange={(event) =>
-                            field.onChange(event.target.valueAsNumber)
-                          }
-                        />
-                        <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">lbs</span>
+                          <Input
+                            {...field}
+                            type="number"
+                            value={field.value ?? ""}
+                            onChange={(event) =>
+                              field.onChange(event.target.valueAsNumber)
+                            }
+                          />
+                          <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                            lbs
+                          </span>
                         </div>
                       </FormControl>
                       <FormMessage />
