@@ -1,5 +1,4 @@
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 import { useToast } from "@/hooks/use-toast";
 import { VitalsInterface } from "@/types/vitalsInterface";
 import { getVitalsData } from "@/services/vitalsServices";
@@ -7,6 +6,7 @@ import { showToast } from "@/utils/utils";
 import VitalDialog from "./VitalDialog";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   // Vitals State

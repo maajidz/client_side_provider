@@ -1,4 +1,3 @@
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 import { getHistoricalVaccine } from "@/services/chartDetailsServices";
 import { HistoricalVaccineInterface } from "@/types/chartsInterface";
 import { columns } from "./column";
@@ -7,6 +6,7 @@ import VaccinesDialog from "@/components/charts/Encounters/Details/Vaccines/Vacc
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 interface HistoricalVaccinesProps {
   userDetailsId: string;

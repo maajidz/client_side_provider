@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import VaccineOrders from "@/components/injections/vaccine-orders/VaccineOrders";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   // Data State
