@@ -106,7 +106,7 @@ export const columns = ({
     accessorKey: "supplementType",
     header: "Supplement Name",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.original.supplementType.name}</div>
+      <div className="cursor-pointer">{row.original.type?.supplement_name}</div>
     ),
   },
   {

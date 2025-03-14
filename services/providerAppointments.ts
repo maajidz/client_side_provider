@@ -25,10 +25,10 @@ export const fetchProviderAppointments = async ({ providerId, page, limit, start
     return data
 }
 
-export const updateAppointmentStatus = async({appointmentID, requestData}: {appointmentID: string,requestData: ProviderAppointmentsStatus}) => {
+export const updateAppointment = async({appointmentID, requestData}: {appointmentID: string,requestData: ProviderAppointmentsStatus}) => {
   const response = await ApiFetch({
     method: "PATCH",
-    url: `/provider/appointments/status/${appointmentID}`,
+    url: `/provider/appointments/${appointmentID}`,
     data: requestData,
   });
   const data = await response.data;

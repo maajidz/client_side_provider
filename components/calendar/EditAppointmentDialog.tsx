@@ -38,7 +38,7 @@ import {
   CreateUserAppointmentsInterface,
   ProviderAppointmentsData,
 } from "@/types/appointments";
-import { createUserAppointments } from "@/services/providerAppointments";
+import { updateAppointment } from "@/services/providerAppointments";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
@@ -168,21 +168,20 @@ export function EditAppointmentDialog({
         //   },
         // ],
       };
-      console.log(requestData);
       try {
         setLoading(true);
 
-        const response = await createUserAppointments({
-          requestData: requestData,
-        });
-        if (response) {
-          showToast({
-            toast,
-            type: "success",
-            message: "Appointment updated successfully",
+        if (appointmentsData?.id) {
+          await updateAppointment({
+            requestData: requestData,
+            appointmentID: appointmentsData?.id,
           });
         }
-        // }
+        showToast({
+          toast,
+          type: "success",
+          message: "Appointment updated successfully",
+        });
       } catch (error) {
         console.log("Error", error);
         showToast({

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MobileIcon } from "@radix-ui/react-icons";
-import { updateAppointmentStatus } from "@/services/providerAppointments";
+import { updateAppointment } from "@/services/providerAppointments";
 import { User2Icon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -56,7 +56,7 @@ export const CalendarListViewComponent = ({
       status: newStatus,
     };
     try {
-      await updateAppointmentStatus({
+      await updateAppointment({
         appointmentID: appointment.id,
         requestData,
       });
