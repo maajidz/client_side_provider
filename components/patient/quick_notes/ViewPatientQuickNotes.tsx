@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { useToast } from "@/hooks/use-toast";
 import { QuickNotesInterface } from "@/types/quickNotesInterface";
 import { showToast } from "@/utils/utils";
@@ -6,6 +5,7 @@ import { columns } from "./columns";
 import QuickNotesDialog from "./QuickNotesDialog";
 import { useState } from "react";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 interface ViewPatientNotesProps {
   userDetailsId: string;
@@ -44,14 +44,11 @@ const ViewPatientQuickNotes = ({
 
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
-  // If loading, show a loading button
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className="flex flex-col gap-6">
-      {data && (
+      {loading ? (
+        <TableShimmer />
+      ) : (
         <DefaultDataTable
           title={"Patient Notes"}
           onAddClick={() => setIsDialogOpen(true)}
@@ -66,10 +63,9 @@ const ViewPatientQuickNotes = ({
                 message,
               });
             },
-            // showToast: (args) => showToast({ toast, ...args }),
             fetchQuickNotes: fetchQuickNotes,
           })}
-          data={data}
+          data={data || []}
           pageNo={page}
           totalPages={totalPages}
           onPageChange={(newPage: number) => setPage(newPage)}

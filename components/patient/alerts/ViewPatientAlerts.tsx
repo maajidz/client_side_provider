@@ -1,5 +1,4 @@
 import AlertDialog from "@/components/charts/Encounters/Details/Alerts/AlertDialog";
-import LoadingButton from "@/components/LoadingButton";
 import { useToast } from "@/components/ui/use-toast";
 import { getAlertData } from "@/services/chartDetailsServices";
 import { AlertResponseInterface } from "@/types/alertInterface";
@@ -7,6 +6,7 @@ import { showToast } from "@/utils/utils";
 import { columns } from "./columns";
 import React, { useCallback, useEffect, useState } from "react";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
   const [page, setPage] = useState<number>(1);
@@ -47,10 +47,6 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
     fetchAlerts();
   }, [fetchAlerts]);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className="flex flex-col gap-6">
       <AlertDialog
@@ -62,29 +58,33 @@ const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
         isOpen={isDialogOpen.create}
       />
       <div className="flex flex-col gap-6">
-        {data?.data && (
-          <DefaultDataTable
-            title={"Patient Alerts"}
-            onAddClick={() => {
-              setIsDialogOpen((prev) => ({ ...prev, create: true }));
-            }}
-            columns={columns({
-              setEditData,
-              setIsDialogOpen,
-              setLoading,
-              showToast: () =>
-                showToast({
-                  toast,
-                  type: "success",
-                  message: "Deleted Successfully",
-                }),
-              fetchAlerts: () => fetchAlerts(),
-            })}
-            data={data?.data}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
-          />
+        {loading ? (
+          <TableShimmer />
+        ) : (
+          data?.data && (
+            <DefaultDataTable
+              title={"Patient Alerts"}
+              onAddClick={() => {
+                setIsDialogOpen((prev) => ({ ...prev, create: true }));
+              }}
+              columns={columns({
+                setEditData,
+                setIsDialogOpen,
+                setLoading,
+                showToast: () =>
+                  showToast({
+                    toast,
+                    type: "success",
+                    message: "Deleted Successfully",
+                  }),
+                fetchAlerts: () => fetchAlerts(),
+              })}
+              data={data?.data}
+              pageNo={page}
+              totalPages={totalPages}
+              onPageChange={(newPage: number) => setPage(newPage)}
+            />
+          )
         )}
 
         <AlertDialog
