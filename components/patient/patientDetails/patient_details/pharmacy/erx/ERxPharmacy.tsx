@@ -18,8 +18,8 @@ import {
   getUserPharmacyData,
 } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
-import LoadingButton from "@/components/LoadingButton";
 import { Trash2Icon } from "lucide-react";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 interface ERxPharmacyProps {
   userDetailsId: string;
@@ -81,8 +81,6 @@ function ERxPharmacy({ userDetailsId }: ERxPharmacyProps) {
     fetchUserPharmacy();
   }, [fetchUserPharmacy]);
 
-  if (loading) return <LoadingButton />;
-
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-4 items-center text-lg font-semibold">
@@ -99,39 +97,43 @@ function ERxPharmacy({ userDetailsId }: ERxPharmacyProps) {
           }}
         />
       </div>
-      <Table className="border rounded-lg">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Address</TableHead>
-            <TableHead>Phone Number</TableHead>
-            <TableHead>Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {eRxData ? (
+      {loading ? (
+        <TableShimmer />
+      ) : (
+        <Table className="border rounded-lg">
+          <TableHeader>
             <TableRow>
-              <TableCell>{eRxData.name}</TableCell>
-              <TableCell>{eRxData.address}</TableCell>
-              <TableCell>{eRxData.phoneNumber}</TableCell>
-              <TableCell>
-                <Button
-                  variant="ghost"
-                  onClick={() => handleDeleteUserPharmacy(eRxData.id)}
-                >
-                  <Trash2Icon color="#84012A" />
-                </Button>
-              </TableCell>
+              <TableHead>Name</TableHead>
+              <TableHead>Address</TableHead>
+              <TableHead>Phone Number</TableHead>
+              <TableHead>Action</TableHead>
             </TableRow>
-          ) : (
-            <TableRow>
-              <TableCell colSpan={7} className="text-center text-gray-500">
-                No Pharmacy Data Available
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {eRxData ? (
+              <TableRow>
+                <TableCell>{eRxData.name}</TableCell>
+                <TableCell>{eRxData.address}</TableCell>
+                <TableCell>{eRxData.phoneNumber}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleDeleteUserPharmacy(eRxData.id)}
+                  >
+                    <Trash2Icon color="#84012A" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center text-gray-500">
+                  No Pharmacy Data Available
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      )}
       {/* <ERxPharmacyTable userDetailsId={userDetailsId} /> */}
     </div>
   );

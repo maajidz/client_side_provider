@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { insuranceType } from "@/constants/data";
 import { getInsuranceData } from "@/services/insuranceServices";
 import { InsuranceResponse } from "@/types/insuranceInterface";
@@ -9,6 +8,7 @@ import { columns } from "./column";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AddOrViewNotes from "./actions/AddOrViewNotes";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 interface InsuranceInformationProps {
   userDetailsId: string;
@@ -61,14 +61,6 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
     }
   }, [userDetailsId, fetchInsuranceData]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center">
-        <LoadingButton />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col space-y-4 p-5">
       <div className="flex justify-end">
@@ -83,31 +75,35 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
           setSelectedIsInsured={setSelectedInsuranceType}
         />
       </div>
-      <DefaultDataTable
-        title={"Insurance"}
-        onAddClick={() => {
-          setIsDialogOpen(true);
-        }}
-        pageNo={1}
-        totalPages={1}
-        onPageChange={() => {}}
-        columns={columns({
-          setIsDialogOpen,
-          setSelectedInsurance: () => setSelectedInsurance(insuranceData),
-          setLoading,
-          showToast: ({ type, message }) => {
-            showToast({
-              toast,
-              type: type === "success" ? "success" : "error",
-              message,
-            });
-          },
-          // showToast: (args) => showToast({ toast, ...args }),
-          fetchInsuranceData: () => fetchInsuranceData(),
-          setIsOpenNotesDialog,
-        })}
-        data={insuranceData ? [insuranceData] : []}
-      />
+      {loading ? (
+        <TableShimmer />
+      ) : (
+        <DefaultDataTable
+          title={"Insurance"}
+          onAddClick={() => {
+            setIsDialogOpen(true);
+          }}
+          pageNo={1}
+          totalPages={1}
+          onPageChange={() => {}}
+          columns={columns({
+            setIsDialogOpen,
+            setSelectedInsurance: () => setSelectedInsurance(insuranceData),
+            setLoading,
+            showToast: ({ type, message }) => {
+              showToast({
+                toast,
+                type: type === "success" ? "success" : "error",
+                message,
+              });
+            },
+            // showToast: (args) => showToast({ toast, ...args }),
+            fetchInsuranceData: () => fetchInsuranceData(),
+            setIsOpenNotesDialog,
+          })}
+          data={insuranceData ? [insuranceData] : []}
+        />
+      )}
       <AddOrViewNotes
         isOpen={isOpenNotesDialog}
         onClose={() => {

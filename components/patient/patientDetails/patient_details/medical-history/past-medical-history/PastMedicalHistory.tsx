@@ -12,6 +12,8 @@ interface PastMedicalHistoryProps {
 function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
   // Past Medical History State
   const [data, setData] = useState<PastMedicalHistoryInterface[]>([]);
+
+  // Dialog State
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // Loading State
@@ -21,9 +23,6 @@ function PastMedicalHistory({ userDetailsId }: PastMedicalHistoryProps) {
   const itemsPerPage = 3;
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
-  // Dialog State
-  // const [isOpen, setIsOpen] = useState(false);
 
   // GET Past Medical History Data
   const fetchPastMedicalHistory = useCallback(async () => {
