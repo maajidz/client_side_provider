@@ -316,8 +316,16 @@ export const referralResponseStatus = [
   { value: "completed", label: "Completed" },
 ];
 
-export const referralRequestStatus = [
-  { value: "sent", label: "Sent" },
+export const referralRequestStatus = [{ value: "sent", label: "Sent" }];
+
+export const vaccinesSource = [
+  "Source Unspecified",
+  "From Other Provider",
+  "From Parent's Written Record",
+  "From Birth Certificate",
+  "From Other Registry",
+  "From School Record",
+  "From Public Agency",
 ];
 
 export const US_STATES = [

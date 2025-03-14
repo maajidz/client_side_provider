@@ -7,7 +7,6 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -299,8 +298,8 @@ function SupplementsDialog({
         comments: selectedSupplement?.comments || "",
       });
 
-      if (selectedSupplement.supplementType.name) {
-        setSearchTerm(selectedSupplement.supplementType.name);
+      if (selectedSupplement.type.supplement_name) {
+        setSearchTerm(selectedSupplement.type.supplement_name);
       }
     }
   }, [selectedSupplement, form]);
@@ -317,9 +316,9 @@ function SupplementsDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[465px]">
         <DialogHeader>
-          <DialogTitle>
+          <p>
             {selectedSupplement ? "Edit Supplement" : "Add Supplement"}
-          </DialogTitle>
+          </p>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[30rem] max-h-[30rem] p-2.5">

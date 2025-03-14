@@ -40,6 +40,7 @@ export const columns = (): ColumnDef<ImageOrdersData>[] => [
     header: "Ordered By",
     cell: ({ row }) => (
       <div className="cursor-pointer">
+        {`${row.original.providerDetails.firstName} ${row.original.providerDetails.lastName} - `}
         {row.original.providerDetails.providerDetails.providerUniqueId}
       </div>
     ),
