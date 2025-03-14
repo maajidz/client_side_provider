@@ -30,7 +30,6 @@ import { useForm } from "react-hook-form";
 import { familyHistorySchema } from "@/schema/familyHistorySchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import LoadingButton from "@/components/LoadingButton";
 import {
   createFamilyHistory,
   updateFamilyHistoryData,
@@ -157,10 +156,6 @@ function FamilyHistoryDialog({
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -172,146 +167,145 @@ function FamilyHistoryDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-col gap-6">
-                <FormField
-                  control={form.control}
-                  name="relationship"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel className="w-fit">Relationship</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
+            <div className="flex flex-col gap-6">
+              <FormField
+                control={form.control}
+                name="relationship"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="w-fit">Relationship</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Relationship" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Natural Father">
+                            Natural Father
+                          </SelectItem>
+                          <SelectItem value="Mother">Mother</SelectItem>
+                          <SelectItem value="Brother">Brother</SelectItem>
+                          <SelectItem value="Sister">Sister</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="deceased"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row gap-1 items-center">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel>Deceased</FormLabel>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="age"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Age</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter age"
+                        type="number"
+                        {...field}
+                        value={
+                          field.value !== undefined ? Number(field.value) : ""
+                        }
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="activeProblems"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-2">
+                    <FormLabel className="font-semibold">
+                      Active Problems
+                    </FormLabel>
+                    <div className="flex flex-col gap-1">
+                      {activeProblemOptions.map((item) => (
+                        <FormItem
+                          key={item.id}
+                          className="flex-row items-center"
                         >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Relationship" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Natural Father">
-                              Natural Father
-                            </SelectItem>
-                            <SelectItem value="Mother">Mother</SelectItem>
-                            <SelectItem value="Brother">Brother</SelectItem>
-                            <SelectItem value="Sister">Sister</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="deceased"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row gap-1 items-center">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormLabel>Deceased</FormLabel>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="age"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel>Age</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter age"
-                          type="number"
-                          {...field}
-                          value={
-                            field.value !== undefined ? Number(field.value) : ""
-                          }
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="activeProblems"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-2">
-                      <FormLabel className="font-semibold">Active Problems</FormLabel>
-                      <div className="flex flex-col gap-1">
-                        {activeProblemOptions.map((item) => (
-                          <FormItem
-                            key={item.id}
-                            className="flex-row items-center"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(item.id)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([
-                                        ...(field.value || []),
-                                        item.id,
-                                      ])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== item.id
-                                        )
-                                      );
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel>
-                              {item.label}
-                            </FormLabel>
-                          </FormItem>
-                        ))}
-                      </div>
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value?.includes(item.id)}
+                              onCheckedChange={(checked) => {
+                                return checked
+                                  ? field.onChange([
+                                      ...(field.value || []),
+                                      item.id,
+                                    ])
+                                  : field.onChange(
+                                      field.value?.filter(
+                                        (value) => value !== item.id
+                                      )
+                                    );
+                              }}
+                            />
+                          </FormControl>
+                          <FormLabel>{item.label}</FormLabel>
+                        </FormItem>
+                      ))}
+                    </div>
 
-                      {/* Input for custom problems */}
-                      <div className="flex gap-2 mt-3">
-                        <Input
-                          placeholder="Add custom problem"
-                          value={customProblem}
-                          onChange={(e) => setCustomProblem(e.target.value)}
-                        />
-                        <GhostButton onClick={addCustomProblem}>
-                          Add
-                        </GhostButton>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="comments"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel>Comments</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <DialogFooter>
-                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => onClose}>
-                      Cancel
-                    </Button>
-                    <SubmitButton label="Save" />
-                  </div>
-                </DialogFooter>
-              </div>
+                    {/* Input for custom problems */}
+                    <div className="flex gap-2 mt-3">
+                      <Input
+                        placeholder="Add custom problem"
+                        value={customProblem}
+                        onChange={(e) => setCustomProblem(e.target.value)}
+                      />
+                      <GhostButton onClick={addCustomProblem}>Add</GhostButton>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="comments"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Comments</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => onClose}>
+                    Cancel
+                  </Button>
+                  <SubmitButton
+                    label={loading ? "Saving..." : "Save"}
+                    disabled={loading}
+                  />
+                </div>
+              </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>

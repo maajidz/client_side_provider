@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
-import TableShimmer from "../custom_buttons/table/TableShimmer";
+import TableShimmer from "../custom_buttons/shimmer/TableShimmer";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -201,7 +201,7 @@ function DocumentsClient() {
     filters.patient,
     filters.reviewer,
     filters.status,
-    pageNo
+    pageNo,
   ]);
 
   //  Submit handler function

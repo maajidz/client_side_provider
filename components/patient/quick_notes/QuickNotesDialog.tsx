@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import LoadingButton from "@/components/LoadingButton";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
@@ -112,10 +111,6 @@ const QuickNotesDialog = ({
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -142,7 +137,10 @@ const QuickNotesDialog = ({
                   )}
                 />
                 <DialogFooter>
-                  <SubmitButton label="Save"></SubmitButton>
+                  <SubmitButton
+                    label={loading ? "Saving..." : "Save"}
+                    disabled={loading}
+                  ></SubmitButton>
                 </DialogFooter>
               </div>
             </ScrollArea>

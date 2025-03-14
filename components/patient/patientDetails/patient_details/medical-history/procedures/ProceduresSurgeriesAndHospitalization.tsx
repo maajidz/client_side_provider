@@ -18,7 +18,7 @@ function ProceduresSurgeriesAndHospitalization({
   const [data, setData] = useState<ProcedureData[]>([]);
 
   // Loading State
-  const [, setLoading] = useState(false);
+  const [procedureDataLoading, setProcedureDataLoading] = useState(false);
 
   // Pagination Data
   const itemsPerPage = 3;
@@ -30,7 +30,7 @@ function ProceduresSurgeriesAndHospitalization({
 
   // GET Procedures data
   const fetchProcedures = useCallback(async () => {
-    setLoading(true);
+    setProcedureDataLoading(true);
 
     try {
       const response = await getProcedureData({
@@ -46,7 +46,7 @@ function ProceduresSurgeriesAndHospitalization({
     } catch (e) {
       console.log("Error", e);
     } finally {
-      setLoading(false);
+      setProcedureDataLoading(false);
     }
   }, [userDetailsId, page]);
 
@@ -67,17 +67,21 @@ function ProceduresSurgeriesAndHospitalization({
             userDetailsId={userDetailsId}
           />
         </div>
-        <DefaultDataTable
-          title="Procedures, Surgeries and Hospitalization"
-          onAddClick={() => {
-            setIsOpen(true);
-          }}
-          columns={columns()}
-          data={data || []}
-          pageNo={page}
-          totalPages={totalPages}
-          onPageChange={(newPage) => setPage(newPage)}
-        />
+        {procedureDataLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <DefaultDataTable
+            title="Procedures, Surgeries and Hospitalization"
+            onAddClick={() => {
+              setIsOpen(true);
+            }}
+            columns={columns()}
+            data={data || []}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
+        )}
       </div>
     </div>
   );

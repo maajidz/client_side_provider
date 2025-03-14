@@ -1,5 +1,5 @@
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import {
   Form,
   FormField,

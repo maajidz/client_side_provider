@@ -1,5 +1,4 @@
 import SocialHistoryDialog from "@/components/charts/Encounters/Details/SocialHistory/SocialHistoryDialog";
-import LoadingButton from "@/components/LoadingButton";
 import { SocialHistoryInterface } from "@/types/socialHistoryInterface";
 import { getSocialHistory } from "@/services/socialHistoryServices";
 import { useCallback, useEffect, useState } from "react";
@@ -94,7 +93,7 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
       </div>
       <div className="flex flex-1 flex-col p-2 border rounded-lg">
         {loading ? (
-          <LoadingButton />
+          <div>Loading...</div>
         ) : (
           socialHistory.map((history) => (
             <div className="flex flex-col gap-3" key={history.id}>

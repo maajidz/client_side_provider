@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import LoadingButton from "@/components/LoadingButton";
 import { Textarea } from "@/components/ui/textarea";
 import { alertSchema } from "@/schema/alertSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -134,10 +133,6 @@ const AlertDialog = ({
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -190,7 +185,10 @@ const AlertDialog = ({
                     </FormItem>
                   )}
                 />
-                <SubmitButton label="Save" />
+                <SubmitButton
+                  label={loading ? "Saving..." : "Save"}
+                  disabled={loading}
+                />
               </div>
             </ScrollArea>
           </form>

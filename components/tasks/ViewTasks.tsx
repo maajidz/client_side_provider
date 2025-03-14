@@ -37,7 +37,7 @@ import { fetchUserDataResponse } from "@/services/userServices";
 import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { DefaultDataTable } from "../custom_buttons/table/DefaultDataTable";
-import TableShimmer from "../custom_buttons/table/TableShimmer";
+import TableShimmer from "../custom_buttons/shimmer/TableShimmer";
 
 const ViewTasks = () => {
   // Provider Details
@@ -420,7 +420,7 @@ const ViewTasks = () => {
                   setEditData,
                   setIsCommentDialogOpen: () => {},
                   setIsEditDialogOpen: setIsDialogOpen,
-                  setLoading,
+                  setTaskLoading: setLoading,
                   showToast: () =>
                     showToast({
                       toast,

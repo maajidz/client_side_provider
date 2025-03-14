@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
   SelectContent,
@@ -144,8 +143,6 @@ function EditAllergy({
     }
   };
 
-  if (loading) return <LoadingButton />;
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogTrigger asChild></DialogTrigger>
@@ -185,7 +182,9 @@ function EditAllergy({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {allergyTypeData?.allergyTypes ? (
+                              {loading ? (
+                                <div>Loading...</div>
+                              ) : allergyTypeData?.allergyTypes ? (
                                 allergyTypeData?.allergyTypes.map(
                                   (typeData) => (
                                     <SelectItem

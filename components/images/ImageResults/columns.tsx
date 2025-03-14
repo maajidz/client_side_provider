@@ -59,7 +59,7 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
             <div key={results.id} className="flex flex-col gap-2">
               <FormLabels
                 label="Image Type"
-                value={results.imageTest.imageType.name}
+                value={results.imageTest?.imageType?.name}
               />
               <FormLabels
                 label="Interpretation"

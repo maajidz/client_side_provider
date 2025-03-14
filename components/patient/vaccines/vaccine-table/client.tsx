@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { getHistoricalVaccine } from "@/services/chartDetailsServices";
 import { HistoricalVaccineInterface } from "@/types/chartsInterface";
 import { columns } from "./column";
@@ -7,6 +6,7 @@ import VaccinesDialog from "@/components/charts/Encounters/Details/Vaccines/Vacc
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 interface HistoricalVaccinesProps {
   userDetailsId: string;
@@ -63,35 +63,34 @@ const HistoricalVaccinesClient = ({
     fetchHistoricalVaccine();
   }, [fetchHistoricalVaccine]);
 
-  // If loading, show a loading button
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className="flex flex-col gap-6">
-      <DefaultDataTable
-        title={"Vaccines"}
-        onAddClick={() => {
-          setIsVaccinesDialogOpen(true);
-        }}
-        columns={columns({
-          setEditData,
-          setIsVaccinesDialogOpen,
-          setLoading,
-          showToast: () =>
-            showToast({
-              toast,
-              type: "success",
-              message: "Deleted Successfully",
-            }),
-          fetchHistoricalVaccine: () => fetchHistoricalVaccine(),
-        })}
-        data={historicalVaccineData}
-        pageNo={page}
-        totalPages={totalPages}
-        onPageChange={(newPage: number) => setPage(newPage)}
-      />
+      {loading ? (
+        <TableShimmer />
+      ) : (
+        <DefaultDataTable
+          title={"Vaccines"}
+          onAddClick={() => {
+            setIsVaccinesDialogOpen(true);
+          }}
+          columns={columns({
+            setEditData,
+            setIsVaccinesDialogOpen,
+            setLoading,
+            showToast: () =>
+              showToast({
+                toast,
+                type: "success",
+                message: "Deleted Successfully",
+              }),
+            fetchHistoricalVaccine: () => fetchHistoricalVaccine(),
+          })}
+          data={historicalVaccineData}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPage(newPage)}
+        />
+      )}
       <VaccinesDialog
         userDetailsId={userDetailsId}
         vaccinesData={editData}

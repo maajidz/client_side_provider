@@ -45,7 +45,9 @@ export const columns = ({
     accessorKey: "vaccine_name",
     header: "Vaccine Name",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("vaccine_name")}</div>
+      <div className="cursor-pointer">
+        {row.original.vaccineType.vaccine_name}
+      </div>
     ),
   },
   {
@@ -88,7 +90,7 @@ export const columns = ({
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <EllipsisVertical size={16} className="text-gray-500"/>
+            <EllipsisVertical size={16} className="text-gray-500" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem

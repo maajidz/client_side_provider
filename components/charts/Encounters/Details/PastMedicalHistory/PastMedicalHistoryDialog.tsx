@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +25,6 @@ import { createPastMedicalHistory } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
-
 interface PastMedicalHistoryDialogProps {
   isOpen: boolean;
   userDetailsId: string;
@@ -44,6 +42,7 @@ function PastMedicalHistoryDialog({
   // Toast State
   const { toast } = useToast();
 
+  // Form Definition
   const form = useForm<z.infer<typeof addPastMedicalHistorySchema>>({
     resolver: zodResolver(addPastMedicalHistorySchema),
     defaultValues: {
@@ -86,10 +85,6 @@ function PastMedicalHistoryDialog({
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg">
@@ -98,34 +93,40 @@ function PastMedicalHistoryDialog({
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
-                <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel className="w-fit">Note</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="glp_refill_note_practice"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel>GLP Refill Note Practice - PMH</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <SubmitButton label="Save" />
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-6"
+          >
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="w-fit">Note</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="glp_refill_note_practice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>GLP Refill Note Practice - PMH</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <SubmitButton
+              label={loading ? "Saving..." : "Save"}
+              disabled={loading}
+            />
           </form>
         </Form>
       </DialogContent>

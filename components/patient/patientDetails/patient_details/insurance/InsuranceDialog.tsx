@@ -108,7 +108,7 @@ function InsuranceDialog({
     formData.append("userDetailsID", userDetailsId);
     formData.append("images", formValues.frontDocumentImage);
     formData.append("images", formValues.backDocumentImage);
-    formData.append("notes", "")
+    formData.append("notes", "");
 
     try {
       if (selectedInsurance) {
@@ -447,7 +447,7 @@ function InsuranceDialog({
                   Cancel
                 </Button>
                 <Button onClick={toggleEdit} disabled={loading}>
-                  Save
+                  {loading ? "Saving" : "Save"}
                 </Button>
               </>
             </div>

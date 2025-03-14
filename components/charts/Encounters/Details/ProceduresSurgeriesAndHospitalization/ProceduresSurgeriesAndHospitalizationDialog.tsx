@@ -37,7 +37,6 @@ import {
   UpdateProceduresInterface,
 } from "@/types/procedureInterface";
 import { useToast } from "@/hooks/use-toast";
-import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
@@ -57,6 +56,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
   >([]);
   const [procedureId, setProcedureId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isListVisible, setIsListVisible] = useState<boolean>(false);
   const [filteredProcedures, setFilteredProcedures] = useState<
@@ -117,7 +117,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
       if (procedureData.nameId) {
         setProcedureId(procedureData.nameId);
       }
-      if(procedureData.nameType.name){
+      if (procedureData.nameType.name) {
         setSearchTerm(procedureData.nameType.name);
       }
     }
@@ -126,7 +126,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
   const onSubmit = async (
     values: z.infer<typeof addProceduresSurgeriesAndHospitalizationFormSchema>
   ) => {
-    setLoading(true);
+    setSubmitLoading(true);
     try {
       if (!procedureData) {
         const requestData = {
@@ -175,21 +175,19 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
         message: "Failed to create a procedure",
       });
     } finally {
-      setLoading(false);
+      setSubmitLoading(false);
     }
   };
 
   useEffect(() => {
     setFilteredProcedures(
       procedureListData.filter((procedure) =>
-        procedure.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+        procedure.name
+          .toLocaleLowerCase()
+          .includes(searchTerm.toLocaleLowerCase())
       )
     );
   }, [searchTerm, procedureListData]);
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -253,7 +251,9 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                         />
                         {searchTerm && isListVisible && (
                           <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
-                            {filteredProcedures.length > 0 ? (
+                            {loading ? (
+                              <div>Loading...</div>
+                            ) : filteredProcedures.length > 0 ? (
                               filteredProcedures.map((procedure) => (
                                 <div
                                   key={procedure.id}
@@ -322,7 +322,10 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                   </FormItem>
                 )}
               />
-              <SubmitButton label="Save" />
+              <SubmitButton
+                label={submitLoading ? "Saving..." : "Save"}
+                disabled={submitLoading}
+              />
             </div>
           </form>
         </Form>

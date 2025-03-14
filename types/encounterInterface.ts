@@ -4,6 +4,8 @@ import { UserDetails } from "./userInterface";
 export interface EncounterInterface {
   response?: EncounterResponse[];
   total: number;
+  page: string;
+  limit: string;
 }
 
 export interface EncounterResponse {
@@ -17,4 +19,25 @@ export interface EncounterResponse {
   updatedAt: string;
   chart?: UserChart;
   userDetails: UserDetails;
+  progressTracker: ProgressTracker;
+}
+
+export interface ProgressTracker {
+  id: string;
+  currentWeight: string;
+  targetWeight: string;
+  startDate: string;
+  targetDate: string;
+  createdAt: string;
+  updatedAt: string;
+  bmiRecords: BmiRecord[];
+}
+
+export interface BmiRecord {
+  id: string
+  date: string
+  currentBmi: number
+  goalBmi: number
+  createdAt: string
+  updatedAt: string
 }

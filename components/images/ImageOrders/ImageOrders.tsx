@@ -30,7 +30,7 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { FetchProviderListInterface } from "@/types/providerDetailsInterface";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import { imagesStatus } from "@/constants/data";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";

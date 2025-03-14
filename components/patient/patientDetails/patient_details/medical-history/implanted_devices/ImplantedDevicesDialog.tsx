@@ -23,7 +23,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { addImplantedDevicesSchema } from "@/schema/addImplantedDevicesSchema";
 import { Input } from "@/components/ui/input";
 import { showToast } from "@/utils/utils";
-import LoadingButton from "@/components/LoadingButton";
 import {
   createPatientImplantedDevice,
   verifyImplantedDevices,
@@ -171,10 +170,6 @@ const ImplantedDevicesDialog = ({
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="min-w-fit">
@@ -274,7 +269,10 @@ const ImplantedDevicesDialog = ({
                       </FormItem>
                     )}
                   />
-                  <SubmitButton label="Verify" />
+                  <SubmitButton
+                    label={loading ? "Verifying..." : "Verify"}
+                    disabled={loading}
+                  />
                 </div>
               </ScrollArea>
             </form>

@@ -16,7 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
   SelectTrigger,
@@ -38,10 +37,7 @@ import {
   TaskTypeResponse,
   UpdateTaskType,
 } from "@/types/tasksInterface";
-import {
-  createTask,
-  updateTask,
-} from "@/services/chartDetailsServices";
+import { createTask, updateTask } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { priority, reminderOptions } from "@/constants/data";
@@ -54,7 +50,7 @@ function TasksDialog({
   tasksData,
   onClose,
   ownersList,
-  tasksListData
+  tasksListData,
 }: {
   isOpen: boolean;
   userDetailsId: string;
@@ -64,7 +60,7 @@ function TasksDialog({
   tasksListData: TaskTypeResponse | null;
 }) {
   const [showDueDate, setShowDueDate] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [taskDataLoading, setTaskDataLoading] = useState<boolean>(false);
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
 
   const { toast } = useToast();
@@ -122,7 +118,7 @@ function TasksDialog({
       userDetailsId: userDetailsId,
     };
 
-    setLoading(true);
+    setTaskDataLoading(true);
     try {
       if (!tasksData) {
         await createTask({ requestBody: requestData });
@@ -149,15 +145,11 @@ function TasksDialog({
       });
     } finally {
       onClose();
-      setLoading(false);
+      setTaskDataLoading(false);
       setShowDueDate(false);
       form.reset();
     }
   };
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -300,49 +292,49 @@ function TasksDialog({
                         Date and Reminder
                       </h4>
                       <div className="flex flex-row gap-2">
-                      <FormField
-                        control={form.control}
-                        name="dueDate"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>From Date:</FormLabel>
-                            <FormControl>
-                              <Input type="date" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="sendReminder"
-                        render={({ field }) => {
-                          const selectedValues = field.value ?? [];
-                          return (
+                        <FormField
+                          control={form.control}
+                          name="dueDate"
+                          render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Send Reminder Mail</FormLabel>
-                              <Select>
-                                <SelectTrigger className="w-full max-w-full">
-                                  <SelectValue
-                                    placeholder={
-                                      selectedValues.length > 0
-                                        ? selectedValues.join(", ")
-                                        : "Select Reminder Day"
-                                    }
-                                  />
-                                </SelectTrigger>
-                                <SelectContent className="pt-1 pb-1">
-                                  {reminderOptions.map((option) => (
-                                    <div
-                                      key={option}
-                                      className="text-sm font-medium rounded-md hover:bg-gray-100 flex items-center gap-2 p-2 cursor-pointer"
-                                      onClick={() => {
-                                        const updatedValues =
-                                          selectedValues.includes(option)
-                                            ? selectedValues.filter(
-                                                (val) => val !== option
-                                              )
-                                            : [...selectedValues, option];
+                              <FormLabel>From Date:</FormLabel>
+                              <FormControl>
+                                <Input type="date" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="sendReminder"
+                          render={({ field }) => {
+                            const selectedValues = field.value ?? [];
+                            return (
+                              <FormItem>
+                                <FormLabel>Send Reminder Mail</FormLabel>
+                                <Select>
+                                  <SelectTrigger className="w-full max-w-full">
+                                    <SelectValue
+                                      placeholder={
+                                        selectedValues.length > 0
+                                          ? selectedValues.join(", ")
+                                          : "Select Reminder Day"
+                                      }
+                                    />
+                                  </SelectTrigger>
+                                  <SelectContent className="pt-1 pb-1">
+                                    {reminderOptions.map((option) => (
+                                      <div
+                                        key={option}
+                                        className="text-sm font-medium rounded-md hover:bg-gray-100 flex items-center gap-2 p-2 cursor-pointer"
+                                        onClick={() => {
+                                          const updatedValues =
+                                            selectedValues.includes(option)
+                                              ? selectedValues.filter(
+                                                  (val) => val !== option
+                                                )
+                                              : [...selectedValues, option];
 
                                           field.onChange(updatedValues);
                                         }}
@@ -379,7 +371,10 @@ function TasksDialog({
                     </FormItem>
                   )}
                 />
-                <SubmitButton label="Add" />
+                <SubmitButton
+                  label={taskDataLoading ? "Adding..." : "Add"}
+                  disabled={taskDataLoading}
+                />
               </div>
             </form>
           </Form>

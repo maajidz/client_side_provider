@@ -16,11 +16,11 @@ import { Badge } from "../ui/badge";
 
 const handleTasksDelete = async (
   taskId: string,
-  setLoading: (loading: boolean) => void,
+  setTaskLoading: (loading: boolean) => void,
   showToast: (args: { type: string; message: string }) => void,
   fetchTasks: () => void
 ) => {
-  setLoading(true);
+  setTaskLoading(true);
   try {
     await deleteTask({ id: taskId });
     showToast({
@@ -31,18 +31,18 @@ const handleTasksDelete = async (
     console.error("Error:", error);
     showToast({ type: "error", message: "Failed to delete task" });
   } finally {
-    setLoading(false);
+    setTaskLoading(false);
     fetchTasks();
   }
 };
 
 const handleTasksStatusUpdate = async (
   taskId: string,
-  setLoading: (loading: boolean) => void,
+  setTaskLoading: (loading: boolean) => void,
   showToast: (args: { type: string; message: string }) => void,
   fetchTasks: () => void
 ) => {
-  setLoading(true);
+  setTaskLoading(true);
   try {
     const requestData: Status = {
       status: "COMPLETED",
@@ -57,7 +57,7 @@ const handleTasksStatusUpdate = async (
     console.error("Error:", error);
     showToast({ type: "error", message: "Failed to update task" });
   } finally {
-    setLoading(false);
+    setTaskLoading(false);
   }
 };
 
@@ -70,7 +70,7 @@ const priorityBadgeVariants: Record<string, "default" | "warning" | "destructive
 export const columns = ({
   setEditData,
   setIsEditDialogOpen,
-  setLoading,
+  setTaskLoading,
   showToast,
   fetchTasksList,
   setIsCommentDialogOpen,
@@ -79,7 +79,7 @@ export const columns = ({
   setEditData: (data: TasksResponseDataInterface | null) => void;
   setIsEditDialogOpen: (isOpen: boolean) => void;
   setIsCommentDialogOpen: (isOpen: boolean) => void;
-  setLoading: (loading: boolean) => void;
+  setTaskLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchTasksList: () => void;
   isPatientTask: boolean;
@@ -201,7 +201,7 @@ export const columns = ({
                 onClick={() => {
                   handleTasksStatusUpdate(
                     row.original.id,
-                    setLoading,
+                    setTaskLoading,
                     showToast,
                     fetchTasksList
                   );
@@ -214,7 +214,7 @@ export const columns = ({
               onClick={() => {
                 handleTasksDelete(
                   row.original.id,
-                  setLoading,
+                  setTaskLoading,
                   showToast,
                   fetchTasksList
                 );

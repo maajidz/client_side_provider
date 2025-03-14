@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import { fetchUserQuestionnaire } from "@/services/formServices";
 import { QuestionnaireInterface } from "@/types/formInterface";
@@ -15,6 +14,7 @@ import {
 import { generateQuestionnairePDF } from "./generateQuestionnairePDF";
 import { Copy, EllipsisVertical, FileUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import DataListShimmer from "@/components/custom_buttons/shimmer/DataListShimmer";
 
 const PatientQuestionnaires = ({
   userDetailsId,
@@ -136,7 +136,7 @@ const PatientQuestionnaires = ({
         </div>
         <TabsContent value={type} key={type} className="flex flex-col gap-4">
           {loading ? (
-            <LoadingButton />
+            <DataListShimmer />
           ) : (
             <div className={cn(styles.infoContainer, "group")}>
               <div
@@ -199,3 +199,4 @@ const PatientQuestionnaires = ({
 };
 
 export default PatientQuestionnaires;
+

@@ -1,5 +1,4 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
   DialogContent,
@@ -145,8 +144,6 @@ function SocialHistoryDialog({
     }
   };
 
-  if (loading) return <LoadingButton />;
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full">
@@ -219,7 +216,10 @@ function SocialHistoryDialog({
                 >
                   Cancel
                 </Button>
-                <SubmitButton label="Save" disabled={loading} />
+                <SubmitButton
+                  label={loading ? "Saving..." : "Save"}
+                  disabled={loading}
+                />
               </div>
             </DialogFooter>
           </form>
