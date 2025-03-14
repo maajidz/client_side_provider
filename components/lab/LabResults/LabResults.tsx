@@ -31,7 +31,7 @@ import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useRouter } from "next/navigation";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 

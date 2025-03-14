@@ -5,7 +5,7 @@ import { columns } from "./columns";
 import QuickNotesDialog from "./QuickNotesDialog";
 import { useState } from "react";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 interface ViewPatientNotesProps {
   userDetailsId: string;

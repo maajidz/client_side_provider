@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import DragAndDrop from "./DragAndDrop";
 import UploadDocumentDialog from "./UploadDocumentDialog";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import PageContainer from "@/components/layout/page-container";
 import { useForm } from "react-hook-form";
 import {

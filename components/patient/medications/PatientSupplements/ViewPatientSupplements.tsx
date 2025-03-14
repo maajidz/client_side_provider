@@ -8,7 +8,7 @@ import { columns } from "./columns";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewPatientSupplements = ({
   userDetailsId,

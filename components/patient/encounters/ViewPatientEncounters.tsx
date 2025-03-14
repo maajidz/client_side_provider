@@ -3,13 +3,14 @@ import { RootState } from "@/store/store";
 import { EncounterInterface } from "@/types/encounterInterface";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import LoadingButton from "@/components/LoadingButton";
 import { Tabs, TabsList, TabsContent } from "@/components/ui/tabs";
 import AllEncountersTab from "./AllEncountersTab";
 import ChartNotes from "@/components/charts/Encounters/Preview/ChartNotes";
 import CustomTabsTrigger from "@/components/custom_buttons/buttons/CustomTabsTrigger";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import DataListShimmer from "@/components/custom_buttons/shimmer/DataListShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewPatientEncounters = ({
   userDetailsId,
@@ -18,10 +19,10 @@ const ViewPatientEncounters = ({
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [chartList, setChartList] = useState<EncounterInterface>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [activeTab, setActiveTab] = useState('lastvisit');
+  const [activeTab, setActiveTab] = useState("all");
 
   const patientEncountersTab = [
     {
@@ -92,10 +93,6 @@ const ViewPatientEncounters = ({
     fetchEncounterList(page);
   }, [activeTab, page, fetchEncounterList]);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <Tabs
       defaultValue="lastvisit"
@@ -113,20 +110,30 @@ const ViewPatientEncounters = ({
       {patientEncountersTab.map(({ value, component: Component }) => (
         <TabsContent value={value} key={value} className="w-full">
           <ScrollArea className={cn("h-[calc(60dvh-52px)]")}>
-            {value === "lastvisit"
-              ? chartList &&
+            {value === "lastvisit" ? (
+              loading ? (
+                <DataListShimmer />
+              ) : chartList &&
                 chartList.response &&
-                chartList.response[0]?.chart && (
-                  <ChartNotes patientChart={chartList.response[0].chart} />
-                )
-              : chartList && (
-                  <Component
-                    chartList={chartList}
-                    page={page}
-                    totalPages={totalPages}
-                    setPage={setPage}
-                  />
-                )}
+                chartList.response[0]?.chart ? (
+                <ChartNotes patientChart={chartList.response[0].chart} />
+              ) : (
+                <div className="flex flex-row p-4 items-center justify-center w-full h-full font-semibold">
+                  No Chart Found!
+                </div>
+              )
+            ) : loading ? (
+              <TableShimmer />
+            ) : (
+              chartList && (
+                <Component
+                  chartList={chartList}
+                  page={page}
+                  totalPages={totalPages}
+                  setPage={setPage}
+                />
+              )
+            )}
           </ScrollArea>
         </TabsContent>
       ))}

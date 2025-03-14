@@ -8,7 +8,7 @@ import { columns } from "./column";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AddOrViewNotes from "./actions/AddOrViewNotes";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 interface InsuranceInformationProps {
   userDetailsId: string;

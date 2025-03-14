@@ -7,7 +7,7 @@ import { AllergenResponseInterfae } from "@/types/allergyInterface";
 import EditAllergy from "@/components/charts/Encounters/Details/Allergies/EditAllergy";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import AllergiesDialog from "@/components/charts/Encounters/Details/Allergies/AllergiesDialog";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
   const [page, setPage] = useState<number>(1);

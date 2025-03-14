@@ -14,6 +14,7 @@ import {
 import { generateQuestionnairePDF } from "./generateQuestionnairePDF";
 import { Copy, EllipsisVertical, FileUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import DataListShimmer from "@/components/custom_buttons/shimmer/DataListShimmer";
 
 const PatientQuestionnaires = ({
   userDetailsId,
@@ -135,7 +136,7 @@ const PatientQuestionnaires = ({
         </div>
         <TabsContent value={type} key={type} className="flex flex-col gap-4">
           {loading ? (
-            <QuestionnaireShimmer />
+            <DataListShimmer />
           ) : (
             <div className={cn(styles.infoContainer, "group")}>
               <div
@@ -199,13 +200,3 @@ const PatientQuestionnaires = ({
 
 export default PatientQuestionnaires;
 
-const QuestionnaireShimmer = () => (
-  <div className="animate-pulse flex flex-col gap-3">
-    <div className="bg-gray-200 h-6 w-3/4 mb-2 rounded"></div>
-    <div className="bg-gray-200 h-4 w-1/2 rounded"></div>
-    <div className="bg-gray-200 h-6 w-3/4 mb-2 rounded"></div>
-    <div className="bg-gray-200 h-4 w-1/2 rounded"></div>
-    <div className="bg-gray-200 h-6 w-3/4 mb-2 rounded"></div>
-    <div className="bg-gray-200 h-4 w-1/2 rounded"></div>
-  </div>
-);

@@ -9,7 +9,7 @@ import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataT
 import AddDiagnosesDialog from "./AddDiagnosesDialog";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 interface DiagnosesClientProps {
   userDetailsId: string;

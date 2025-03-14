@@ -30,7 +30,7 @@ import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import InjectionOrders from "./InjectionOrders";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 export const status = [
   { value: "Pending", label: "Pending" },

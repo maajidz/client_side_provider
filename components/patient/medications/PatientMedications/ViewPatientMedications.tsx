@@ -14,7 +14,7 @@ import { PlusIcon } from "lucide-react";
 import { getMedicationData } from "@/services/chartDetailsServices";
 import { MedicationResultInterface } from "@/types/medicationInterface";
 import { MedicationColumn } from "./medicationColumn";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewPatientMedications = ({
   userDetailsId,

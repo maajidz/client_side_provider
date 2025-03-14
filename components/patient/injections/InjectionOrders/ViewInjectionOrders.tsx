@@ -1,6 +1,5 @@
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { columns } from "@/components/injections/injection-orders/column";
-import LoadingButton from "@/components/LoadingButton";
 import {
   Form,
   FormControl,
@@ -32,6 +31,7 @@ import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { Button } from "@/components/ui/button";
 import InjectionOrders from "@/components/injections/injection-orders/InjectionOrders";
+import DataListShimmer from "@/components/custom_buttons/shimmer/DataListShimmer";
 
 const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -129,10 +129,6 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
     fetchInjectionsData(page, userDetailsId);
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className="flex flex-col gap-6">
       <Form {...form}>
@@ -210,27 +206,32 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
           </div>
         </form>
       </Form>
-      {resultList && (
-        <DefaultDataTable
-          title={"Injection Order"}
-          onAddClick={() => {
-            setIsInjectionDialogOpen(true);
-          }}
-          columns={columns({
-            setLoading,
-            showToast: () =>
-              showToast({
-                toast,
-                type: "success",
-                message: "Deleted Successfully",
-              }),
-            fetchInjectionList: () => fetchInjectionsData(page, userDetailsId),
-          })}
-          data={resultList}
-          pageNo={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: number) => setPage(newPage)}
-        />
+      {loading ? (
+        <DataListShimmer />
+      ) : (
+        resultList && (
+          <DefaultDataTable
+            title={"Injection Order"}
+            onAddClick={() => {
+              setIsInjectionDialogOpen(true);
+            }}
+            columns={columns({
+              setLoading,
+              showToast: () =>
+                showToast({
+                  toast,
+                  type: "success",
+                  message: "Deleted Successfully",
+                }),
+              fetchInjectionList: () =>
+                fetchInjectionsData(page, userDetailsId),
+            })}
+            data={resultList}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
+        )
       )}
       <InjectionOrders
         isOpen={isInjectionDialogOpen}

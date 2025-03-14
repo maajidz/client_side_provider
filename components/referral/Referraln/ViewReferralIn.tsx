@@ -32,7 +32,7 @@ import {
   referralRequestStatus,
   referralResponseStatus,
 } from "@/constants/data";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewReferralIn = () => {
   const providerDetails = useSelector((state: RootState) => state.login);
