@@ -1,12 +1,12 @@
-import LoadingButton from "@/components/LoadingButton";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 import { useToast } from "@/hooks/use-toast";
-import { getVitalsData } from "@/services/vitalsServices";
 import { VitalsInterface } from "@/types/vitalsInterface";
+import { getVitalsData } from "@/services/vitalsServices";
 import { showToast } from "@/utils/utils";
+import VitalDialog from "./VitalDialog";
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
-import VitalDialog from "./VitalDialog";
-import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 
 const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
   // Vitals State
@@ -59,35 +59,35 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
     fetchVitalsData();
   }, [fetchVitalsData]);
 
-  if (loading) return <LoadingButton />;
-
   return (
     <div className="flex flex-col space-y-4">
-      <DefaultDataTable
-        title={"Vitals"}
-        onAddClick={() => {
-          setEditData(undefined);
-          setIsDialogOpen(true);
-        }}
-        columns={columns({
-          fetchVitalsData,
-          setEditData,
-          setIsDialogOpen,
-          setLoading,
-          showToast: ({ type, message }) => {
-            showToast({
-              toast,
-              type: type === "success" ? "success" : "error",
-              message,
-            });
-          },
-          // showToast: (args) => showToast({ toast, ...args }),
-        })}
-        data={vitalsData}
-        pageNo={page}
-        totalPages={total}
-        onPageChange={(newPage) => setPage(newPage)}
-      />
+      {loading && <TableShimmer />}
+      {!loading && (
+        <DefaultDataTable
+          title={"Vitals"}
+          onAddClick={() => {
+            setEditData(undefined);
+            setIsDialogOpen(true);
+          }}
+          columns={columns({
+            fetchVitalsData,
+            setEditData,
+            setIsDialogOpen,
+            setLoading,
+            showToast: ({ type, message }) => {
+              showToast({
+                toast,
+                type: type === "success" ? "success" : "error",
+                message,
+              });
+            },
+          })}
+          data={vitalsData}
+          pageNo={page}
+          totalPages={total}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+      )}
       <VitalDialog
         isOpen={isDialogOpen}
         vitalsData={editData}
