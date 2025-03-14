@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { columns } from "./columns";
-import LoadingButton from "@/components/LoadingButton";
 import { getAllergiesData } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -8,6 +7,7 @@ import { AllergenResponseInterfae } from "@/types/allergyInterface";
 import EditAllergy from "@/components/charts/Encounters/Details/Allergies/EditAllergy";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import AllergiesDialog from "@/components/charts/Encounters/Details/Allergies/AllergiesDialog";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
   const [page, setPage] = useState<number>(1);
@@ -23,7 +23,7 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
 
   const fetchAllergies = useCallback(
     async (page: number) => {
-      // setLoading(true);
+      setLoading(true);
       try {
         const response = await getAllergiesData({
           limit: limit,
@@ -32,7 +32,7 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
         });
         if (response) {
           setData(response);
-          setTotalPages(response.length / limit);
+          setTotalPages(Math.ceil(response.length / limit));
         }
       } catch (e) {
         console.log("Error", e);
@@ -47,14 +47,12 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
     fetchAllergies(page);
   }, [fetchAllergies, page]);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <>
       <div className="flex flex-col space-y-3">
-        {data && (
+        {loading ? (
+          <TableShimmer />
+        ) : (
           <DefaultDataTable
             title={"Allergies"}
             onAddClick={() => setIsDialogOpen(true)}
@@ -71,7 +69,7 @@ const ViewPatientAllergies = ({ userDetailsId }: { userDetailsId: string }) => {
               },
               fetchAllergies: () => fetchAllergies(page),
             })}
-            data={data}
+            data={data || []}
             pageNo={page}
             totalPages={totalPages}
             onPageChange={(newPage: number) => setPage(newPage)}

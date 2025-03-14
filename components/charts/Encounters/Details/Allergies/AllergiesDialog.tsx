@@ -35,7 +35,6 @@ import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useCallback, useEffect, useState } from "react";
-import LoadingButton from "@/components/LoadingButton";
 import {
   AllergeyRequestInterface,
   AllergyTypeResponse,
@@ -159,10 +158,6 @@ function AllergiesDialog({
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-5xl">
@@ -202,7 +197,9 @@ function AllergiesDialog({
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {allergyTypeData?.allergyTypes ? (
+                                {loading ? (
+                                  <div>Loading...</div>
+                                ) : allergyTypeData?.allergyTypes ? (
                                   allergyTypeData?.allergyTypes.map(
                                     (typeData) => (
                                       <SelectItem
@@ -361,7 +358,7 @@ function AllergiesDialog({
                 Add More
               </GhostButton>
               <div className="w-fit">
-                <SubmitButton label="Save" />
+                <SubmitButton label="Save" disabled={loading} />
               </div>
             </div>
           </form>

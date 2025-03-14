@@ -19,7 +19,7 @@ import {
 } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
 import { Trash2Icon } from "lucide-react";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 interface ERxPharmacyProps {
   userDetailsId: string;

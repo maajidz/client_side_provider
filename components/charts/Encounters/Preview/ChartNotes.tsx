@@ -12,9 +12,13 @@ const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
           <ChartLabel label="Subjective" />
           <div className="flex flex-col gap-2">
             <ChartSubLabel label="Chief Complaints" />
-            <div
-              dangerouslySetInnerHTML={{ __html: patientChart?.subjective }}
-            />
+            {patientChart?.subjective ? (
+              <div
+                dangerouslySetInnerHTML={{ __html: patientChart?.subjective }}
+              />
+            ) : (
+              <div> N/A </div>
+            )}
             <ChartSubLabel label="History of Present Illness" />
             <ChartSubLabel label="Past Medical History" />
             <ChartSubLabel label="Active Medications:  " />
@@ -24,14 +28,18 @@ const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
           <ChartLabel label="Objective" />
           <div className="flex flex-col gap-2">
             <ChartSubLabel label="Health Vitals" />
-            <div>{patientChart?.objective}</div>
+            <div>
+              {patientChart?.objective ? patientChart?.objective : "N/A"}
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-3 border-b">
           <ChartLabel label="Assessment" />
           <div className="flex flex-col gap-2">
             <ChartSubLabel label="Diagnoses" />
-            <div>{patientChart?.assessment}</div>
+            <div>
+              {patientChart?.assessment ? patientChart?.assessment : "N/A"}
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-3 border-b">
@@ -39,7 +47,7 @@ const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
           <div className="flex flex-col gap-2">
             <ChartSubLabel label="Diet Recommendations" />
             <ChartSubLabel label="Instructions" />
-            {patientChart?.plan}
+            {patientChart?.plan ? patientChart?.plan : "N/A"}
           </div>
         </div>
       </div>

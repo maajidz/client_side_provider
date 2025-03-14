@@ -31,7 +31,7 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import VaccineOrders from "./VaccineOrders";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import { status } from "@/constants/data";
 
 function VaccinesClient() {

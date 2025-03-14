@@ -6,7 +6,7 @@ import { showToast } from "@/utils/utils";
 import { columns } from "./columns";
 import React, { useCallback, useEffect, useState } from "react";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewPatientAlerts = ({ userDetailsId }: { userDetailsId: string }) => {
   const [page, setPage] = useState<number>(1);

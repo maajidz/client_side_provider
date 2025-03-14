@@ -31,7 +31,7 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { imagesStatus } from "@/constants/data";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const PatientImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);

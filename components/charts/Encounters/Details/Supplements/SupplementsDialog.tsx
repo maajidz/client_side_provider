@@ -1,6 +1,5 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
-import LoadingButton from "@/components/LoadingButton";
 import { z } from "zod";
 import {
   Dialog,
@@ -307,10 +306,6 @@ function SupplementsDialog({
   const filteredSupplements = supplementsData.filter((supplement) =>
     supplement.supplement_name.toLocaleLowerCase().includes(searchTerm)
   );
-
-  if (loading.post) {
-    return <LoadingButton />;
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

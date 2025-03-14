@@ -32,7 +32,7 @@ import formStyles from "@/components/formStyles.module.css";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import ReferralOutDialog from "./ReferralOutDialog";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewReferralOut = () => {
   const providerDetails = useSelector((state: RootState) => state.login);

@@ -1,6 +1,5 @@
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { columns } from "@/components/injections/injection-orders/column";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 import {
   Form,
   FormControl,
@@ -32,6 +31,7 @@ import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { Button } from "@/components/ui/button";
 import InjectionOrders from "@/components/injections/injection-orders/InjectionOrders";
+import DataListShimmer from "@/components/custom_buttons/shimmer/DataListShimmer";
 
 const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -59,6 +59,8 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   });
 
   const fetchOwnersList = useCallback(async () => {
+    setLoading(true);
+
     try {
       const response = await fetchProviderListDetails({ page: 1, limit: 10 });
 
@@ -67,6 +69,8 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -91,9 +95,8 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
       status?: string,
       providerId?: string
     ) => {
-      setLoading(true);
-
       try {
+        setLoading(true);
         if (providerDetails) {
           const response = await getInjectionsData({
             providerId: providerId || filters.providerId,
@@ -106,6 +109,7 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
             setResultList(response.data);
             setTotalPages(Math.ceil(response.total / Number(response.limit)));
           }
+          setLoading(false);
         }
       } catch (e) {
         console.log("Error", e);
@@ -202,29 +206,32 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
           </div>
         </form>
       </Form>
-      {!loading ? (
-        <DefaultDataTable
-          title={"Injection Order"}
-          onAddClick={() => {
-            setIsInjectionDialogOpen(true);
-          }}
-          columns={columns({
-            setLoading,
-            showToast: () =>
-              showToast({
-                toast,
-                type: "success",
-                message: "Deleted Successfully",
-              }),
-            fetchInjectionList: () => fetchInjectionsData(page, userDetailsId),
-          })}
-          data={resultList}
-          pageNo={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: number) => setPage(newPage)}
-        />
+      {loading ? (
+        <DataListShimmer />
       ) : (
-        <TableShimmer />
+        resultList && (
+          <DefaultDataTable
+            title={"Injection Order"}
+            onAddClick={() => {
+              setIsInjectionDialogOpen(true);
+            }}
+            columns={columns({
+              setLoading,
+              showToast: () =>
+                showToast({
+                  toast,
+                  type: "success",
+                  message: "Deleted Successfully",
+                }),
+              fetchInjectionList: () =>
+                fetchInjectionsData(page, userDetailsId),
+            })}
+            data={resultList}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
+        )
       )}
       <InjectionOrders
         isOpen={isInjectionDialogOpen}

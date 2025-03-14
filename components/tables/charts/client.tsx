@@ -9,7 +9,7 @@ import CreateEncounterDialog from "@/components/charts/CreateEncounterDialog";
 import { useCallback, useEffect, useState } from "react";
 import { getEncounterList } from "@/services/chartsServices";
 import { EncounterInterface } from "@/types/encounterInterface";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 export const ChartsClient = () => {
   // Provider Details

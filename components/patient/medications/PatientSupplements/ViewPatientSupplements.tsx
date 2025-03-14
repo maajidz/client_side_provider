@@ -1,5 +1,4 @@
 import SupplementsDialog from "@/components/charts/Encounters/Details/Supplements/SupplementsDialog";
-import LoadingButton from "@/components/LoadingButton";
 import { useToast } from "@/hooks/use-toast";
 import { getSupplements } from "@/services/chartDetailsServices";
 import { RootState } from "@/store/store";
@@ -9,6 +8,7 @@ import { columns } from "./columns";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewPatientSupplements = ({
   userDetailsId,
@@ -24,7 +24,9 @@ const ViewPatientSupplements = ({
     create: false,
     edit: false,
   });
-  const [editData, setEditData] = useState<SupplementInterfaceResponse | null>(null);
+  const [editData, setEditData] = useState<SupplementInterfaceResponse | null>(
+    null
+  );
   const { toast } = useToast();
 
   const fetchSupplementsList = useCallback(async () => {
@@ -48,10 +50,6 @@ const ViewPatientSupplements = ({
     fetchSupplementsList();
   }, [fetchSupplementsList]);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <>
       <SupplementsDialog
@@ -63,32 +61,36 @@ const ViewPatientSupplements = ({
         isOpen={isDialogOpen.create}
       />
       <div className="">
-        {resultList && (
-          <DefaultDataTable
-            title={"Supplements"}
-            onAddClick={() => {
-              setIsDialogOpen((prev) => ({ ...prev, create: true }));
-              fetchSupplementsList();
-            }}
-            columns={columns({
-              setEditData,
-              setIsDialogOpen,
-              setLoading,
-              showToast: ({ type, message }) => {
-                showToast({
-                  toast,
-                  type: type === "success" ? "success" : "error",
-                  message,
-                });
-              },
-              // showToast: (args) => showToast({ toast, ...args }),
-              fetchSupplementsList: () => fetchSupplementsList(),
-            })}
-            data={resultList}
-            pageNo={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: number) => setPage(newPage)}
-          />
+        {loading ? (
+          <TableShimmer />
+        ) : (
+          resultList && (
+            <DefaultDataTable
+              title={"Supplements"}
+              onAddClick={() => {
+                setIsDialogOpen((prev) => ({ ...prev, create: true }));
+                fetchSupplementsList();
+              }}
+              columns={columns({
+                setEditData,
+                setIsDialogOpen,
+                setLoading,
+                showToast: ({ type, message }) => {
+                  showToast({
+                    toast,
+                    type: type === "success" ? "success" : "error",
+                    message,
+                  });
+                },
+                // showToast: (args) => showToast({ toast, ...args }),
+                fetchSupplementsList: () => fetchSupplementsList(),
+              })}
+              data={resultList}
+              pageNo={page}
+              totalPages={totalPages}
+              onPageChange={(newPage: number) => setPage(newPage)}
+            />
+          )
         )}
 
         <SupplementsDialog

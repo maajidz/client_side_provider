@@ -28,7 +28,7 @@ import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
 import { useRouter } from "next/navigation";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import { imagesStatus } from "@/constants/data";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";

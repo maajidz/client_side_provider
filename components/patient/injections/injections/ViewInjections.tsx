@@ -1,5 +1,4 @@
 import React from "react";
-import LoadingButton from "@/components/LoadingButton";
 import { deleteInjection, getInjection } from "@/services/injectionsServices";
 import {
   InjectionsData,
@@ -13,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { showToast } from "@/utils/utils";
 import { Badge } from "@/components/ui/badge";
 import InjectionsDialog from "@/components/charts/Encounters/Details/Injections/InjectionsDialog";
+import DataListShimmer from "@/components/custom_buttons/shimmer/DataListShimmer";
 
 const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
   const [editData, setEditData] = useState<InjectionsData | null>(null);
@@ -67,8 +67,6 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
     }
   };
 
-  if (loading) return <LoadingButton />;
-
   return (
     <>
       <div className="flex flex-col gap-6">
@@ -95,7 +93,10 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
               }}
             />
           </div>
-          {injectionsData &&
+          {loading ? (
+            <DataListShimmer />
+          ) : (
+            injectionsData &&
             injectionsData?.data &&
             injectionsData?.data.map((injections) => (
               <div
@@ -162,7 +163,8 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
                   </Button>
                 </div>
               </div>
-            ))}
+            ))
+          )}
           {injectionsData?.data.length === 0 && (
             <div className="flex flex-col justify-center items-center border rounded-md w-full h-full p-3 min-h-44">
               {" "}

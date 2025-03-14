@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import generateAppointmentPDF from "@/components/patient/appointments/generateAppointmentPdf";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { Printer } from "lucide-react";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 export function PatientAppointmentClient({
   userDetailsId,

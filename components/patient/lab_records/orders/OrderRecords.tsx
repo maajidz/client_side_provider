@@ -1,5 +1,5 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import {
   Form,
   FormControl,
