@@ -15,8 +15,8 @@ export interface SupplementInterface {
 
 export interface SupplementInterfaceResponse extends SupplementInterface {
   id: string;
-  supplementType: {
-    name: string;
+  type: {
+    supplement_name: string;
     description: string;
   };
 }
