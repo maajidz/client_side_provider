@@ -64,14 +64,14 @@ const ViewPatientEncounters = ({
 
   const fetchEncounterList = useCallback(
     async (page: number) => {
-      const limit = 14;
+      const limit = 5;
       setLoading(true);
       try {
         if (providerDetails) {
           const response = await getEncounterList({
             id: providerDetails.providerId,
             idType: "providerID",
-            limit: 2,
+            limit,
             page: page,
             userDetailsId: userDetailsId,
           });

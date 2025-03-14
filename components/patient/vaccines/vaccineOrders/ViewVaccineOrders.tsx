@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { getVaccinesData } from "@/services/injectionsServices";
 import { VaccinesInterface } from "@/types/injectionsInterface";
 import { useCallback, useEffect, useState } from "react";
@@ -29,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import VaccineOrders from "@/components/injections/vaccine-orders/VaccineOrders";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 
 function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   // Data State
@@ -62,8 +62,6 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
 
   // Fetch Providers Data
   const fetchProvidersData = useCallback(async () => {
-    setLoading(true);
-
     try {
       const response = await fetchProviderListDetails({ page: 1, limit: 10 });
 
@@ -82,8 +80,6 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
           message: "An unknown error occurred",
         });
       }
-    } finally {
-      setLoading(false);
     }
   }, [toast]);
 
@@ -127,8 +123,6 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   useEffect(() => {
     fetchVaccineOrderData();
   }, [fetchVaccineOrderData]);
-
-  if (loading) return <LoadingButton />;
 
   return (
     <div className="flex flex-col gap-6">
@@ -220,26 +214,32 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
           </div>
         </form>
       </Form>
-      <DefaultDataTable
-        title={"Vaccine Order"}
-        onAddClick={() => {
-          setIsVaccineDialogOpen(true);
-        }}
-        columns={columns({
-          setLoading,
-          showToast: () =>
-            showToast({
-              toast,
-              type: "success",
-              message: "Deleted Successfully",
-            }),
-          fetchVaccineOrderData: () => fetchVaccineOrderData(),
-        })}
-        data={vaccinesData}
-        pageNo={pageNo}
-        totalPages={totalPages}
-        onPageChange={(newPage) => setPageNo(newPage)}
-      />
+      <>
+        {loading ? (
+          <TableShimmer />
+        ) : (
+          <DefaultDataTable
+            title={"Vaccine Order"}
+            onAddClick={() => {
+              setIsVaccineDialogOpen(true);
+            }}
+            columns={columns({
+              setLoading,
+              showToast: () =>
+                showToast({
+                  toast,
+                  type: "success",
+                  message: "Deleted Successfully",
+                }),
+              fetchVaccineOrderData: () => fetchVaccineOrderData(),
+            })}
+            data={vaccinesData}
+            pageNo={pageNo}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPageNo(newPage)}
+          />
+        )}
+      </>
       <VaccineOrders
         onClose={() => {
           setIsVaccineDialogOpen(false);

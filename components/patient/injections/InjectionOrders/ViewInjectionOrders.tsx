@@ -1,6 +1,6 @@
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { columns } from "@/components/injections/injection-orders/column";
-import LoadingButton from "@/components/LoadingButton";
+import TableShimmer from "@/components/custom_buttons/table/TableShimmer";
 import {
   Form,
   FormControl,
@@ -59,8 +59,6 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   });
 
   const fetchOwnersList = useCallback(async () => {
-    setLoading(true);
-
     try {
       const response = await fetchProviderListDetails({ page: 1, limit: 10 });
 
@@ -69,8 +67,6 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
       }
     } catch (err) {
       console.log(err);
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -95,8 +91,9 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
       status?: string,
       providerId?: string
     ) => {
+      setLoading(true);
+
       try {
-        setLoading(true);
         if (providerDetails) {
           const response = await getInjectionsData({
             providerId: providerId || filters.providerId,
@@ -109,7 +106,6 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
             setResultList(response.data);
             setTotalPages(Math.ceil(response.total / Number(response.limit)));
           }
-          setLoading(false);
         }
       } catch (e) {
         console.log("Error", e);
@@ -128,10 +124,6 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
     setIsInjectionDialogOpen(false);
     fetchInjectionsData(page, userDetailsId);
   };
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -210,7 +202,7 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
           </div>
         </form>
       </Form>
-      {resultList && (
+      {!loading ? (
         <DefaultDataTable
           title={"Injection Order"}
           onAddClick={() => {
@@ -231,6 +223,8 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
           totalPages={totalPages}
           onPageChange={(newPage: number) => setPage(newPage)}
         />
+      ) : (
+        <TableShimmer />
       )}
       <InjectionOrders
         isOpen={isInjectionDialogOpen}
