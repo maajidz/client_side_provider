@@ -1,77 +1,89 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { PrescriptionDataInterface } from "@/types/prescriptionInterface";
 import { ColumnDef } from "@tanstack/react-table";
-import { formatDateDifference } from "@/utils/utils";
 
-/**
- * * Mock Interface
- */
-export interface PrescriptionTableInterface {
-  patient: string;
-  provider: string;
-  visitType: string;
-  visitDate: string;
-  rxStatus: "Signed" | "Un-Signed";
-  rxDetails: string;
-  fromDate: string;
-  toDate: string;
-}
+export const columns = (): ColumnDef<PrescriptionDataInterface>[] => [
+  {
+    accessorKey: "drug_name",
+    header: "Prescription",
+    cell: ({ row }) => {
+      const prescription: PrescriptionDataInterface = row.original;
 
-export const columns = (): ColumnDef<PrescriptionTableInterface>[] => [
-  {
-    accessorKey: "patient",
-    header: "Patient",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "provider",
-    header: "Provider",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "visitType",
-    header: "Visit Type",
-  },
-  {
-    accessorKey: "visitDate",
-    header: "Visit Date",
-    cell: ({ row }) => {
-      const date = new Date(row.original.visitDate);
-      return date.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' });
-    },
-  },
-  {
-    accessorKey: "rxDetails",
-    header: "Rx Details",
-    cell: ({ row }) => {
       return (
-        <div className="flex flex-col gap-1">
-          <div>{row.original.rxDetails}</div>
-          <div className="text-xs font-medium text-gray-500">
-            {formatDateDifference(row.original.fromDate, row.original.toDate)}
+        <div className="flex flex-col gap-1 text-[13px] font-medium cursor-pointer">
+          <div className="font-semibold text-sm">{prescription.drug_name}</div>
+          <div>
+            {prescription.directions}
+            {", "}for {prescription.days_of_supply} days
           </div>
+          {/* <div>Dispense as Written: {prescription.dispense_as_written ? "Yes" : "No"}</div> */}
+          {/* <div>Primary Diagnosis: {prescription.primary_diagnosis}</div> */}
+          {/* <div>Secondary Diagnosis: {prescription.secondary_diagnosis}</div> */}
+          <div>
+            <span className="text-gray-600">Dispense:</span>{" "}
+            {prescription.dispense_quantity} blisters,{" "}
+            {prescription.dispense_unit}
+          </div>
+          <div>
+            <span className="text-gray-600">Refills:</span>{" "}
+            {prescription.additional_refills}
+          </div>
+          {/* <div>Prior Authorization: {prescription.prior_auth}</div> */}
+          {/* <div>Prior Auth Decision: {prescription.prior_auth_decision}</div> */}
+          <div>
+            <span className="text-gray-600">Earliest Fill Date:</span>{" "}
+            {new Date(prescription.earliest_fill_date).toLocaleDateString(
+              "en-US"
+            )}
+          </div>
+          <div>
+            <span className="text-gray-600">Internal Comments:</span>{" "}
+            {prescription.internal_comments}
+          </div>
+          <div>
+            <span className="text-gray-600">Note to Pharmacy:</span>{" "}
+            {prescription.Note_to_Pharmacy}
+          </div>
+          {/* <div>Created At: {new Date(prescription.createdAt).toLocaleDateString("en-US")}</div> */}
+          {/* <div>Updated At: {new Date(prescription.updatedAt).toLocaleDateString("en-US")}</div> */}
         </div>
       );
     },
   },
   {
-    accessorKey: "rxStatus",
-    header: "Rx Status",
-    cell: ({ row }) => {
-      return (
-        <Badge
-          className="font-medium"
-          variant={
-            row.original.rxStatus === "Signed"
-              ? "success"
-              : "warning"
-          }
-        >
-          {row.original.rxStatus}
-        </Badge>
-      );
-    },
+    accessorKey: "fromDate",
+    header: "From Date",
+    cell: ({ row }) => (
+      <div>{new Date(row.original.fromDate).toLocaleDateString("en-US")}</div>
+    ),
+  },
+  {
+    accessorKey: "toDate",
+    header: "To Date",
+    cell: ({ row }) => (
+      <div>{new Date(row.original.toDate).toLocaleDateString("en-US")}</div>
+    ),
+  },
+  {
+    accessorKey: "signed",
+    header: "Signed",
+    cell: ({ row }) => (
+      <div>{row.original.status === "completed" ? "Yes" : "No"}</div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => (
+      <Badge
+        variant={`${
+          row.original.status === "completed" ? "success" : "warning"
+        }`}
+      >
+        {row.original.status}
+      </Badge>
+    ),
   },
 ];
-

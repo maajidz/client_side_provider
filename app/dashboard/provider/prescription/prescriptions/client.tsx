@@ -1,93 +1,104 @@
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import { Heading } from "@/components/ui/heading";
-import { columns, PrescriptionTableInterface } from "./column";
+import { useToast } from "@/hooks/use-toast";
+import { PrescriptionDataInterface } from "@/types/prescriptionInterface";
+import { getUserPrescriptionsData } from "@/services/prescriptionsServices";
+import { showToast } from "@/utils/utils";
+import { columns } from "./column";
 import FilterPrescriptions from "./FilterPrescriptions";
-import { useState } from "react";
-
-const mockData: PrescriptionTableInterface[] = [
-  {
-    patient: "Camilla Hect",
-    provider: "Dr. Zeta",
-    visitType: "Consultation",
-    visitDate: "2024-05-06",
-    rxStatus: "Signed",
-    rxDetails: "Amoxicillin 500mg",
-    fromDate: "2024-05-06",
-    toDate: "2024-05-11",
-  },
-  {
-    patient: "Nigella Shodash",
-    provider: "Dr. Lune",
-    visitType: "Follow-up",
-    visitDate: "2024-11-20",
-    rxStatus: "Signed",
-    rxDetails: "Ibuprofen 200mg",
-    fromDate: "2024-11-20",
-    toDate: "2024-11-27",
-  },
-  {
-    patient: "Gideon Ackerman",
-    provider: "Dr. O'Connor",
-    visitType: "Routine Checkup",
-    visitDate: "2024-10-15",
-    rxStatus: "Un-Signed",
-    rxDetails: "Lisinopril 10mg",
-    fromDate: "2024-10-15",
-    toDate: "2025-01-15",
-  },
-  {
-    patient: "Calliope Stephanides",
-    provider: "Dr. Phil",
-    visitType: "Emergency",
-    visitDate: "2024-12-05",
-    rxStatus: "Un-Signed",
-    rxDetails: "Morphine 10mg",
-    fromDate: "2024-12-05",
-    toDate: "2024-12-12",
-  },
-  {
-    patient: "Michael Brown",
-    provider: "Dr. Gaius",
-    visitType: "Pre-surgery Consultation",
-    visitDate: "2024-11-30",
-    rxStatus: "Signed",
-    rxDetails: "Paracetamol 500mg",
-    fromDate: "2024-11-30",
-    toDate: "2024-12-07",
-  },
-  {
-    patient: "Cristabel Oct",
-    provider: "Dr. Harris",
-    visitType: "Routine Checkup",
-    visitDate: "2024-12-01",
-    rxStatus: "Un-Signed",
-    rxDetails: "Metformin 500mg",
-    fromDate: "2024-12-01",
-    toDate: "2025-02-01",
-  },
-];
+import { useCallback, useEffect, useState } from "react";
 
 function PrescriptionsClient() {
-  const [prescriptionData, setPrescription] = useState(mockData);
+  // Prescription Data State
+  const [prescriptionData, setPrescription] = useState<
+    PrescriptionDataInterface[]
+  >([]);
+
+  // Selected IDs
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
+    null
+  );
+
+  // Loading State
+  const [dataLoading, setDataLoading] = useState(false);
+
+  // Toast State
+  const { toast } = useToast();
+
+  // Pagination States
+  const limit = 8;
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // GET Prescriptions Data
+  const fetchPrescriptionsData = useCallback(async () => {
+    if (!selectedUserId) return;
+
+    setDataLoading(true);
+
+    try {
+      const response = await getUserPrescriptionsData({
+        limit,
+        page,
+        userDetailsId: selectedUserId,
+        providerId: selectedProviderId ?? "",
+      });
+
+      if (response) {
+        setPrescription(response.data);
+        setTotalPages(Math.ceil(response.totalCount / limit));
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch prescriptions data for selected patient",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setDataLoading(false);
+    }
+  }, [page, selectedUserId, selectedProviderId, toast]);
+
+  // Effects
+  useEffect(() => {
+    fetchPrescriptionsData();
+  }, [fetchPrescriptionsData]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="space-y-4">
+      <div className="space-y-4">
         <FilterPrescriptions
-          prescriptions={mockData}
-          onFilter={setPrescription}
+          onSelectUser={setSelectedUserId}
+          onSelectProvider={setSelectedProviderId}
         />
-      <DefaultDataTable
-        title={
-          <Heading
-            title="Prescriptions"
-          />
-        }
-        columns={columns()}
-        data={prescriptionData}
-        pageNo={1}
-        totalPages={1}
-        onPageChange={() => {}}
-      />
+      </div>
+      {dataLoading ? (
+        <TableShimmer />
+      ) : (
+        <DefaultDataTable
+          title={
+            <Heading
+              title="Prescriptions"
+              description="A list of prescriptions assigned to the patients"
+            />
+          }
+          columns={columns()}
+          data={prescriptionData}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+      )}
     </div>
   );
 }
