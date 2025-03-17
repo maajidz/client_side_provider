@@ -30,7 +30,7 @@ import { fetchUserDataResponse } from "@/services/userServices";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
@@ -73,6 +73,8 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
   });
 
   const router = useRouter();
+  const pathname = usePathname();
+
   const { toast } = useToast();
 
   // Form Definition
@@ -84,6 +86,11 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
       name: "",
     },
   });
+
+  const goToCreateLab = () => {
+    sessionStorage.setItem("lab-result-origin", pathname);
+    router.push("/dashboard/provider/labs/create_lab_results");
+  };
 
   // GET Patients Data
   const fetchPatientData = useCallback(async () => {
@@ -377,9 +384,7 @@ function LabResults({ userDetailsId }: ILabResultsProps) {
       ) : (
         <DefaultDataTable
           title={"Labs Results"}
-          onAddClick={() => {
-            router.push("/dashboard/provider/labs/create_lab_results");
-          }}
+          onAddClick={goToCreateLab}
           columns={columns()}
           data={resultList?.results || []}
           pageNo={page}

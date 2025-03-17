@@ -14,7 +14,7 @@ function Documents({ patientDetails }: { patientDetails: UserEncounterData }) {
   const [loading, setLoading] = useState(false);
 
   // Pagination State
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -26,39 +26,38 @@ function Documents({ patientDetails }: { patientDetails: UserEncounterData }) {
       if (patientDetails.userDetails.userDetailsId) {
         const response = await getDocumentsData({
           userDetailsId: patientDetails.userDetails.userDetailsId,
-          page: page,
-          limit: 10
+          page,
+          limit: itemsPerPage,
         });
 
-        setDocumentsData(response.data);
-        setTotalPages(Math.ceil(response.meta.totalPages / itemsPerPage));
+        if (response) {
+          setDocumentsData(response.data);
+
+          const totalItems = response.meta.totalCount;
+          setTotalPages(Math.ceil(totalItems / itemsPerPage));
+        }
       }
     } catch (err) {
       console.log(err);
     } finally {
       setLoading(false);
     }
-  }, [page, patientDetails.userDetails.userDetailsId,]);
+  }, [page, patientDetails.userDetails.userDetailsId]);
 
   // Effects
   useEffect(() => {
     fetchDocumentsData();
   }, [fetchDocumentsData]);
 
-  const paginatedData = documentsData.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
-
   if (loading) return <LoadingButton />;
 
   return (
     <>
       <div className="py-5">
-        {paginatedData && (
+        {documentsData && (
           <DefaultDataTable
             columns={columns()}
-            data={paginatedData}
+            data={documentsData}
             pageNo={page}
             totalPages={totalPages}
             onPageChange={(newPage: number) => setPage(newPage)}

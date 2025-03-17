@@ -27,7 +27,7 @@ import { ImageResultResponseInterface } from "@/types/imageResults";
 import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import { imagesStatus } from "@/constants/data";
 import { useToast } from "@/hooks/use-toast";
@@ -61,6 +61,8 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
   const [totalPages, setTotalPages] = useState<number>(1);
 
   const router = useRouter();
+  const pathname = usePathname();
+
   const { toast } = useToast();
 
   // Form Definition
@@ -73,6 +75,11 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
   });
 
   const filters = form.watch();
+
+  const goToCreateImage = () => {
+    sessionStorage.setItem("image-origin", pathname);
+    router.push("/dashboard/provider/images/create_image_results");
+  };
 
   // GET Patients Data
   const fetchPatientData = useCallback(async () => {
@@ -268,9 +275,7 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
       ) : (
         <DefaultDataTable
           title={"Image Results"}
-          onAddClick={() => {
-            router.push("/dashboard/provider/images/create_image_results");
-          }}
+          onAddClick={goToCreateImage}
           columns={columns()}
           data={resultList?.data || []}
           pageNo={page}

@@ -33,6 +33,7 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
+import { useRouter } from "next/navigation";
 
 const CreateImageResults = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -45,6 +46,7 @@ const CreateImageResults = () => {
     useState<ImagesTestsResponseInterface>();
   const providerDetails = useSelector((state: RootState) => state.login);
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof createImageResultsSchema>>({
     resolver: zodResolver(createImageResultsSchema),
@@ -120,7 +122,6 @@ const CreateImageResults = () => {
           documents: uploadedImages,
         })),
       };
-      console.log("Request", requestData);
       const response = await createImageResultRequest({
         requestData: requestData,
       });
@@ -130,8 +131,12 @@ const CreateImageResults = () => {
           type: "success",
           message: "Added image result successfully",
         });
-        form.reset();
         setUploadedImages([]);
+        const originPath = sessionStorage.getItem("lab-result-origin");
+
+        if (originPath) {
+          router.replace(originPath);
+        }
       }
     } catch (e) {
       console.log("Error", e);
@@ -141,6 +146,7 @@ const CreateImageResults = () => {
         message: "Error while adding image results!",
       });
     } finally {
+      form.reset();
     }
   };
 
