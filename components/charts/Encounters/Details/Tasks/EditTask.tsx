@@ -126,7 +126,7 @@ function EditTask({
       assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
       assignerProviderId: providerDetails.providerId,
       assignedByAdmin: true,
-      userDetailsId: patientDetails.userDetails.id,
+      userDetailsId: patientDetails.userDetails.userDetailsId,
     };
 
     setLoading(true);

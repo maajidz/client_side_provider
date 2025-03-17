@@ -71,18 +71,15 @@ function PrescriptionsClient() {
   const [prescriptionData, setPrescription] = useState(mockData);
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-4">
+    <div className="flex flex-col gap-6">
         <FilterPrescriptions
           prescriptions={mockData}
           onFilter={setPrescription}
         />
-      </div>
       <DefaultDataTable
         title={
           <Heading
             title="Prescriptions"
-            description="A list of prescriptions assigned to the patients"
           />
         }
         columns={columns()}

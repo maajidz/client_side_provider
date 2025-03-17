@@ -1,8 +1,11 @@
 import GhostButton from '@/components/custom_buttons/buttons/GhostButton';
 import { Checkbox } from '@/components/ui/checkbox'
+import { RootState } from '@/store/store';
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux';
 
 const MUBody = () => {
+    const providerDetails = useSelector((state: RootState) => state.login);
     const [isReferralChecked, setIsReferralChecked] = useState(false);
     const [isFirstEncounterChecked, setIsFirstEncounterChecked] = useState(false);
 
@@ -17,7 +20,7 @@ const MUBody = () => {
                     Meaningful Use Entries
                 </div>
                 <div className='border p-4 bg-[#e5e2e2] text-center'>
-                    No Clinical Quality Measures configured for Fahd Kazi. Choose the required CQMs from <br />
+                    No Clinical Quality Measures configured for {providerDetails.firstName} {providerDetails.lastName}. Choose the required CQMs from <br />
                     <GhostButton>Settings</GhostButton>
                 </div>
             </div>

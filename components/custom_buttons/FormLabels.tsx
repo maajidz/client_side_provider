@@ -1,9 +1,9 @@
 import React from 'react'
 
-const FormLabels = ({ label, value }: { label: string, value: React.ReactNode;   }) => {
+const FormLabels = ({ label, value, className = '' }: { label?: string; value: React.ReactNode; className?: string; }) => {
     return (
-        <div className='flex gap-1 items-center text-xs'>
-            <label className=''>{label}:</label>
+        <div className={`flex gap-1 capitalize items-center text-xs ${className}`}>
+            {label && <label className=''>{`${label}:`}</label>}
             <span className='font-semibold'>{value}</span>
         </div>
     )

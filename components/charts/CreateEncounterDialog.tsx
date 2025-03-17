@@ -156,28 +156,27 @@ const CreateEncounterDialog = ({
           <DialogTitle>New Encounter</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <div>
+        <div className="flex flex-col pb-2">
           <div className={formStyles.formBody}>
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="patient-search">Patient:</Label>
+            <div className="flex flex-col gap-2 relative">
+              <Label htmlFor="patient-search">Search Patient</Label>
               <Input
                 id="patient-search"
                 type="text"
-                placeholder="Search by name or ID..."
+                placeholder="Search by Patient Name or ID..."
                 value={patient}
+                className="w-full"
                 onChange={(e) => {
                   setPatient(e.target.value);
                   setIsOpen(!isOpen);
                 }}
               />
-            </div>
             {isOpen && (
-              <div>
-                <div className="mt-4">
+              <div className="absolute top-16 left-0 w-full  z-50">
+                <div>
                   {patient && selectedPatient ? (
                     <div className="flex flex-col gap-2">
-                      <p className="font-semibold">Matching Patients:</p>
-                      <ul className="border rounded p-2">
+                      <ul className="border rounded p-1 text-sm font-medium bg-white">
                         {userResponse
                           ?.filter((userData) => {
                             const searchTerms = patient
@@ -216,10 +215,10 @@ const CreateEncounterDialog = ({
                       </ul>
                     </div>
                   ) : (
-                    <p className="text-gray-500">No matching patients found.</p>
+                    <p className="border rounded-lg p-2 text-gray-500 bg-white text-xs font-semibold">No matching patients found.</p>
                   )}
                 </div>
-                {selectedPatient && (
+                {/* {selectedPatient && (
                   <div className="mt-4 p-4 border rounded bg-gray-50">
                     <h4 className="font-semibold">Selected Patient Details:</h4>
                     <p>
@@ -233,9 +232,10 @@ const CreateEncounterDialog = ({
                       <strong>Email:</strong> {selectedPatient.user.email}
                     </p>
                   </div>
-                )}
+                )} */}
               </div>
             )}
+            </div>
           </div>
           {showEncounterForm && (
             <div>

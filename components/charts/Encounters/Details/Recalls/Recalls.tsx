@@ -35,7 +35,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
       const response = await getRecallsData({
         page: 1,
         limit: 10,
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
         providerId: providerDetails.providerId,
       });
       if (response) {
@@ -46,7 +46,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id, providerDetails.providerId]);
+  }, [patientDetails.userDetails.userDetailsId, providerDetails.providerId]);
 
   useEffect(() => {
     fetchRecalls();
@@ -75,7 +75,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="recalls">
           <div className="flex justify-between items-center">
@@ -86,11 +86,12 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                 setEditData(null);
                 setIsDialogOpen(true);
               }}
+              className="invisible group-hover:visible"
             >
               <PlusCircle />
             </Button>
             <RecallsDialog
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               recallsData={editData}
               onClose={() => {
                 setIsDialogOpen(false);

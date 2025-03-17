@@ -37,7 +37,7 @@ const PastMedicalHistory = ({ patientDetails }: PastMedicalHistoryProps) => {
 
     try {
       const response = await getPastMedicalHistory({
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
         page: 1,
         limit: 5,
       });
@@ -54,7 +54,7 @@ const PastMedicalHistory = ({ patientDetails }: PastMedicalHistoryProps) => {
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [patientDetails.userDetails.userDetailsId]);
 
   // Effects
   useEffect(() => {
@@ -62,17 +62,17 @@ const PastMedicalHistory = ({ patientDetails }: PastMedicalHistoryProps) => {
   }, [fetchPastMedicalHistory]);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="pastMedicalHistory">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Past Medical History</AccordionTrigger>
-            <Button variant="ghost" onClick={() => setIsDialogOpen(true)}>
+            <Button variant="ghost" onClick={() => setIsDialogOpen(true)} className="invisible group-hover:visible">
               <PlusCircle />
             </Button>
             <PastMedicalHistoryDialog
               isOpen={isDialogOpen}
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               onClose={() => {
                 setIsDialogOpen(false);
                 fetchPastMedicalHistory();

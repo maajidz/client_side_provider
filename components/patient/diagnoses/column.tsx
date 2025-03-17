@@ -95,6 +95,15 @@ export const columns = ({
     ),
   },
   {
+    accessorKey: "icdCode",
+    header: "ICD Code",
+    cell: ({ row }) => (
+      <Badge className="cursor-pointer">
+        {row.original.type.ICD_Code}
+      </Badge>
+    ),
+  },
+  {
     accessorKey: "fromDate",
     header: "From Date",
     cell: ({ row }) => (

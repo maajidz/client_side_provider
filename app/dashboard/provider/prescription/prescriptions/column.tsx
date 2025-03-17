@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
+import { formatDateDifference } from "@/utils/utils";
 
 /**
  * * Mock Interface
@@ -21,13 +22,11 @@ export const columns = (): ColumnDef<PrescriptionTableInterface>[] => [
   {
     accessorKey: "patient",
     header: "Patient",
-
     enableSorting: true,
   },
   {
     accessorKey: "provider",
     header: "Provider",
-
     enableSorting: true,
   },
   {
@@ -37,22 +36,24 @@ export const columns = (): ColumnDef<PrescriptionTableInterface>[] => [
   {
     accessorKey: "visitDate",
     header: "Visit Date",
-  },
-  {
-    accessorKey: "fromDate",
-    header: "From Date",
-
-    enableSorting: true,
-  },
-  {
-    accessorKey: "toDate",
-    header: "To Date",
-
-    enableSorting: true,
+    cell: ({ row }) => {
+      const date = new Date(row.original.visitDate);
+      return date.toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' });
+    },
   },
   {
     accessorKey: "rxDetails",
     header: "Rx Details",
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col gap-1">
+          <div>{row.original.rxDetails}</div>
+          <div className="text-xs font-medium text-gray-500">
+            {formatDateDifference(row.original.fromDate, row.original.toDate)}
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "rxStatus",
@@ -60,7 +61,7 @@ export const columns = (): ColumnDef<PrescriptionTableInterface>[] => [
     cell: ({ row }) => {
       return (
         <Badge
-        className="font-medium"
+          className="font-medium"
           variant={
             row.original.rxStatus === "Signed"
               ? "success"

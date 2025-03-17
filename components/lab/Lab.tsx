@@ -22,9 +22,9 @@ const labTab = [
 export default function Lab() {
   return (
     <PageContainer>
-      <div className="space-y-2">
+      <div className="flex flex-col gap-6">
         <Tabs defaultValue="labResults">
-          <div className="flex items-center justify-between border-b border-gray-300 pb-2">
+          <div className="flex items-center justify-between">
             <TabsList>
               {labTab.map((tabs) => (
                 <CustomTabsTrigger value={tabs.value} key={tabs.value}>

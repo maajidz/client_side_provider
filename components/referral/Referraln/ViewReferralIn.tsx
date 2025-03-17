@@ -4,6 +4,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -138,10 +139,11 @@ const ViewReferralIn = () => {
             name="referralTo"
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Referral To</FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Filter by Referral To" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
@@ -171,16 +173,13 @@ const ViewReferralIn = () => {
             name="statusType"
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Request Status</FormLabel>
                 <FormControl>
                   <Select
-                    value={field.value}
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      form.setValue("status", "");
-                    }}
-                  >
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Status Type" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all" className="cursor-pointer">
@@ -206,6 +205,7 @@ const ViewReferralIn = () => {
             name="status"
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Response Status</FormLabel>
                 <FormControl>
                   <Select
                     value={field.value}
@@ -255,7 +255,6 @@ const ViewReferralIn = () => {
           onPageChange={(newPage: number) => setPage(newPage)}
         />
       )}
-
       <ReferralInDialog
         onClose={handleReferralInDialogClose}
         isOpen={isReferralInDialogOpen}

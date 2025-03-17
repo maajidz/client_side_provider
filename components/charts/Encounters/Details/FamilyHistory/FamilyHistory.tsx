@@ -41,7 +41,7 @@ const FamilyHistory = ({
       const response = await getFamilyHistoryData({
         limit: 10,
         page: 1,
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
       });
       if (response) {
         setData(response);
@@ -51,7 +51,7 @@ const FamilyHistory = ({
     } finally {
       setLoading(false);
     }
-  }, [patientDetails?.userDetails.id]);
+  }, [patientDetails?.userDetails.userDetailsId]);
 
   useEffect(() => {
     fetchFamilyHistory();
@@ -80,7 +80,7 @@ const FamilyHistory = ({
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="familyHistory">
           <div className="flex justify-between items-center">
@@ -91,11 +91,12 @@ const FamilyHistory = ({
                 setEditData(null);
                 setIsDialogOpen(true);
               }}
+              className="invisible group-hover:visible"
             >
               <PlusCircle />
             </Button>
             <FamilyHistoryDialog
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               familyHistoryData={editData}
               onClose={() => {
                 setIsDialogOpen(false);

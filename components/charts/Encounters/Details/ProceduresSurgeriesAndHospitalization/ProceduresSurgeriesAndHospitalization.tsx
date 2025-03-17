@@ -39,7 +39,7 @@ const ProceduresSurgeriesAndHospitalization = ({
     setLoading(true);
     try {
       const response = await getProcedureData({
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
         page: 1,
         limit: 5,
       });
@@ -51,7 +51,7 @@ const ProceduresSurgeriesAndHospitalization = ({
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [patientDetails.userDetails.userDetailsId]);
 
   useEffect(() => {
     fetchProcedures();
@@ -80,7 +80,7 @@ const ProceduresSurgeriesAndHospitalization = ({
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="proceduresSurgeriesAndHospitalizationDialog">
           <div className="flex justify-between items-center">
@@ -93,11 +93,12 @@ const ProceduresSurgeriesAndHospitalization = ({
                 setEditData(null);
                 setIsDialogOpen(true);
               }}
+              className="invisible group-hover:visible"
             >
               <PlusCircle />
             </Button>
             <ProceduresSurgeriesAndHospitalizationDialog
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               procedureData={editData}
               isOpen={isDialogOpen}
               onClose={() => {
@@ -129,7 +130,7 @@ const ProceduresSurgeriesAndHospitalization = ({
                               fromDate: procedure.fromDate,
                               toDate: procedure.toDate,
                               notes: procedure.notes,
-                              userDetailsId: patientDetails.userDetails.id,
+                              userDetailsId: patientDetails.userDetails.userDetailsId,
                               nameType: {
                                 id: procedure.nameType.id,
                                 createdAt: procedure.nameType.createdAt,

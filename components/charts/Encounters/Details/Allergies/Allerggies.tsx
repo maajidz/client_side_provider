@@ -40,7 +40,7 @@ const Allergies = ({
       const response = await getAllergiesData({
         limit: 10,
         page: 1,
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
       });
       if (response) {
         setAllergies(response);
@@ -51,7 +51,7 @@ const Allergies = ({
     } finally {
       setLoading(false);
     }
-  }, [patientDetails?.userDetails.id]);
+  }, [patientDetails?.userDetails.userDetailsId]);
 
   useEffect(() => {
     fetchAllergies();
@@ -88,16 +88,18 @@ const Allergies = ({
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="allergies">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Allergies</AccordionTrigger>
-            <Button variant="ghost" onClick={() => setIsDialogOpen(true)}>
+            <Button variant="ghost" onClick={() => setIsDialogOpen(true)}
+              className="invisible group-hover:visible"
+              >
               <PlusCircle />
             </Button>
             <AllergiesDialog
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               onClose={() => {
                 setIsDialogOpen(false);
                 fetchAllergies();

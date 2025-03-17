@@ -103,8 +103,9 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 {userDashboardData?.diagnoses ? (
                   <div
                     key={userDashboardData?.diagnoses.id}
-                    className="flex flex-row items-start gap-2">
-                    <div className="flex flex-row gap-2 ">
+                    className="flex flex-row justify-between items-center gap-4 flex-1"
+                  >
+                    <div className="flex flex-row gap-2">
                       <div className="text-sm font-medium">
                         {userDashboardData?.diagnoses?.type?.diagnosis_name}
                         <Badge className="inline-flex ml-2">
@@ -283,7 +284,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
             </Card>
           </div>
 
-          <div className="flex flex-row gap-4 w-full">
+          <div className="flex flex-row gap-4 w-full md:w-full">
             <Card className="flex flex-1">
               <CardHeader>
                 <CardTitle>
@@ -305,11 +306,10 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                       {userDashboardData?.supplements?.manufacturer} {""}
                     </div>
                     <div className={styles.infoSub}>
-                    {userDashboardData?.supplements?.dosage} {" "},
-                    {userDashboardData?.supplements?.unit}{" "},
-                      {userDashboardData?.supplements?.frequency}, {" "}
+                      {userDashboardData?.supplements?.dosage}{", "}
+                      {userDashboardData?.supplements?.unit}{", "}
+                      {userDashboardData?.supplements?.frequency}{", "}
                       {userDashboardData?.supplements?.intake_type}
-                      {""}
                     </div>
                   </div>
                 ) : (
@@ -321,6 +321,22 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               <CardHeader>
                 <CardTitle>
                   <TitleLinks
+                    title="Medication"
+                    href="medications"
+                    userDetailsId={userDetailsId}
+                  />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-row gap-2">
+                <span className={styles.infoText}>No data recorded</span>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="flex flex-row gap-4 w-full md:w-full">
+          <Card className="flex flex-1">
+              <CardHeader>
+                <CardTitle>
+                  <TitleLinks
                     title="Injections"
                     href="injections"
                     userDetailsId={userDetailsId}
@@ -329,19 +345,16 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               </CardHeader>
               <CardContent className="flex flex-row gap-2 w-full">
                 {userDashboardData?.injections ? (
-                  <div className="flex flex-col gap-3 w-full">
+                  <div className="flex flex-col gap-3 flex-1">
                     <div
                       key={userDashboardData?.injections?.id}
-                      className="flex flex-col gap-1"
+                      className={`${styles.subContainer} gap-1`}
                     >
-                      <FaceSheetLabels
-                        label="Injection Name:"
-                        value={
-                          userDashboardData?.injections?.injection_name
-                            ? userDashboardData?.injections?.injection_name
-                            : "N/A"
-                        }
-                      />
+                      <span className={styles.infoTextLabel}>
+                        {userDashboardData?.injections?.injection_name
+                          ? userDashboardData?.injections?.injection_name
+                            : "N/A"}
+                      </span>
                       <FaceSheetLabels
                         label="Dosage:"
                         value={
@@ -362,7 +375,8 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                         day: "2-digit",
                         year: "numeric",
                       })}
-                     ${userDashboardData?.injections.administered_time} `
+                      @
+                     ${userDashboardData?.injections.administered_time}`
                             : "N/A"
                         }
                       />
@@ -370,7 +384,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                         label="Frequency:"
                         value={
                           userDashboardData?.injections?.frequency
-                            ? userDashboardData?.injections.frequency
+                            ? userDashboardData?.injections?.frequency
                             : "N/A"
                         }
                       />
@@ -389,9 +403,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                 )}
               </CardContent>
             </Card>
-          </div>
-          <div className="flex flex-row gap-4 w-full">
-            <Card className="flex flex-1">
+          <Card className="flex flex-1">
             <CardHeader>
               <CardTitle>
                 <TitleLinks
@@ -456,6 +468,7 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               <NoDataRecorded />
             )}
           </div>  */}
+          <div className="flex flex-row gap-4 w-full md:w-full">
           <Card className="flex flex-1">
             <CardHeader>
               <CardTitle>
@@ -490,8 +503,6 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             </CardContent>
           </Card>
-          </div>
-          <div className="flex flex-row gap-4 w-full">
           <Card className="flex flex-1">
             <CardHeader>
               <CardTitle>
@@ -524,82 +535,46 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
               )}
             </CardContent>
           </Card>
-
-          <Card className="flex flex-1">
-            <CardHeader>
-              <CardTitle>
-                <TitleLinks
-                  title="Contact Details"
-                  href="patientDetails"
-                  userDetailsId={userDetailsId}
-                />
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-row gap-2">
-              {userData ? (
-                <div>
-                  <FaceSheetLabels
-                    label="Address:"
-                    value={userData?.location ? userData?.location : "N/A"}
-                  />
-                  <FaceSheetLabels
-                    label="Email:"
-                    value={
-                      userData?.user?.email ? userData?.user?.email : "N/A"
-                    }
-                  />
-                  <FaceSheetLabels
-                    label="Phone:"
-                    value={
-                      userData?.user?.phoneNumber
-                        ? userData?.user?.phoneNumber
-                        : "N/A"
-                    }
-                  />
-                </div>
-              ) : (
-                <NoDataRecorded />
-              )}
-            </CardContent>
-          </Card>
           </div>
-          <div className="flex flex-row gap-4 w-full">
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <TitleLinks
-                  title="Documents"
-                  href="documents"
-                  userDetailsId={userDetailsId}
-                />
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-row gap-2">
-              {userDashboardData?.documents ? (
-                <div
-                  key={userDashboardData?.documents.id}
-                  className={styles.dataContainer}
-                >
-                  <div className={`${styles.infoTextLabel}`}>
-                    {userDashboardData?.documents?.documents.map((image) => (
-                      <Button
-                        key={image}
-                        className="p-0"
-                        variant={"link"}
-                        onClick={() => {
-                          window.open(image, "_blank");
-                        }}
-                      >
-                        {image.split("/").pop()} {/* Changed index to pop for better readability */}
-                      </Button>
-                    ))}
+          <div className="flex flex-row gap-4 w-full md:w-full">
+            <Card className="flex flex-1">
+              <CardHeader>
+                <CardTitle>
+                  <TitleLinks
+                    title="Contact Details"
+                    href="patientDetails"
+                    userDetailsId={userDetailsId}
+                  />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-row gap-2">
+                {userData ? (
+                  <div>
+                    <FaceSheetLabels
+                      label="Address:"
+                      value={userData?.location ? userData?.location : "N/A"}
+                    />
+                    <FaceSheetLabels
+                      label="Email:"
+                      value={
+                        userData?.user?.email ? userData?.user?.email : "N/A"
+                      }
+                    />
+                    <FaceSheetLabels
+                      label="Phone:"
+                      value={
+                        userData?.user?.phoneNumber
+                          ? userData?.user?.phoneNumber
+                          : "N/A"
+                      }
+                    />
                   </div>
-                </div> // Added missing closing div
-              ) : (
-                <NoDataRecorded />
-              )}
-            </CardContent>
+                ) : (
+                  <NoDataRecorded />
+                )}
+              </CardContent>
             </Card>
+
             <Card className="flex flex-1">
               <CardHeader>
                 <CardTitle>
@@ -640,12 +615,13 @@ const FaceSheet = ({ userDetailsId }: { userDetailsId: string }) => {
                       })}
                     </div>
                   </div>
-              ) : (
-                <NoDataRecorded />
-              )}
-            </CardContent>
-          </Card>
+                ) : (
+                  <NoDataRecorded />
+                )}
+              </CardContent>
+            </Card>
           </div>
+        </div>
       </ScrollArea>
     </>
   );
@@ -663,12 +639,12 @@ const FaceSheetLabels = ({
   icon?: React.ElementType;
 }) => {
   return (
-    <div className="flex flex-row items-start text-xs w-full">
+    <div className="flex flex-row items-start ">
       {Icon && <Icon className="mr-2" style={{ width: 14, height: 14 }} />}
-      <div className="flex flex-1 text-gray-600 font-semibold max-w-[200px]">
+      <div className="flex flex-1 text-sm font-medium max-w-[200px] text-gray-600">
         {label}
       </div>
-      <div className="flex flex-1 font-medium">{value}</div>
+      <div className="flex flex-1 text-sm font-medium">{value}</div>
     </div>
   );
 };

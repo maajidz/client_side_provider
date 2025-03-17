@@ -229,7 +229,6 @@ const ViewTasks = () => {
 
   return (
     <>
-      <div className="">
         {/* Filter Form */}
         <Form {...form}>
           <form
@@ -438,7 +437,6 @@ const ViewTasks = () => {
             )
           )}
         </div>
-      </div>
     </>
   );
 };

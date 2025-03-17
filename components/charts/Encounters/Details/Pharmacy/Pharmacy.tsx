@@ -36,7 +36,7 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
 
     try {
       const response = await getUserPharmacyData({
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
       });
 
       if (response) {
@@ -51,7 +51,7 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [patientDetails.userDetails.userDetailsId]);
 
   // Effects
   useEffect(() => {
@@ -59,17 +59,17 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
   }, [fetchUserPharmacy]);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="pharmacy">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Pharmacy</AccordionTrigger>
-            <Button variant="ghost" onClick={() => setIsDialogOpen(true)}>
+            <Button variant="ghost" onClick={() => setIsDialogOpen(true)} className="invisible group-hover:visible">
               <PlusCircle />
             </Button>
             <PharmacyDialog
               isOpen={isDialogOpen}
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               onClose={() => {
                 setIsDialogOpen(false);
                 fetchUserPharmacy();

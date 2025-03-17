@@ -32,11 +32,14 @@ const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
+  className,
   ...props
-}: ControllerProps<TFieldValues, TName>) => {
+}: ControllerProps<TFieldValues, TName> & { className?: string }) => {
   return (
     <FormFieldContext.Provider value={{ name: props.name }}>
-      <Controller {...props} />
+      <div className={className}>
+        <Controller {...props} />
+      </div>
     </FormFieldContext.Provider>
   )
 }
@@ -186,7 +189,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-xs font-medium text-red-500", className)}
+      className={cn("text-xs font-medium text-red-500 w-fit", className)}
       {...props}
     >
       {body}

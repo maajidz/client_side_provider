@@ -241,7 +241,7 @@ function EditSupplement({
       const supplementData = {
         ...values,
         supplementId: supplementId ?? selectedSupplement.supplementId,
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
       };
 
       await updateSupplement({

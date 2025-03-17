@@ -37,7 +37,7 @@ const Injections = ({
       const response = await getInjection({
         page: 1,
         limit: 10,
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
       });
 
       if (response) {
@@ -48,7 +48,7 @@ const Injections = ({
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [patientDetails.userDetails.userDetailsId]);
 
   useEffect(() => {
     fetchInjectionsData();
@@ -76,7 +76,7 @@ const Injections = ({
 
   return (
     <>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 group">
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="familyHistory">
             <div className="flex justify-between items-center">
@@ -87,11 +87,12 @@ const Injections = ({
                   setEditData(null);
                   setIsDialogOpen(true);
                 }}
+                className="invisible group-hover:visible"
               >
                 <PlusCircle />
               </Button>
               <InjectionsDialog
-                userDetailsId={patientDetails.userDetails.id}
+                userDetailsId={patientDetails.userDetails.userDetailsId}
                 injectionsData={editData}
                 onClose={() => {
                   setIsDialogOpen(false);

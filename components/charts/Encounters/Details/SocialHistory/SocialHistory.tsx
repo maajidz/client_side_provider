@@ -49,7 +49,7 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
 
     try {
       const response = await getSocialHistory({
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
         page: 1,
         limit: 5,
       });
@@ -64,7 +64,7 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [patientDetails.userDetails.userDetailsId]);
 
   // DELETE Social History
   const handleDeleteSocialHistory = async (id: string) => {
@@ -104,17 +104,17 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
   }, [fetchSocialHistory]);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="socialHistory">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Social History</AccordionTrigger>
-            <Button variant="ghost" onClick={() => setIsDialogOpen(true)}>
+            <Button variant="ghost" onClick={() => setIsDialogOpen(true)} className="invisible group-hover:visible">
               <PlusCircle />
             </Button>
             <SocialHistoryDialog
               isOpen={isDialogOpen}
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               socialHistoryData={editData}
               onClose={() => {
                 setEditData(null);

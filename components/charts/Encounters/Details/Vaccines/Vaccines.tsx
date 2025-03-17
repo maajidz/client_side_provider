@@ -69,7 +69,7 @@ const Vaccines = ({
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion
         type="single"
         collapsible
@@ -85,12 +85,13 @@ const Vaccines = ({
                 setEditData(undefined);
                 setIsDialogOpen(true);
               }}
+              className="invisible group-hover:visible"
             >
               <PlusCircle />
             </Button>
             <VaccinesDialog
               key={isDialogOpen ? "dialog-open" : "dialog-closed"}
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               isOpen={isDialogOpen}
               onClose={() => {
                 setIsDialogOpen(false);

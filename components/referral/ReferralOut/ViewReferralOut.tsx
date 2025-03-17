@@ -4,6 +4,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -131,7 +132,7 @@ const ViewReferralOut = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className={formStyles.formFilterBody}
+          className={`${formStyles.formFilterBody} items-end`}
         >
           {/* Referral To Filter */}
           <FormField
@@ -139,10 +140,11 @@ const ViewReferralOut = () => {
             name="referralTo"
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Referral To</FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Filter by Referral To" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
                       {/* <SelectItem value="external" className="cursor-pointer">
@@ -172,8 +174,7 @@ const ViewReferralOut = () => {
                     <Select
                       value={field.value}
                       onValueChange={field.onChange}
-                      disabled={!["internal", "external"].includes(referralTo)}
-                    >
+                      disabled={!["internal", "external"].includes(referralTo)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
@@ -205,6 +206,7 @@ const ViewReferralOut = () => {
             name="statusType"
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Request Status</FormLabel>
                 <FormControl>
                   <Select
                     value={field.value}
@@ -214,7 +216,7 @@ const ViewReferralOut = () => {
                     }}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Status Type" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all" className="cursor-pointer">
@@ -240,6 +242,7 @@ const ViewReferralOut = () => {
             name="status"
             render={({ field }) => (
               <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Response Status</FormLabel>
                 <FormControl>
                   <Select
                     value={field.value}

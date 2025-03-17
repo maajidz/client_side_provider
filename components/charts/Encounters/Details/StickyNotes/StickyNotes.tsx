@@ -62,13 +62,14 @@ const StickyNotes = ({ patientDetails }: { patientDetails: UserEncounterData }) 
     }
 
     return (
-        <div className='flex flex-col gap-3'>
+        <div className='flex flex-col gap-3 group'>
             <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="alerts">
                     <div className='flex justify-between items-center'>
                         <AccordionTrigger >Sticky Notes</AccordionTrigger>
                         <Button
                             variant="ghost"
+                            className="invisible group-hover:visible"
                             onClick={() => {
                                 setEditData(null);
                                 setIsDialogOpen(true);

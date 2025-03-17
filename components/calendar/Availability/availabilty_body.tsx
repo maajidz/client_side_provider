@@ -23,8 +23,8 @@ import { appointmentDateSchema, FormSchema } from "@/schema/availabilitySchema";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { Icon } from "@/components/ui/icon";
 
 const AppointmentForm = () => {
   const router = useRouter();
@@ -86,10 +86,10 @@ const AppointmentForm = () => {
     <div>
       <div className="flex flex-col gap-6 py-8 border-b">
         <div className="flex flex-row justify-between">
-          <p className="text-[#84012A] font-medium text-[18px]">
+          <h2 className="font-medium">
             Configure the regular working hours of Fahd Kazi at Pomegranate
             Health.
-          </p>
+          </h2>
         </div>
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
@@ -109,12 +109,14 @@ const AppointmentForm = () => {
                   />
                 ) : (
                   <div className="flex flex-col gap-3">
-                    <label>Availability Date:</label>
+                    <span className="text-xs font-normal text-[#444444]">Availability Date:</span>
+                    <span className="border border-gray-300 rounded-lg">
                     <CalendarField
                       control={methods.control}
                       date={date}
                       setDate={setDate}
                     />
+                    </span>
                   </div>
                 )}
               </div>
@@ -148,18 +150,20 @@ const AppointmentForm = () => {
                             )}
                             placeholder="End Time"
                           />
-                          <DefaultButton onClick={() => remove(index)}>
-                            Remove
-                          </DefaultButton>
+                          <Button variant="outline" onClick={() => remove(index)} size="icon">
+                            <Icon name="remove" className="text-gray-400" />
+                          </Button>
                         </div>
                       ))}
                     </div>
-                    <DefaultButton
+                    <Button
+                    variant="link"
+                    className="px-0"
                       onClick={() => append({ startTime: "", endTime: "" })}
                     >
-                      {" "}
+                      <Icon name="add" />
                       Add Time Slot
-                    </DefaultButton>
+                    </Button>
                   </div>
                   <SubmitButton label="Submit" />
                 </div>
@@ -206,9 +210,10 @@ const CalendarView = ({
         control={control}
         name="appointmentDate"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="w-fit border border-gray-200 rounded-2xl pt-4">
             <FormControl>
               <Calendar
+                className="rounded-2xl"
                 mode="single"
                 selected={selectedDate}
                 onSelect={(newDate) => {
@@ -218,15 +223,27 @@ const CalendarView = ({
                 disabled={(date) =>
                   date < new Date(new Date().setHours(0, 0, 0, 0))
                 }
-                className="h-[270px] w-full rounded-2xl bg-white border"
                 classNames={{
+                  months: "relative pt-10",
+                  nav: "absolute top-0 left-1/2 transform -translate-x-1/2 w-1/2",
+                  month_caption: "absolute -top-3.5 left-1/2 transform -translate-x-1/2",
                   day_today: isToday(selectedDate) ? todayClass : defaultClass,
                   day_selected: isSelected(selectedDate)
                     ? selectedClass
                     : defaultClass,
-                  month: "w-full font-semibold text-[#344054]",
-                  head_row: "w-full",
-                  row: "w-full",
+                  month: "font-medium text-[#344054]",
+                  head_row: "",
+                  row: "",
+                  day: "",
+                  day_button: "w-full h-full p-4 items-center justify-center hover:bg-gray-100 rounded-md",
+                  today: "bg-blue-50 p-0 rounded-md",
+                  selected: "bg-[#84012A] text-white rounded-2xl",
+                  nav_button: "row-reverse",
+                  outside: "text-gray-400",
+                  disabled: "text-gray-300",
+                  day_range_start: "bg-green-200",
+                  day_range_end: "bg-red-200",
+                  day_range_middle: "bg-yellow-200"
                 }}
               />
             </FormControl>
@@ -262,7 +279,7 @@ const CalendarField = ({
                       onClick={() => setDate(field.value)}
                       variant={"ghost"}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
+                        "w-[240px] pl-3 text-left",
                         !field.value && "text-muted-foreground"
                       )}
                     >

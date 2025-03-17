@@ -13,6 +13,7 @@ export default function Patients() {
       <div className="flex flex-col gap-10">
         <SearchInput />
         <Breadcrumbs items={breadcrumbItems} />
+        <SearchInput />
         <PatientClient />
       </div>
     </PageContainer>

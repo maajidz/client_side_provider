@@ -77,11 +77,13 @@ export interface UpdateSOAPInterface {
 export interface UserEncounterInterface {
   response: UserEncounterData[];
   total: number;
+  page: string;
+  limit: string;
 }
 
 export interface UserEncounterData {
   chart: UserChart;
-  userDetails: UserDetails;
+  userDetails: ChartUserDetails;
   id?: string;
   visit_type?: string;
   mode?: string;
@@ -90,13 +92,25 @@ export interface UserEncounterData {
   providerID?: string;
   createdAt?: string;
   updatedAt?: string;
-  currentWeight?: string;
-  targetWeight?: string;
-  startDate?: string;
-  targetDate?: string;
-  bmiRecords?: BmiRecord[];
-  firstName?: string;
-  lastName?: string;
+  progressTracker?: ProgressTracker;
+}
+
+export interface ChartUserDetails {
+  userDetailsId: string;
+  firstName: string;
+  lastName: string;
+  patientId: string;
+}
+
+export interface ProgressTracker {
+  id: string;
+  currentWeight: string;
+  targetWeight: string;
+  startDate: string;
+  targetDate: string;
+  bmiRecords: BmiRecord[];
+  createdAt: string
+  updatedAt: string
 }
 
 export interface BmiRecord {
