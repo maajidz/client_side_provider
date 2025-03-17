@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/toaster";
+import NextTopLoader from "nextjs-toploader";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ReduxProvider } from "./providers";
-import { Toaster } from "@/components/ui/toaster";
 
 const outfit = localFont({
   src: "./fonts/Outfit-VariableFont_wght.ttf",
@@ -29,6 +30,7 @@ export default function RootLayout({
         className={`${outfit.variable} ${plusJakartaSans.variable} antialiased`}
       >
         <ReduxProvider>
+          <NextTopLoader showSpinner={false} />
           <Toaster />
           <div className="flex flex-1 w-full">{children}</div>
         </ReduxProvider>
