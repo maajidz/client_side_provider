@@ -1,4 +1,4 @@
-import LoadingButton from "@/components/LoadingButton";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -9,10 +9,10 @@ import { showToast } from "@/utils/utils";
 import EditSupplement from "./EditSupplement";
 import { Trash2Icon } from "lucide-react";
 import { useState } from "react";
+import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
 
 interface SupplementListProps {
   error: string;
-  isLoading: boolean;
   patientDetails: UserEncounterData;
   supplementData: SupplementInterfaceResponse[] | undefined;
   fetchSupplements: () => Promise<void>;
@@ -20,7 +20,6 @@ interface SupplementListProps {
 
 function SupplementList({
   error,
-  isLoading,
   patientDetails,
   supplementData,
   fetchSupplements,
@@ -56,14 +55,14 @@ function SupplementList({
     }
   };
 
-  if (loading || isLoading) return <LoadingButton />;
-
   if (error)
     return <div className="flex items-center justify-center">{error}</div>;
 
   return (
     <>
-      {supplementData && supplementData.length > 0 ? (
+      {loading ? (
+        <AccordionShimmerCard />
+      ) : supplementData && supplementData.length > 0 ? (
         supplementData.map((supplement) => (
           <div
             key={supplement.id}
