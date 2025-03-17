@@ -57,6 +57,9 @@ function VitalDialog({
   // Loading State
   const [loading, setLoading] = useState(false);
 
+  // BMI  SCALE
+  const [bmiScale, setBmiScale] = useState<string>("");
+
   // Toast State
   const { toast } = useToast();
 
@@ -74,6 +77,32 @@ function VitalDialog({
       goalWeight: vitalsData?.goalWeight ?? undefined,
     },
   });
+
+  const weightLbs = form.watch("weightLbs");
+  const heightFeets = form.watch("heightFeets");
+  const heightInches = form.watch("heightInches");
+
+  useEffect(() => {
+    if (weightLbs && heightFeets && heightInches) {
+      const totalHeightInInches =
+        Number(heightFeets) * 12 + Number(heightInches);
+      const bmi = (
+        (Number(weightLbs) / totalHeightInInches ** 2) *
+        703
+      ).toFixed(2);
+      form.setValue("BMI", Number(bmi));
+      const bmiNumber = Number(bmi);
+      if (bmiNumber < 18.5) {
+        setBmiScale("Underweight");
+      } else if (bmiNumber >= 18.5 && bmiNumber < 24.9) {
+        setBmiScale("Normal weight");
+      } else if (bmiNumber >= 25 && bmiNumber < 29.9) {
+        setBmiScale("Overweight");
+      } else {
+        setBmiScale("Obese");
+      }
+    }
+  }, [weightLbs, heightFeets, heightInches, form]);
 
   // POST Vitals Data
   const onSubmit = async (formData: z.infer<typeof addVitalsSchema>) => {
@@ -122,6 +151,7 @@ function VitalDialog({
       setLoading(false);
       onClose();
       form.reset();
+      setBmiScale("");
     }
   };
 
@@ -140,7 +170,7 @@ function VitalDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[780px]">
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>{vitalsData ? "Edit Vital" : "Add Vital"}</DialogTitle>
           <DialogDescription></DialogDescription>
@@ -271,28 +301,31 @@ function VitalDialog({
                 </div>
               </div>
 
-              {/* BMI */}
-              <FormField
-                control={form.control}
-                name="BMI"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>BMI</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="number"
-                        className="w-fit"
-                        value={field.value ?? ""}
-                        onChange={(event) =>
-                          field.onChange(event.target.valueAsNumber)
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex flex-row gap-5 items-center">
+                {/* BMI */}
+                <FormField
+                  control={form.control}
+                  name="BMI"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>BMI</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          className="w-fit"
+                          value={field.value ?? ""}
+                          onChange={(event) =>
+                            field.onChange(event.target.valueAsNumber)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="mt-5 text-sm font-medium">{bmiScale}</div>
+              </div>
 
               {/* Starting Weight */}
               <div className="flex gap-3 w-full items-end">
