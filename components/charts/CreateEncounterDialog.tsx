@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -45,6 +45,7 @@ import { createEncounterRequest } from "@/services/chartsServices";
 import { fetchUserDataResponse } from "@/services/userServices";
 import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
+import { getVisitTypes } from "@/services/enumServices";
 
 const CreateEncounterDialog = ({
   onClose,
@@ -55,6 +56,7 @@ const CreateEncounterDialog = ({
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showEncounterForm, setShowEncounterForm] = useState<boolean>(false);
+  const [visitTypes, setVisitTypes] = useState<string[]>([]);
   const [patient, setPatient] = useState<string>("");
   const [selectedPatient, setSeletedPatient] = useState<UserData | undefined>();
   const [userResponse, setUserResponse] = useState<UserData[] | undefined>([]);
@@ -72,6 +74,18 @@ const CreateEncounterDialog = ({
     },
   });
 
+  const fetchVisitTypes = useCallback(async () => {
+    try {
+      const types = await getVisitTypes();
+
+      if (types) {
+        setVisitTypes(types);
+      }
+    } catch (err) {
+      console.log("An error occurred", err);
+    }
+  }, []);
+
   const fetchAndSetResponse = async () => {
     const userData = await fetchUserDataResponse({
       pageNo: 1,
@@ -85,7 +99,8 @@ const CreateEncounterDialog = ({
 
   useEffect(() => {
     fetchAndSetResponse();
-  }, []);
+    fetchVisitTypes();
+  }, [fetchVisitTypes]);
 
   useEffect(() => {
     const filteredUsers = userResponse?.filter((userData) => {
@@ -299,12 +314,11 @@ const CreateEncounterDialog = ({
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="follow_up">
-                                  Follow Up
-                                </SelectItem>
-                                <SelectItem value="vist_type_2">
-                                  Vist Type 2
-                                </SelectItem>
+                                {visitTypes.map((visit) => (
+                                  <SelectItem key={visit} value={visit}>
+                                    {visit}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           </FormControl>
