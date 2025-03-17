@@ -12,6 +12,7 @@ import SupplementsDialog from "./SupplementsDialog";
 import SupplementList from "./SupplementsList";
 import { PlusCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
 
 interface SupplementsProps {
   patientDetails: UserEncounterData;
@@ -22,7 +23,8 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   // Data States
-  const [supplementData, setSupplementData] = useState<SupplementInterfaceResponse[]>();
+  const [supplementData, setSupplementData] =
+    useState<SupplementInterfaceResponse[]>();
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -63,7 +65,11 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
         <AccordionItem value="supplements">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Supplements</AccordionTrigger>
-            <Button variant="ghost" onClick={() => setIsDialogOpen(true)} className="invisible group-hover:visible">
+            <Button
+              variant="ghost"
+              onClick={() => setIsDialogOpen(true)}
+              className="invisible group-hover:visible"
+            >
               <PlusCircle />
             </Button>
             <SupplementsDialog
@@ -75,13 +81,16 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
             />
           </div>
           <AccordionContent className="sm:max-w-4xl">
-            <SupplementList
-              error={error}
-              isLoading={loading}
-              patientDetails={patientDetails}
-              supplementData={supplementData}
-              fetchSupplements={fetchSupplements}
-            />
+            {loading ? (
+              <AccordionShimmerCard />
+            ) : (
+              <SupplementList
+                error={error}
+                patientDetails={patientDetails}
+                supplementData={supplementData}
+                fetchSupplements={fetchSupplements}
+              />
+            )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

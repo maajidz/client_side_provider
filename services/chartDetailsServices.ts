@@ -92,13 +92,21 @@ export const createAlert = async ({
 };
 
 export const getAlertData = async ({
+  page,
+  limit,
   userDetailsId,
 }: {
   userDetailsId: string;
+  page?: number;
+  limit?: number;
 }) => {
+  const queryParams = new URLSearchParams();
+  if (page) queryParams.append("page", page.toString());
+  if (limit) queryParams.append("limit", limit.toString());
+
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/alerts/${userDetailsId}`,
+    url: `/provider/alerts/${userDetailsId}?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -180,10 +188,22 @@ export const createStickyNotes = async ({
   return data;
 };
 
-export const getStickyNotesData = async ({ chartId }: { chartId: string }) => {
+export const getStickyNotesData = async ({
+  chartId,
+  page,
+  limit,
+}: {
+  chartId: string;
+  page?: number;
+  limit?: number;
+}) => {
+  const queryParams = new URLSearchParams();
+  if (page) queryParams.append("page", page.toString());
+  if (limit) queryParams.append("limit", limit.toString());
+
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/sticky-notes/${chartId}`,
+    url: `/provider/sticky-notes/${chartId}?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -843,9 +863,15 @@ export const getMedicationData = async (
   return data;
 };
 
-export const getMedicationPrescription = async () => {
+export const getMedicationPrescription = async ({
+  page,
+  limit,
+}: {
+  page?: number;
+  limit?: number;
+}) => {
   const response = ApiFetch({
-    url: `/provider/medication/precription/all?page=${1}&limit=${10}`,
+    url: `/provider/medication/precription/all?page=${page}&limit=${limit}`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -912,7 +938,11 @@ export const deleteMedicationPrescription = async ({
 /**
  * * Supplements API
  */
-export const createSupplement = async ({requestData}:{requestData: CreateSupplementType}) => {
+export const createSupplement = async ({
+  requestData,
+}: {
+  requestData: CreateSupplementType;
+}) => {
   const response = await ApiFetch({
     url: "/provider/supplements",
     method: "POST",
@@ -937,7 +967,7 @@ export const getAllSupplementTypes = async () => {
 
   const data: SupplementTypesResponseInterface = await response.data;
   return data;
-}
+};
 
 export const getSupplements = async ({
   userDetailsId,
@@ -1074,7 +1104,7 @@ export const getAllProcedureNameTypes = async () => {
 
   const data: ProceduresTypesResponseInterface = await response.data;
   return data;
-}
+};
 
 /**
  * * Historical Vaccines API

@@ -69,24 +69,17 @@ const DetailsBody = ({
           </div>
         </div>
         <div className="flex flex-row gap-2 flex-wrap">
-          {/* <FormLabels
-            label="Wt"
-            value={`${patientDetails.progressTracker?.currentWeight} ${patientDetails.progressTracker?.weightType}`}
-          /> */}
           <Badge popoverLabel="Weight">
             <Icon name="weight" size={16}/>
             <FormLabels
               label=""
-              value={"100 kg"}
+              value={`${patientDetails.progressTracker?.currentWeight} kg`}
             />
           </Badge>
-          {/* <FormLabels
-            label="Ht"
-            value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`}
-          /> */}
           <Badge popoverLabel="Height">
-            {/* <Icon name="height" size={16} />
-            <FormLabels label="" value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`} /> */}
+             <Icon name="height" size={16} />
+            <FormLabels label="" value="N/A" />
+            {/* value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`} /> */}
           </Badge>
           <Badge popoverLabel="BMI">
             <Icon name="digital_wellbeing" size={16} />

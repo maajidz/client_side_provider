@@ -211,9 +211,13 @@ const CreateLabResults = () => {
         showToast({
           toast,
           type: "success",
-          message: "Lab Result saved sucessfully!",
+          message: "Lab Result saved successfully!",
         });
-        router.replace("/dashboard/provider/labs");
+        const originPath = sessionStorage.getItem("lab-result-origin");
+
+        if (originPath) {
+          router.replace(originPath);
+        }
       }
     } catch (e) {
       console.log("Error", e);
