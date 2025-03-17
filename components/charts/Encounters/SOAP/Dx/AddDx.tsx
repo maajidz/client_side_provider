@@ -105,7 +105,7 @@ const AddDx = ({
       if (patientDetails.chart?.id) {
         const chartId = patientDetails.chart?.id;
         const requestData: CreateDiagnosesRequestBody = {
-          userDetailsId: patientDetails.userDetails.id,
+          userDetailsId: patientDetails.userDetails.userDetailsId,
           providerId: providerDetails.providerId,
           diagnoses: rows.map((row) => ({
             ...row,
@@ -130,7 +130,7 @@ const AddDx = ({
         if (response) {
           const chartId = response.id;
           const requestData: CreateDiagnosesRequestBody = {
-            userDetailsId: patientDetails.userDetails.id,
+            userDetailsId: patientDetails.userDetails.userDetailsId,
             providerId: providerDetails.providerId,
             diagnoses: rows.map((row) => ({
               ...row,

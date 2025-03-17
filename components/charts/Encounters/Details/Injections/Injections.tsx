@@ -37,7 +37,7 @@ const Injections = ({
       const response = await getInjection({
         page: 1,
         limit: 10,
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
       });
 
       if (response) {
@@ -48,7 +48,7 @@ const Injections = ({
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [patientDetails.userDetails.userDetailsId]);
 
   useEffect(() => {
     fetchInjectionsData();
@@ -92,7 +92,7 @@ const Injections = ({
                 <PlusCircle />
               </Button>
               <InjectionsDialog
-                userDetailsId={patientDetails.userDetails.id}
+                userDetailsId={patientDetails.userDetails.userDetailsId}
                 injectionsData={editData}
                 onClose={() => {
                   setIsDialogOpen(false);

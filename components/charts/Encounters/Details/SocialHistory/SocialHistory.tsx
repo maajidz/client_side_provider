@@ -49,7 +49,7 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
 
     try {
       const response = await getSocialHistory({
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
         page: 1,
         limit: 5,
       });
@@ -64,7 +64,7 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [patientDetails.userDetails.userDetailsId]);
 
   // DELETE Social History
   const handleDeleteSocialHistory = async (id: string) => {
@@ -114,7 +114,7 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
             </Button>
             <SocialHistoryDialog
               isOpen={isDialogOpen}
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               socialHistoryData={editData}
               onClose={() => {
                 setEditData(null);

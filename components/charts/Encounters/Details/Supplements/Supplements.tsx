@@ -36,7 +36,7 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
 
     try {
       const response = await getSupplements({
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
       });
 
       if (response) {
@@ -51,7 +51,7 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [patientDetails.userDetails.userDetailsId]);
 
   useEffect(() => {
     fetchSupplements();
@@ -67,7 +67,7 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
               <PlusCircle />
             </Button>
             <SupplementsDialog
-              userDetailsId={patientDetails?.userDetails.id}
+              userDetailsId={patientDetails?.userDetails.userDetailsId}
               onClose={() => {
                 setIsDialogOpen(false);
               }}

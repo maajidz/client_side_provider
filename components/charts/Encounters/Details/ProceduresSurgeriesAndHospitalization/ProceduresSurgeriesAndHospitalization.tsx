@@ -39,7 +39,7 @@ const ProceduresSurgeriesAndHospitalization = ({
     setLoading(true);
     try {
       const response = await getProcedureData({
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
         page: 1,
         limit: 5,
       });
@@ -51,7 +51,7 @@ const ProceduresSurgeriesAndHospitalization = ({
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [patientDetails.userDetails.userDetailsId]);
 
   useEffect(() => {
     fetchProcedures();
@@ -98,7 +98,7 @@ const ProceduresSurgeriesAndHospitalization = ({
               <PlusCircle />
             </Button>
             <ProceduresSurgeriesAndHospitalizationDialog
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               procedureData={editData}
               isOpen={isDialogOpen}
               onClose={() => {
@@ -130,7 +130,7 @@ const ProceduresSurgeriesAndHospitalization = ({
                               fromDate: procedure.fromDate,
                               toDate: procedure.toDate,
                               notes: procedure.notes,
-                              userDetailsId: patientDetails.userDetails.id,
+                              userDetailsId: patientDetails.userDetails.userDetailsId,
                               nameType: {
                                 id: procedure.nameType.id,
                                 createdAt: procedure.nameType.createdAt,

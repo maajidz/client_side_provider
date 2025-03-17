@@ -26,7 +26,7 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const fetchAlerts = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await getAlertData({ userDetailsId: patientDetails.userDetails.id });
+            const response = await getAlertData({ userDetailsId: patientDetails.userDetails.userDetailsId });
             if (response) {
                 setData(response);
             }
@@ -35,7 +35,7 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
         } finally {
             setLoading(false);
         }
-    }, [patientDetails.userDetails.id]);
+    }, [patientDetails.userDetails.userDetailsId]);
 
     useEffect(() => {
         fetchAlerts();
@@ -78,7 +78,7 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                             <PlusCircle />
                         </Button>
                         <AlertDialog
-                            userDetailsId={patientDetails.userDetails.id}
+                            userDetailsId={patientDetails.userDetails.userDetailsId}
                             alertData={editData}
                             onClose={() => {
                                 setIsDialogOpen(false)

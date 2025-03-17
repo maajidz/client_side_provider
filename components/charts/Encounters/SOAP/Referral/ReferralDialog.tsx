@@ -86,7 +86,7 @@ const ReferralDialog = ({
       diagnoses: selectedDiagnoses.map((diagnosis) => diagnosis.id),
       insuranceId: "",
       attachments: [""],
-      userDetailsID: patientDetails.userDetails.id,
+      userDetailsID: patientDetails.userDetails.userDetailsId,
     };
     setLoading(true);
     try {
@@ -134,7 +134,7 @@ const ReferralDialog = ({
                     <div className="flex flex-col border p-3 w-full">
                       <div>Patient</div>
                       <div>
-                        {patientDetails.firstName} {patientDetails.lastName}
+                        {patientDetails?.userDetails?.firstName} {patientDetails?.userDetails?.lastName}
                       </div>
                     </div>
                     <div className="flex flex-col border p-3 w-full">

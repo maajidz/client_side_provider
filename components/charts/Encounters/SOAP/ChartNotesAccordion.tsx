@@ -55,13 +55,14 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      weightInLbs: patientDetails.userDetails?.weight
-        ? Number(patientDetails.userDetails?.weight)
+      weightInLbs: patientDetails?.progressTracker?.currentWeight
+        ? Number(patientDetails?.progressTracker?.currentWeight)
         : 0,
       weightInOzs: 0,
-      heightInFt: patientDetails.userDetails?.height
-        ? Number(patientDetails.userDetails?.height)
-        : 0,
+      // heightInFt: patientDetails.userDetails?.height
+      //   ? Number(patientDetails.userDetails?.height)
+      //   : 0,
+      heightInFt: 0,
       heightInInches: 0,
       bmi: 0,
     },
@@ -128,7 +129,7 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
           chartId: patientDetails.chart.id,
         });
         await updatePatientPhysicalStatus({
-          userDetailsID: patientDetails?.userDetails?.id,
+          userDetailsID: patientDetails?.userDetails?.userDetailsId,
           requestData: {
             height: Number(values.heightInInches),
             weight: Number(values.weightInLbs),
@@ -143,7 +144,7 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
         };
         await createSOAPChart({ requestData: requestBody });
         await updatePatientPhysicalStatus({
-          userDetailsID: patientDetails.userDetails.id,
+          userDetailsID: patientDetails.userDetails.userDetailsId,
           requestData: {
             height: Number(values.heightInInches),
             weight: Number(values.weightInLbs),

@@ -65,7 +65,7 @@ function EditPastMedicalHistory({
     const requestData: UpdatePastMedicalHistoryType = {
       notes: values.notes,
       glp_refill_note_practice: values.glp_refill_note_practice,
-      userDetailsId: patientDetails.userDetails.id,
+      userDetailsId: patientDetails.userDetails.userDetailsId,
     };
 
     setLoading(true);
