@@ -340,7 +340,7 @@ function InsuranceDialog({
                                       </div>
                                     ) : (
                                       selectedInsurance && (
-                                        <img
+                                        <Image
                                           alt={
                                             selectedInsurance.frontDocumentImage.split(
                                               "/"
@@ -412,7 +412,7 @@ function InsuranceDialog({
                                       </div>
                                     ) : (
                                       selectedInsurance && (
-                                        <img
+                                        <Image
                                           alt={
                                             selectedInsurance.backDocumentImage.split(
                                               "/"
