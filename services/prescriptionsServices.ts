@@ -1,17 +1,22 @@
 import ApiFetch from "@/config/api";
-import { PrescriptionResponseInterface, UpdatePrescriptionInterface } from "@/types/prescriptionInterface";
+import {
+  PrescriptionResponseInterface,
+  UpdatePrescriptionInterface,
+} from "@/types/prescriptionInterface";
 
 export const getUserPrescriptionsData = async ({
   userDetailsId,
   page,
   limit,
+  providerId,
 }: {
   userDetailsId: string;
   page: number;
   limit: number;
+  providerId?: string;
 }) => {
   const response = await ApiFetch({
-    url: `/provider/prescriptions/patient/${userDetailsId}?page=${page}&limit=${limit}`,
+    url: `/provider/prescriptions/patient/${userDetailsId}?page=${page}&limit=${limit}&providerId=${providerId}`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",

@@ -36,3 +36,10 @@ export const editPrescriptionSchema = z.object({
   internal_comments: z.string().optional(),
   status: z.enum(["pending", "completed"]),
 });
+
+export const filterPrescriptionSchema = z.object({
+  patient: z.string().optional(),
+  provider: z.string().optional(),
+  fromDate: z.string().optional(),
+  toDate: z.string().optional(),
+});
