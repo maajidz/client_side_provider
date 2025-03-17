@@ -36,7 +36,7 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
 
     try {
       const response = await getUserPharmacyData({
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
       });
 
       if (response) {
@@ -51,7 +51,7 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id]);
+  }, [patientDetails.userDetails.userDetailsId]);
 
   // Effects
   useEffect(() => {
@@ -69,7 +69,7 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
             </Button>
             <PharmacyDialog
               isOpen={isDialogOpen}
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               onClose={() => {
                 setIsDialogOpen(false);
                 fetchUserPharmacy();

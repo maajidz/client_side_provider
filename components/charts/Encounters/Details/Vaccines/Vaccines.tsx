@@ -91,7 +91,7 @@ const Vaccines = ({
             </Button>
             <VaccinesDialog
               key={isDialogOpen ? "dialog-open" : "dialog-closed"}
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               isOpen={isDialogOpen}
               onClose={() => {
                 setIsDialogOpen(false);

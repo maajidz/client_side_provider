@@ -41,14 +41,14 @@ const DetailsBody = ({
             <AvatarImage src="" className="border-2 border-[#FFE7E7]" />
             <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
                 <span className="text-lg font-semibold">
-                  {patientDetails.firstName?.charAt(0)}
-                  {patientDetails.lastName?.charAt(0)}
+                  {patientDetails?.userDetails?.firstName?.charAt(0)}
+                  {patientDetails?.userDetails?.lastName?.charAt(0)}
                 </span>
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col gap-1">
             <span className="text-md font-semibold">
-              {patientDetails.firstName} {patientDetails.lastName}
+              {patientDetails?.userDetails?.firstName} {patientDetails?.userDetails?.lastName}
             </span>
             <span className="text-sm flex flex-row gap-1">
               <FormLabels
@@ -85,8 +85,8 @@ const DetailsBody = ({
             value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`}
           /> */}
           <Badge popoverLabel="Height">
-            <Icon name="height" size={16} />
-            <FormLabels label="" value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`} />
+            {/* <Icon name="height" size={16} />
+            <FormLabels label="" value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`} /> */}
           </Badge>
           <Badge popoverLabel="BMI">
             <Icon name="digital_wellbeing" size={16} />

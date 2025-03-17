@@ -724,7 +724,7 @@ const AddRx = ({
         ) : (
           <div className="flex flex-col gap-2">
             <RxPatientDetailsSection
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
             />
             <div className="flex flex-col p-3 rounded-lg border">
               <div className="flex items-center justify-between mb-2">

@@ -40,7 +40,7 @@ const Allergies = ({
       const response = await getAllergiesData({
         limit: 10,
         page: 1,
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
       });
       if (response) {
         setAllergies(response);
@@ -51,7 +51,7 @@ const Allergies = ({
     } finally {
       setLoading(false);
     }
-  }, [patientDetails?.userDetails.id]);
+  }, [patientDetails?.userDetails.userDetailsId]);
 
   useEffect(() => {
     fetchAllergies();
@@ -99,7 +99,7 @@ const Allergies = ({
               <PlusCircle />
             </Button>
             <AllergiesDialog
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               onClose={() => {
                 setIsDialogOpen(false);
                 fetchAllergies();

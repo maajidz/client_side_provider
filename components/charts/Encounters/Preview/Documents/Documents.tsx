@@ -23,9 +23,9 @@ function Documents({ patientDetails }: { patientDetails: UserEncounterData }) {
     setLoading(true);
 
     try {
-      if (patientDetails.userDetails.id) {
+      if (patientDetails.userDetails.userDetailsId) {
         const response = await getDocumentsData({
-          userDetailsId: patientDetails.userDetails.id,
+          userDetailsId: patientDetails.userDetails.userDetailsId,
           page: page,
           limit: 10
         });
@@ -38,7 +38,7 @@ function Documents({ patientDetails }: { patientDetails: UserEncounterData }) {
     } finally {
       setLoading(false);
     }
-  }, [page, patientDetails.userDetails.id,]);
+  }, [page, patientDetails.userDetails.userDetailsId,]);
 
   // Effects
   useEffect(() => {

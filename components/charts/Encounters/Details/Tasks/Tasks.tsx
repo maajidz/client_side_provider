@@ -127,7 +127,7 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
             </Button>
             <TasksDialog
               isOpen={isDialogOpen}
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               tasksData={editData}
               onClose={() => {
                 setIsDialogOpen(false);

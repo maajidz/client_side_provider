@@ -49,10 +49,10 @@ const PreviewBody = ({
                     <TreatmentPlan />
                 </TabsContent> */}
         <TabsContent value="labs">
-          <LabsPreview userDetailsId={patientDetails.userDetails.id} />
+          <LabsPreview userDetailsId={patientDetails.userDetails.userDetailsId} />
         </TabsContent>
         <TabsContent value="images">
-          <ImagesPreview userDetailsId={patientDetails.userDetails.id} />
+          <ImagesPreview userDetailsId={patientDetails.userDetails.userDetailsId} />
         </TabsContent>
         <TabsContent value="documents">
           <DocumentPreview patientDetails={patientDetails} />

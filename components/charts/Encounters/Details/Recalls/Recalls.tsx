@@ -35,7 +35,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
       const response = await getRecallsData({
         page: 1,
         limit: 10,
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
         providerId: providerDetails.providerId,
       });
       if (response) {
@@ -46,7 +46,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.id, providerDetails.providerId]);
+  }, [patientDetails.userDetails.userDetailsId, providerDetails.providerId]);
 
   useEffect(() => {
     fetchRecalls();
@@ -91,7 +91,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
               <PlusCircle />
             </Button>
             <RecallsDialog
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               recallsData={editData}
               onClose={() => {
                 setIsDialogOpen(false);

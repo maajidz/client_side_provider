@@ -11,15 +11,15 @@ const LabsBody = ({ patientDetails}: {patientDetails: UserEncounterData}) => {
     <div className='flex justify-between border-b pb-3'>
                 <div>Labs</div>
                 <div className="flex h-5 items-center space-x-4 text-sm">
-                    <SearchAndAddDrawer userDetailsId={patientDetails.userDetails.id} />
+                    <SearchAndAddDrawer userDetailsId={patientDetails.userDetails.userDetailsId} />
                     <Separator orientation="vertical" />
-                    <AddLabsDialog userDetailsId={patientDetails.userDetails.id} />
+                    <AddLabsDialog userDetailsId={patientDetails.userDetails.userDetailsId} />
                     <Separator orientation="vertical" />
-                    <PastOrdersDialog userDetailsId={patientDetails.userDetails.id}/>
+                    <PastOrdersDialog userDetailsId={patientDetails.userDetails.userDetailsId}/>
                     {/* <Separator orientation="vertical" />
                     <MapDxDialog /> */}
                     <Separator orientation="vertical" />
-                    <ViewOrdersDialog userDetailsId={patientDetails.userDetails.id}/>
+                    <ViewOrdersDialog userDetailsId={patientDetails.userDetails.userDetailsId}/>
                 </div>
             </div>
   )

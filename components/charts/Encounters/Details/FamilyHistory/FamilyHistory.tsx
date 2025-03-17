@@ -41,7 +41,7 @@ const FamilyHistory = ({
       const response = await getFamilyHistoryData({
         limit: 10,
         page: 1,
-        userDetailsId: patientDetails.userDetails.id,
+        userDetailsId: patientDetails.userDetails.userDetailsId,
       });
       if (response) {
         setData(response);
@@ -51,7 +51,7 @@ const FamilyHistory = ({
     } finally {
       setLoading(false);
     }
-  }, [patientDetails?.userDetails.id]);
+  }, [patientDetails?.userDetails.userDetailsId]);
 
   useEffect(() => {
     fetchFamilyHistory();
@@ -96,7 +96,7 @@ const FamilyHistory = ({
               <PlusCircle />
             </Button>
             <FamilyHistoryDialog
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               familyHistoryData={editData}
               onClose={() => {
                 setIsDialogOpen(false);

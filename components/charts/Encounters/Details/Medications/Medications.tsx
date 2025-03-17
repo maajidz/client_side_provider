@@ -27,7 +27,7 @@ const Medications = ({ patientDetails }: MedicationsProps) => {
               <PlusCircle />
             </Button>
             <AddMedicationDialog
-              userDetailsId={patientDetails.userDetails.id}
+              userDetailsId={patientDetails.userDetails.userDetailsId}
               onClose={() => {
                 setIsDialogOpen(false);
               }}
