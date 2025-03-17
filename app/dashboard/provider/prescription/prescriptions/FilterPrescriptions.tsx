@@ -82,13 +82,13 @@ function FilterPrescriptions({ prescriptions, onFilter }: FilterPrescriptions) {
   }
 
   return (
-    <div className="flex gap-4 flex-wrap">
+    <div className="flex gap-4 flex-row">
       {/* Patients Filter */}
       <Select onValueChange={(value) => filterByPatients(value)}>
-        <SelectTrigger className="w-full sm:w-[250px] md:w-[300px] lg:w-[350px] p-3 border-2 border-gray-200 rounded-md text-gray-500">
+        <SelectTrigger className="w-full p-3 rounded-md text-gray-500">
           <SelectValue placeholder="Filter by Patients" />
         </SelectTrigger>
-        <SelectContent className="bg-[#eaeaeb] rounded-md shadow-lg mt-1 border border-gray-300">
+        <SelectContent>
           <SelectItem value="all">All</SelectItem>
           {prescriptions.map((prescription) => (
             <SelectItem key={prescription.patient} value={prescription.patient}>
@@ -100,10 +100,10 @@ function FilterPrescriptions({ prescriptions, onFilter }: FilterPrescriptions) {
 
       {/* Provider Filter */}
       <Select onValueChange={(value) => filterByProviders(value)}>
-        <SelectTrigger className="w-full sm:w-[250px] md:w-[300px] lg:w-[350px] p-3 border-2 border-gray-200 rounded-md text-gray-500">
+        <SelectTrigger className="w-full p-3 rounded-md text-gray-500">
           <SelectValue placeholder="Filter by Providers" />
         </SelectTrigger>
-        <SelectContent className="bg-[#eaeaeb] rounded-md shadow-lg mt-1 border border-gray-300">
+        <SelectContent>
           <SelectItem value="all">All</SelectItem>
           {prescriptions.map((prescription) => (
             <SelectItem
@@ -118,10 +118,10 @@ function FilterPrescriptions({ prescriptions, onFilter }: FilterPrescriptions) {
 
       {/* From Date Filter */}
       <Select onValueChange={(value) => filterByFromDate(value)}>
-        <SelectTrigger className="w-full sm:w-[250px] md:w-[300px] lg:w-[350px] p-3 border-2 border-gray-200 rounded-md text-gray-500">
+        <SelectTrigger className="w-full  p-3 rounded-md text-gray-500">
           <SelectValue placeholder="Filter by From Data" />
         </SelectTrigger>
-        <SelectContent className="bg-[#eaeaeb] rounded-md shadow-lg mt-1 border border-gray-300">
+        <SelectContent>
           <SelectItem value="all">All</SelectItem>
           {prescriptions.map((prescription) => (
             <SelectItem
@@ -136,10 +136,10 @@ function FilterPrescriptions({ prescriptions, onFilter }: FilterPrescriptions) {
 
       {/* To Date Filter */}
       <Select onValueChange={(value) => filterByToDate(value)}>
-        <SelectTrigger className="w-full sm:w-[250px] md:w-[300px] lg:w-[350px] p-3 border-2 border-gray-200 rounded-md text-gray-500">
+        <SelectTrigger className="w-full  p-3 rounded-md text-gray-500">
           <SelectValue placeholder="Filter by To Date" />
         </SelectTrigger>
-        <SelectContent className="bg-[#eaeaeb] rounded-md shadow-lg mt-1 border border-gray-300">
+        <SelectContent>
           <SelectItem value="all">All</SelectItem>
           {prescriptions.map((prescription) => (
             <SelectItem key={prescription.toDate} value={prescription.toDate}>

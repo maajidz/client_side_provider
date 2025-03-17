@@ -60,7 +60,6 @@ function ERxClient() {
         title={
           <Heading
             title="eRx Sent"
-            description="A list of the electronic transmission of drug prescriptions directly to a pharmacy"
           />
         }
         columns={columns()}

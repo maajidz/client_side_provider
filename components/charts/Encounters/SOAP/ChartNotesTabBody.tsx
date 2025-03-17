@@ -11,7 +11,7 @@ import { UserEncounterData } from '@/types/chartsInterface'
 const ChartNotesTabBody = ({encounterId, patientDetails}: {encounterId: string, patientDetails: UserEncounterData}) => {
 
     return (
-        <div className='flex flex-col gap-4 p-5'>
+        <div className='flex flex-col gap-6'>
             <ChartNotesAccordion encounterId={encounterId} subjective={patientDetails.chart?.subjective ? patientDetails.chart.subjective : ''} patientDetails={patientDetails}/>
             <DxCodeBody patientDetails={patientDetails} encounterId={encounterId}/>
             <PrescriptionBody patientDetails={patientDetails} encounterId={encounterId}/>

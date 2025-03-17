@@ -45,9 +45,9 @@ export function AppSidebar() {
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton
                         asChild
-                        className={`h-10  text-[#7D7177] hover:cursor-pointer transition-all hover:text-[#84012A] flex justify-center overflow-hidden rounded-md hover:bg-[#E9DFE9] text-sm font-medium items-center ${
+                        className={`h-10 peer-data-[active=true]/menu-button:bg-[#E9DFE9] peer-data-[active=true]/menu-button:text-[#84012A] text-[#7D7177] hover:cursor-pointer transition-all hover:text-[#84012A] flex justify-center overflow-hidden rounded-md hover:bg-[#E9DFE9] text-sm font-medium items-center ${
                           path === item.href
-                            ? "bg-accent text-[#7D7177]"
+                            ? "bg-[#E9DFE9] text-[#84012A]"
                             : "transparent"
                         } ${item.disabled && "cursor-not-allowed opacity-80"}`}
                       >

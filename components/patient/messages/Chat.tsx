@@ -200,7 +200,10 @@ export default function ChatPage({
                   >
                     <AvatarImage src="" className="border-2 border-[#FFE7E7]" />
                     <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
-                      <span className="text-xs font-semibold">AF</span>
+                      <span className="text-xs font-semibold">
+                      {userDetails.firstName?.split(" ")[0].charAt(0)}
+                      {userDetails.firstName?.split(" ")[1].charAt(0)}
+                      </span>
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col gap-1">

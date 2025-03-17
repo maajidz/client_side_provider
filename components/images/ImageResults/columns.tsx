@@ -55,14 +55,12 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
                 label="Interpretation"
                 value={results.interpretation}
               />
-              <div className="flex flex-row gap-3">
                 <FormLabels
                   label="Documents"
                   value={results.documents?.map((docs, index) => (
                     <Button key={index} variant={"link"} onClick={()=> window.open(docs, "_blank")} className="text-blue-500">{docs.split('/').pop()}</Button>
                   ))}
                 />
-              </div>
             </div>
           ))}
         </div>

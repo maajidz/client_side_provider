@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import AlertDialog from './AlertDialog'
 import { UserEncounterData } from '@/types/chartsInterface'
 import { deleteAlert, getAlertData } from '@/services/chartDetailsServices'
-import LoadingButton from '@/components/LoadingButton'
 import { AlertResponseInterface } from '@/types/alertInterface'
 import FormLabels from '@/components/custom_buttons/FormLabels'
 import { Button } from '@/components/ui/button'
@@ -15,6 +14,7 @@ import {
 import { Edit2, PlusCircle, Trash2Icon } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { showToast } from '@/utils/utils'
+import AccordionSkeleton from '@/components/ui/skeleton/accordion'
 
 const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -57,18 +57,19 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
 
     if (loading) {
         return (
-            <LoadingButton />
+            <AccordionSkeleton/>
         )
     }
 
     return (
-        <div className='flex flex-col gap-3'>
+        <div className="flex flex-col gap-3 group">
             <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="alerts">
                     <div className='flex justify-between items-center'>
                         <AccordionTrigger >Alerts</AccordionTrigger>
                         <Button
                             variant="ghost"
+                            className="px-2 invisible group-hover:visible"
                             onClick={() => {
                                 setEditData(null);
                                 setIsDialogOpen(true);

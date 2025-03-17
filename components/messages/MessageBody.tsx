@@ -135,7 +135,7 @@ const MessageBody = () => {
               selectedConversation={selectedConversation}
             />
           ) : (
-            <div className={`${styles.listTitle} flex flex-1 h-full`}>
+            <div className="flex text-xs text-gray-500 flex-1 items-center justify-center w-full h-full">
               No Conversation Selected
             </div>
           )}

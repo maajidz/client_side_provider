@@ -61,49 +61,12 @@ function FilterDocuments({
   );
 
   return (
-    <div className="flex flex-wrap">
+    <div className="flex">
       <Form {...form}>
         <form
-          className="flex flex-wrap justify-center items-center gap-4"
+          className="flex gap-4"
           onSubmit={form.handleSubmit(handleSearch)}
         >
-          {/* Reviewer Filter */}
-          <FormField
-            control={form.control}
-            name="reviewer"
-            render={({ field }) => (
-              <div className="w-full sm:w-[250px] md:w-[300px] lg:w-[350px]">
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Filter by Reviewer" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" className="cursor-pointer">
-                      All
-                    </SelectItem>
-                    {providersData
-                      .filter(
-                        (
-                          provider
-                        ): provider is typeof provider & {
-                          providerDetails: { id: string };
-                        } => Boolean(provider?.providerDetails?.id)
-                      )
-                      .map((provider) => (
-                        <SelectItem
-                          key={provider.id}
-                          value={provider.providerDetails.id}
-                          className="cursor-pointer"
-                        >
-                          {provider.firstName} {provider.lastName}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          />
-
           {/* Patient Filter */}
           <FormField
             control={form.control}
@@ -133,7 +96,7 @@ function FilterDocuments({
                               }}
                             />
                             {searchTerm && visibleSearchList && (
-                              <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
+                              <div className="absolute bg-white border border-gray-300 mt-1 max-h-[200px] overflow-y-auto rounded shadow-md z-10 w-full">
                                 {filteredPatients.length > 0 ? (
                                   filteredPatients.map((patient) => (
                                     <div
@@ -167,13 +130,49 @@ function FilterDocuments({
               </div>
             )}
           />
+          {/* Reviewer Filter */}
+          <FormField
+            control={form.control}
+            name="reviewer"
+            render={({ field }) => (
+              <div className="">
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filter by Reviewer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all" className="cursor-pointer">
+                      All
+                    </SelectItem>
+                    {providersData
+                      .filter(
+                        (
+                          provider
+                        ): provider is typeof provider & {
+                          providerDetails: { id: string };
+                        } => Boolean(provider?.providerDetails?.id)
+                      )
+                      .map((provider) => (
+                        <SelectItem
+                          key={provider.id}
+                          value={provider.providerDetails.id}
+                          className="cursor-pointer"
+                        >
+                          {provider.firstName} {provider.lastName}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          />
 
           {/* Status Filter */}
           <FormField
             control={form.control}
             name="status"
             render={({ field }) => (
-              <div className="w-full sm:w-[250px] md:w-[300px] lg:w-[350px]">
+              <div className="">
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Filter by Status" />
@@ -195,9 +194,7 @@ function FilterDocuments({
           />
 
           {/* Search Button */}
-          <div className="flex justify-center items-center w-full sm:w-auto">
-            <SubmitButton label="Search" />
-          </div>
+          <SubmitButton label="Search" />
         </form>
       </Form>
     </div>

@@ -110,7 +110,7 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   }, [fetchTasks, fetchOwnersList, fetchTasksList]);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="tasks">
           <div className="flex justify-between items-center">
@@ -121,6 +121,7 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                 setEditData(null);
                 setIsDialogOpen(true);
               }}
+              className="invisible group-hover:visible"
             >
               <PlusCircle />
             </Button>

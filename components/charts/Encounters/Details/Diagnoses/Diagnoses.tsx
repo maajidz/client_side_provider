@@ -17,7 +17,7 @@ const Diagnoses = ({
   encounterId: string;
 }) => {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="diagnoses">
           <div className="flex justify-between items-center">

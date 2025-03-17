@@ -22,9 +22,9 @@ const imageTab = [
 function Images() {
   return (
     <PageContainer>
-      <div className="space-y-4">
+      <div className="flex flex-col gap-6">
         <Tabs defaultValue="imageResults">
-          <div className="flex items-center justify-between border-b border-gray-300 pb-2">
+          <div className="flex items-center justify-between">
             <TabsList>
               {imageTab.map((tabs) => (
                 <CustomTabsTrigger value={tabs.value} key={tabs.value}>
