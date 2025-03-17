@@ -112,18 +112,18 @@ export const columns = (
       );
     },
   },
-  {
-    accessorKey: "additionalText",
-    header: "",
-    cell: ({ row }) => (
-      <div
-        className="cursor-pointer"
-        onClick={() => handleRowClick(row.original)}
-      >
-        {row.getValue("additionalText")}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "additionalText",
+  //   header: "",
+  //   cell: ({ row }) => (
+  //     <div
+  //       className="cursor-pointer"
+  //       onClick={() => handleRowClick(row.original)}
+  //     >
+  //       {row.getValue("additionalText")}
+  //     </div>
+  //   ),
+  // },
   {
     id: "meetingLink",
     header: "Meeting Link",

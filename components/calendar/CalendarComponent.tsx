@@ -9,7 +9,7 @@ import {
 import { ProviderAppointmentsData } from "@/types/appointments";
 import ViewAppointment from "./ViewAppointment";
 import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+import "./css/big-calendar.css";
 
 interface EventData {
   id: string;
@@ -40,9 +40,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
   useEffect(() => {
     const events = appointments.map((appointment) => ({
       id: appointment.id,
-      title: `${new Date(
-        `1970-01-01T${appointment.timeOfAppointment}`
-      ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`,
+      title: `${appointment.patientName}`,
       start: new Date(
         `${appointment.dateOfAppointment}T${appointment.timeOfAppointment}`
       ),
@@ -90,7 +88,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
   };
 
   return (
-    <div style={{ height: "80vh" }}>
+    <div className="md:h-[calc(100vh-20rem)]">
       <BigCalendar
         localizer={localizer}
         events={events}
@@ -98,19 +96,22 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
         onNavigate={handleNavigate}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: "100%" }}
         views={[Views.MONTH, Views.WEEK, Views.DAY]}
         view={currentView}
         onView={handleViewChange}
+        className="calendar"
         selectable
         popup
         onSelectEvent={handleSelectEvent}
-        eventPropGetter={(event) => ({
-          style: {
-            borderColor: "#84012A",
-            backgroundColor: event.backgroundColor,
-            color: "#84012A",
-          },
+        eventPropGetter={() => ({
+          className: "event",
+          style: {},
+        })}
+        slotPropGetter={() => ({
+          className: "slot",
+        })}
+        dayPropGetter={() => ({
+          className: "day",
         })}
       />
       <ViewAppointment

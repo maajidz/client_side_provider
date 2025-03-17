@@ -8,11 +8,9 @@ import { ScrollArea } from "../ui/scroll-area";
 import LoadingButton from "../LoadingButton";
 import GhostButton from "../custom_buttons/buttons/GhostButton";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { User } from "lucide-react";
 import { formatSentAt } from "@/utils/dateUtils";
 import { Textarea } from "../ui/textarea";
-import DefaultButton from "../custom_buttons/buttons/DefaultButton";
-import messageStyles from "@/components/patient/messages/messages.module.css";
+import { Button } from "@/components/ui/button";
 
 const ConversationBody = ({
   userId,
@@ -93,7 +91,6 @@ const ConversationBody = ({
 
     socket.on("receiveMessage", (data) => {
       const message = data;
-      console.log(data, "data");
       const newMessage: Message = {
         id: uuidv4(),
         senderID: message.from,
@@ -144,7 +141,6 @@ const ConversationBody = ({
         isArchived: false,
         sentAt: new Date().toISOString(),
       };
-      console.log(message);
       sendMessage(message);
     }
   };
@@ -162,10 +158,11 @@ const ConversationBody = ({
     });
     setInput("");
   };
+
   return (
-    <div className="flex flex-col gap-8 h-full ">
-      <div className={`flex justify-between`}>
-        <div className="text-[#84012A] font-semibold text-base capitalize">
+    <div className="flex flex-col gap-4 h-full">
+      <div className="flex justify-between">
+        <div className="font-semibold text-base capitalize">
           {selectedConversation.partnerUsername}
         </div>
       </div>
@@ -180,56 +177,49 @@ const ConversationBody = ({
           <GhostButton onClick={() => setPage((prev) => prev + 1)}>
             Load More Messages
           </GhostButton>
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${
-                msg.senderID === userId ? "flex-row-reverse" : ""
-              } gap-2`}
-            >
-              <Avatar
-                className={`flex h-10 w-10 rounded-full border ${
-                  msg.senderID === userId ? "border-2 border-[#FFE7E7]" : ""
-                }`}
-              >
-                <AvatarImage src="" />
-                <AvatarFallback className="text-[#84012A] bg-[#FFE7E7] p-1">
-                  <User />
-                </AvatarFallback>
-              </Avatar>
+          {messages.length > 0 ? (
+            messages.map((msg) => (
               <div
-                className={`${
-                  msg.senderID === userId
-                    ? messageStyles.senderMessageBody
-                    : messageStyles.recieverMessageBody
-                }`}
+                key={msg.id}
+                className={`flex ${msg.senderID === userId ? "flex-row-reverse" : ""} gap-2`}
               >
-                <div className={messageStyles.messageBody}>
-                  <div className={messageStyles.message}>{msg.content}</div>
-                  <div
-                    className={`${
-                      msg.senderID === userId
-                        ? messageStyles.senderTimeStamp
-                        : messageStyles.recieverTimeStamp
-                    }`}
-                  >
-                    {formatSentAt(msg.sentAt)}
-                  </div>
+                <Avatar className={`flex h-8 w-8 rounded-full ${msg.senderID === userId ? "border-2 border-[#FFE7E7]" : ""}`}>
+                  <AvatarImage src="" className="border-2 border-[#FFE7E7]" />
+                  <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
+                    <span className="text-xs font-semibold">
+                      {selectedConversation.partnerUsername?.split(" ")[0].charAt(0)}
+                      {selectedConversation.partnerUsername?.split(" ")[1].charAt(0)}
+                      </span>
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-1">
+                <div className="flex flex-col text-sm font-normal">
+                    <div className={`flex w-fit rounded-full ${msg.senderID === userId ? "bg-rose-950 text-rose-100 p-3 pl-4 pr-4" : "bg-[#F3EFF0] font-medium text-gray-900 p-3 pl-4 pr-4"}`}>
+                      <div className="inline">{msg.content}</div>
+                    </div>
+                    <div className={`text-[10px] font-medium text-gray-400 self-end`}>
+                      {formatSentAt(msg.sentAt)}
+                    </div>
+                </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="flex text-sm w-full gap-6 items-center justify-center font-medium text-gray-500 pt-4">
+              Start a conversation
             </div>
-          ))}
+          )}
           <div ref={endOfMessagesRef} />
         </div>
       </ScrollArea>
-      <div className={messageStyles.sendButtonContainer}>
+      <div className="flex flex-row gap-3 border-t pt-6 border-gray-100 items-start">
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
           className="resize-none"
         />
-        <DefaultButton onClick={() => handleSendMessage()}>Send</DefaultButton>
+        <Button onClick={() => handleSendMessage()}>Send</Button>
       </div>
     </div>
   );

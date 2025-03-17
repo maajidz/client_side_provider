@@ -1,3 +1,5 @@
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { UserChart } from "@/types/chartsInterface";
@@ -5,51 +7,88 @@ import React from "react";
 
 const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
   return (
-    <ScrollArea className={cn("h-[calc(80dvh-52px)]")}>
-      <div className="flex flex-col gap-5 p-5">
-        Chart Notes
-        <div className="flex flex-col gap-3 border-b">
-          <ChartLabel label="Subjective" />
+    <ScrollArea className={cn("min-h-0 flex-grow")}>
+      <div className="flex flex-col gap-4">
+        <Card className="flex flex-col gap-3 border-b">
+          <CardTitle className="text-md gap-2 items-center border-b border-gray-100 pb-3 w-full">
+            <Icon name="clinical_notes" />
+            Subjective
+          </CardTitle>
           <div className="flex flex-col gap-2">
-            <ChartSubLabel label="Chief Complaints" />
+            <CardDescription className="flex flex-col gap-6">
+              <div className="flex flex-col gap-1">
+                <ChartSubLabel label="Chief Complaints" />
+                <CardDescription className="flex flex-col gap-2">
+                  Weight is 123.75 lbs 0 ozs. Height is 61 ft 0 inches. BMI is
+                  0. The starting weight is 65 and the goal Weight is 56
+                </CardDescription>
+              </div>
+              <div className="flex flex-col gap-1">
+                <ChartSubLabel label="History of Present Illness" />
+                <CardDescription className="flex flex-col gap-2">
+                  Weight is 123.75 lbs 0 ozs. Height is 61 ft 0 inches. BMI is
+                  0. The starting weight is 65 and the goal Weight is 56
+                </CardDescription>
+              </div>
+              <div className="flex flex-col gap-1">
+                <ChartSubLabel label="Past Medical History" />
+                <CardDescription className="flex flex-col gap-2">
+                  Weight is 123.75 lbs 0 ozs. Height is 61 ft 0 inches. BMI is
+                  0. The starting weight is 65 and the goal Weight is 56
+                </CardDescription>
+              </div>
+              <div className="flex flex-col gap-1">
+                <ChartSubLabel label="Active Medications" />
+                <CardDescription className="flex flex-col gap-2">
+                  Weight is 123.75 lbs 0 ozs. Height is 61 ft 0 inches. BMI is
+                  0. The starting weight is 65 and the goal Weight is 56
+                </CardDescription>
+              </div>
+            </CardDescription>
             {patientChart?.subjective ? (
               <div
                 dangerouslySetInnerHTML={{ __html: patientChart?.subjective }}
               />
             ) : (
-              <div> N/A </div>
+              "N/A"
             )}
-            <ChartSubLabel label="History of Present Illness" />
-            <ChartSubLabel label="Past Medical History" />
-            <ChartSubLabel label="Active Medications:  " />
           </div>
-        </div>
-        <div className="flex flex-col gap-3 border-b">
-          <ChartLabel label="Objective" />
-          <div className="flex flex-col gap-2">
+        </Card>
+        <Card className="flex flex-col gap-3 border-b">
+          <CardTitle className="text-md gap-2 items-center border-b border-gray-100 pb-3 w-full">
+            <Icon name="chart_data" />
+            Objective
+          </CardTitle>
+          <CardDescription className="flex flex-col gap-2">
             <ChartSubLabel label="Health Vitals" />
             <div>
               {patientChart?.objective ? patientChart?.objective : "N/A"}
             </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3 border-b">
-          <ChartLabel label="Assessment" />
-          <div className="flex flex-col gap-2">
+          </CardDescription>
+        </Card>
+        <Card className="flex flex-col gap-3 border-b">
+          <CardTitle className="text-md gap-2 items-center border-b border-gray-100 pb-3 w-full">
+            <Icon name="conditions" />
+            Assessment
+          </CardTitle>
+          <CardDescription className="flex flex-col gap-2">
             <ChartSubLabel label="Diagnoses" />
             <div>
               {patientChart?.assessment ? patientChart?.assessment : "N/A"}
             </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3 border-b">
-          <ChartLabel label="Plan" />
-          <div className="flex flex-col gap-2">
+          </CardDescription>
+        </Card>
+        <Card className="flex flex-col gap-3 border-b">
+          <CardTitle className="text-md gap-2 items-center border-b border-gray-100 pb-3 w-full">
+            <Icon name="digital_wellbeing" />
+            Plan
+          </CardTitle>
+          <CardDescription className="flex flex-col gap-2">
             <ChartSubLabel label="Diet Recommendations" />
             <ChartSubLabel label="Instructions" />
-            {patientChart?.plan ? patientChart?.plan : "N/A"}
-          </div>
-        </div>
+            <div>{patientChart?.plan ? patientChart?.plan : "N/A"}</div>
+          </CardDescription>
+        </Card>
       </div>
     </ScrollArea>
   );
@@ -57,10 +96,10 @@ const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
 
 export default ChartNotes;
 
-const ChartLabel = ({ label }: { label: string }) => (
-  <div className="font-semibold text-xl underline">{label}</div>
-);
+// const ChartLabel = ({ label }: { label: string }) => (
+//   <div className="font-semibold text-md underline">{label}</div>
+// );
 
 const ChartSubLabel = ({ label }: { label: string }) => (
-  <div className="font-medium text-lg">{label}</div>
+  <div className="font-semibold text-gray-700 text-sm">{label}</div>
 );

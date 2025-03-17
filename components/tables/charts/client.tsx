@@ -91,6 +91,7 @@ export const ChartsClient = () => {
           columns={columns(handleRowClick)}
           data={chartList?.response || []}
           pageNo={page}
+          className="capitalize"
           totalPages={totalPages}
           onPageChange={(newPage: number) => setPage(newPage)}
         />

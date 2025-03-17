@@ -55,7 +55,7 @@ const ImplantedDevices = ({ userDetailsId }: { userDetailsId: string }) => {
         }}
         userDetailsId={userDetailsId}
       />
-      <ScrollArea className="h-[12.5rem] min-h-10">
+      <ScrollArea className="flex">
         <div className="space-y-4">
           {loading ? (
             <div>Loading...</div>

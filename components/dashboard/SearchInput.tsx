@@ -234,7 +234,7 @@ export function SearchInput() {
   }, [searchTerm, selectedUser, handleSearch]);
 
   return (
-    <div className="relative flex flex-col space-y-4 flex-1">
+    <div className="relative flex flex-col">
       <div className="flex flex-col relative w-full">
         <div className="flex flex-col w-full relative justify-center gap-2">
           <Label className="text-xs text-gray-700 font-medium" htmlFor="email">

@@ -80,7 +80,7 @@ const ProceduresSurgeriesAndHospitalization = ({
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="proceduresSurgeriesAndHospitalizationDialog">
           <div className="flex justify-between items-center">
@@ -93,6 +93,7 @@ const ProceduresSurgeriesAndHospitalization = ({
                 setEditData(null);
                 setIsDialogOpen(true);
               }}
+              className="invisible group-hover:visible"
             >
               <PlusCircle />
             </Button>

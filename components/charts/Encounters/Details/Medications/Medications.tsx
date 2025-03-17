@@ -18,12 +18,12 @@ interface MedicationsProps {
 const Medications = ({ patientDetails }: MedicationsProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="medications">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Medications</AccordionTrigger>
-            <Button variant="ghost" onClick={()=> setIsDialogOpen(true)}>
+            <Button variant="ghost" onClick={()=> setIsDialogOpen(true)} className="invisible group-hover:visible">
               <PlusCircle />
             </Button>
             <AddMedicationDialog

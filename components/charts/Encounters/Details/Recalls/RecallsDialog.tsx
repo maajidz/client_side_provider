@@ -148,7 +148,7 @@ const RecallsDialog = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <ScrollArea>
-              <div className="max-h-[90dvh] h-auto flex flex-col items-start gap-6 p-2.5">
+              <div className="max-h-[90dvh] h-auto flex flex-col items-start gap-6">
                 <FormField
                   control={form.control}
                   name="type"
@@ -177,12 +177,12 @@ const RecallsDialog = ({
                     </FormItem>
                   )}
                 />
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   <FormField
                     control={form.control}
                     name="dueDate.period"
                     render={({ field }) => (
-                      <FormItem className="w-1/3">
+                      <FormItem>
                         <FormLabel>Due Date</FormLabel>
                         <FormControl>
                           <Select
@@ -202,13 +202,13 @@ const RecallsDialog = ({
                       </FormItem>
                     )}
                   />
-                  <FormField
+                  <FormField 
                     control={form.control}
                     name="dueDate.value"
                     render={({ field }) => (
-                      <FormItem className="w-1/3">
-                        <FormLabel>Value</FormLabel>
-                        <FormControl>
+                        <FormItem>
+                          <FormLabel>Value</FormLabel>
+                          <FormControl>
                           <Input
                             type="number"
                             min={1}
@@ -220,13 +220,14 @@ const RecallsDialog = ({
                         </FormControl>
                         <FormMessage />
                       </FormItem>
+                      
                     )}
                   />
                   <FormField
                     control={form.control}
                     name="dueDate.unit"
                     render={({ field }) => (
-                      <FormItem className="w-1/3">
+                      <FormItem>
                         <FormLabel>Unit</FormLabel>
                         <FormControl>
                           <Select

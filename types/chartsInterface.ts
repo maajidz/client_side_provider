@@ -94,9 +94,18 @@ export interface UserEncounterData {
   targetWeight?: string;
   startDate?: string;
   targetDate?: string;
-  bmiRecords?: BmiRecord[];
   firstName?: string;
   lastName?: string;
+  progressTracker?: ProgressTracker;
+}
+
+export interface ProgressTracker {
+  id: string;
+  currentWeight: string;
+  targetWeight: string;
+  startDate: string;
+  targetDate: string;
+  bmiRecords: BmiRecord[];
 }
 
 export interface BmiRecord {

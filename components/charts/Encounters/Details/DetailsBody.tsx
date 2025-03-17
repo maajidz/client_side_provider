@@ -16,62 +16,103 @@ import Recalls from "./Recalls/Recalls";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import ProceduresSurgeriesAndHospitalization from "./ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalization";
 import Injections from "./Injections/Injections";
-import { calculateAge } from "@/utils/utils";
+import { formatVisitType } from "@/utils/utils";
 import SocialHistory from "./SocialHistory/SocialHistory";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Icon } from "@/components/ui/icon";
 
 const DetailsBody = ({
   patientDetails,
   encounterId,
+  className,
 }: {
   patientDetails: UserEncounterData;
   encounterId: string;
+  className?: string;
 }) => {
-  const age = calculateAge(patientDetails.userDetails?.dob);
+  // const age = calculateAge(patientDetails.userDetails?.dob);
 
   return (
-    <div className="flex flex-col border w-[30rem] p-3 h-full">
-      <div className="flex flex-col border-b py-2">
-        <div>
-          {patientDetails.firstName} {patientDetails.lastName}
+    <div className={`flex flex-col gap-2 p-4 h-full font-medium bg-[#F3EFF0] ${className}`}>
+      <div className="flex flex-col gap-4 bg-white rounded-xl p-4 shadow-sm">
+        <div className="flex flex-row items-center gap-2">
+          <Avatar className={`flex h-16 w-16 rounded-full border-2 border-[#FFE7E7]`}>
+            <AvatarImage src="" className="border-2 border-[#FFE7E7]" />
+            <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
+                <span className="text-lg font-semibold">
+                  {patientDetails.firstName?.charAt(0)}
+                  {patientDetails.lastName?.charAt(0)}
+                </span>
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col gap-1">
+            <span className="text-md font-semibold">
+              {patientDetails.firstName} {patientDetails.lastName}
+            </span>
+            <span className="text-sm flex flex-row gap-1">
+              <FormLabels
+                value="Female"
+              />
+              <FormLabels
+                // value={age}
+                value="29"
+              />
+            </span>
+            <div className="flex gap-4 justify-between">
+              <FormLabels
+                label="DOB"
+                // value={patientDetails.userDetails?.dob?.split("T")[0]}
+                value={"23rd May, 2025"}
+              />
+            </div>
+          </div>
         </div>
-        <div>
-          {patientDetails.userDetails?.gender}/ {age}
-        </div>
-        <div className="flex justify-between">
-          <FormLabels
-            label="ID"
-            value={patientDetails?.id?.split("-")[0] + "..."}
-          />
-          <FormLabels
-            label="DOB"
-            value={patientDetails.userDetails?.dob?.split("T")[0]}
-          />
+        <div className="flex flex-row gap-2 flex-wrap">
+          {/* <FormLabels
+            label="Wt"
+            value={`${patientDetails.progressTracker?.currentWeight} ${patientDetails.progressTracker?.weightType}`}
+          /> */}
+          <Badge popoverLabel="Weight">
+            <Icon name="weight" size={16}/>
+            <FormLabels
+              label=""
+              value={"100 kg"}
+            />
+          </Badge>
+          {/* <FormLabels
+            label="Ht"
+            value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`}
+          /> */}
+          <Badge popoverLabel="Height">
+            <Icon name="height" size={16} />
+            <FormLabels label="" value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`} />
+          </Badge>
+          <Badge popoverLabel="BMI">
+            <Icon name="digital_wellbeing" size={16} />
+            <FormLabels label="" value={`${
+              patientDetails.progressTracker?.bmiRecords?.[0]?.currentBmi
+                ? patientDetails.progressTracker.bmiRecords[0].currentBmi
+                : "N/A"
+            }`} />
+          </Badge>
+          <Badge popoverLabel="Visit Type">
+            <Icon name="meeting_room" size={16} />
+            <FormLabels label="" value={formatVisitType(patientDetails?.visit_type ?? '')} />
+          </Badge>
+          <Badge popoverLabel="Mode">
+            <Icon name="switches" size={16} />
+            <FormLabels label="" value={formatVisitType(patientDetails?.mode ?? '')} />
+          </Badge>
+          {/* <FormLabels label="Phone" value={`Phone`} /> */}
+          <Badge popoverLabel="Phone">
+            <Icon name="phone" size={16} />
+            <FormLabels label="" value={"563487559"} />
+          </Badge>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-2 border-b py-2">
-        <FormLabels
-          label="Wt"
-          value={`${patientDetails.userDetails?.weight} ${patientDetails.userDetails?.weightType}`}
-        />
-        <FormLabels
-          label="Ht"
-          value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`}
-        />
-        <FormLabels
-          label="BMI"
-          value={`${
-            patientDetails.bmiRecords?.[0].currentBmi
-              ? patientDetails.bmiRecords?.[0].currentBmi
-              : "N/A"
-          }`}
-        />
-        <FormLabels label="Vist type" value={patientDetails?.visit_type} />
-        <FormLabels label="Mode" value={patientDetails?.mode} />
-        <FormLabels label="Phone" value={`Phone`} />
-      </div>
-      <ScrollArea className="h-96 overflow-y-scroll">
-        <div className="h-full ">
-          <div>
+      <ScrollArea className="overflow-y-scroll">
+        <div className="h-[calc(100vh-10rem)] flex flex-col [&>div]:bg-white [&>div]:rounded-xl [&>div]:shadow-sm gap-2">
             <Alerts patientDetails={patientDetails} />
             <StickyNotes patientDetails={patientDetails} />
             <Allergies patientDetails={patientDetails} />
@@ -92,8 +133,6 @@ const DetailsBody = ({
             <Tasks patientDetails={patientDetails} />
             <Recalls patientDetails={patientDetails} />
             <Pharmacy patientDetails={patientDetails} />
-            {/* <Payers />  */}
-          </div>
         </div>
       </ScrollArea>
     </div>

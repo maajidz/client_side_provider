@@ -23,7 +23,7 @@ export const addNewPatientSchema = z.object({
       return num.length >= 10 && /^\d{10,}$/.test(num);
     },
     {
-      message: "Invalid phone number format. At least 10 digits are required.",
+      message: "At least 10 digits are required.",
     }
   ),
   dob: z.string({ required_error: "A date of birth is required." }),

@@ -11,10 +11,16 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { Icon } from '@/components/ui/icon'
 
-const TabMenu = ({ patientDetails, onClose }: { patientDetails: UserEncounterData, onClose: () => void; }) => {
+interface TabMenuProps {
+    patientDetails: UserEncounterData;
+    onClose: () => void;
+}
+
+const TabMenu: React.FC<TabMenuProps> = ({ patientDetails, onClose }) => {
     return (
-        <div className='flex flex-row gap-5'>
+        <div className='flex flex-row gap-2'>
             {/* {patientDetails.chart === null ? (
                 <div> </div>
             ): (
@@ -22,7 +28,7 @@ const TabMenu = ({ patientDetails, onClose }: { patientDetails: UserEncounterDat
             )} */}
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button variant={'outline'} className=''>Preview</Button>
+                    <Button variant={'outline'} className="px-2"><Icon name="preview" /></Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
@@ -52,7 +58,7 @@ const TabMenu = ({ patientDetails, onClose }: { patientDetails: UserEncounterDat
             {/* <Button variant={'outline'} className=''>Sign</Button> */}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="h-8 w-8 p-0">
+                    <Button variant="outline" className="px-2">
                         <span className="sr-only">Open menu</span>
                         <MoreHorizontal />
                     </Button>
@@ -70,7 +76,7 @@ const TabMenu = ({ patientDetails, onClose }: { patientDetails: UserEncounterDat
                     <DropdownMenuItem>Surveillance Report</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant={'outline'} className='' onClick={onClose}>Close</Button>
+            <button onClick={onClose}>Close</button>
         </div>
     )
 }

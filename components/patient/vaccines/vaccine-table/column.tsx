@@ -6,6 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Icon } from "@/components/ui/icon";
 import { deleteHistoricalVaccine } from "@/services/chartDetailsServices";
 import { HistoricalVaccineInterface } from "@/types/chartsInterface";
 import { ColumnDef } from "@tanstack/react-table";
@@ -51,9 +52,12 @@ export const columns = ({
     header: "Vaccine Name",
     cell: ({ row }) => (
       <div className="flex flex-col gap-2 cursor-pointer">
-        <h6 className="text-md font-semibold">{row.original.vaccine_name}</h6>
+        <div className="flex items-center gap-2 text-md font-semibold">
+          <h6>{row.original.vaccine_name}</h6>
+          <span className="text-gray-500">( #{row.original.in_series} )</span>
+        </div>
         <div className="flex items-center gap-2">
-          <span className="text-slate-400">Historical Source</span>{" "}
+          <Icon name="source" />{" "}
           <span className="font-semibold">
             {row.original.source === ""
               ? "Source not specified"

@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
 import FormLabels from "@/components/custom_buttons/FormLabels";
-import dynamic from "next/dynamic";
-import { ContentState, EditorState, convertToRaw } from "draft-js";
-import draftToHtml from "draftjs-to-html";
-import htmlToDraft from "html-to-draftjs";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Button } from "@/components/ui/button";
 import {
   createSOAPChart,
@@ -33,7 +22,9 @@ import { z } from "zod";
 import { UserEncounterData } from "@/types/chartsInterface";
 import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import "@/app/editor.css";
+import { PlateEditor } from '@/components/ui/plate-editor/PlateEditor';
+import { Descendant } from 'slate';
 
 const formSchema = z.object({
   weightInLbs: z.number(),
@@ -45,21 +36,19 @@ const formSchema = z.object({
   goalWeight: z.number(),
 });
 
-const Editor = dynamic(
-  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
-  { ssr: false }
-);
-
-const ChartNotesAccordion = ({
-  encounterId,
-  subjective,
-  patientDetails,
-}: {
-  encounterId: string;
-  subjective: string;
+interface ChartNotesAccordionProps {
   patientDetails: UserEncounterData;
-}) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  subjective?: string;
+  encounterId: string;
+}
+
+const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartNotesAccordionProps) => {
+  const [editorValue, setEditorValue] = React.useState<Descendant[]>([
+    {
+      type: 'paragraph',
+      children: [{ text: '' }],
+    },
+  ]);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
@@ -80,55 +69,47 @@ const ChartNotesAccordion = ({
 
   useEffect(() => {
     if (subjective) {
-      const blocksFromHtml = htmlToDraft(subjective);
-      if (blocksFromHtml) {
-        const { contentBlocks, entityMap } = blocksFromHtml;
-        const contentState = ContentState.createFromBlockArray(
-          contentBlocks,
-          entityMap
-        );
-        setEditorState(EditorState.createWithContent(contentState));
+      try {
+        const content = JSON.parse(subjective);
+        if (Array.isArray(content)) {
+          setEditorValue(content);
+        }
+      } catch (error) {
+        console.log("Error", error);
+        setEditorValue([
+          {
+            type: 'paragraph',
+            children: [{ text: subjective }],
+          },
+        ]);
       }
     }
   }, [subjective]);
 
-  const onEditorStateChange = (newEditorState: EditorState) => {
-    setEditorState(newEditorState);
-  };
-
-  const getHtmlOutput = () => {
-    const content = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-    console.log("content", content);
-    return content;
-  };
-
   const handleSaveContent = async () => {
-    const subjective = getHtmlOutput();
-
     try {
       setLoading(true);
-      if (subjective) {
-        const requestBody = {
-          subjective: `${subjective}`,
-        };
-        if (patientDetails.chart?.id) {
-          await updateSOAPChart({
-            requestData: requestBody,
-            chartId: patientDetails.chart?.id,
-          });
-          showToast({ toast, type: "success", message: "Saved!" });
-        }
+      const requestBody = {
+        subjective: JSON.stringify(editorValue),
+      };
+      
+      if (patientDetails.chart?.id) {
+        await updateSOAPChart({
+          requestData: requestBody,
+          chartId: patientDetails.chart.id,
+        });
+        showToast({ toast, type: "success", message: "Content saved successfully" });
       } else {
-        const requestBody = {
-          subjective: subjective,
+        const createRequestBody = {
+          ...requestBody,
           encounterId: encounterId,
         };
-        await createSOAPChart({ requestData: requestBody });
-        showToast({ toast, type: "success", message: "Saved!" });
+        await createSOAPChart({ requestData: createRequestBody });
+        showToast({ toast, type: "success", message: "Content saved successfully" });
       }
     } catch (e) {
-      console.log("Error", e);
-      showToast({ toast, type: "error", message: "Error!" });
+      console.error("Error saving content:", e);
+      showToast({ toast, type: "error", message: "Error saving content" });
     } finally {
       setLoading(false);
     }
@@ -187,251 +168,231 @@ const ChartNotesAccordion = ({
   }
 
   return (
-    <Accordion
-      type="multiple"
-      className="w-full"
-      //defaultValue={["chiefComplaints", "vitals"]}
-    >
-      <AccordionItem value="chiefComplaints">
-        <AccordionTrigger>Chief Complaints</AccordionTrigger>
-        <AccordionContent>
-          <div className="flex flex-col gap-2 border rounded-lg p-2">
-            <Editor
-              editorState={editorState}
-              wrapperClassName="demo-wrapper"
-              editorClassName="demo-editor"
-              onEditorStateChange={onEditorStateChange}
-              toolbar={{
-                options: ["inline", "list", "textAlign", "link"], // Only show selected options
-                inline: {
-                  options: ["bold", "italic", "underline", "strikethrough"], // Limit to basic inline styles
-                },
-                list: {
-                  options: ["unordered", "ordered"], // Only show list options
-                },
-                textAlign: {
-                  options: ["left", "center", "right"], // Text alignment
-                },
-                link: {
-                  options: ["link"], // Only link option
-                },
-              }}
-            />
-            <div className="flex justify-end items-end w-full">
-              <DefaultButton onClick={handleSaveContent}>
-                Save Content
-              </DefaultButton>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <h6>Chief Complaints</h6>
+        <div className="flex flex-col gap-2">
+          <PlateEditor
+            value={editorValue}
+            className=""
+            onChange={(value) => setEditorValue(value)}
+            placeholder="Enter chief complaints..."
+          />
+        </div>
+        <div className="flex justify-end items-end w-full">
+          <Button 
+            variant="ghost" 
+            onClick={handleSaveContent}
+            disabled={loading}
+          >
+            Save Content
+          </Button>
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <h6>Vitals</h6>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap gap-3">
+                <FormLabels
+                  className="[]"
+                  label="Weight"
+                  value={
+                    <div className="flex gap-2 items-center">
+                      <FormField
+                        control={form.control}
+                        name="weightInLbs"
+                        render={({ field }) => (
+                          <FormItem className="flex gap-1 items-center">
+                            <FormControl>
+                              <Input
+                                placeholder="Weight"
+                                {...field}
+                                className="text-base font-semibold w-32"
+                                onChange={(e) =>
+                                  field.onChange(Number(e.target.value))
+                                }
+                                type="number"
+                                inputMode="numeric"
+                              />
+                            </FormControl>
+                            <FormLabel className="text-base font-normal text-center">
+                              lbs
+                            </FormLabel>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="weightInOzs"
+                        render={({ field }) => (
+                          <FormItem className="flex gap-1 items-center">
+                            <FormControl>
+                              <Input
+                                placeholder="Weight"
+                                {...field}
+                                className="text-base font-semibold w-32"
+                                onChange={(e) =>
+                                  field.onChange(Number(e.target.value))
+                                }
+                                type="number"
+                                inputMode="numeric"
+                              />
+                            </FormControl>
+                            <FormLabel className="text-base font-normal">
+                              ozs
+                            </FormLabel>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  }
+                />
+                <FormLabels
+                  label="Height"
+                  value={
+                    <div className="flex gap-2 items-center">
+                      <FormField
+                        control={form.control}
+                        name="heightInFt"
+                        render={({ field }) => (
+                          <FormItem className="flex gap-1 items-center">
+                            <FormControl>
+                              <Input
+                                placeholder="Height"
+                                {...field}
+                                className="text-base font-semibold w-32"
+                                onChange={(e) =>
+                                  field.onChange(Number(e.target.value))
+                                }
+                                type="number"
+                                inputMode="numeric"
+                              />
+                            </FormControl>
+                            <FormLabel className="text-base font-normal text-center">
+                              ft
+                            </FormLabel>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="heightInInches"
+                        render={({ field }) => (
+                          <FormItem className="flex gap-1 items-center">
+                            <FormControl>
+                              <Input
+                                placeholder="Height"
+                                {...field}
+                                className="text-base font-semibold w-32"
+                                onChange={(e) =>
+                                  field.onChange(Number(e.target.value))
+                                }
+                                type="number"
+                                inputMode="numeric"
+                              />
+                            </FormControl>
+                            <FormLabel className="text-base font-normal">
+                              inches
+                            </FormLabel>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  }
+                />
+                <FormField
+                  control={form.control}
+                  name="bmi"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormLabel className="text-base font-normal">
+                        BMI:
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="BMI"
+                          {...field}
+                          className="text-base font-semibold w-32"
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                          type="number"
+                          inputMode="numeric"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="startingWeight"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormLabel className="text-base font-normal">
+                        Starting Weight:{" "}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Starting Wt"
+                          {...field}
+                          className="text-base font-semibold w-32"
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                          type="number"
+                          inputMode="numeric"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="goalWeight"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormLabel className="text-base text-center font-normal">
+                        Goal Weight:{" "}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Goal Weight"
+                          {...field}
+                          className="text-base font-semibold w-32"
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                          type="number"
+                          inputMode="numeric"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex justify-end items-end w-full">
+                <Button
+                  type="submit"
+                  className="bg-[#84012A]"
+                  onClick={handleSaveContent}
+                >
+                  Save Content
+                </Button>
+              </div>
             </div>
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="vitals">
-        <AccordionTrigger>Vitals</AccordionTrigger>
-        <AccordionContent>
-          <div>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="flex flex-col gap-2 border rounded-lg p-2">
-                  <div className="flex flex-wrap gap-3">
-                    <FormLabels
-                      label="Weight"
-                      value={
-                        <div className="flex gap-2 items-center">
-                          <FormField
-                            control={form.control}
-                            name="weightInLbs"
-                            render={({ field }) => (
-                              <FormItem className="flex gap-1 items-center">
-                                <FormControl>
-                                  <Input
-                                    placeholder="Weight"
-                                    {...field}
-                                    className="text-base font-semibold w-32"
-                                    onChange={(e) =>
-                                      field.onChange(Number(e.target.value))
-                                    }
-                                    type="number"
-                                    inputMode="numeric"
-                                  />
-                                </FormControl>
-                                <FormLabel className="text-base font-normal text-center">
-                                  lbs
-                                </FormLabel>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="weightInOzs"
-                            render={({ field }) => (
-                              <FormItem className="flex gap-1 items-center">
-                                <FormControl>
-                                  <Input
-                                    placeholder="Weight"
-                                    {...field}
-                                    className="text-base font-semibold w-32"
-                                    onChange={(e) =>
-                                      field.onChange(Number(e.target.value))
-                                    }
-                                    type="number"
-                                    inputMode="numeric"
-                                  />
-                                </FormControl>
-                                <FormLabel className="text-base font-normal">
-                                  ozs
-                                </FormLabel>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      }
-                    />
-                    <FormLabels
-                      label="Height"
-                      value={
-                        <div className="flex gap-2 items-center">
-                          <FormField
-                            control={form.control}
-                            name="heightInFt"
-                            render={({ field }) => (
-                              <FormItem className="flex gap-1 items-center">
-                                <FormControl>
-                                  <Input
-                                    placeholder="Height"
-                                    {...field}
-                                    className="text-base font-semibold w-32"
-                                    onChange={(e) =>
-                                      field.onChange(Number(e.target.value))
-                                    }
-                                    type="number"
-                                    inputMode="numeric"
-                                  />
-                                </FormControl>
-                                <FormLabel className="text-base font-normal text-center">
-                                  ft
-                                </FormLabel>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="heightInInches"
-                            render={({ field }) => (
-                              <FormItem className="flex gap-1 items-center">
-                                <FormControl>
-                                  <Input
-                                    placeholder="Height"
-                                    {...field}
-                                    className="text-base font-semibold w-32"
-                                    onChange={(e) =>
-                                      field.onChange(Number(e.target.value))
-                                    }
-                                    type="number"
-                                    inputMode="numeric"
-                                  />
-                                </FormControl>
-                                <FormLabel className="text-base font-normal">
-                                  inches
-                                </FormLabel>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      }
-                    />
-                    <FormField
-                      control={form.control}
-                      name="bmi"
-                      render={({ field }) => (
-                        <FormItem className="flex gap-1 items-center">
-                          <FormLabel className="text-base font-normal">
-                            BMI:
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="BMI"
-                              {...field}
-                              className="text-base font-semibold w-32"
-                              onChange={(e) =>
-                                field.onChange(Number(e.target.value))
-                              }
-                              type="number"
-                              inputMode="numeric"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="startingWeight"
-                      render={({ field }) => (
-                        <FormItem className="flex gap-1 items-center">
-                          <FormLabel className="text-base font-normal">
-                            Starting Weight:{" "}
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Starting Wt"
-                              {...field}
-                              className="text-base font-semibold w-32"
-                              onChange={(e) =>
-                                field.onChange(Number(e.target.value))
-                              }
-                              type="number"
-                              inputMode="numeric"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="goalWeight"
-                      render={({ field }) => (
-                        <FormItem className="flex gap-1 items-center">
-                          <FormLabel className="text-base text-center font-normal">
-                            Goal Weight:{" "}
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Goal Weight"
-                              {...field}
-                              className="text-base font-semibold w-32"
-                              onChange={(e) =>
-                                field.onChange(Number(e.target.value))
-                              }
-                              type="number"
-                              inputMode="numeric"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex justify-end items-end w-full">
-                    <Button
-                      type="submit"
-                      className="bg-[#84012A]"
-                      onClick={handleSaveContent}
-                    >
-                      Save Content
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            </Form>
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+          </form>
+        </Form>
+      </div>
+    </div>
   );
 };
 

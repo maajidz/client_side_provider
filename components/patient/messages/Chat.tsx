@@ -170,8 +170,8 @@ export default function ChatPage({
           {userDetails.firstName} {userDetails.lastName}
         </div>
       </div>
-      <div className="flex flex-col overflow-y-scroll h-[calc(100dvh-28rem)]">
-        <div className="flex border-t border-gray-100 relative">
+      <div className="flex flex-col">
+        <div className="flex border-t overflow-y-scroll border-gray-100 relative lg:max-h-[calc(100dvh-30rem)] md:max-h-[calc(100dvh-30rem)]">
           {messages && messages.length > 0 ? (
             <div className="flex flex-col flex-1 gap-6">
               {loading && (
@@ -200,7 +200,10 @@ export default function ChatPage({
                   >
                     <AvatarImage src="" className="border-2 border-[#FFE7E7]" />
                     <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
-                      <span className="text-xs font-semibold">AF</span>
+                      <span className="text-xs font-semibold">
+                      {userDetails.firstName?.split(" ")[0].charAt(0)}
+                      {userDetails.firstName?.split(" ")[1].charAt(0)}
+                      </span>
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col gap-1">

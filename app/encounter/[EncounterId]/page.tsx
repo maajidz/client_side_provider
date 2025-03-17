@@ -10,10 +10,9 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import {
   ResizablePanelGroup,
   ResizablePanel,
-  ResizableHandle,
 } from "@/components/ui/resizable";
-import { ArrowBigLeft } from "lucide-react";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 
 const Encounter = ({
   params,
@@ -71,17 +70,17 @@ const Encounter = ({
   }
 
   return (
-    <div className="flex">
-      <DetailsBody patientDetails={data} encounterId={encounterId!} />
-      <ResizablePanelGroup direction="horizontal" className="rounded-lg border">
-        <ResizablePanel defaultSize={25}>
+    <div className="flex flex-1 w-full flex-row bg-[#F3EFF0]">
+      <DetailsBody patientDetails={data} encounterId={encounterId!} className="flex w-1/4" />
+      <ResizablePanelGroup direction="horizontal" className="flex flex-1 gap-2 ">
+        <ResizablePanel defaultSize={40}>
           <PreviewBody patientDetails={data} />
         </ResizablePanel>
-        <ResizableHandle>
+        {/* <ResizableHandle>
           <ArrowBigLeft />
-        </ResizableHandle>
+        </ResizableHandle> */}
         {isSOAPSectionVisible ? (
-          <ResizablePanel>
+          <ResizablePanel className="flex flex-1"  defaultSize={60}>
             <SOAPSection
               encounterId={encounterId!}
               patientDetails={data}
@@ -89,9 +88,11 @@ const Encounter = ({
             />
           </ResizablePanel>
         ) : (
-          <DefaultButton onClick={() => setIsSOAPSectionVisible(true)}>
-            Show SOAP
-          </DefaultButton>
+          <div className="flex h-full items-start bg-white shadow-lg">
+            <Button variant={'outline'} className="px-2 h-full border-none" onClick={() => setIsSOAPSectionVisible(true)}>
+              <Icon name="menu_open" />
+            </Button>
+          </div>
         )}
       </ResizablePanelGroup>
     </div>

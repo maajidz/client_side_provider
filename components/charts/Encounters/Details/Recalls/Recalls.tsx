@@ -75,7 +75,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="recalls">
           <div className="flex justify-between items-center">
@@ -86,6 +86,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                 setEditData(null);
                 setIsDialogOpen(true);
               }}
+              className="invisible group-hover:visible"
             >
               <PlusCircle />
             </Button>

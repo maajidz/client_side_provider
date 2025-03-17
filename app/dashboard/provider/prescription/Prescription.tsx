@@ -28,7 +28,7 @@ function Prescription() {
     <PageContainer>
       <div className="space-y-2">
         <Tabs defaultValue="prescriptions">
-          <div className="flex items-center justify-between border-b border-gray-300 pb-2">
+          <div className="flex items-center justify-between ">
             <TabsList>
               {prescriptionTab.map((tabs) => (
                 <CustomTabsTrigger value={tabs.value} key={tabs.value}>

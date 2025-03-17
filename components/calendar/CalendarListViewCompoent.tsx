@@ -7,48 +7,41 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MobileIcon } from "@radix-ui/react-icons";
-import { updateAppointment } from "@/services/providerAppointments";
-import { User2Icon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { ProviderAppointmentsData } from "@/types/appointments";
 import { formatDate } from "date-fns";
-import GhostButton from "../custom_buttons/buttons/GhostButton";
 import { CreateEncounterInterface } from "@/types/chartsInterface";
 import { createEncounterRequest } from "@/services/chartsServices";
 import { useRouter } from "next/navigation";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import LoadingButton from "../LoadingButton";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { Icon } from "../ui/icon";
+import { Button } from "../ui/button";
+import { renderAppointmentTime } from "@/utils/utils";
+import { getStatusBadgeStyles, getStatusIcon } from "@/utils/appointmentUtils";
+import { Badge } from "../ui/badge";
+import { updateAppointment } from "@/services/providerAppointments";
 
 export const CalendarListViewComponent = ({
   appointment,
-  onFetch
+  onFetch,
 }: {
   appointment: ProviderAppointmentsData;
   onFetch: () => Promise<void>;
 }) => {
-  // 8d17ab-purple cde1cf-confirmed b0ce0c-consu
   const [statusValue, setStatusValue] = useState(appointment.status);
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState<boolean>(false);
-
-  const getTriggerColor = () => {
-    switch (statusValue) {
-      case "Confirmed":
-        return "bg-green-200 text-green-700 focus:ring-lime-700";
-      case "Consulted":
-        return "bg-lime-200 text-lime-700 focus:ring-lime-700";
-      case "No Show":
-        return "bg-purple-200 text-purple-700 focus:ring-purple-700";
-      case "Scheduled":
-        return "bg-purple-200 text-purple-700 focus:ring-purple-700";
-      default:
-        return "bg-gray-200 text-gray-700 focus:ring-gray-700";
-    }
-  };
 
   const handleStatusChange = async (newStatus: string) => {
     setStatusValue(newStatus);
@@ -108,62 +101,47 @@ export const CalendarListViewComponent = ({
           <LoadingButton />
         </div>
       ) : (
-        <div className="flex flex-col gap-2 border-2 rounded-lg px-4 py-3">
-          <div className="flex justify-between font-semibold">
-            <div className="text-lg font-semibold capitalize">
-              {appointment.patientName}{" "}
-              <span className="text-[#666]">
-                [{appointment.userDetails.patientId}]
-              </span>
-            </div>
-            <div className="flex gap-3">
-              <div className="text-sm text-[#444] flex items-center gap-2">
-                <span>{"providerName"}</span>
-                <span className="text-[#555] text-base">|</span>
-                <span>
-                  {appointment.timeOfAppointment} -{" "}
-                  {appointment.timeOfAppointment}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-3 justify-between items-start">
-            <div className="flex gap-4 items-center">
-              <Avatar className="w-14 h-14">
+        <Card>
+          <CardHeader className="flex flex-row justify-between w-full">
+            <CardTitle className="gap-2 items-center">
+              <Avatar className="w-11 h-11">
                 <AvatarImage
                   src="https://github.com/shadcn"
                   alt="Patient Avatar"
                 />
                 <AvatarFallback>
-                  <User2Icon color="#999" />
-                </AvatarFallback>
-              </Avatar>
-
-              <div className="flex flex-row gap-4">
-                <div className="flex flex-col gap-2 text-gray-500">
-                  <span>Reason</span>
-                  <span>DOB</span>
-                  <span>Status</span>
-                </div>
-                <div className="flex flex-col gap-2 font-semibold">
-                  <span>{appointment.reason}</span>
-                  <div className="flex flex-row items-center gap-4">
-                    <span>
-                      {formatDate(appointment.userDetails.dob, "MM/dd/yyyy")}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MobileIcon />
-                      <span>{appointment.patientPhoneNumber}</span>
+                  <div className="flex bg-pink-50 text-[#63293b] text-lg font-medium rounded-full h-14 w-14 justify-center items-center">
+                    <span className="uppercase">
+                      {appointment.patientName?.split(" ")[0].charAt(0)}
+                      {appointment.patientName?.split(" ")[1].charAt(0)}
                     </span>
                   </div>
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col gap-1 justify-center">
+                <div className="text-md font-semibold flex gap-2 items-center">
+                  {appointment.patientName}
+                </div>
+                <div className="flex flex-row gap-3 items-center">
+                  <span className="text-gray-600 text-xs font-medium">
+                    {renderAppointmentTime(
+                      appointment.timeOfAppointment || "",
+                      appointment.endtimeOfAppointment || ""
+                    )}
+                  </span>
                   <Select
                     onValueChange={handleStatusChange}
                     value={appointment.status}
                   >
                     <SelectTrigger
-                      className={`gap-2 w-fit h-[28px] font-semibold border-none ${getTriggerColor()}`}
+                      className={`${getStatusBadgeStyles(statusValue)}`}
                     >
-                      <SelectValue placeholder={statusValue} />
+                      <SelectValue placeholder={statusValue}>
+                        <span className="flex items-center gap-1 justify-center text-xs">
+                          {getStatusIcon(statusValue)}
+                          {statusValue}
+                        </span>
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -176,50 +154,67 @@ export const CalendarListViewComponent = ({
                   </Select>
                 </div>
               </div>
-            </div>
-            <div className="flex gap-4 justify-start items-start">
-              <div className="flex flex-col gap-2 text-gray-500">
-                <div className="flex gap-4 justify-start items-center">
-                  <div className="text-gray-500">Meeting Link</div>
-                  <GhostButton
-                    onClick={() =>
-                      window.open(appointment.meetingLink, "_blank")
-                    }
+            </CardTitle>
+            <CardDescription className="text-gray-600 justify-between flex-none flex-col items-end">
+              {appointment.providerId}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="border-t border-gray-100 pt-4 w-full text-sm text-gray-900 items-center">
+            <div className="flex flex-row gap-2 justify-between w-full">
+              <div className="flex flex-col gap-4 text-xs font-medium">
+                <span className="text-gray-600 line-clamp-1">
+                  {appointment.reason}
+                </span>
+                <div className="flex flex-row items-start gap-2">
+                  <Badge
+                    className="flex items-center gap-1"
+                    popoverLabel="Date of Birth"
                   >
-                    {appointment.meetingLink}
-                  </GhostButton>
-                </div>
-                <div className="flex gap-4 justify-start items-center">
-                  <div className="text-gray-500">Visit On</div>
-                  <div className="font-semibold">
-                    {appointment.dateOfAppointment}
-                  </div>
-                </div>
-                <div className="flex gap-4 justify-start items-center">
-                  <div className="text-gray-500">Encounter</div>
-                  {appointment.encounter?.id ? (
-                    <Link
-                      href={`/encounter/${appointment.encounter?.id}`}
-                      className="font-medium text-blue-600"
-                    >
-                      Start
-                    </Link>
-                  ) : (
-                    <GhostButton onClick={handleEncounterStart}>
-                      Start
-                    </GhostButton>
-                  )}
+                    <Icon
+                      name="calendar_month"
+                      size={16}
+                      className="text-gray-500"
+                    />
+                    {formatDate(appointment.userDetails.dob, "MM/dd/yyyy")}
+                  </Badge>
+                  <Badge
+                    className="flex items-center gap-1"
+                    popoverLabel="Phone Number"
+                  >
+                    <Icon name="phone" size={16} className="text-gray-500" />
+                    <span>{appointment.patientPhoneNumber}</span>
+                  </Badge>
                 </div>
               </div>
-              {/* <LabelComponent label="Vist Type" value={vistType} />
-          <LabelComponent label="Vist On" value={lastVist} />
-          <div className="flex gap-3 items-center">
-            <span className="font-medium text-[#4b5563]">Encounter</span>
-            <span> Start</span>
-          </div> */}
             </div>
-          </div>
-        </div>
+            <div className="flex flex-row gap-2">
+              {appointment.encounter?.id ? (
+                <Link
+                  href={`/encounter/${appointment.encounter?.id}`}
+                  className="font-medium text-blue-600"
+                >
+                  Start Encounter
+                </Link>
+              ) : (
+                <Button
+                  variant="link"
+                  className="rounded-full text-blue-600 hover:text-blue-800"
+                  onClick={handleEncounterStart}
+                >
+                  <Icon name="open_in_new" size={16} />
+                  Start Encounter
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                className="rounded-full text-rose-900"
+                onClick={() => window.open(appointment.meetingLink, "_blank")}
+              >
+                Join Meeting
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </>
   );

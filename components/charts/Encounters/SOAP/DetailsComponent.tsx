@@ -15,50 +15,52 @@ const DetailsComponent = ({patientDetails}:{patientDetails: UserEncounterData}) 
     const [date, setDate] = React.useState<Date | undefined>(new Date());
     const providerDetails = useSelector((state: RootState)=> state.login)
     return (
-        <div className='grid grid-cols-3 gap-2 p-5 border-b pb-3'>
+        <div className="flex flex-row flex-wrap gap-6 p-5 border-b [&>div]:flex-col [&>div]:items-start">
             <FormLabels label='Provider' value={`${providerDetails.firstName} ${providerDetails.lastName}`} />
-            <FormLabels label='Date' value={
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                                " justify-start text-left font-normal",
-                                !date && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon />
-                            {date ? format(date, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                        <Calendar
-                            mode="single"
-                            selected={date}
-                            onSelect={setDate}
-                            initialFocus
-                        />
-                    </PopoverContent>
-                </Popover>
-            } />
             <FormLabels label='Facility' value='Pomegranate' />
-            <FormLabels label='Visit Type' value={
-                <Select>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select visit type" defaultValue={patientDetails.visit_type}/>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectItem value="apple">Refill Wellness Visit</SelectItem>
-                            <SelectItem value="banana">Asynchronous Refill Request</SelectItem>
-                            <SelectItem value="blueberry">Dermatology Consultation</SelectItem>
-                            <SelectItem value="grapes">Fitness Counselling</SelectItem>
-                            <SelectItem value="pineapple">Follow Up Visit</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-            } />
             <FormLabels label='Mode' value={patientDetails?.mode ? patientDetails?.mode : ""} />
+            <div className="flex !flex-row gap-2 flex-1s [&>div]:flex-col [&>div]:items-start">
+                <FormLabels label='Date' value={
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant={"outline"}
+                                className={cn(
+                                    " justify-start text-left text-xs font-semibold",
+                                    !date && "text-muted-foreground"
+                                )}
+                            >
+                                <CalendarIcon />
+                                {date ? format(date, "PPP") : <span>Pick a date</span>}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                            <Calendar
+                                mode="single"
+                                selected={date}
+                                onSelect={setDate}
+                                initialFocus
+                            />
+                        </PopoverContent>
+                    </Popover>
+                } />
+                <FormLabels label='Visit Type' className='[&>span>button>span]:text-xs [&>span>button>span]:font-semibold' value={
+                    <Select>
+                        <SelectTrigger>
+                            <SelectValue className="" placeholder="Select visit type" defaultValue={patientDetails.visit_type}/>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem value="apple">Refill Wellness Visit</SelectItem>
+                                <SelectItem value="banana">Asynchronous Refill Request</SelectItem>
+                                <SelectItem value="blueberry">Dermatology Consultation</SelectItem>
+                                <SelectItem value="grapes">Fitness Counselling</SelectItem>
+                                <SelectItem value="pineapple">Follow Up Visit</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                } />
+            </div>
         </div>
     )
 }

@@ -1,8 +1,10 @@
 import { ProviderAppointmentsData } from "@/types/appointments";
-import DefaultButton from "../custom_buttons/buttons/DefaultButton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { EditAppointmentDialog } from "./EditAppointmentDialog";
 import { useState } from "react";
+import { LabelValueStacked } from "@/components/ui/labelvaluestacked";
+import { Button } from "../ui/button";
+import { Icon } from "../ui/icon";
 
 interface ViewAppointmentProps {
   selectedAppointment: Partial<ProviderAppointmentsData> | null;
@@ -30,68 +32,61 @@ function ViewAppointment({
           onOpenChange={() => setSelectedSlot(null)}
         >
           <DialogContent className="w-fit">
-            <div className="flex flex-col gap-4">
-              <DialogHeader>
+            <div className="flex flex-col gap-4 group relative">
+              <DialogHeader className="flex flex-row justify-between">
                 <DialogTitle>Appointment Details</DialogTitle>
               </DialogHeader>
-              <div className="flex flex-row-reverse">
-                <DefaultButton onClick={() => handleEditAppointment(true)}>
-                  Edit
-                </DefaultButton>
-              </div>
+              <Button className="text-gray-500 absolute right-0 top-10 text-xs invisible group-hover:visible" variant="link" onClick={() => handleEditAppointment(true)}>
+                <Icon name="edit" size={16} />
+                Edit
+              </Button>
               {/* /appointment Details */}
-              <div className="flex justify-between w-full">
-                <span className="font-semibold">Facility</span>
-                <span className="text-gray-600">Pomegranate Health</span>
-              </div>
-              <div className="flex justify-between w-full">
-                <span className="font-semibold">Patient</span>
-                <span className="text-gray-600">
-                  {selectedAppointment.patientName}
-                </span>
-              </div>
-              <div className="flex justify-between w-full">
-                <span className="font-semibold">Mobile Phone</span>
-                <span className="text-gray-600">
-                  {selectedAppointment.patientPhoneNumber}
-                </span>
-              </div>
-              <div className="flex justify-between w-full">
-                <span className="font-semibold">Appointment Mode</span>
-                <span className="text-gray-600">
-                  {selectedAppointment.encounter?.mode}
-                </span>
-              </div>
-              <div className="flex justify-between w-full">
-                <span className="font-semibold">Date</span>
-                <span className="text-gray-600">
-                  {selectedAppointment.dateOfAppointment}
-                </span>
-              </div>
-              <div className="flex justify-between w-full">
-                <span className="font-semibold">Time of Appointment</span>
-                <span className="text-gray-600">
-                  {selectedAppointment.timeOfAppointment} -{" "}
-                  {selectedAppointment.endtimeOfAppointment}
-                </span>
-              </div>
-              <div className="flex justify-between w-full">
-                <span className="font-semibold">Appointment Status</span>
-                <span className="text-gray-600">
-                  {selectedAppointment.status}
-                </span>
-              </div>
-              <div className="flex justify-between w-full">
-                <span className="font-semibold">Reason</span>
-                <span className="text-gray-600">
-                  {selectedAppointment.reason}
-                </span>
-              </div>
-              <div className="flex justify-between w-full">
-                <span className="font-semibold">Message to Patient</span>
-                <span className="text-gray-600">
-                  {selectedAppointment.additionalText}
-                </span>
+              <div className="grid grid-cols-2 gap-6  ">
+                <LabelValueStacked
+                  label="Facility"
+                  value="Pomegranate Health"
+                  iconName="business"
+                />
+                <LabelValueStacked
+                  label="Patient"
+                  value={selectedAppointment.patientName}
+                  iconName="person"
+                />
+                <LabelValueStacked
+                  label="Mobile Phone"
+                  value={selectedAppointment.patientPhoneNumber}
+                  iconName="phone"
+                />
+                <LabelValueStacked
+                  label="Appointment Mode"
+                  value={selectedAppointment.encounter?.mode}
+                  iconName="video_call"
+                />
+                <LabelValueStacked
+                  label="Date"
+                  value={selectedAppointment.dateOfAppointment}
+                  iconName="calendar_today"
+                />
+                <LabelValueStacked
+                  label="Time of Appointment"
+                  value={`${selectedAppointment.timeOfAppointment} - ${selectedAppointment.endtimeOfAppointment}`}
+                  iconName="access_time"
+                />
+                <LabelValueStacked
+                  label="Appointment Status"
+                  value={selectedAppointment.status}
+                  iconName="check_circle"
+                />
+                <LabelValueStacked
+                  label="Reason"
+                  value={selectedAppointment.reason}
+                  iconName="note"
+                />
+                <LabelValueStacked
+                  label="Message to Patient"
+                  value={selectedAppointment.additionalText}
+                  iconName="message"
+                />
               </div>
             </div>
           </DialogContent>

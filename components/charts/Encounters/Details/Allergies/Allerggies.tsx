@@ -88,12 +88,14 @@ const Allergies = ({
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="allergies">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Allergies</AccordionTrigger>
-            <Button variant="ghost" onClick={() => setIsDialogOpen(true)}>
+            <Button variant="ghost" onClick={() => setIsDialogOpen(true)}
+              className="invisible group-hover:visible"
+              >
               <PlusCircle />
             </Button>
             <AllergiesDialog

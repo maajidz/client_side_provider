@@ -5,10 +5,8 @@ import React from "react";
 const LabsPreview = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <PageContainer>
-      <div className="flex flex-col gap-6">
-        <h3 className="text-xl font-semibold text-bold-800">Lab Results</h3>
-        <hr className="border-t border-gray-300 mb-4" />
-        <div className="flex flex-col gap-3 border-b">
+      <div className="flex flex-col gap-6 p-4 [&>div>div>form]:!grid-cols-2 [&>div>div>div>div]:!flex-col [&>div>div>div>div]:!gap-2 [&>div>div>div>div]:!items-start  [&_input]:!w-full">
+        <div className="flex flex-col gap-3">
           <LabResults userDetailsId={userDetailsId} />
         </div>
       </div>

@@ -65,7 +65,6 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
                 label="Interpretation"
                 value={results.interpretation}
               />
-              <div className="flex flex-row gap-3">
                 <FormLabels
                   label="Documents"
                   value={results.documents?.map((docs, index) => (
@@ -79,7 +78,6 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
                     </Button>
                   ))}
                 />
-              </div>
             </div>
           ))}
         </div>
