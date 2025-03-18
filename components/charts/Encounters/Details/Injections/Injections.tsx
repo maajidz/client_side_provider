@@ -109,6 +109,7 @@ const Injections = ({
                 onClose={() => {
                   setIsDialogOpen(false);
                   fetchInjectionsData();
+                  setEditData(null);
                 }}
                 isOpen={isDialogOpen}
               />

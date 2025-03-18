@@ -124,6 +124,7 @@ const PastMedicalHistory = ({ patientDetails }: PastMedicalHistoryProps) => {
               onClose={() => {
                 setIsDialogOpen(false);
                 fetchPastMedicalHistory();
+                setEditData(null);
               }}
               selectedMedicaHistory={editData}
             />
