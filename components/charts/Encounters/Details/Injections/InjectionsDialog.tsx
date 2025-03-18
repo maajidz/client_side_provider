@@ -70,6 +70,26 @@ const InjectionsDialog = ({
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
 
+  const form = useForm<z.infer<typeof createInjectionSchema>>({
+    resolver: zodResolver(createInjectionSchema),
+    defaultValues: {
+      injection_name: injectionsData?.injection_name || "",
+      dosage_unit: injectionsData?.dosage_unit || "",
+      dosage_quantity: injectionsData?.dosage_quantity || 0,
+      frequency: injectionsData?.frequency || "",
+      period_number: injectionsData?.period_number || 0,
+      period_unit: injectionsData?.period_unit || "",
+      parental_route: injectionsData?.parental_route || "",
+      site: injectionsData?.site || "",
+      lot_number: injectionsData?.lot_number || 0,
+      expiration_date: injectionsData?.expiration_date || "",
+      administered_date: injectionsData?.administered_date || "",
+      administered_time: injectionsData?.administered_time || "",
+      note_to_nurse: injectionsData?.note_to_nurse || "",
+      comments: injectionsData?.comments || "",
+    },
+  });
+
   // GET Frequency Data
   const fetchFrequency = useCallback(async () => {
     setLoading((prev) => ({ ...prev, frequency: true }));
@@ -127,26 +147,6 @@ const InjectionsDialog = ({
       setLoading((prev) => ({ ...prev, dosage: false }));
     }
   }, [toast]);
-
-  const form = useForm<z.infer<typeof createInjectionSchema>>({
-    resolver: zodResolver(createInjectionSchema),
-    defaultValues: {
-      injection_name: injectionsData?.injection_name || "",
-      dosage_unit: injectionsData?.dosage_unit || "",
-      dosage_quantity: injectionsData?.dosage_quantity || 0,
-      frequency: injectionsData?.frequency || "",
-      period_number: injectionsData?.period_number || 0,
-      period_unit: injectionsData?.period_unit || "",
-      parental_route: injectionsData?.parental_route || "",
-      site: injectionsData?.site || "",
-      lot_number: injectionsData?.lot_number || 0,
-      expiration_date: injectionsData?.expiration_date || "",
-      administered_date: injectionsData?.administered_date || "",
-      administered_time: injectionsData?.administered_time || "",
-      note_to_nurse: injectionsData?.note_to_nurse || "",
-      comments: injectionsData?.comments || "",
-    },
-  });
 
   useEffect(() => {
     if (injectionsData) {

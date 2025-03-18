@@ -17,11 +17,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addPastMedicalHistorySchema } from "@/schema/addPastMedicalHistorySchema";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CreatePastMedicalHistoryType } from "@/services/pastMedicalHistoryInterface";
-import { createPastMedicalHistory } from "@/services/chartDetailsServices";
+import {
+  CreatePastMedicalHistoryType,
+  PastMedicalHistoryInterface,
+} from "@/services/pastMedicalHistoryInterface";
+import {
+  createPastMedicalHistory,
+  updatePastMedicalHistory,
+} from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
@@ -29,12 +35,14 @@ interface PastMedicalHistoryDialogProps {
   isOpen: boolean;
   userDetailsId: string;
   onClose: () => void;
+  selectedMedicaHistory?: PastMedicalHistoryInterface | null;
 }
 
 function PastMedicalHistoryDialog({
   isOpen,
   userDetailsId,
   onClose,
+  selectedMedicaHistory,
 }: PastMedicalHistoryDialogProps) {
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,10 +54,21 @@ function PastMedicalHistoryDialog({
   const form = useForm<z.infer<typeof addPastMedicalHistorySchema>>({
     resolver: zodResolver(addPastMedicalHistorySchema),
     defaultValues: {
-      notes: "",
-      glp_refill_note_practice: "",
+      notes: selectedMedicaHistory?.notes ?? "",
+      glp_refill_note_practice:
+        selectedMedicaHistory?.glp_refill_note_practice ?? "",
     },
   });
+
+  useEffect(() => {
+    if (selectedMedicaHistory) {
+      form.reset({
+        notes: selectedMedicaHistory.notes ?? "",
+        glp_refill_note_practice:
+          selectedMedicaHistory.glp_refill_note_practice ?? "",
+      });
+    }
+  }, [selectedMedicaHistory, form]);
 
   // POST Past Medical History
   const onSubmit = async (
@@ -63,13 +82,26 @@ function PastMedicalHistoryDialog({
 
     setLoading(true);
     try {
-      await createPastMedicalHistory({ requestData });
+      if (!selectedMedicaHistory) {
+        await createPastMedicalHistory({ requestData });
 
-      showToast({
-        toast,
-        type: "success",
-        message: "Past medical history created successfully",
-      });
+        showToast({
+          toast,
+          type: "success",
+          message: "Past medical history created successfully",
+        });
+      } else {
+        await updatePastMedicalHistory({
+          requestData,
+          id: selectedMedicaHistory.id,
+        });
+
+        showToast({
+          toast,
+          type: "success",
+          message: "Past medical history updated successfully",
+        });
+      }
     } catch (err) {
       if (err instanceof Error) {
         showToast({
