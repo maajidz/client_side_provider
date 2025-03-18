@@ -1,9 +1,11 @@
-'use client';
-import { ColumnDef } from '@tanstack/react-table';
-import { Checkbox } from '@/components/ui/checkbox';
-import { PastDiagnosesInterface } from '@/types/chartsInterface';
+"use client";
+import { ColumnDef } from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
+import { PastDiagnosesInterface } from "@/types/chartsInterface";
 
-export const columns = (handleRowSelection: (row: PastDiagnosesInterface, isSelected: boolean) => void): ColumnDef<PastDiagnosesInterface>[] => [
+export const columns = (
+  handleRowSelection: (row: PastDiagnosesInterface, isSelected: boolean) => void
+): ColumnDef<PastDiagnosesInterface>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -20,7 +22,7 @@ export const columns = (handleRowSelection: (row: PastDiagnosesInterface, isSele
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => {
-          row.toggleSelected(!!value)
+          row.toggleSelected(!!value);
           handleRowSelection(row.original, !!value);
         }}
         aria-label="Select row"
@@ -30,11 +32,13 @@ export const columns = (handleRowSelection: (row: PastDiagnosesInterface, isSele
     enableHiding: false,
   },
   {
-    accessorKey: 'diagnosis_name',
-    header: 'Title',
+    accessorKey: "diagnosis_name",
+    header: "Title",
+    cell: ({ row }) => <div>{row.original.type.diagnosis_name}</div>,
   },
   {
-    accessorKey: 'ICD_Code',
-    header: 'ICD Code',
+    accessorKey: "ICD_Code",
+    header: "ICD Code",
+    cell: ({ row }) => <div>{row.original.type.ICD_Code}</div>,
   },
 ];
