@@ -141,6 +141,7 @@ const Vaccines = ({
               onClose={() => {
                 setIsDialogOpen(false);
                 fetchHistoricalVaccine();
+                setEditData(undefined);
               }}
               vaccinesData={editData}
               onFetchHistoricalData={fetchHistoricalVaccine}

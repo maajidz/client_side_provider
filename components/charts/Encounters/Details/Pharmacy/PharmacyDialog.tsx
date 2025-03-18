@@ -1,5 +1,4 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import LoadingButton from "@/components/LoadingButton";
 import {
   Dialog,
   DialogContent,
@@ -39,6 +38,7 @@ import { z } from "zod";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import formStyles from "@/components/formStyles.module.css";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 interface PharmacyDialogInterface {
   isOpen: boolean;
@@ -285,9 +285,11 @@ function PharmacyDialog({
 
             {/* Results Table */}
             {isLoading.get || isLoading.post ? (
-              <LoadingButton />
+              <TableShimmer />
             ) : filteredData.length === 0 ? (
-              <p className="border border-red-100 bg-red-50 w-fit px-2 py-1 rounded-md text-xs text-red-500 font-medium">No pharmacies found.</p>
+              <p className="border border-red-100 bg-red-50 w-fit px-2 py-1 rounded-md text-xs text-red-500 font-medium">
+                No pharmacies found.
+              </p>
             ) : (
               <div className="mt-6">
                 <DefaultDataTable

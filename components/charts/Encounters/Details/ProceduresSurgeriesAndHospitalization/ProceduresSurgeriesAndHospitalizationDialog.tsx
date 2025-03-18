@@ -211,6 +211,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={procedureData ? true : false}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Choose type" />
