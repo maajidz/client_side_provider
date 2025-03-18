@@ -24,7 +24,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2Icon } from "lucide-react";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { useToast } from "@/hooks/use-toast";
-import { createFollowUp, createSOAPChart } from "@/services/chartsServices";
+import {
+  createFollowUp,
+  createSOAPChart,
+  updateSOAPChart,
+} from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
@@ -104,17 +108,20 @@ const FollowUpDialog = ({
     try {
       if (patientDetails.chart?.id) {
         const chartId = patientDetails.chart?.id;
-        const requestData = rows.map((row) => ({
-          ...row,
+
+        const data = {
+          plan: `Follow Up: ${rows.map((row) => row.type)}`,
+          encounterId: encounterId,
+        };
+
+        updateSOAPChart({
           chartId,
-        }));
-        console.log("Follow-Up:", requestData);
-        await createFollowUp({ requestData: requestData });
+          requestData: data,
+        });
         showToast({ toast, type: "success", message: "Saved!" });
       } else {
         const data = {
-          subjective: "",
-          plan: `Follow Up: ${rows} `,
+          plan: `Follow Up: ${rows.map((row) => row.type)}`,
           encounterId: encounterId,
         };
         const response = await createSOAPChart({ requestData: data });

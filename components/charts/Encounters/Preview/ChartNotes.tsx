@@ -2,10 +2,15 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { UserChart } from "@/types/chartsInterface";
+import { UserChart, UserEncounterData } from "@/types/chartsInterface";
 import React from "react";
 
-const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
+const ChartNotes = ({
+  patientDetails,
+}: {
+  patientDetails?: UserEncounterData;
+  patientChart?: UserChart;
+}) => {
   return (
     <ScrollArea className={cn("min-h-0 flex-grow")}>
       <div className="flex flex-col gap-4">
@@ -19,39 +24,63 @@ const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
               <div className="flex flex-col gap-1">
                 <ChartSubLabel label="Chief Complaints" />
                 <CardDescription className="flex flex-col gap-2">
-                  Weight is 123.75 lbs 0 ozs. Height is 61 ft 0 inches. BMI is
-                  0. The starting weight is 65 and the goal Weight is 56
+                  {patientDetails?.chart?.subjective ? (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: patientDetails?.chart?.subjective,
+                      }}
+                    />
+                  ) : (
+                    "N/A"
+                  )}
                 </CardDescription>
               </div>
               <div className="flex flex-col gap-1">
                 <ChartSubLabel label="History of Present Illness" />
                 <CardDescription className="flex flex-col gap-2">
-                  Weight is 123.75 lbs 0 ozs. Height is 61 ft 0 inches. BMI is
-                  0. The starting weight is 65 and the goal Weight is 56
+                  {patientDetails?.userDetails?.history_of_present_illness?.map(
+                    (data) => (
+                      <div
+                        key={data.id}
+                        dangerouslySetInnerHTML={{
+                          __html: data.content,
+                        }}
+                      />
+                    )
+                  )}
                 </CardDescription>
               </div>
               <div className="flex flex-col gap-1">
                 <ChartSubLabel label="Past Medical History" />
                 <CardDescription className="flex flex-col gap-2">
-                  Weight is 123.75 lbs 0 ozs. Height is 61 ft 0 inches. BMI is
-                  0. The starting weight is 65 and the goal Weight is 56
+                  {patientDetails?.userDetails?.medication_history?.map(
+                    (data) => (
+                      <div
+                        key={data.id}
+                        dangerouslySetInnerHTML={{
+                          __html: data.notes,
+                        }}
+                      />
+                    )
+                  )}
                 </CardDescription>
               </div>
               <div className="flex flex-col gap-1">
                 <ChartSubLabel label="Active Medications" />
                 <CardDescription className="flex flex-col gap-2">
-                  Weight is 123.75 lbs 0 ozs. Height is 61 ft 0 inches. BMI is
-                  0. The starting weight is 65 and the goal Weight is 56
+                  {patientDetails?.userDetails?.active_medications?.map(
+                    (data) => (
+                      <div
+                        key={data.id}
+                        dangerouslySetInnerHTML={{
+                          __html: data.medicationName.productName,
+                        }}
+                      />
+                    )
+                  )}
                 </CardDescription>
               </div>
             </CardDescription>
-            {patientChart?.subjective ? (
-              <div
-                dangerouslySetInnerHTML={{ __html: patientChart?.subjective }}
-              />
-            ) : (
-              "N/A"
-            )}
           </div>
         </Card>
         <Card className="flex flex-col gap-3 border-b">
@@ -62,7 +91,9 @@ const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
           <CardDescription className="flex flex-col gap-2">
             <ChartSubLabel label="Health Vitals" />
             <div>
-              {patientChart?.objective ? patientChart?.objective : "N/A"}
+              {patientDetails?.chart?.objective
+                ? patientDetails?.chart?.objective
+                : "N/A"}
             </div>
           </CardDescription>
         </Card>
@@ -74,7 +105,9 @@ const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
           <CardDescription className="flex flex-col gap-2">
             <ChartSubLabel label="Diagnoses" />
             <div>
-              {patientChart?.assessment ? patientChart?.assessment : "N/A"}
+              {patientDetails?.chart?.assessment
+                ? patientDetails?.chart?.assessment
+                : "N/A"}
             </div>
           </CardDescription>
         </Card>
@@ -86,7 +119,11 @@ const ChartNotes = ({ patientChart }: { patientChart: UserChart }) => {
           <CardDescription className="flex flex-col gap-2">
             <ChartSubLabel label="Diet Recommendations" />
             <ChartSubLabel label="Instructions" />
-            <div>{patientChart?.plan ? patientChart?.plan : "N/A"}</div>
+            <div>
+              {patientDetails?.chart?.plan
+                ? patientDetails?.chart?.plan
+                : "N/A"}
+            </div>
           </CardDescription>
         </Card>
       </div>

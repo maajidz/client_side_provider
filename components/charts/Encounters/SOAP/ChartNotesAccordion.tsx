@@ -23,9 +23,9 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
 import "@/app/editor.css";
-import { PlateEditor } from '@/components/ui/plate-editor/PlateEditor';
-import { Descendant } from 'slate';
-import TwoInput from '@/components/ui/TwoInput';
+import { PlateEditor } from "@/components/ui/plate-editor/PlateEditor";
+import { Descendant } from "slate";
+import TwoInput from "@/components/ui/TwoInput";
 
 const formSchema = z.object({
   weightInLbs: z.number(),
@@ -43,11 +43,15 @@ interface ChartNotesAccordionProps {
   encounterId: string;
 }
 
-const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartNotesAccordionProps) => {
+const ChartNotesAccordion = ({
+  patientDetails,
+  subjective,
+  encounterId,
+}: ChartNotesAccordionProps) => {
   const [editorValue, setEditorValue] = React.useState<Descendant[]>([
     {
-      type: 'paragraph',
-      children: [{ text: '' }],
+      type: "paragraph",
+      children: [{ text: "" }],
     },
   ]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -77,7 +81,7 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
         console.log("Error", error);
         setEditorValue([
           {
-            type: 'paragraph',
+            type: "paragraph",
             children: [{ text: subjective }],
           },
         ]);
@@ -85,36 +89,71 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
     }
   }, [subjective]);
 
-  const handleWeightChange = ({ first, second }: { first: number; second: number }) => {
-    form.setValue('weightInLbs', first);
-    form.setValue('weightInOzs', second);
+  const extractPlainText = (content: Descendant[]): string => {
+    return content
+      .map((node) => {
+        if ("text" in node) {
+          return node.text;
+        } else if ("children" in node) {
+          return node.children.map((child) => child.text).join(" "); // Extract text from children
+        }
+        return "";
+      })
+      .join("\n");
   };
 
-  const handleHeightChange = ({ first, second }: { first: number; second: number }) => {
-    form.setValue('heightInFt', first);
-    form.setValue('heightInInches', second);
+  const handleWeightChange = ({
+    first,
+    second,
+  }: {
+    first: number;
+    second: number;
+  }) => {
+    form.setValue("weightInLbs", first);
+    form.setValue("weightInOzs", second);
+  };
+
+  const handleHeightChange = ({
+    first,
+    second,
+  }: {
+    first: number;
+    second: number;
+  }) => {
+    form.setValue("heightInFt", first);
+    form.setValue("heightInInches", second);
   };
 
   const handleSaveContent = async () => {
     try {
       setLoading(true);
+      const plainText = extractPlainText(editorValue);
+
       const requestBody = {
-        subjective: JSON.stringify(editorValue),
+        subjective: plainText,
       };
-      
+
       if (patientDetails.chart?.id) {
         await updateSOAPChart({
           requestData: requestBody,
           chartId: patientDetails.chart.id,
         });
-        showToast({ toast, type: "success", message: "Content saved successfully" });
+        showToast({
+          toast,
+          type: "success",
+          message: "Content saved successfully",
+        });
       } else {
         const createRequestBody = {
           ...requestBody,
           encounterId: encounterId,
         };
         await createSOAPChart({ requestData: createRequestBody });
-        showToast({ toast, type: "success", message: "Content saved successfully" });
+        showToast({
+          toast,
+          type: "success",
+          message: "Content saved successfully",
+        });
       }
     } catch (e) {
       console.error("Error saving content:", e);
@@ -125,7 +164,6 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("Values", values);
     try {
       setLoading(true);
       if (patientDetails.chart?.id) {
@@ -146,7 +184,6 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
         showToast({ toast, type: "success", message: "Saved!" });
       } else {
         const requestBody = {
-          subjective: "",
           objective: `Weight is ${values.weightInLbs} lbs ${values.weightInOzs} ozs. Height is ${values.heightInFt} ft ${values.heightInInches} inches. BMI is ${values.bmi}. The starting weight is ${values.startingWeight} and the goal Weight is ${values.goalWeight}`,
           encounterId: encounterId,
         };
@@ -189,8 +226,8 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
           />
         </div>
         <div className="flex justify-end items-end w-full">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={handleSaveContent}
             disabled={loading}
           >
@@ -201,8 +238,10 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
       <div className="flex flex-col gap-2">
         <h6>Vitals</h6>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} 
-          className="[&_input]:!w-24 [&_input+label]:!absolute [&_input+label]:top-1/2 [&_input+label]:-translate-y-1/2 [&_input+label]:right-2 [&_input+label]:!text-xs [&_input+label]:!text-gray-500 [&_input+label]:!font-semibold">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="[&_input]:!w-24 [&_input+label]:!absolute [&_input+label]:top-1/2 [&_input+label]:-translate-y-1/2 [&_input+label]:right-2 [&_input+label]:!text-xs [&_input+label]:!text-gray-500 [&_input+label]:!font-semibold"
+          >
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap gap-6">
                 <FormLabels
@@ -238,9 +277,7 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
                   name="bmi"
                   render={({ field }) => (
                     <FormItem className="flex gap-1 items-start">
-                      <FormLabel>
-                        BMI:
-                      </FormLabel>
+                      <FormLabel>BMI:</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="BMI"
@@ -262,9 +299,7 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
                   name="startingWeight"
                   render={({ field }) => (
                     <FormItem className="flex gap-1 items-start relative">
-                      <FormLabel>
-                        Starting Weight:{" "}
-                      </FormLabel>
+                      <FormLabel>Starting Weight: </FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -285,9 +320,7 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
                   name="goalWeight"
                   render={({ field }) => (
                     <FormItem className="flex gap-1 items-start relative">
-                      <FormLabel>
-                        Goal Weight:{" "}
-                      </FormLabel>
+                      <FormLabel>Goal Weight: </FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -305,11 +338,7 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
                 />
               </div>
               <div className="flex justify-end items-end w-full">
-                <Button
-                  type="submit"
-                  variant="ghost"
-                  onClick={handleSaveContent}
-                >
+                <Button type="submit" variant="ghost">
                   Save Content
                 </Button>
               </div>

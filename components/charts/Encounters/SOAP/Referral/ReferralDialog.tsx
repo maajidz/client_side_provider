@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -34,11 +34,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createTransfer } from "@/services/chartsServices";
+import { createTransfer, getEncounterList } from "@/services/chartsServices";
 import LoadingButton from "@/components/LoadingButton";
 import { Textarea } from "@/components/ui/textarea";
 import { TrashIcon } from "lucide-react";
 import { DiagnosesClient } from "@/components/tables/charts/diagnoses/client";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { fetchProviderListDetails } from "@/services/registerServices";
+import { EncounterInterface } from "@/types/encounterInterface";
 
 const ReferralDialog = ({
   patientDetails,
@@ -49,6 +52,8 @@ const ReferralDialog = ({
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [providerList, setProviderList] = useState<FetchProviderList[]>([]);
+  const [chartList, setChartList] = useState<EncounterInterface>();
   const [selectedDiagnoses, setSelectedDiagnoses] = useState<
     PastDiagnosesInterface[]
   >([]);
@@ -61,9 +66,10 @@ const ReferralDialog = ({
   const form = useForm<z.infer<typeof referralFormSchema>>({
     resolver: zodResolver(referralFormSchema),
     defaultValues: {
-      // referralFrom: "",
       referralTo: "",
       referralReason: "",
+      referralFrom: providerDetails.providerId,
+      userDetailsId: patientDetails.userDetails.userDetailsId,
       referralDate: new Date().toISOString().split("T")[0],
       priority: "Normal",
       relatedEncounter: "",
@@ -71,13 +77,51 @@ const ReferralDialog = ({
     },
   });
 
+  const fetchProviderList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+
+      if (response) {
+        setProviderList(response.data || []);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchEncounterList = useCallback(
+    async (page: number) => {
+      setLoading(true);
+      try {
+        if (providerDetails) {
+          const response = await getEncounterList({
+            id: providerDetails.providerId,
+            idType: "providerID",
+            limit: 2,
+            page,
+          });
+          if (response) {
+            setChartList(response);
+          }
+          setLoading(false);
+        }
+      } catch (e) {
+        console.log("Error", e);
+      }
+    },
+    [providerDetails]
+  );
+
   const onSubmit = async (values: z.infer<typeof referralFormSchema>) => {
     console.log("Form Values:", values);
     const requestData = {
-      // referringToProviderID: values.referralTo,
       referringToProviderID: values.referralTo,
       referringFromProviderID: providerDetails.providerId,
-      referralType: "",
+      referralType: "Internal",
       referralReason: values.referralReason,
       priority: values.priority,
       notes: values.referralNotes ?? "",
@@ -89,8 +133,7 @@ const ReferralDialog = ({
     };
     setLoading(true);
     try {
-      await createTransfer({ requestData: requestData });
-      setIsDialogOpen(false);
+      await createTransfer({ requestData });
     } catch (e) {
       console.log("Error:", e);
     } finally {
@@ -99,7 +142,10 @@ const ReferralDialog = ({
     }
   };
 
-  console.log(patientDetails);
+  useEffect(() => {
+    fetchEncounterList(1);
+    fetchProviderList();
+  }, [fetchEncounterList, fetchProviderList]);
 
   if (loading) {
     <div>
@@ -133,7 +179,8 @@ const ReferralDialog = ({
                     <div className="flex flex-col border p-3 w-full">
                       <div>Patient</div>
                       <div>
-                        {patientDetails?.userDetails?.firstName} {patientDetails?.userDetails?.lastName}
+                        {patientDetails?.userDetails?.firstName}{" "}
+                        {patientDetails?.userDetails?.lastName}
                       </div>
                     </div>
                     <div className="flex flex-col border p-3 w-full">
@@ -157,15 +204,14 @@ const ReferralDialog = ({
                                 <SelectValue placeholder="Select internal provider" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="provider1">
-                                  Provider 1
-                                </SelectItem>
-                                <SelectItem value="provider2">
-                                  Provider 2
-                                </SelectItem>
-                                <SelectItem value="provider3">
-                                  Provider 3
-                                </SelectItem>
+                                {providerList.map((provider) => (
+                                  <SelectItem
+                                    key={provider.id}
+                                    value={provider.providerDetails?.id ?? ""}
+                                  >
+                                    {provider.firstName} {provider.lastName}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -234,7 +280,25 @@ const ReferralDialog = ({
                           <FormItem>
                             <FormLabel>Related Encounter:</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select encounter" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {chartList?.response?.map((chart) => (
+                                    <SelectItem
+                                      key={chart?.id}
+                                      value={chart?.id}
+                                    >
+                                      {chart?.createdAt.split("T")[0]}{" "}
+                                      {chart?.id}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -283,7 +347,7 @@ const ReferralDialog = ({
                             {selectedDiagnoses.map((diagnosis) => (
                               <li key={diagnosis.id}>
                                 <div className="flex justify-between">
-                                  <div>{diagnosis.diagnosis_name} </div>
+                                  <div>{diagnosis.type.diagnosis_name} </div>
                                   <Button
                                     variant={"ghost"}
                                     onClick={() => {
@@ -358,7 +422,7 @@ const ReferralDialog = ({
               <Button
                 type="submit"
                 onClick={() => {
-                  console.log(form.getValues().referralReason);
+                  console.log(form.getValues());
                 }}
               >
                 Save
