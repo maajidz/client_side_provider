@@ -1,6 +1,5 @@
 "use client";
 
-import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
   SelectContent,
@@ -165,7 +164,7 @@ const AddMedicationBody = ({ userDetailsId }: AddMedicationBodyProps) => {
 
       {/* Data Table */}
       {isLoading.get || isLoading.post ? (
-        <LoadingButton />
+        <div>Loading...</div>
       ) : (
         <DefaultDataTable
           columns={columns(handleSelectedMedication)}

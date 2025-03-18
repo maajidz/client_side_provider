@@ -184,14 +184,7 @@ function VaccinesDialog({
   useEffect(() => {
     if (vaccinesData) {
       form.reset(vaccinesData);
-    } else {
-      form.reset({
-        vaccine_name: "",
-        in_series: "",
-        date: new Date().toISOString().split("T")[0],
-        source: "",
-        notes: "",
-      });
+      setSearchTerm(vaccinesData.vaccine_name);
     }
   }, [form, vaccinesData]);
 
@@ -241,6 +234,7 @@ function VaccinesDialog({
                               setSearchTerm(e.target.value);
                               setIsListVisible(true);
                             }}
+                            disabled={vaccinesData ? true : false}
                           />
                           {searchTerm && isListVisible && (
                             <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">

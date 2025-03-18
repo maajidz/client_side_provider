@@ -1,5 +1,4 @@
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -121,8 +120,6 @@ function EditMedicationPrescription({
     }
   }
 
-  if (loading) return <LoadingButton />;
-
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleModalOpen}>
       <DialogTrigger asChild>
@@ -232,7 +229,10 @@ function EditMedicationPrescription({
                   >
                     Cancel
                   </Button>
-                  <SubmitButton label="Save" disabled={loading} />
+                  <SubmitButton
+                    label={loading ? "Saving" : "Save"}
+                    disabled={loading}
+                  />
                 </div>
               </DialogFooter>
             </div>

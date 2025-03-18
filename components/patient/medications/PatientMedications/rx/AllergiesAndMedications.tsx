@@ -209,7 +209,7 @@ function AllergiesAndMedications({
                 className="flex-1"
               >
                 <CardTitle className="font-medium gap-2 justify-between w-full">
-                  {supplement.supplement || "Supplement 1"}
+                  {supplement.type.supplement_name || "Supplement 1"}
                   <Badge variant={statusBadgeMap[supplement.status.toLowerCase() as keyof typeof statusBadgeMap]} showIndicator>
                     {supplement.status}
                   </Badge>
