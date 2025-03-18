@@ -18,7 +18,7 @@ interface TabMenuProps {
     onClose: () => void;
 }
 
-const TabMenu: React.FC<TabMenuProps> = ({ patientDetails, onClose }) => {
+const TabMenu: React.FC<TabMenuProps> = ({ patientDetails }) => {
     return (
         <div className='flex flex-row gap-2'>
             {/* {patientDetails.chart === null ? (
@@ -76,7 +76,7 @@ const TabMenu: React.FC<TabMenuProps> = ({ patientDetails, onClose }) => {
                     <DropdownMenuItem>Surveillance Report</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <button onClick={onClose}>Close</button>
+            {/* <button onClick={onClose}>Close</button> */}
         </div>
     )
 }

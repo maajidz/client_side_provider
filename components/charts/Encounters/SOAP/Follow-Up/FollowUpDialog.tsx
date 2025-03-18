@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useState } from "react";
 import {
   Dialog,
@@ -152,7 +151,7 @@ const FollowUpDialog = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <GhostButton>Add Follow up</GhostButton> 
+        <Button variant={"ghost"}>Add Follow up</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
