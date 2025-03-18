@@ -13,12 +13,20 @@ export interface SupplementInterface {
   userDetailsId: string;
 }
 
-export interface SupplementInterfaceResponse extends SupplementInterface {
+export interface SupplementInterfaceResponse {
   id: string;
-  type: {
-    supplement_name: string;
-    description: string;
-  };
+  manufacturer: string;
+  fromDate: string;
+  toDate: string;
+  status: "Active" | "Inactive";
+  dosage: string;
+  unit: string;
+  frequency: string;
+  intake_type: string;
+  comments: string;
+  createdAt: string;
+  updatedAt: string;
+  type: SupplementTypesInterface;
 }
 
 export interface SupplementTypesInterface {

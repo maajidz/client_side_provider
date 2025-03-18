@@ -13,7 +13,6 @@ import {
   updateSupplement,
 } from "@/services/chartDetailsServices";
 import {
-  SupplementInterface,
   SupplementInterfaceResponse,
   UpdateSupplementType,
 } from "@/types/supplementsInterface";
@@ -46,15 +45,16 @@ const handleSupplementDelete = async (
 const handleSupplementStatus = async (
   status: "Active" | "Inactive",
   id: string,
-  supplementData: SupplementInterface,
+  supplementData: SupplementInterfaceResponse,
   setLoading: (loading: boolean) => void,
   showToast: (args: { type: string; message: string }) => void,
-  fetchSupplements: () => void
+  fetchSupplements: () => void,
+  userDetailsId: string
 ) => {
   setLoading(true);
   const requestData: UpdateSupplementType = {
-    supplementId: supplementData.supplement,
-    supplement: supplementData.supplement,
+    supplementId: supplementData.type.id,
+    supplement: supplementData.type.supplement_name,
     manufacturer: supplementData.manufacturer,
     fromDate: supplementData.fromDate,
     toDate: supplementData.toDate,
@@ -64,7 +64,7 @@ const handleSupplementStatus = async (
     frequency: supplementData.unit,
     intake_type: supplementData.intake_type,
     comments: supplementData.comments,
-    userDetailsId: supplementData.userDetailsId,
+    userDetailsId: userDetailsId,
   };
   try {
     await updateSupplement({
@@ -90,6 +90,7 @@ export const columns = ({
   setLoading,
   showToast,
   fetchSupplementsList,
+  userDetailsId,
 }: {
   setEditData: (data: SupplementInterfaceResponse | null) => void;
   setIsDialogOpen: Dispatch<
@@ -101,6 +102,7 @@ export const columns = ({
   setLoading: (loading: boolean) => void;
   showToast: (args: { type: string; message: string }) => void;
   fetchSupplementsList: () => void;
+  userDetailsId: string;
 }): ColumnDef<SupplementInterfaceResponse>[] => [
   {
     accessorKey: "supplementType",
@@ -209,7 +211,8 @@ export const columns = ({
                     row.original,
                     setLoading,
                     showToast,
-                    fetchSupplementsList
+                    fetchSupplementsList,
+                    userDetailsId
                   );
                 }}
               >
@@ -224,7 +227,8 @@ export const columns = ({
                     row.original,
                     setLoading,
                     showToast,
-                    fetchSupplementsList
+                    fetchSupplementsList,
+                    userDetailsId
                   );
                 }}
               >
