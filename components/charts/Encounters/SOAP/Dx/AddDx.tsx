@@ -27,7 +27,6 @@ import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import LoadingButton from "@/components/LoadingButton";
 
 const AddDx = ({
@@ -156,22 +155,17 @@ const AddDx = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <GhostButton>Add Dx</GhostButton>
+        <Button variant={"ghost"}>Add Dx</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg sm:h-56">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Diagnoses</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col items-center gap-4">
-          <div className="flex gap-4">
-            <div className="w-32">Diagnosis</div>
-            <div className="w-32">ICD Codes</div>
-            <div className="w-32">Notes</div>
-          </div>
           <div className="flex flex-col gap-2">
             {rows.map((row, index) => (
-              <div className="flex justify-between" key={index}>
+              <div className="flex gap-2" key={index}>
                 <div className="relative">
                   <Input
                     type="text"
@@ -184,7 +178,6 @@ const AddDx = ({
                       setSearchTerm(e.target.value);
                       setIsListVisible(true);
                     }}
-                    className="col-span-4 border rounded"
                   />
 
                   {loading && <LoadingButton />}
@@ -214,14 +207,12 @@ const AddDx = ({
                   onChange={(e) =>
                     handleChange(index, "ICD_Code", e.target.value)
                   }
-                  className="col-span-4 border rounded sm:max-w-32 "
                 />
                 <Input
                   type="text"
                   placeholder="Notes"
                   value={row.notes}
                   onChange={(e) => handleChange(index, "notes", e.target.value)}
-                  className="col-span-3 border rounded sm:max-w-32"
                 />
                 <Button
                   variant={"ghost"}
