@@ -232,13 +232,6 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                 )}
               </div>
             )}
-            {/* <TasksList
-              error={error}
-              isLoading={loading}
-              patientDetails={patientDetails}
-              tasksData={tasksData}
-              onFetchTasks={fetchTasks}
-            /> */}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

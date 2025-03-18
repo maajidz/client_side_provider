@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -41,6 +41,8 @@ import { showToast } from "@/utils/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { FetchProviderList } from "@/types/providerDetailsInterface";
+import { fetchProviderListDetails } from "@/services/registerServices";
 
 const RecallsDialog = ({
   userDetailsId,
@@ -54,6 +56,8 @@ const RecallsDialog = ({
   isOpen: boolean;
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
+  const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
   const providerDetails = useSelector((state: RootState) => state.login);
   const { toast } = useToast();
 
@@ -71,6 +75,27 @@ const RecallsDialog = ({
       sendAutoReminders: false,
     },
   });
+
+  const fetchOwnersList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+
+      if (response) {
+        setOwnersList(response.data);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOwnersList();
+  }, [fetchOwnersList]);
+
   useEffect(() => {
     if (recallsData) {
       form.reset({
@@ -82,10 +107,17 @@ const RecallsDialog = ({
           unit: recallsData.due_date_unit || "",
         },
         sendAutoReminders: recallsData.auto_reminders || false,
-        provider: recallsData.providerId || "",
       });
+      if (recallsData?.providerId) {
+        setSelectedOwner(
+          ownersList.find(
+            (owner) => owner.providerDetails?.id === recallsData?.providerId
+          )
+        );
+        form.setValue("provider", selectedOwner?.providerDetails?.id ?? "");
+      }
     }
-  }, [recallsData, form]);
+  }, [recallsData, form, selectedOwner, ownersList]);
 
   const onSubmit = async (values: z.infer<typeof recallFormSchema>) => {
     console.log("Form Values:", values);
@@ -202,13 +234,13 @@ const RecallsDialog = ({
                       </FormItem>
                     )}
                   />
-                  <FormField 
+                  <FormField
                     control={form.control}
                     name="dueDate.value"
                     render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Value</FormLabel>
-                          <FormControl>
+                      <FormItem>
+                        <FormLabel>Value</FormLabel>
+                        <FormControl>
                           <Input
                             type="number"
                             min={1}
@@ -220,7 +252,6 @@ const RecallsDialog = ({
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                      
                     )}
                   />
                   <FormField
@@ -258,7 +289,31 @@ const RecallsDialog = ({
                     <FormItem>
                       <FormLabel>Provider</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Select
+                          value={field.value}
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            const selected = ownersList.find(
+                              (owner) => owner.id === value
+                            );
+                            setSelectedOwner(selected);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Owner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {loading ? (
+                              <div> Loading...</div>
+                            ) : (
+                              ownersList.map((owner) => (
+                                <SelectItem key={owner.id} value={owner.id}>
+                                  {owner.firstName} {owner.lastName}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

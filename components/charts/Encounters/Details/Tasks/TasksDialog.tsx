@@ -127,10 +127,11 @@ function TasksDialog({
         setShowDueDate(true);
       }
       setSelectedOwner(
-        ownersList.find((owner) => owner.id === tasksData.assignerProvider?.id)
+        ownersList.find((owner) => owner.providerDetails?.id === tasksData.assignerProvider?.id)
       );
+      form.setValue("owner", selectedOwner?.providerDetails?.id ?? "")
     }
-  }, [form, tasksData, ownersList, showDueDate]);
+  }, [form, tasksData, ownersList, showDueDate, selectedOwner?.providerDetails?.id]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     const requestData: CreateTaskType | UpdateTaskType = {
