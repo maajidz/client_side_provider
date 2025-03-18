@@ -55,6 +55,15 @@ export interface TasksResponseDataInterface {
   updatedAt: string;
   assignedProvider: ProviderDetails;
   assignerProvider: ProviderDetails;
+  taskType: TaskType
+}
+
+export interface TaskType {
+  id: string
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Status {
