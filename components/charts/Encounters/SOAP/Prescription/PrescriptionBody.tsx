@@ -1,5 +1,4 @@
 import React from 'react'
-import { Separator } from '@/components/ui/separator'
 import AddRx from './AddRx'
 import PastRx from './PastRx'
 import { UserEncounterData } from '@/types/chartsInterface'
@@ -13,12 +12,10 @@ const PrescriptionBody = ({patientDetails, encounterId}: {patientDetails: UserEn
     
     return (
         <div className='flex justify-between border-b pb-3'>
-            <div>Prescriptions</div>
+            <label className='text-sm font-semibold'>Prescriptions</label>
             <div className="flex h-5 items-center space-x-4 text-sm">
                 <AddRx patientDetails={patientDetails} encounterId={encounterId}/>
-                <Separator orientation="vertical" />
                 <PastRx patientDetails={patientDetails}/>
-                <Separator orientation="vertical" />
                 {/* <Popover>
                     <PopoverTrigger asChild>
                         <Button variant="ghost" className='text-blue-500 underline'>Sign</Button>

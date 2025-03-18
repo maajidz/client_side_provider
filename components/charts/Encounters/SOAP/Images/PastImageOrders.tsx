@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useState } from "react";
 import {
   Dialog,
@@ -11,7 +10,7 @@ import {
 import LoadingButton from "@/components/LoadingButton";
 import { getImagesOrdersData } from "@/services/chartsServices";
 import { ImageOrdersResponseInterface } from "@/types/chartsInterface";
-
+import { Button } from "@/components/ui/button";
 const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,7 +49,7 @@ const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
-        <GhostButton>Past Orders</GhostButton>
+        <Button variant={"ghost"}>Past Orders</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>

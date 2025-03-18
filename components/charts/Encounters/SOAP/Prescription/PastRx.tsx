@@ -1,7 +1,5 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useEffect, useState } from "react";
 import LoadingButton from "@/components/LoadingButton";
-// import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -11,8 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-// import { Button } from "@/components/ui/button";
-// import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import { FetchPrescription, UserEncounterData } from "@/types/chartsInterface";
 import { getPrescriptionsData } from "@/services/chartsServices";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
@@ -51,7 +48,7 @@ const PastRx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <GhostButton>Past Rx </GhostButton>
+        <Button variant={"ghost"}>Past Rx</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>

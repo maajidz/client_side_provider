@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useState } from "react";
 import {
   Dialog,
@@ -13,7 +12,7 @@ import { getLabOrdersData } from "@/services/chartsServices";
 import LoadingButton from "@/components/LoadingButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-
+import { Button } from "@/components/ui/button";
 const PastOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const [open, setOpen] = useState<boolean>(false);
@@ -56,7 +55,7 @@ const PastOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
-        <GhostButton onClick={fetchAndSetResponse}>Past Orders </GhostButton>
+        <Button variant={"ghost"} onClick={fetchAndSetResponse}>Past Orders </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>

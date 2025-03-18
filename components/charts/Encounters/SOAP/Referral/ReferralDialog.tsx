@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
@@ -111,7 +110,7 @@ const ReferralDialog = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <GhostButton>Add Referral </GhostButton>
+        <Button variant={"ghost"}>Add Referral </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[98rem]">
         <DialogHeader>
@@ -264,7 +263,7 @@ const ReferralDialog = ({
                         <div>Diagnoses</div>
                         <Dialog>
                           <DialogTrigger asChild>
-                            <GhostButton> Choose</GhostButton>
+                            <Button variant={"ghost"}> Choose</Button>
                           </DialogTrigger>
                           <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
