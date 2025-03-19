@@ -34,7 +34,7 @@ const ViewPatientMedications = ({
   >([]);
 
   // Pagination State
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -69,7 +69,7 @@ const ViewPatientMedications = ({
           const response = await getUserPrescriptionsData({
             userDetailsId,
             page,
-            limit: itemsPerPage,
+            limit: itemsPerPage
           });
           if (response) {
             const filteredData = response.data.filter(
