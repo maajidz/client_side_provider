@@ -275,7 +275,7 @@ const TasksDialog = ({
                             onValueChange={(value) => {
                               field.onChange(value);
                               const selected = ownersList.find(
-                                (owner) => owner.id === value
+                                (owner) => owner.providerDetails?.id === value
                               );
                               setSelectedOwner(selected);
                             }}
@@ -288,7 +288,7 @@ const TasksDialog = ({
                                 <div>Loading...</div>
                               ) : (
                                 ownersList.map((owner) => (
-                                  <SelectItem key={owner.id} value={owner.id}>
+                                  <SelectItem key={owner.id} value={owner.providerDetails?.id ?? owner.id}>
                                     {owner.firstName} {owner.lastName}
                                   </SelectItem>
                                 ))

@@ -179,8 +179,8 @@ const RecallsDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <ScrollArea>
-              <div className="max-h-[90dvh] h-auto flex flex-col items-start gap-6">
+            <ScrollArea className="max-h-[90dvh] h-auto">
+              <div className="flex flex-col gap-6">
                 <FormField
                   control={form.control}
                   name="type"
@@ -209,7 +209,7 @@ const RecallsDialog = ({
                     </FormItem>
                   )}
                 />
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex flex-wrap gap-1 ">
                   <FormField
                     control={form.control}
                     name="dueDate.period"
@@ -280,7 +280,6 @@ const RecallsDialog = ({
                     )}
                   />
                 </div>
-
                 {/* Provider */}
                 <FormField
                   control={form.control}
@@ -294,7 +293,7 @@ const RecallsDialog = ({
                           onValueChange={(value) => {
                             field.onChange(value);
                             const selected = ownersList.find(
-                              (owner) => owner.id === value
+                              (owner) => owner.providerDetails?.id === value
                             );
                             setSelectedOwner(selected);
                           }}
@@ -307,7 +306,7 @@ const RecallsDialog = ({
                               <div> Loading...</div>
                             ) : (
                               ownersList.map((owner) => (
-                                <SelectItem key={owner.id} value={owner.id}>
+                                <SelectItem key={owner.id} value={owner?.providerDetails?.id ?? owner.id}>
                                   {owner.firstName} {owner.lastName}
                                 </SelectItem>
                               ))
