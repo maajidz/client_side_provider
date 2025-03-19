@@ -30,7 +30,7 @@ export default function RootLayout({
         className={`${outfit.variable} ${plusJakartaSans.variable} antialiased`}
       >
         <ReduxProvider>
-          <NextTopLoader showSpinner={false} />
+          <NextTopLoader showSpinner={true} />
           <Toaster />
           <div className="flex flex-1 w-full">{children}</div>
         </ReduxProvider>
