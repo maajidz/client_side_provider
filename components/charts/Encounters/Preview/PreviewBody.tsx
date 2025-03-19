@@ -40,7 +40,7 @@ const PreviewBody = ({
           {/* <TabsTrigger value="questionnaires"><FileQuestion /></TabsTrigger> */}
         </TabsList>
         <TabsContent value="chartNotes" className="md:px-0 p-0">
-          <ChartNotes patientChart={patientDetails.chart} />
+          <ChartNotes patientDetails={patientDetails} />
         </TabsContent>
         {/* <TabsContent value="flowsheet">
                     <FlowSheet />

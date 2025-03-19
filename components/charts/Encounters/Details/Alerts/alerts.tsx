@@ -102,6 +102,7 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
               onClose={() => {
                 setIsDialogOpen(false);
                 fetchAlerts();
+                setEditData(null);
               }}
               isOpen={isDialogOpen}
             />

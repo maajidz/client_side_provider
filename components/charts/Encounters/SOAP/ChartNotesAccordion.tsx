@@ -23,8 +23,9 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
 import "@/app/editor.css";
-import { PlateEditor } from '@/components/ui/plate-editor/PlateEditor';
-import { Descendant } from 'slate';
+import { PlateEditor } from "@/components/ui/plate-editor/PlateEditor";
+import { Descendant } from "slate";
+import TwoInput from "@/components/ui/TwoInput";
 
 const formSchema = z.object({
   weightInLbs: z.number(),
@@ -42,11 +43,15 @@ interface ChartNotesAccordionProps {
   encounterId: string;
 }
 
-const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartNotesAccordionProps) => {
+const ChartNotesAccordion = ({
+  patientDetails,
+  subjective,
+  encounterId,
+}: ChartNotesAccordionProps) => {
   const [editorValue, setEditorValue] = React.useState<Descendant[]>([
     {
-      type: 'paragraph',
-      children: [{ text: '' }],
+      type: "paragraph",
+      children: [{ text: "" }],
     },
   ]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,9 +64,6 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
         ? Number(patientDetails?.progressTracker?.currentWeight)
         : 0,
       weightInOzs: 0,
-      // heightInFt: patientDetails.userDetails?.height
-      //   ? Number(patientDetails.userDetails?.height)
-      //   : 0,
       heightInFt: 0,
       heightInInches: 0,
       bmi: 0,
@@ -79,7 +81,7 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
         console.log("Error", error);
         setEditorValue([
           {
-            type: 'paragraph',
+            type: "paragraph",
             children: [{ text: subjective }],
           },
         ]);
@@ -87,26 +89,71 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
     }
   }, [subjective]);
 
+  const extractPlainText = (content: Descendant[]): string => {
+    return content
+      .map((node) => {
+        if ("text" in node) {
+          return node.text;
+        } else if ("children" in node) {
+          return node.children.map((child) => child.text).join(" "); // Extract text from children
+        }
+        return "";
+      })
+      .join("\n");
+  };
+
+  const handleWeightChange = ({
+    first,
+    second,
+  }: {
+    first: number;
+    second: number;
+  }) => {
+    form.setValue("weightInLbs", first);
+    form.setValue("weightInOzs", second);
+  };
+
+  const handleHeightChange = ({
+    first,
+    second,
+  }: {
+    first: number;
+    second: number;
+  }) => {
+    form.setValue("heightInFt", first);
+    form.setValue("heightInInches", second);
+  };
+
   const handleSaveContent = async () => {
     try {
       setLoading(true);
+      const plainText = extractPlainText(editorValue);
+
       const requestBody = {
-        subjective: JSON.stringify(editorValue),
+        subjective: plainText,
       };
-      
+
       if (patientDetails.chart?.id) {
         await updateSOAPChart({
           requestData: requestBody,
           chartId: patientDetails.chart.id,
         });
-        showToast({ toast, type: "success", message: "Content saved successfully" });
+        showToast({
+          toast,
+          type: "success",
+          message: "Content saved successfully",
+        });
       } else {
         const createRequestBody = {
           ...requestBody,
           encounterId: encounterId,
         };
         await createSOAPChart({ requestData: createRequestBody });
-        showToast({ toast, type: "success", message: "Content saved successfully" });
+        showToast({
+          toast,
+          type: "success",
+          message: "Content saved successfully",
+        });
       }
     } catch (e) {
       console.error("Error saving content:", e);
@@ -117,7 +164,6 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("Values", values);
     try {
       setLoading(true);
       if (patientDetails.chart?.id) {
@@ -138,7 +184,6 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
         showToast({ toast, type: "success", message: "Saved!" });
       } else {
         const requestBody = {
-          subjective: "",
           objective: `Weight is ${values.weightInLbs} lbs ${values.weightInOzs} ozs. Height is ${values.heightInFt} ft ${values.heightInInches} inches. BMI is ${values.bmi}. The starting weight is ${values.startingWeight} and the goal Weight is ${values.goalWeight}`,
           encounterId: encounterId,
         };
@@ -169,7 +214,7 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-2">
       <div className="flex flex-col gap-2">
         <h6>Chief Complaints</h6>
         <div className="flex flex-col gap-2">
@@ -181,8 +226,8 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
           />
         </div>
         <div className="flex justify-end items-end w-full">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={handleSaveContent}
             disabled={loading}
           >
@@ -193,128 +238,46 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
       <div className="flex flex-col gap-2">
         <h6>Vitals</h6>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="[&_input]:!w-24 [&_input+label]:!absolute [&_input+label]:top-1/2 [&_input+label]:-translate-y-1/2 [&_input+label]:right-2 [&_input+label]:!text-xs [&_input+label]:!text-gray-500 [&_input+label]:!font-semibold"
+          >
             <div className="flex flex-col gap-2">
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-6">
                 <FormLabels
-                  className="[]"
+                  className="flex-col !items-start"
                   label="Weight"
                   value={
-                    <div className="flex gap-2 items-center">
-                      <FormField
-                        control={form.control}
-                        name="weightInLbs"
-                        render={({ field }) => (
-                          <FormItem className="flex gap-1 items-center">
-                            <FormControl>
-                              <Input
-                                placeholder="Weight"
-                                {...field}
-                                className="text-base font-semibold w-32"
-                                onChange={(e) =>
-                                  field.onChange(Number(e.target.value))
-                                }
-                                type="number"
-                                inputMode="numeric"
-                              />
-                            </FormControl>
-                            <FormLabel className="text-base font-normal text-center">
-                              lbs
-                            </FormLabel>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="weightInOzs"
-                        render={({ field }) => (
-                          <FormItem className="flex gap-1 items-center">
-                            <FormControl>
-                              <Input
-                                placeholder="Weight"
-                                {...field}
-                                className="text-base font-semibold w-32"
-                                onChange={(e) =>
-                                  field.onChange(Number(e.target.value))
-                                }
-                                type="number"
-                                inputMode="numeric"
-                              />
-                            </FormControl>
-                            <FormLabel className="text-base font-normal">
-                              ozs
-                            </FormLabel>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                    <TwoInput
+                      postfixFirst="lbs"
+                      postfixSecond="ozs"
+                      focusAfter={3}
+                      idFirst="weight-first-input"
+                      idSecond="weight-second-input"
+                      onChange={handleWeightChange}
+                    />
                   }
                 />
                 <FormLabels
                   label="Height"
+                  className="flex-col !items-start"
                   value={
-                    <div className="flex gap-2 items-center">
-                      <FormField
-                        control={form.control}
-                        name="heightInFt"
-                        render={({ field }) => (
-                          <FormItem className="flex gap-1 items-center">
-                            <FormControl>
-                              <Input
-                                placeholder="Height"
-                                {...field}
-                                className="text-base font-semibold w-32"
-                                onChange={(e) =>
-                                  field.onChange(Number(e.target.value))
-                                }
-                                type="number"
-                                inputMode="numeric"
-                              />
-                            </FormControl>
-                            <FormLabel className="text-base font-normal text-center">
-                              ft
-                            </FormLabel>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="heightInInches"
-                        render={({ field }) => (
-                          <FormItem className="flex gap-1 items-center">
-                            <FormControl>
-                              <Input
-                                placeholder="Height"
-                                {...field}
-                                className="text-base font-semibold w-32"
-                                onChange={(e) =>
-                                  field.onChange(Number(e.target.value))
-                                }
-                                type="number"
-                                inputMode="numeric"
-                              />
-                            </FormControl>
-                            <FormLabel className="text-base font-normal">
-                              inches
-                            </FormLabel>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                    <TwoInput
+                      postfixFirst="ft"
+                      postfixSecond="in"
+                      focusAfter={1}
+                      idFirst="height-first-input"
+                      idSecond="height-second-input"
+                      onChange={handleHeightChange}
+                    />
                   }
                 />
                 <FormField
                   control={form.control}
                   name="bmi"
                   render={({ field }) => (
-                    <FormItem className="flex gap-1 items-center">
-                      <FormLabel className="text-base font-normal">
-                        BMI:
-                      </FormLabel>
+                    <FormItem className="flex gap-1 items-start">
+                      <FormLabel>BMI:</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="BMI"
@@ -335,13 +298,10 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
                   control={form.control}
                   name="startingWeight"
                   render={({ field }) => (
-                    <FormItem className="flex gap-1 items-center">
-                      <FormLabel className="text-base font-normal">
-                        Starting Weight:{" "}
-                      </FormLabel>
+                    <FormItem className="flex gap-1 items-start relative">
+                      <FormLabel>Starting Weight: </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Starting Wt"
                           {...field}
                           className="text-base font-semibold w-32"
                           onChange={(e) =>
@@ -359,13 +319,10 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
                   control={form.control}
                   name="goalWeight"
                   render={({ field }) => (
-                    <FormItem className="flex gap-1 items-center">
-                      <FormLabel className="text-base text-center font-normal">
-                        Goal Weight:{" "}
-                      </FormLabel>
+                    <FormItem className="flex gap-1 items-start relative">
+                      <FormLabel>Goal Weight: </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Goal Weight"
                           {...field}
                           className="text-base font-semibold w-32"
                           onChange={(e) =>
@@ -381,11 +338,7 @@ const ChartNotesAccordion = ({ patientDetails, subjective, encounterId }: ChartN
                 />
               </div>
               <div className="flex justify-end items-end w-full">
-                <Button
-                  type="submit"
-                  className="bg-[#84012A]"
-                  onClick={handleSaveContent}
-                >
+                <Button type="submit" variant="ghost">
                   Save Content
                 </Button>
               </div>

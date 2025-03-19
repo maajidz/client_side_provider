@@ -30,7 +30,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   CreateTaskType,
   TasksResponseDataInterface,
@@ -40,45 +40,74 @@ import {
 import { createTask, updateTask } from "@/services/chartDetailsServices";
 import { showToast } from "@/utils/utils";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
-import { priority, reminderOptions } from "@/constants/data";
+import { priority } from "@/constants/data";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { fetchProviderListDetails } from "@/services/registerServices";
 
 function TasksDialog({
   isOpen,
   userDetailsId,
   tasksData,
   onClose,
-  ownersList,
   tasksListData,
 }: {
   isOpen: boolean;
   userDetailsId: string;
   tasksData?: TasksResponseDataInterface | null;
   onClose: () => void;
-  ownersList: FetchProviderList[];
   tasksListData: TaskTypeResponse | null;
 }) {
-  const [showDueDate, setShowDueDate] = useState(false);
+  const [showDueDate, setShowDueDate] = useState<boolean>(false);
   const [taskDataLoading, setTaskDataLoading] = useState<boolean>(false);
+  const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { toast } = useToast();
 
   const providerDetails = useSelector((state: RootState) => state.login);
 
+  const reminderOptions = [
+    "On Due Date",
+    "1 Day Before",
+    "2 Days Before",
+    "3 Days Before",
+  ];
+
   const form = useForm<z.infer<typeof tasksSchema>>({
     resolver: zodResolver(tasksSchema),
     defaultValues: {
-      category: "",
-      task: "",
-      owner: "",
-      priority: "low",
-      dueDate: new Date().toISOString().split("T")[0],
+      category: tasksData?.categoryId ?? "",
+      task: tasksData?.notes ?? "",
+      owner: tasksData?.assignedProvider.id ?? "",
+      priority: tasksData?.priority ?? "low",
+      dueDate: tasksData?.dueDate ?? new Date().toISOString().split("T")[0],
       sendReminder: [],
-      comments: "",
+      comments: tasksData?.description ?? "",
     },
   });
+
+  const fetchOwnersList = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+
+      if (response) {
+        setOwnersList(response.data);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOwnersList();
+  }, [fetchOwnersList]);
 
   useEffect(() => {
     if (tasksData) {
@@ -87,7 +116,7 @@ function TasksDialog({
         task: tasksData.notes ?? "",
         owner: tasksData.id ?? "",
         priority: tasksData?.priority ?? "low",
-        sendReminder: [],
+        sendReminder: tasksData?.reminder ?? [],
         comments: tasksData.notes,
       });
       if (tasksData.dueDate) {
@@ -95,13 +124,14 @@ function TasksDialog({
           .toISOString()
           .split("T")[0];
         form.setValue("dueDate", formattedDueDate);
-        setShowDueDate(!!tasksData.dueDate);
+        setShowDueDate(true);
       }
       setSelectedOwner(
-        ownersList.find((owner) => owner.id === tasksData.assignerProvider?.id)
+        ownersList.find((owner) => owner.providerDetails?.id === tasksData.assignerProvider?.id)
       );
+      form.setValue("owner", selectedOwner?.providerDetails?.id ?? "")
     }
-  }, [form, tasksData, ownersList]);
+  }, [form, tasksData, ownersList, showDueDate, selectedOwner?.providerDetails?.id]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     const requestData: CreateTaskType | UpdateTaskType = {
@@ -229,11 +259,15 @@ function TasksDialog({
                             <SelectValue placeholder="Select Owner" />
                           </SelectTrigger>
                           <SelectContent>
-                            {ownersList.map((owner) => (
-                              <SelectItem key={owner.id} value={owner.id}>
-                                {owner.firstName} {owner.lastName}
-                              </SelectItem>
-                            ))}
+                            {loading ? (
+                              <div> Loading...</div>
+                            ) : (
+                              ownersList.map((owner) => (
+                                <SelectItem key={owner.id} value={owner.id}>
+                                  {owner.firstName} {owner.lastName}
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -273,9 +307,8 @@ function TasksDialog({
                 <div className="flex items-center space-x-3">
                   <Checkbox
                     id="assignDueDate"
-                    onCheckedChange={(checked) =>
-                      setShowDueDate(checked as boolean)
-                    }
+                    checked={showDueDate}
+                    onCheckedChange={() => setShowDueDate(!showDueDate)}
                   />
                   <label
                     htmlFor="assignDueDate"

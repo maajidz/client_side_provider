@@ -971,11 +971,21 @@ export const getAllSupplementTypes = async () => {
 
 export const getSupplements = async ({
   userDetailsId,
+  page,
+  limit,
 }: {
   userDetailsId: string;
+  page?: number;
+  limit?: number;
 }) => {
+  const queryParams = new URLSearchParams();
+
+  if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
+  if (page) queryParams.append("page", page.toString());
+  if (limit) queryParams.append("limit", limit.toString());
+
   const response = await ApiFetch({
-    url: `/provider/supplements?userDetailsId=${userDetailsId}`,
+    url: `/provider/supplements?${queryParams}`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",

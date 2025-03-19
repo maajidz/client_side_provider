@@ -312,7 +312,6 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             userDetailsId={userDetailsId}
             onClose={handleDialogClose}
             isOpen={isDialogOpen}
-            ownersList={ownersList}
             tasksListData={tasksListData}
           />
           {taskLoading ? (

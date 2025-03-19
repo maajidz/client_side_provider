@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -39,7 +39,7 @@ const AddDx = ({
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [diagnosisName, setDiagnosisName] = useState<string[]>([]);
   const [diagnosesTypeData, setDiagnosesTypeData] = useState<
     DiagnosesTypeData[]
   >([]);
@@ -50,11 +50,14 @@ const AddDx = ({
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
   const [rows, setRows] = useState([
-    { diagnosis_Id: "", ICD_Code: "", notes: "" },
+    { diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" },
   ]);
 
   const handleAddRow = () => {
-    setRows([...rows, { diagnosis_Id: "", ICD_Code: "", notes: "" }]);
+    setRows([
+      ...rows,
+      { diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" },
+    ]);
   };
 
   const handleDeleteRow = (index: number) => {
@@ -68,7 +71,7 @@ const AddDx = ({
     );
   };
 
-  const handleSearch = useCallback(async () => {
+  const handleSearch = useCallback(async (searchTerm: string) => {
     setLoading(true);
     try {
       const response = await fetchDiagnosesType({
@@ -85,20 +88,7 @@ const AddDx = ({
     } finally {
       setLoading(false);
     }
-  }, [searchTerm]);
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchTerm.trim()) {
-        handleSearch();
-        setIsListVisible(true);
-      } else {
-        setDiagnosesTypeData([]);
-        setIsListVisible(false);
-      }
-    }, 300);
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, handleSearch]);
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -115,7 +105,9 @@ const AddDx = ({
         await createDiagnoses({ requestData: requestData });
         const data = {
           subjective: "",
-          assessment: `Diagnoses: ${JSON.stringify(rows)} `,
+          assessment: `Diagnoses: ${diagnosisName
+            .map((name) => name)
+            .join(", ")}`,
           encounterId: encounterId,
         };
         await updateSOAPChart({ requestData: data, chartId });
@@ -123,7 +115,9 @@ const AddDx = ({
       } else {
         const data = {
           subjective: "",
-          assessment: `Diagnoses: ${JSON.stringify(rows)} `,
+          assessment: `Diagnoses: ${diagnosisName
+            .map((name) => name)
+            .join(", ")} `,
           encounterId: encounterId,
         };
         const response = await createSOAPChart({ requestData: data });
@@ -148,7 +142,7 @@ const AddDx = ({
       showToast({ toast, type: "error", message: "Error while saving" });
       console.log("Error", e);
     } finally {
-      setRows([{ diagnosis_Id: "", ICD_Code: "", notes: "" }]);
+      setRows([{ diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" }]);
       setIsDialogOpen(false);
     }
   };
@@ -158,7 +152,7 @@ const AddDx = ({
       <DialogTrigger asChild>
         <GhostButton>Add Dx</GhostButton>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg sm:h-56">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Add Diagnoses</DialogTitle>
           <DialogDescription></DialogDescription>
@@ -178,10 +172,11 @@ const AddDx = ({
                     placeholder="Enter Diagnosis"
                     value={
                       diagnosesTypeData.find((d) => d.id === row.diagnosis_Id)
-                        ?.diagnosis_name || searchTerm
+                        ?.diagnosis_name || row.searchTerm
                     }
                     onChange={(e) => {
-                      setSearchTerm(e.target.value);
+                      handleChange(index, "searchTerm", e.target.value);
+                      handleSearch(e.target.value);
                       setIsListVisible(true);
                     }}
                     className="col-span-4 border rounded"
@@ -197,8 +192,13 @@ const AddDx = ({
                           onClick={() => {
                             handleChange(index, "diagnosis_Id", diagnosis.id);
                             handleChange(index, "ICD_Code", diagnosis.ICD_Code);
-                            setSearchTerm(diagnosis.diagnosis_name);
+                            handleChange(
+                              index,
+                              "searchTerm",
+                              diagnosis.diagnosis_name
+                            );
                             setIsListVisible(false);
+                            setDiagnosisName(name => [...name, diagnosis.diagnosis_name])
                           }}
                         >
                           {diagnosis.diagnosis_name} ({diagnosis.ICD_Code})

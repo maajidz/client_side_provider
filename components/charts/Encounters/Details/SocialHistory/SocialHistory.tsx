@@ -13,10 +13,16 @@ import {
 import { UserEncounterData } from "@/types/chartsInterface";
 import { SocialHistoryInterface } from "@/types/socialHistoryInterface";
 import SocialHistoryDialog from "./SocialHistoryDialog";
-import { Edit2Icon, PlusCircle, Trash2Icon } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Edit2Icon,
+  PlusCircle,
+  Trash2Icon,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import LoadingButton from "@/components/LoadingButton";
 import { showToast } from "@/utils/utils";
+import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
 
 interface SocialHistoryProps {
   patientDetails: UserEncounterData;
@@ -32,13 +38,15 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
   const [editData, setEditData] = useState<SocialHistoryInterface | null>(null);
 
   // Loading State
-  const [loading, setLoading] = useState(false);
-
-  // Error State
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Dialog State
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
+  // Pagination State
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const limit = 3;
 
   // Toast State
   const { toast } = useToast();
@@ -50,21 +58,24 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
     try {
       const response = await getSocialHistory({
         userDetailsId: patientDetails.userDetails.userDetailsId,
-        page: 1,
-        limit: 5,
+        page: page,
+        limit: limit,
       });
 
       if (response) {
         setSocialHistory(response.data);
+        setTotalPages(Math.ceil(response.total / limit));
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError("Something went wrong.");
-      }
+      showToast({
+        toast,
+        type: "error",
+        message: `Error fetching social history data: ${err}`,
+      });
     } finally {
       setLoading(false);
     }
-  }, [patientDetails.userDetails.userDetailsId]);
+  }, [patientDetails.userDetails.userDetailsId, page, limit, toast]);
 
   // DELETE Social History
   const handleDeleteSocialHistory = async (id: string) => {
@@ -109,7 +120,11 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
         <AccordionItem value="socialHistory">
           <div className="flex justify-between items-center">
             <AccordionTrigger>Social History</AccordionTrigger>
-            <Button variant="ghost" onClick={() => setIsDialogOpen(true)} className="invisible group-hover:visible">
+            <Button
+              variant="ghost"
+              onClick={() => setIsDialogOpen(true)}
+              className="invisible group-hover:visible"
+            >
               <PlusCircle />
             </Button>
             <SocialHistoryDialog
@@ -124,15 +139,30 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
             />
           </div>
           <AccordionContent className="sm:max-w-4xl">
-            {error && (
-              <div className="flex items-center justify-center">{error}</div>
-            )}
             {loading ? (
-              <LoadingButton />
+              <AccordionShimmerCard />
             ) : socialHistory.length === 0 ? (
               <p className="text-center">No social history available</p>
             ) : (
-              <>
+              <div className="flex flex-col gap-2">
+                <div className="space-x-2 self-end">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(page - 1)}
+                    disabled={page <= 1}
+                  >
+                    <ChevronLeft />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(page + 1)}
+                    disabled={page >= totalPages}
+                  >
+                    <ChevronRight />
+                  </Button>
+                </div>
                 {socialHistory.map((history) => (
                   <div
                     key={history.id}
@@ -169,7 +199,7 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
                     </div>
                   </div>
                 ))}
-              </>
+              </div>
             )}
           </AccordionContent>
         </AccordionItem>

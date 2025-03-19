@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useEffect, useState } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import {
@@ -26,7 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { Button } from "@/components/ui/button";
 
 const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<ImagesResponseInterface>();
@@ -118,7 +117,7 @@ const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Drawer >
       <DrawerTrigger asChild>
-        <GhostButton onClick={fetchAndSetResponse}>Search & Add</GhostButton>
+        <Button variant={"ghost"} onClick={fetchAndSetResponse}>Search & Add</Button>
       </DrawerTrigger>
       <DrawerContent>
         {loadingImages || loadingTests ? (

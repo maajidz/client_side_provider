@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
@@ -152,9 +151,9 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <GhostButton onClick={() => fetchAndSetResponse(1)}>
+        <Button variant={"ghost"} onClick={() => fetchAndSetResponse(1)}>
           Add Labs
-        </GhostButton>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>

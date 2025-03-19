@@ -113,7 +113,7 @@ function SupplementsDialog({
   const form = useForm<z.infer<typeof supplementsFormSchema>>({
     resolver: zodResolver(supplementsFormSchema),
     defaultValues: {
-      supplement: selectedSupplement?.supplementId || "",
+      supplement: "",
       manufacturer: selectedSupplement?.manufacturer || "",
       fromDate:
         selectedSupplement?.fromDate.split("T")[0] ||
@@ -217,6 +217,42 @@ function SupplementsDialog({
     }
   }, [toast]);
 
+  useEffect(() => {
+    fetchAllSupplements();
+    fetchFrequency();
+    fetchDosageUnits();
+    fetchIntakeTypes();
+  }, [fetchAllSupplements, fetchFrequency, fetchDosageUnits, fetchIntakeTypes]);
+
+  useEffect(() => {
+    if (selectedSupplement) {
+      setSearchTerm(selectedSupplement.type.supplement_name);
+      form.reset({
+        manufacturer: selectedSupplement?.manufacturer || "",
+        fromDate:
+          selectedSupplement?.fromDate.split("T")[0] ||
+          new Date().toISOString().split("T")[0],
+        toDate:
+          selectedSupplement?.toDate.split("T")[0] ||
+          new Date().toISOString().split("T")[0],
+        status: selectedSupplement?.status || "Active",
+        dosage: selectedSupplement?.dosage || "",
+        unit: selectedSupplement?.unit || "",
+        frequency: selectedSupplement?.frequency || "",
+        intake_type: selectedSupplement?.intake_type || "",
+        comments: selectedSupplement?.comments || "",
+      });
+
+      if (selectedSupplement.type.supplement_name) {
+        setSearchTerm(selectedSupplement.type.supplement_name);
+      }
+    }
+  }, [selectedSupplement, form]);
+
+  const filteredSupplements = supplementsData.filter((supplement) =>
+    supplement.supplement_name.toLocaleLowerCase().includes(searchTerm)
+  );
+
   // POST Supplement
   const onSubmit = async (values: z.infer<typeof supplementsFormSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
@@ -270,50 +306,11 @@ function SupplementsDialog({
       onClose();
     }
   };
-
-  useEffect(() => {
-    fetchAllSupplements();
-    fetchFrequency();
-    fetchDosageUnits();
-    fetchIntakeTypes();
-  }, [fetchAllSupplements, fetchFrequency, fetchDosageUnits, fetchIntakeTypes]);
-
-  useEffect(() => {
-    if (selectedSupplement) {
-      form.reset({
-        supplement: selectedSupplement?.supplementId || "",
-        manufacturer: selectedSupplement?.manufacturer || "",
-        fromDate:
-          selectedSupplement?.fromDate.split("T")[0] ||
-          new Date().toISOString().split("T")[0],
-        toDate:
-          selectedSupplement?.toDate.split("T")[0] ||
-          new Date().toISOString().split("T")[0],
-        status: selectedSupplement?.status || "Active",
-        dosage: selectedSupplement?.dosage || "",
-        unit: selectedSupplement?.unit || "",
-        frequency: selectedSupplement?.frequency || "",
-        intake_type: selectedSupplement?.intake_type || "",
-        comments: selectedSupplement?.comments || "",
-      });
-
-      if (selectedSupplement.type.supplement_name) {
-        setSearchTerm(selectedSupplement.type.supplement_name);
-      }
-    }
-  }, [selectedSupplement, form]);
-
-  const filteredSupplements = supplementsData.filter((supplement) =>
-    supplement.supplement_name.toLocaleLowerCase().includes(searchTerm)
-  );
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[465px]">
         <DialogHeader>
-          <p>
-            {selectedSupplement ? "Edit Supplement" : "Add Supplement"}
-          </p>
+          <p>{selectedSupplement ? "Edit Supplement" : "Add Supplement"}</p>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[30rem] max-h-[30rem] p-2.5">
@@ -337,6 +334,7 @@ function SupplementsDialog({
                               setIsListVisible(true);
                             }}
                             className="w-full"
+                            disabled={selectedSupplement? true: false}
                           />
                           {searchTerm && isListVisible && (
                             <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">

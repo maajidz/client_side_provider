@@ -1,4 +1,3 @@
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Drawer,
@@ -22,7 +21,7 @@ import { RootState } from "@/store/store";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
-
+import { Button } from "@/components/ui/button";
 const SearchAndAddDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<LabsDataResponse>({
     data: [],
@@ -116,9 +115,9 @@ const SearchAndAddDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <GhostButton onClick={() => fetchAndSetResponse(1)}>
+        <Button variant={"ghost"} onClick={() => fetchAndSetResponse(1)}>
           Search & Add
-        </GhostButton>
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerTitle />

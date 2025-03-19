@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -116,7 +115,7 @@ const MedicationDetailsDialog = ({
           <DialogDescription></DialogDescription>
         </DialogHeader>
         {loading ? (
-          <LoadingButton />
+          <div>Loading...</div>
         ) : selectedMedication ? (
           <div className="mb-4">
             <p>

@@ -106,6 +106,7 @@ const StickyNotes = ({
               onClose={() => {
                 setIsDialogOpen(false);
                 fetchStickyNotes();
+                setEditData(null);
               }}
               isOpen={isDialogOpen}
             />

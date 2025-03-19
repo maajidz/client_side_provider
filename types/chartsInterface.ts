@@ -58,7 +58,7 @@ export interface LabsRequestData {
 }
 
 export interface SOAPInterface {
-  subjective: string;
+  subjective?: string;
   objective?: string;
   assessment?: string;
   plan?: string;
@@ -100,6 +100,9 @@ export interface ChartUserDetails {
   firstName: string;
   lastName: string;
   patientId: string;
+  medication_history?: MedicationHistory[];
+  history_of_present_illness?: HistoryOfPresentIllness[];
+  active_medications: ActiveMedications[];
 }
 
 export interface ProgressTracker {
@@ -109,8 +112,47 @@ export interface ProgressTracker {
   startDate: string;
   targetDate: string;
   bmiRecords: BmiRecord[];
-  createdAt: string
-  updatedAt: string
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MedicationHistory {
+  id: string;
+  notes: string;
+  glp_refill_note_practice: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface HistoryOfPresentIllness {
+  id: string;
+  content: string;
+  providerId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ActiveMedications {
+  id: string;
+  directions: string;
+  fromDate: string;
+  toDate: string;
+  status: string;
+  providerId: string;
+  createdAt: string;
+  updatedAt: string;
+  medicationName: MedicationName;
+}
+
+export interface MedicationName {
+  id: string;
+  productName: string;
+  tradeName: string;
+  strength: string;
+  route: string;
+  doseForm: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface BmiRecord {

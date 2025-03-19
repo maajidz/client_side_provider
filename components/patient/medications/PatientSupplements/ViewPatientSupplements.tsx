@@ -82,8 +82,8 @@ const ViewPatientSupplements = ({
                     message,
                   });
                 },
-                // showToast: (args) => showToast({ toast, ...args }),
                 fetchSupplementsList: () => fetchSupplementsList(),
+                userDetailsId
               })}
               data={resultList}
               pageNo={page}
