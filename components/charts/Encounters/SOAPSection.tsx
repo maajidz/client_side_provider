@@ -16,10 +16,12 @@ const SOAPSection = ({
   encounterId,
   patientDetails,
   onClose,
+  onRefresh,
 }: {
   encounterId: string;
   patientDetails: UserEncounterData;
   onClose: () => void;
+  onRefresh: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const [subjectiveContent, setSubjectiveContent] = useState<string>("");
   const [objectiveContent, setObjectiveContent] = useState<string>("");
@@ -53,6 +55,7 @@ const SOAPSection = ({
             subjectiveContent={subjectiveContent}
             objectiveContent={objectiveContent}
             physicalStatsContent={physicalStatsContent}
+            onRefresh={onRefresh}
           />
         </div>
         <TabsContent value="chartNotes">
