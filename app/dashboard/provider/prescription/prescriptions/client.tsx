@@ -28,7 +28,7 @@ function PrescriptionsClient() {
   const { toast } = useToast();
 
   // Pagination States
-  const limit = 8;
+  const limit = 6;
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 

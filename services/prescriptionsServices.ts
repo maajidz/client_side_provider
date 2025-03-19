@@ -12,11 +12,16 @@ export const getUserPrescriptionsData = async ({
 }: {
   userDetailsId: string;
   page: number;
-  limit: number;
+  limit?: number;
   providerId?: string;
 }) => {
+  const queryParams = new URLSearchParams();
+  if (providerId) queryParams.append("providerId", providerId);
+  if (page) queryParams.append("page", page.toString());
+  if (limit) queryParams.append("limit", limit.toString());
+
   const response = await ApiFetch({
-    url: `/provider/prescriptions/patient/${userDetailsId}?page=${page}&limit=${limit}&providerId=${providerId}`,
+    url: `/provider/prescriptions/patient/${userDetailsId}?${queryParams}`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",
