@@ -34,6 +34,7 @@ interface TabMenuProps {
   subjectiveContent: string;
   objectiveContent: string;
   physicalStatsContent: PatientPhysicalStats;
+  onRefresh: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const TabMenu: React.FC<TabMenuProps> = ({
@@ -42,6 +43,7 @@ const TabMenu: React.FC<TabMenuProps> = ({
   subjectiveContent,
   objectiveContent,
   physicalStatsContent,
+  onRefresh,
 }) => {
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
@@ -102,6 +104,7 @@ const TabMenu: React.FC<TabMenuProps> = ({
       showToast({ toast, type: "error", message: "Error saving content" });
     } finally {
       setLoading(false);
+      onRefresh((prev) => prev + 1);
     }
   };
 

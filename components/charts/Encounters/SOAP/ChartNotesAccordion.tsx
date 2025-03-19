@@ -102,14 +102,16 @@ const ChartNotesAccordion = ({
   const goalWeight = form.watch("goalWeight");
 
   useEffect(() => {
-    if (weightLbs && heightFeets && heightInches) {
+    if (weightLbs && heightFeets && heightFeets > 0) {
       const totalHeightInInches =
-        Number(heightFeets) * 12 + Number(heightInches);
-      const bmi = (
-        (Number(weightLbs) / totalHeightInInches ** 2) *
-        703
-      ).toFixed(2);
-      form.setValue("bmi", Number(bmi));
+        Number(heightFeets) * 12 + (Number(heightInches) || 0);
+      if (totalHeightInInches > 0) {
+        const bmiValue = (
+          (Number(weightLbs) / totalHeightInInches ** 2) *
+          703
+        ).toFixed(2);
+        form.setValue("bmi", Number(bmiValue));
+      }
     }
   }, [weightLbs, heightFeets, heightInches, form]);
 
@@ -126,26 +128,11 @@ const ChartNotesAccordion = ({
       .join("\n");
   };
 
-  const handleWeightChange = ({
-    first,
-    second,
-  }: {
-    first: number;
-    second: number;
-  }) => {
-    form.setValue("weightInLbs", first);
-    form.setValue("weightInOzs", second);
-  };
-
-  const handleHeightChange = ({
-    first,
-    second,
-  }: {
-    first: number;
-    second: number;
-  }) => {
-    form.setValue("heightInFt", first);
-    form.setValue("heightInInches", second);
+  const handleInputChange = (
+    fieldName: keyof z.infer<typeof formSchema>,
+    value: number
+  ) => {
+    form.setValue(fieldName, value);
   };
 
   useEffect(() => {
@@ -154,12 +141,19 @@ const ChartNotesAccordion = ({
   }, [editorValue, setSubjective]);
 
   useEffect(() => {
-    setObjective(
-      `Weight is ${weightLbs} lbs ${weightOzs} ozs. Height is ${heightFeets} ft ${heightInches} inches. BMI is ${bmi}. The starting weight is ${startingWeight} and the goal Weight is ${goalWeight}`
-    );
+    const objectiveText = `Weight is ${weightLbs || 0} lbs ${
+      weightOzs || 0
+    } ozs. Height is ${heightFeets || 0} ft ${
+      heightInches || 0
+    } inches. BMI is ${bmi}. The starting weight is ${
+      startingWeight || 0
+    } and the goal Weight is ${goalWeight || 0}`;
+    const totalHeightInInches =
+      Number(heightFeets) * 12 + (Number(heightInches) || 0);
+    setObjective(objectiveText);
     setPhysicalStats({
-      height: heightFeets,
-      weight: weightLbs,
+      height: totalHeightInInches || 0,
+      weight: weightLbs || 0,
     });
   }, [
     weightLbs,
@@ -186,6 +180,7 @@ const ChartNotesAccordion = ({
             }}
             placeholder="Enter chief complaints..."
           />
+          
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -204,7 +199,10 @@ const ChartNotesAccordion = ({
                       focusAfter={3}
                       idFirst="weight-first-input"
                       idSecond="weight-second-input"
-                      onChange={handleWeightChange}
+                      onChange={({ first, second }) => {
+                        handleInputChange("weightInLbs", first);
+                        handleInputChange("weightInOzs", second);
+                      }}
                     />
                   }
                 />
@@ -218,7 +216,10 @@ const ChartNotesAccordion = ({
                       focusAfter={1}
                       idFirst="height-first-input"
                       idSecond="height-second-input"
-                      onChange={handleHeightChange}
+                      onChange={({ first, second }) => {
+                        handleInputChange("heightInFt", first);
+                        handleInputChange("heightInInches", second);
+                      }}
                     />
                   }
                 />

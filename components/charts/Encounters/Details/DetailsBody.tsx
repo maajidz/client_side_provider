@@ -16,7 +16,7 @@ import Recalls from "./Recalls/Recalls";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import ProceduresSurgeriesAndHospitalization from "./ProceduresSurgeriesAndHospitalization/ProceduresSurgeriesAndHospitalization";
 import Injections from "./Injections/Injections";
-import { formatVisitType } from "@/utils/utils";
+import { calculateAge, formatVisitType } from "@/utils/utils";
 import SocialHistory from "./SocialHistory/SocialHistory";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -31,7 +31,12 @@ const DetailsBody = ({
   encounterId: string;
   className?: string;
 }) => {
-  // const age = calculateAge(patientDetails.userDetails?.dob);
+  const age = calculateAge(patientDetails.userDetails?.dob);
+  const bmiValue = (
+    (Number(patientDetails.progressTracker?.currentWeight) /
+    (Number(patientDetails.userDetails?.height)/30.48) ** 2) *
+    703
+  ).toFixed(2);
 
   return (
     <div
@@ -57,16 +62,18 @@ const DetailsBody = ({
             </span>
             <span className="text-sm flex flex-row gap-1">
               <FormLabels value="Female" />
-              <FormLabels
-                // value={age}
-                value="29"
-              />
+              <FormLabels value={`${age} years`} />
             </span>
             <div className="flex gap-4 justify-between">
               <FormLabels
                 label="DOB"
-                // value={patientDetails.userDetails?.dob?.split("T")[0]}
-                value={"23rd May, 2025"}
+                value={new Date(
+                  patientDetails.userDetails.dob
+                ).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "2-digit",
+                  year: "numeric",
+                })}
               />
             </div>
           </div>
@@ -81,18 +88,16 @@ const DetailsBody = ({
           </Badge>
           <Badge popoverLabel="Height">
             <Icon name="height" size={16} />
-            <FormLabels label="" value="N/A" />
-            {/* value={`${patientDetails.userDetails?.height} ${patientDetails.userDetails?.heightType}`} /> */}
+            <FormLabels
+              label=""
+              value={`${(Number(patientDetails.userDetails?.height)/30.48)} ft`}
+            />
           </Badge>
           <Badge popoverLabel="BMI">
             <Icon name="digital_wellbeing" size={16} />
             <FormLabels
               label=""
-              value={`${
-                patientDetails.progressTracker?.bmiRecords?.[0]?.currentBmi
-                  ? patientDetails.progressTracker.bmiRecords[0].currentBmi
-                  : "N/A"
-              }`}
+              value={bmiValue}
             />
           </Badge>
           <Badge popoverLabel="Visit Type">
@@ -109,10 +114,12 @@ const DetailsBody = ({
               value={formatVisitType(patientDetails?.mode ?? "")}
             />
           </Badge>
-          {/* <FormLabels label="Phone" value={`Phone`} /> */}
           <Badge popoverLabel="Phone">
             <Icon name="phone" size={16} />
-            <FormLabels label="" value={"563487559"} />
+            <FormLabels
+              label=""
+              value={patientDetails?.userDetails.phone_number}
+            />
           </Badge>
         </div>
       </div>
