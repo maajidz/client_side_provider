@@ -54,9 +54,11 @@ export const createEncounterRequest = async ({
 export const getLabsData = async ({
   page,
   limit,
+  search,
 }: {
   page: number;
   limit: number;
+  search?: string
 }) => {
   const response = await ApiFetch({
     method: "GET",
@@ -473,13 +475,15 @@ export const getLabTestsData = async ({
 export const getImagesData = async ({
   page,
   limit,
+  search,
 }: {
   page: number;
   limit: number;
+  search?: string;
 }) => {
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/images/types?limit=${limit}&page=${page}`,
+    url: `/provider/images/types?limit=${limit}&page=${page}&search=${search}`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -533,7 +537,7 @@ export const getLabOrdersData = async ({
 
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/lab/orders?${queryParams}`,
+    url: `/provider/lab/orders/?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },

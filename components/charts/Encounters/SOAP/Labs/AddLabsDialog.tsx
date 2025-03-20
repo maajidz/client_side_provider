@@ -42,28 +42,35 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   const [newLab, setNewLab] = useState<string>("");
   const { toast } = useToast();
   const providerDetails = useSelector((state: RootState) => state.login);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleSearchList, setVisibleSearchList] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const fetchAndSetResponse = async (page = 1) => {
-    setLoadingLabs(true);
-    try {
-      const data = await getLabsData({ page, limit: 10 });
-      if (data) {
-        setResponse((prev) => ({
-          data: [...prev.data, ...data.data],
-          total: data.total,
-        }));
-        if (data.data.length < data.total) {
-          await fetchAndSetResponse(page + 1);
+  const fetchAndSetResponse = useCallback(
+    async (page = 1) => {
+      setLoadingLabs(true);
+
+      try {
+        const data = await getLabsData({ page, limit: 10, search: searchTerm });
+
+        if (data) {
+          setResponse((prev) => ({
+            data: [...(prev?.data || []), ...data.data],
+            total: data.total,
+          }));
+
+          if (data.data.length > 0 && data.data.length < data.total) {
+            await fetchAndSetResponse(page + 1);
+          }
         }
+      } catch (e) {
+        console.error("Error fetching labs:", e);
+      } finally {
+        setLoadingLabs(false);
       }
-    } catch (e) {
-      console.log("Error", e);
-      setLoadingLabs(false);
-    } finally {
-      setLoadingLabs(false);
-    }
-  };
+    },
+    [searchTerm]
+  );
 
   const createNewLab = async () => {
     if (newLab) {
@@ -129,11 +136,12 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
         type: "success",
         message: "Successfully placed order.",
       });
-      setIsOpen(false);
     } catch (e) {
       console.log("Error", e);
-      setLoadingOrder(false);
     } finally {
+      setSelectedLab("");
+      setSelectedTest("");
+      setSearchTerm("");
       setLoadingOrder(false);
     }
   };
@@ -144,13 +152,10 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
     }
   }, [selectedLab, fetchLabTestsData]);
 
-  useEffect(() => {
-    fetchAndSetResponse(); // Fetch labs when component mounts
-  }, []);
-
-  if (loadingOrder) {
-    return <LoadingButton />;
-  }
+  // Filter Labs
+  const filteredLabs = response.data.filter((lab) =>
+    `${lab.name}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -171,7 +176,7 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
         ) : (
           <div className="flex flex-col gap-6">
             {!showNewLab && (
-            <div className="flex w-full py-0">
+              <div className="flex w-full py-0">
                 <Button
                   variant={"link"}
                   onClick={() => {
@@ -195,7 +200,7 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
                     placeholder="Enter lab name"
                   />
                 </div>
-                <div className="flex flex-row gap-2 flex-row-reverse">
+                <div className="flex gap-2 flex-row-reverse">
                   <Button
                     variant={"ghost"}
                     onClick={() => {
@@ -211,24 +216,45 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
             {!showNewLab && (
               <div className="flex flex-col gap-1">
                 <label>Labs</label>
-                <Select
-                  onValueChange={(value) => {
-                    setSelectedLab(value);
-                    setSelectedTest(""); // Reset selected test when lab changes
-                  }}
-                  defaultValue=""
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a lab" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {response.data.map((lab) => (
-                      <SelectItem key={lab.id} value={lab.id}>
-                        {lab.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="relative">
+                  <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                    <Input
+                      placeholder="Search Labs"
+                      value={searchTerm}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setSearchTerm(value);
+                        setVisibleSearchList(true);
+                      }}
+                      className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                    />
+                  </div>
+                  {searchTerm && visibleSearchList && (
+                    <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-[100]">
+                      {loadingLabs ? (
+                        <div>Loading... </div>
+                      ) : filteredLabs.length > 0 ? (
+                        filteredLabs.map((lab) => (
+                          <div
+                            key={lab.id}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                              setSearchTerm(lab.name);
+                              setVisibleSearchList(false);
+                              setSelectedLab(lab.id);
+                            }}
+                          >
+                            {lab.name}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-4 py-2 text-gray-500">
+                          No results found
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
             {selectedLab && !showNewLab && (
@@ -253,7 +279,9 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
                     </SelectContent>
                   </Select>
                 </div>
-              <Button onClick={handleLabOrder}>Order Lab</Button>
+                <Button onClick={handleLabOrder} disabled={loadingOrder}>
+                  Order Lab
+                </Button>
               </div>
             )}
           </div>
