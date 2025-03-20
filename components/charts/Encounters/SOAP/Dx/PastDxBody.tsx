@@ -2,11 +2,22 @@ import LoadingButton from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { deleteDiagnoses, fetchDiagnoses, updateDiagnoses } from '@/services/chartsServices';
+import { deleteDiagnoses, fetchDiagnoses } from '@/services/chartsServices';
 import { PastDiagnosesInterface, UserEncounterData } from '@/types/chartsInterface';
 import { showToast } from '@/utils/utils';
-import { Save, TrashIcon } from 'lucide-react';
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { Icon } from '@/components/ui/icon';
+import { ColumnDef } from '@tanstack/react-table';
+
+interface PastDiagnosisRow {
+    id: string;
+    type: {
+        diagnosis_name: string;
+        ICD_Code: string;
+    };
+    notes: string;
+}
 
 const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -20,7 +31,7 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
                 const response = await fetchDiagnoses({ chartId: patientDetails.chart?.id });
                 if (response) {
                     setPrevDiagnosis(response);
-                    console.log("Prev", response);
+                    console.log("Fetched Diagnoses:", response);
                 }
             } catch (e) {
                 console.error("Error", e);
@@ -30,115 +41,103 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
         }
     }, [patientDetails.chart?.id]);
 
-    useEffect(()=> {
+    useEffect(() => {
         fetchAndSetResponse();
     }, [patientDetails?.chart?.id, fetchAndSetResponse]);
 
-    const handleDeleteDiagnoses = async (diagnosesId: string) => {
+    const handleDeleteDiagnoses = useCallback(async (diagnosesId: string) => {
         setLoading(true);
         try {
             await deleteDiagnoses({ diagnosisId: diagnosesId });
-            showToast({ toast, type: "success", message: "Deleted successfully!" })
+            showToast({ toast, type: "success", message: "Deleted successfully!" });
             setPrevDiagnosis((prev) =>
                 prev.filter((diagnosis) => diagnosis.id !== diagnosesId)
             );
         } catch (e) {
-            console.log("Error", e)
-            showToast({ toast, type: "error", message: "Failed to delete Diagnosis" })
-        } finally {
-            setLoading(false)
-        }
-    }
-    const handleChange = (index: number, field: string, value: string) => {
-        const updatedDiagnoses = [...prevDiagnosis];
-        updatedDiagnoses[index] = { ...updatedDiagnoses[index], [field]: value };
-        setPrevDiagnosis(updatedDiagnoses);
-    }
-
-    const handleUpdateDiagnoses = async (diagnosisId: string, updatedData: PastDiagnosesInterface) => {
-        setLoading(true);
-        try {
-            const requestBody = {
-                diagnosis_name: updatedData.diagnosis_name,
-                ICD_Code: updatedData.ICD_Code,
-                notes: updatedData.notes,
-            }
-            const response = await updateDiagnoses({ diagnosisId, requestData: requestBody });
-            if (response) {
-                showToast({ toast, type: "success", message: "Updated successfully!" })
-                setPrevDiagnosis(prev =>
-                    prev.map(diagnosis =>
-                        diagnosis.id === diagnosisId ? { ...diagnosis, ...updatedData } : diagnosis
-                    )
-                );
-            }
-            console.log(response);
-        } catch (e) {
             console.log("Error", e);
-            showToast({ toast, type: "error", message: "Failed to update Diagnosis" })
+            showToast({ toast, type: "error", message: "Failed to delete Diagnosis" });
         } finally {
             setLoading(false);
         }
-    }
+    }, [toast]);
 
+    const handleChange = useCallback((index: number, field: string, value: string) => {
+        const updatedDiagnoses = [...prevDiagnosis];
+        updatedDiagnoses[index] = { ...updatedDiagnoses[index], [field]: value };
+        setPrevDiagnosis(updatedDiagnoses);
+    }, [prevDiagnosis]);
 
-    if (loading) {
-        <div>
-            <LoadingButton />
-        </div>
-    }
+    const columns: ColumnDef<PastDiagnosisRow>[] = useMemo(() => [
+        {
+            accessorKey: "type.diagnosis_name",
+            header: "Diagnosis",
+            cell: ({ row }) => (
+                <Input
+                    type="text"
+                    placeholder="Enter Diagnosis"
+                    value={row.original.type.diagnosis_name}
+                    onChange={(e) => handleChange(row.index, 'diagnosis_name', e.target.value)}
+                    disabled
+                />
+            ),
+        },
+        {
+            accessorKey: "type.ICD_Code",
+            header: "ICD Codes",
+            cell: ({ row }) => (
+                <Input
+                    type="text"
+                    placeholder="ICD Codes"
+                    value={row.original.type.ICD_Code}
+                    onChange={(e) => handleChange(row.index, 'ICD_Code', e.target.value)}
+                    disabled
+                />
+            ),
+        },
+        {
+            accessorKey: "notes",
+            header: "Notes",
+            cell: ({ row }) => (
+                <Input
+                    type="text"
+                    placeholder="Notes"
+                    value={row.original.notes}
+                    onChange={(e) => handleChange(row.index, 'notes', e.target.value)}
+                    disabled
+                />
+            ),
+        },
+        {
+            accessorKey: "actions",
+            header: "Actions",
+            cell: ({ row }) => (
+                <div className="flex gap-2">
+                    <Button
+                        variant={'ghost'}
+                        onClick={() => handleDeleteDiagnoses(row.original.id)}
+                    >
+                        <Icon name="remove" />
+                    </Button>
+                </div>
+            ),
+        },
+    ], [handleChange, handleDeleteDiagnoses]);
 
     return (
         <div className='flex flex-col gap-4'>
-            {prevDiagnosis.length> 0 && (
-                <div className="flex gap-3">
-                <div className='w-32'>Diagnosis</div>
-                <div className='w-32'>ICD Codes</div>
-                <div className='w-32'>Notes</div>
-            </div>
+            {loading ? (
+                <LoadingButton />
+            ) : (
+                <DefaultDataTable
+                    columns={columns}
+                    data={prevDiagnosis}
+                    pageNo={1}
+                    totalPages={1}
+                    onPageChange={() => {}}
+                />
             )}
-            <div className='flex flex-col gap-2'>
-                {prevDiagnosis && prevDiagnosis.length > 0 ? prevDiagnosis.map((diagnoses, index) => (
-                    <div className="flex justify-between gap-2" key={diagnoses.id}>
-                        <Input
-                            type="text"
-                            placeholder="Enter Diagnosis"
-                            value={diagnoses.type.diagnosis_name}
-                            onChange={(e) => handleChange(index, 'name', e.target.value)}
-                            className="col-span-4 border rounded sm:max-w-32"
-                        />
-                        <Input
-                            type="text"
-                            placeholder="ICD Codes"
-                            value={diagnoses.type.ICD_Code}
-                            onChange={(e) => handleChange(index, 'ICD_Code', e.target.value)}
-                            className="col-span-4 border rounded sm:max-w-32 "
-                        />
-                        <Input
-                            type="text"
-                            placeholder="Notes"
-                            value={diagnoses.notes}
-                            onChange={(e) => handleChange(index, 'notes', e.target.value)}
-                            className="col-span-3 border rounded sm:max-w-32"
-                        />
-                        <Button variant={'ghost'}
-                            onClick={() => {
-                                console.log("Id", diagnoses.id)
-                                handleDeleteDiagnoses(diagnoses.id)
-                            }}
-                        >
-                            <TrashIcon />
-                        </Button>
-                        <Button type="submit" variant={'ghost'} onClick={() => handleUpdateDiagnoses(diagnoses.id, diagnoses)} className='text-[#84012A]'> <Save /></Button>
-                    </div>
-                )) : (
-                    <div>
-                        No Past Diagnoses found!
-                    </div>
-                )}
-            </div>
         </div>
-    )
-}
+    );
+};
 
-export default PastDxBody
+export default PastDxBody;

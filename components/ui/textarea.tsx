@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-const Textarea = React.forwardRef<
+const BaseTextarea = React.forwardRef<
   HTMLTextAreaElement,
   React.ComponentProps<"textarea">
 >(({ className, ...props }, ref) => {
@@ -15,6 +15,16 @@ const Textarea = React.forwardRef<
       ref={ref}
       {...props}
     />
+  )
+})
+BaseTextarea.displayName = "BaseTextarea"
+
+// Memoized version to prevent unnecessary re-renders
+const Textarea = React.memo(BaseTextarea, (prevProps, nextProps) => {
+  // Only re-render if value or className changes
+  return (
+    prevProps.value === nextProps.value &&
+    prevProps.className === nextProps.className
   )
 })
 Textarea.displayName = "Textarea"
