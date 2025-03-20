@@ -115,6 +115,7 @@ const ReferralDialog = ({
     } finally {
       setLoading(false);
       setIsDialogOpen(false);
+      form.reset();
     }
   };
 

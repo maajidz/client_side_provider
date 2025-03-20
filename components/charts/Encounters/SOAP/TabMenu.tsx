@@ -57,6 +57,7 @@ const TabMenu: React.FC<TabMenuProps> = ({
       const requestBody = {
         subjective: subjectiveContent,
         objective: objectiveContent,
+        encounterId
       };
 
       if (patientDetails.chart?.id) {
