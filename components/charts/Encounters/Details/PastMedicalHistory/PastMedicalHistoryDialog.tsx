@@ -67,6 +67,11 @@ function PastMedicalHistoryDialog({
         glp_refill_note_practice:
           selectedMedicaHistory.glp_refill_note_practice ?? "",
       });
+    } else {
+      form.reset({
+        notes: "",
+        glp_refill_note_practice: "",
+      });
     }
   }, [selectedMedicaHistory, form]);
 

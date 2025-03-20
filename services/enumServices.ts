@@ -51,3 +51,29 @@ export const getVisitTypes = async () => {
   const data = await response.data;
   return data;
 };
+
+export const getParenteralRoutes = async () => {
+  const response = await ApiFetch({
+    url: "/enums/parenteral-routes",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.data;
+  return data;
+};
+
+export const getInjectionSite = async ({route}: {route: string}) => {
+  const response = await ApiFetch({
+    url: `/enums/parenteral-route-sites/${route}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.data;
+  return data;
+};

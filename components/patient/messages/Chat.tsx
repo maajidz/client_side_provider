@@ -202,7 +202,7 @@ export default function ChatPage({
                     <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
                       <span className="text-xs font-semibold">
                       {userDetails.firstName?.split(" ")[0].charAt(0)}
-                      {userDetails.firstName?.split(" ")[1].charAt(0)}
+                      {userDetails.lastName?.split(" ")[0].charAt(0)}
                       </span>
                     </AvatarFallback>
                   </Avatar>

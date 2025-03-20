@@ -246,6 +246,19 @@ function SupplementsDialog({
       if (selectedSupplement.type.supplement_name) {
         setSearchTerm(selectedSupplement.type.supplement_name);
       }
+    } else {
+      form.reset({
+        manufacturer: "",
+        fromDate: new Date().toISOString().split("T")[0],
+        toDate: new Date().toISOString().split("T")[0],
+        status: "Active",
+        dosage: "",
+        unit: "",
+        frequency: "",
+        intake_type: "",
+        comments: "",
+      });
+      setSearchTerm("")
     }
   }, [selectedSupplement, form]);
 
@@ -303,6 +316,7 @@ function SupplementsDialog({
     } finally {
       setLoading((prev) => ({ ...prev, post: false }));
       form.reset();
+      setSearchTerm("");
       onClose();
     }
   };
@@ -334,7 +348,7 @@ function SupplementsDialog({
                               setIsListVisible(true);
                             }}
                             className="w-full"
-                            disabled={selectedSupplement? true: false}
+                            disabled={selectedSupplement ? true : false}
                           />
                           {searchTerm && isListVisible && (
                             <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">

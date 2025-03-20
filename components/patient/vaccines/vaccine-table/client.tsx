@@ -31,7 +31,9 @@ const HistoricalVaccinesClient = ({
 
   // Dialog State
   const [isVaccinesDialogOpen, setIsVaccinesDialogOpen] = useState(false);
-  const [editData, setEditData] = useState<HistoricalVaccineInterface>();
+  const [editData, setEditData] = useState<HistoricalVaccineInterface | null>(
+    null
+  );
   const { toast } = useToast();
 
   // GET Historical Vaccine Data
@@ -97,6 +99,8 @@ const HistoricalVaccinesClient = ({
         isOpen={isVaccinesDialogOpen}
         onClose={() => {
           setIsVaccinesDialogOpen(false);
+          setEditData(null);
+          fetchHistoricalVaccine();
         }}
         onFetchHistoricalData={fetchHistoricalVaccine}
       />

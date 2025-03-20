@@ -64,7 +64,7 @@ function VaccinesDialog({
 }: {
   isOpen: boolean;
   userDetailsId: string;
-  vaccinesData?: HistoricalVaccineInterface;
+  vaccinesData?: HistoricalVaccineInterface | null;
   onClose: () => void;
   onFetchHistoricalData: () => void;
 }) {
@@ -176,6 +176,7 @@ function VaccinesDialog({
     } finally {
       form.reset();
       setLoading(false);
+      setSearchTerm("");
       onFetchHistoricalData();
       onClose();
     }

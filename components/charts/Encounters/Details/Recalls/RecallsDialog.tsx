@@ -116,6 +116,17 @@ const RecallsDialog = ({
         );
         form.setValue("provider", selectedOwner?.providerDetails?.id ?? "");
       }
+    } else {
+      form.reset({
+        type: "",
+        notes: "",
+        dueDate: {
+          period: "",
+          value: 1,
+          unit: "",
+        },
+        sendAutoReminders: false,
+      });
     }
   }, [recallsData, form, selectedOwner, ownersList]);
 
@@ -306,7 +317,10 @@ const RecallsDialog = ({
                               <div> Loading...</div>
                             ) : (
                               ownersList.map((owner) => (
-                                <SelectItem key={owner.id} value={owner?.providerDetails?.id ?? owner.id}>
+                                <SelectItem
+                                  key={owner.id}
+                                  value={owner?.providerDetails?.id ?? owner.id}
+                                >
                                   {owner.firstName} {owner.lastName}
                                 </SelectItem>
                               ))
