@@ -77,6 +77,7 @@ export default function UserAuthForm() {
           dispatch(
             setLoginData({
               providerId: checkUserDetails.providerDetails.id,
+              providerUniqueId: checkUserDetails.providerDetails.providerUniqueId,
               firstName: checkUserDetails.firstName,
               lastName: checkUserDetails.lastName,
               email: checkUserDetails.email,

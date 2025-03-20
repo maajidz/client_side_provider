@@ -27,7 +27,6 @@ import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import LoadingButton from "@/components/LoadingButton";
 
 const AddDx = ({
@@ -150,9 +149,9 @@ const AddDx = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <GhostButton>Add Dx</GhostButton>
+        <Button value={"ghost"}>Add Dx</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Add Diagnoses</DialogTitle>
           <DialogDescription></DialogDescription>

@@ -8,7 +8,6 @@ import {
   CreatePrescriptionInterface,
   CreateTestsRequestBody,
   CreateTransferInterface,
-  FetchPrescription,
   FollowUpInterface,
   ImageOrdersInterface,
   ImagesResponseInterface,
@@ -30,6 +29,7 @@ import {
   DiagnosesResponseInterface,
   PastDiagnosesInterface,
   DiagnosesTypeDataInterface,
+  Prescription,
 } from "@/types/chartsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";
 
@@ -559,7 +559,7 @@ export const getImagesOrdersData = async ({
   const queryParams = new URLSearchParams();
   if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
   if (providerId) queryParams.append("providerId", providerId);
-  if (status) queryParams.append('status', status);
+  if (status) queryParams.append("status", status);
   if (page) queryParams.append("page", page.toString());
   if (limit) queryParams.append("limit", limit.toString());
 
@@ -605,8 +605,8 @@ export const getPrescriptionsData = async ({
       "Content-Type": "application/json",
     },
   });
-  console.log(response.data);
-  const data: FetchPrescription = await response.data;
+
+  const data: Prescription[] = await response.data;
   return data;
 };
 
@@ -642,7 +642,7 @@ export const getTransferData = async ({
     | "referringToProviderID"
     | "referringFromProviderID";
   referralType?: "external" | "internal";
-  statusType?: "responseStatus" | "requestStatus" | '';
+  statusType?: "responseStatus" | "requestStatus" | "";
   status?: string;
 }) => {
   const queryParams = new URLSearchParams();

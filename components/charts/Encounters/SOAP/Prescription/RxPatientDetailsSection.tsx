@@ -72,7 +72,7 @@ const RxPatientDetailsSection = ({
             </div>
             <div>
               <span className="font-semibold">Patient ID:</span>{" "}
-              {patientDetails?.user?.id}
+              {patientDetails?.patientId}
             </div>
 
             <div className="flex gap-4 text-gray-600">
@@ -112,7 +112,7 @@ const RxPatientDetailsSection = ({
       </div>
 
       {/* Provider Details */}
-      <div className="flex flex-col">
+      <div className="flex flex-col border-r pr-6">
         <div className="text-lg font-semibold mb-2">Provider Information</div>
         <div className="capitalize text-gray-800">
           <span className="font-semibold">Provider Name:</span>{" "}
@@ -120,7 +120,7 @@ const RxPatientDetailsSection = ({
         </div>
         <div>
           <span className="font-semibold">Provider ID:</span>{" "}
-          {providerDetails.providerId}
+          {providerDetails.providerUniqueId}
         </div>
         <div>
           <span className="font-semibold">Facility:</span> Join Pomegranate
