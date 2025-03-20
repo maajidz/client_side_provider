@@ -58,7 +58,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isListVisible, setIsListVisible] = useState<boolean>(false);
+  // const [isListVisible, setIsListVisible] = useState<boolean>(false);
   const [filteredProcedures, setFilteredProcedures] = useState<
     ProceduresTypesInterface[]
   >([]);
@@ -92,7 +92,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
     resolver: zodResolver(addProceduresSurgeriesAndHospitalizationFormSchema),
     defaultValues: {
       type: procedureData?.type || "",
-      name: procedureData?.nameId || "",
+      name: procedureData?.nameType.id || "",
       fromDate:
         procedureData?.fromDate || new Date().toISOString().split("T")[0],
       toDate: procedureData?.toDate || new Date().toISOString().split("T")[0],
@@ -108,18 +108,26 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
     if (procedureData) {
       form.reset({
         type: procedureData?.type || "",
-        name: procedureData?.nameId || "",
+        name: procedureData?.nameType.id || "",
         fromDate:
           procedureData?.fromDate || new Date().toISOString().split("T")[0],
         toDate: procedureData?.toDate || new Date().toISOString().split("T")[0],
         notes: procedureData?.notes || "",
       });
       if (procedureData.nameId) {
-        setProcedureId(procedureData.nameId);
+        setProcedureId(procedureData.nameType.id);
       }
       if (procedureData.nameType.name) {
         setSearchTerm(procedureData.nameType.name);
       }
+    } else {
+      form.reset({
+        type: "",
+        name: "",
+        fromDate: new Date().toISOString().split("T")[0],
+        toDate: new Date().toISOString().split("T")[0],
+        notes: "",
+      });
     }
   }, [procedureData, form]);
 
@@ -131,7 +139,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
       if (!procedureData) {
         const requestData = {
           type: values.type ?? "",
-          nameId: procedureId,
+          nameId: values.name ?? "",
           fromDate: values.fromDate ?? "",
           toDate: values.toDate ?? "",
           notes: values.notes ?? "",
@@ -176,6 +184,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
       });
     } finally {
       setSubmitLoading(false);
+      form.reset();
     }
   };
 
@@ -239,44 +248,38 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                   <FormItem className="w-full">
                     <FormLabel className="">Name</FormLabel>
                     <FormControl>
-                      <div className="relative">
-                        <Input
-                          {...field}
-                          value={searchTerm}
-                          placeholder="Search Supplement..."
-                          onChange={(event) => {
-                            setSearchTerm(event.target.value);
-                            setIsListVisible(true);
-                          }}
-                          className="w-full"
-                        />
-                        {searchTerm && isListVisible && (
-                          <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
-                            {loading ? (
-                              <div>Loading...</div>
-                            ) : filteredProcedures.length > 0 ? (
-                              filteredProcedures.map((procedure) => (
-                                <div
-                                  key={procedure.id}
-                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                  onClick={() => {
-                                    field.onChange(procedure.name);
-                                    setSearchTerm(procedure.name);
-                                    setProcedureId(procedure.id);
-                                    setIsListVisible(false);
-                                  }}
-                                >
-                                  {procedure.name}
-                                </div>
-                              ))
-                            ) : (
-                              <div className="px-4 py-2 text-gray-500">
-                                No results found
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {loading ? (
+                            <div>Loading...</div>
+                          ) : filteredProcedures.length > 0 ? (
+                            filteredProcedures.map((procedure) => (
+                              <SelectItem
+                                key={procedure.id}
+                                value={procedure.id}
+                                onClick={() => {
+                                  field.onChange(procedure.id);
+                                  setSearchTerm(procedure.name);
+                                  setProcedureId(procedure.id);
+                                  // setIsListVisible(false);
+                                }}
+                              >
+                                {procedure.name}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <div className="px-4 py-2 text-gray-500">
+                              No results found
+                            </div>
+                          )}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

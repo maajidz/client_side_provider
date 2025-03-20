@@ -124,14 +124,23 @@ function TasksDialog({
           .toISOString()
           .split("T")[0];
         form.setValue("dueDate", formattedDueDate);
-        setShowDueDate(true);
+        setShowDueDate(!showDueDate);
       }
       setSelectedOwner(
         ownersList.find((owner) => owner.providerDetails?.id === tasksData.assignerProvider?.id)
       );
       form.setValue("owner", selectedOwner?.providerDetails?.id ?? "")
+    } else {
+      form.reset({
+        category:  "",
+        task: "",
+        owner:  "",
+        priority: "low",
+        sendReminder: [],
+        comments: "",
+      });
     }
-  }, [form, tasksData, ownersList, showDueDate, selectedOwner?.providerDetails?.id]);
+  }, [form, tasksData, ownersList, selectedOwner?.providerDetails?.id, setShowDueDate]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     const requestData: CreateTaskType | UpdateTaskType = {

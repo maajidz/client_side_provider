@@ -154,6 +154,7 @@ function AllergiesDialog({
       } finally {
         setLoading(false);
         onClose();
+        form.reset();
       }
     }
   };

@@ -130,6 +130,7 @@ const ViewPatientEncounters = ({
                   page={page}
                   totalPages={totalPages}
                   setPage={setPage}
+                  userDetailsId={userDetailsId}
                 />
               )
             )}

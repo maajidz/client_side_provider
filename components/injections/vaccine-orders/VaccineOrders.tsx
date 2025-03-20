@@ -185,6 +185,36 @@ function VaccineOrders({
     }
   }, [toast]);
 
+  // Effects
+  useEffect(() => {
+    if (!userDetailsId) {
+      fetchUserData();
+    }
+
+    fetchProvidersData();
+  }, [fetchUserData, fetchProvidersData, userDetailsId]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchVaccinesType.trim()) {
+        fetchVaccineTypes();
+      } else {
+        setVaccinesTypes([]);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchVaccinesType, fetchVaccineTypes]);
+
+  const filteredVaccineTypes = vaccinesTypes.filter((vaccine) =>
+    vaccine.vaccine_name.toLocaleLowerCase().includes(searchTerm)
+  );
+
+  const filteredPatients = patientData.filter((patient) =>
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   // POST Injection
   const onSubmit = async (formData: z.infer<typeof addVaccineSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
@@ -218,40 +248,12 @@ function VaccineOrders({
       }
     } finally {
       setLoading((prev) => ({ ...prev, post: false }));
+      setSearchTerm("");
       form.reset();
+      form.clearErrors();
       onClose();
     }
   };
-
-  // Effects
-  useEffect(() => {
-    if (!userDetailsId) {
-      fetchUserData();
-    }
-
-    fetchProvidersData();
-  }, [fetchUserData, fetchProvidersData, userDetailsId]);
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchVaccinesType.trim()) {
-        fetchVaccineTypes();
-      } else {
-        setVaccinesTypes([]);
-      }
-    }, 300);
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchVaccinesType, fetchVaccineTypes]);
-
-  const filteredVaccineTypes = vaccinesTypes.filter((vaccine) =>
-    vaccine.vaccine_name.toLocaleLowerCase().includes(searchTerm)
-  );
-
-  const filteredPatients = patientData.filter((patient) =>
-    `${patient.user.firstName} ${patient.user.lastName}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

@@ -50,7 +50,7 @@ function AddTaskComment({
   const form = useForm<z.infer<typeof addCommentToTasksSchema>>({
     resolver: zodResolver(addCommentToTasksSchema),
     defaultValues: {
-      comments: "",
+      comments: tasksData?.description ?? "",
     },
   });
 
@@ -111,17 +111,6 @@ function AddTaskComment({
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3">
-          {/* <div className="flex justify-end">
-            <Button
-            variant={"outline"}
-              className="border border-[#84012A] bg-white text-[#84012A]"
-              onClick={() => {
-                setIsEditDialogOpen(true);
-              }}
-            >
-              Edit
-            </Button>
-          </div> */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-3">
@@ -149,13 +138,6 @@ function AddTaskComment({
             </form>
           </Form>
         </div>
-        {/* <TasksDialog
-          tasksData={editData}
-          onClose={() => {
-            setIsEditDialogOpen(false);
-          }}
-          isOpen={isEditDialogOpen}
-        /> */}
       </DialogContent>
     </Dialog>
   );

@@ -45,7 +45,12 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
-import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
+import {
+  getDosageUnits,
+  getFrequencyData,
+  getInjectionSite,
+  getParenteralRoutes,
+} from "@/services/enumServices";
 
 const InjectionsDialog = ({
   userDetailsId,
@@ -68,12 +73,14 @@ const InjectionsDialog = ({
     type: false,
     dosage: false,
     frequency: false,
+    parenteralRoutes: false,
+    injectionSite: false,
   });
   const { toast } = useToast();
 
   // Search Types
-  const [searchType, setSearchType] = useState("");
-  const [visibleTypeList, setVisibleTypeList] = useState(false);
+  const [searchType, setSearchType] = useState<string>("");
+  const [visibleTypeList, setVisibleTypeList] = useState<boolean>(false);
 
   // Frequency Data
   const [frequencyData, setFrequencyData] = useState<string[]>([]);
@@ -81,10 +88,16 @@ const InjectionsDialog = ({
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
 
+  // Parenteral Routes
+  const [parenteralRoutes, setParenteralRoutes] = useState<string[]>([]);
+
+  // Injection Site
+  const [injectionSite, setInjectionSite] = useState<string[]>([]);
+
   const form = useForm<z.infer<typeof createInjectionSchema>>({
     resolver: zodResolver(createInjectionSchema),
     defaultValues: {
-      injection_name: injectionsData?.injection_name || "",
+      injection_type_Id: injectionsData?.injectionType.id || "",
       dosage_unit: injectionsData?.dosage_unit || "",
       dosage_quantity: injectionsData?.dosage_quantity || 0,
       frequency: injectionsData?.frequency || "",
@@ -100,6 +113,8 @@ const InjectionsDialog = ({
       comments: injectionsData?.comments || "",
     },
   });
+
+  const routeName = form.watch("parental_route");
 
   // Fetch Injections Type
   const fetchInjectionsType = useCallback(async () => {
@@ -188,10 +203,51 @@ const InjectionsDialog = ({
     }
   }, [toast]);
 
+  // Fetch Parenteral Routes
+  const fetchParenteralRoutes = useCallback(async () => {
+    try {
+      setLoading((prev) => ({ ...prev, parenteralRoutes: true }));
+      const types = await getParenteralRoutes();
+
+      if (types) {
+        setParenteralRoutes(types);
+      }
+    } catch (err) {
+      console.log("An error occurred", err);
+    } finally {
+      setLoading((prev) => ({ ...prev, parenteralRoutes: false }));
+    }
+  }, []);
+
+  // Fetch Injection Site
+  const fetchInjectionSite = useCallback(
+    async ({ route }: { route: string }) => {
+      try {
+        setLoading((prev) => ({ ...prev, injectionSite: true }));
+        const types = await getInjectionSite({ route });
+
+        if (types) {
+          setInjectionSite(types);
+        }
+      } catch (err) {
+        console.log("An error occurred", err);
+      } finally {
+        setLoading((prev) => ({ ...prev, injectionSite: false }));
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (routeName) {
+      fetchInjectionSite({ route: routeName });
+    }
+  }, [routeName, fetchInjectionSite]);
+
   useEffect(() => {
     if (injectionsData) {
       form.reset({
-        injection_name: injectionsData.injection_name || "",
+        injection_type_Id: injectionsData.injectionType.id || "",
         dosage_unit: injectionsData.dosage_unit || "",
         dosage_quantity: injectionsData.dosage_quantity || 0,
         frequency: injectionsData.frequency || "",
@@ -206,8 +262,43 @@ const InjectionsDialog = ({
         note_to_nurse: injectionsData.note_to_nurse || "",
         comments: injectionsData.comments || "",
       });
+      setSearchType(injectionsData?.injectionType.injection_name);
+    } else {
+      form.reset({
+        injection_type_Id: "",
+        dosage_unit: "",
+        dosage_quantity: 0,
+        frequency: "",
+        period_number: 0,
+        period_unit: "",
+        parental_route: "",
+        site: "",
+        lot_number: 0,
+        expiration_date: "",
+        administered_date: "",
+        administered_time: "",
+        note_to_nurse: "",
+        comments: "",
+      });
+      setSearchType("");
     }
   }, [form, injectionsData]);
+
+  useEffect(() => {
+    fetchInjectionsType();
+    fetchFrequency();
+    fetchDosageUnits();
+    fetchParenteralRoutes();
+  }, [
+    fetchInjectionsType,
+    fetchDosageUnits,
+    fetchFrequency,
+    fetchParenteralRoutes,
+  ]);
+
+  const filteredInjectionTypes = injectionsType.filter((type) =>
+    type.injection_name.toLowerCase().includes(searchType.toLowerCase())
+  );
 
   const onSubmit = async (values: z.infer<typeof createInjectionSchema>) => {
     console.log(values);
@@ -256,19 +347,10 @@ const InjectionsDialog = ({
     } finally {
       setLoading((prev) => ({ ...prev, post: false }));
       form.reset();
+      setSearchType("");
       onClose();
     }
   };
-
-  useEffect(() => {
-    fetchInjectionsType();
-    fetchFrequency();
-    fetchDosageUnits();
-  }, [fetchInjectionsType, fetchDosageUnits, fetchFrequency]);
-
-  const filteredInjectionTypes = injectionsType.filter((type) =>
-    type.injection_name.toLowerCase().includes(searchType.toLowerCase())
-  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -285,7 +367,7 @@ const InjectionsDialog = ({
               <div className="flex flex-col gap-6 p-2.5">
                 <FormField
                   control={form.control}
-                  name="injection_name"
+                  name="injection_type_Id"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Name</FormLabel>
@@ -299,6 +381,7 @@ const InjectionsDialog = ({
                               setSearchType(e.target.value);
                               setVisibleTypeList(true);
                             }}
+                            disabled={injectionsData ? true : false}
                           />
                           {searchType && visibleTypeList && (
                             <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
@@ -474,12 +557,15 @@ const InjectionsDialog = ({
                             <SelectValue placeholder="Select Parenteral Route" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="parenteralRoute1">
-                              Parenteral Route 1
-                            </SelectItem>
-                            <SelectItem value="parenteralRoute2">
-                              Parenteral Route 2
-                            </SelectItem>
+                            {loading.parenteralRoutes ? (
+                              <div>Loading...</div>
+                            ) : (
+                              parenteralRoutes.map((route, index) => (
+                                <SelectItem value={route} key={index}>
+                                  {route}
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -502,8 +588,15 @@ const InjectionsDialog = ({
                             <SelectValue placeholder="Select Site" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="site1">Site 1</SelectItem>
-                            <SelectItem value="site2">Site 2</SelectItem>
+                            {loading.injectionSite ? (
+                              <div>Loading...</div>
+                            ) : (
+                              injectionSite.map((site, index) => (
+                                <SelectItem value={site} key={index}>
+                                  {site}
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>
