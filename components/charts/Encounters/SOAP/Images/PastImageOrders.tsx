@@ -12,6 +12,19 @@ import { getImagesOrdersData } from "@/services/chartsServices";
 import { ImageOrdersResponseInterface } from "@/types/chartsInterface";
 import { Button } from "@/components/ui/button";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+
+interface ImageTest {
+  name: string;
+}
+
+interface ImageOrder {
+  imageType: {
+    name: string;
+  };
+  imageTests: ImageTest[];
+  createdAt: string;
+}
 
 const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -48,21 +61,21 @@ const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
     );
   }
 
-  const columns = [
+  const columns: ColumnDef<ImageOrder>[] = [
     {
       header: "Image Name",
       accessorKey: "imageType.name",
-      cell: (info: any) => info.getValue() || "N/A",
+      cell: ({ getValue }) => getValue<string>() || "N/A",
     },
     {
       header: "Test Name",
       accessorKey: "imageTests",
-      cell: (info: any) => info.getValue().map((test: any) => test.name).join(", ") || "N/A",
+      cell: ({ getValue }) => getValue<ImageTest[]>().map(test => test.name).join(", ") || "N/A",
     },
     {
       header: "Created At",
       accessorKey: "createdAt",
-      cell: (info: any) => info.getValue().split("T")[0],
+      cell: ({ getValue }) => getValue<string>().split("T")[0],
     },
   ];
 

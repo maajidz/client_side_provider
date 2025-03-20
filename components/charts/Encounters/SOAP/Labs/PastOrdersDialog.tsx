@@ -15,7 +15,6 @@ import { RootState } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { ColumnDef } from "@tanstack/react-table";
-import { formatSentAt } from "@/utils/dateUtils";
 import { formatDate } from "date-fns";
 
 const PastOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {

@@ -2,7 +2,6 @@ import React, { useCallback, useState, useEffect, useRef, useMemo } from "react"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -23,27 +22,35 @@ import {
   updateSOAPChart,
 } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import DropdownList from "@/components/ui/DropdownList";
 import { Icon } from "@/components/ui/icon";
-import { TrashIcon } from "lucide-react";
+import { ColumnDef } from "@tanstack/react-table";
 
-// Debounce function
-const debounce = (func: Function, delay: number) => {
+// Debounce function with specific type for this use case
+const debounce = (
+  func: (searchTerm: string, index: number) => Promise<void>,
+  delay: number
+) => {
   let timeoutId: NodeJS.Timeout;
-  return (...args: any[]) => {
+  return (searchTerm: string, index: number) => {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
-      func(...args);
+      func(searchTerm, index);
     }, delay);
   };
 };
+
+interface DiagnosisRow {
+  diagnosis_Id: string;
+  ICD_Code: string;
+  notes: string;
+  searchTerm: string;
+}
 
 const AddDx = ({
   patientDetails,
@@ -60,7 +67,7 @@ const AddDx = ({
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
-  const [rows, setRows] = useState([{ diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" }]);
+  const [rows, setRows] = useState<DiagnosisRow[]>([{ diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" }]);
 
   // Track the active input index
   const [activeInputIndex, setActiveInputIndex] = useState<number | null>(null);
@@ -90,19 +97,19 @@ const AddDx = ({
     setIsDialogOpen(open);
   };
 
-  const handleAddRow = () => {
+  const handleAddRow = useCallback(() => {
     setRows((prevRows) => [
       ...prevRows,
       { diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" },
     ]);
-  };
+  }, []);
 
-  const handleDeleteRow = (index: number) => {
+  const handleDeleteRow = useCallback((index: number) => {
     const updatedRows = rows.filter((_, i) => i !== index);
     setRows(updatedRows);
-  };
+  }, [rows]);
 
-  const handleChange = useCallback((index: number, field: string, value: string) => {
+  const handleChange = useCallback((index: number, field: keyof DiagnosisRow, value: string) => {
     setRows(prevRows =>
       prevRows.map((row, i) => (i === index ? { ...row, [field]: value } : row))
     );
@@ -119,7 +126,6 @@ const AddDx = ({
         });
         return;
       }
-
       setLoading(true);
       try {
         const response = await fetchDiagnosesType({
@@ -147,7 +153,7 @@ const AddDx = ({
     []
   );
 
-  const handleSelectDiagnosis = (diagnosis: DiagnosesTypeData, index: number) => {
+  const handleSelectDiagnosis = useCallback((diagnosis: DiagnosesTypeData, index: number) => {
     handleChange(index, "diagnosis_Id", diagnosis.id);
     handleChange(index, "ICD_Code", diagnosis.ICD_Code);
     handleChange(index, "searchTerm", diagnosis.diagnosis_name);
@@ -161,15 +167,15 @@ const AddDx = ({
     // Add a new row and focus the input of the new row
     handleAddRow();
     setActiveInputIndex(rows.length); // Set the new row as active
-  };
+  }, [handleChange, handleAddRow, rows.length]);
 
-  const handleClearRow = (index: number) => {
+  const handleClearRow = useCallback((index: number) => {
     // Clear the inputs for the specified row
     handleChange(index, "diagnosis_Id", "");
     handleChange(index, "ICD_Code", "");
     handleChange(index, "notes", "");
     handleChange(index, "searchTerm", "");
-  };
+  }, [handleChange]);
 
   const handleSubmit = async () => {
     try {
@@ -229,11 +235,11 @@ const AddDx = ({
   };
 
 
-  const columns = useMemo(() => [
+  const columns: ColumnDef<DiagnosisRow>[] = useMemo(() => [
     {
       accessorKey: "diagnosis",
       header: "Diagnosis",
-      cell: ({ row }: { row: any }) => (
+      cell: ({ row }) => (
         <div className="relative flex items-center">
           <Input
             type="text"
@@ -255,24 +261,11 @@ const AddDx = ({
                 });
               }
             }}
-            className="border rounded"
             ref={(el) => {
               inputRefs.current[row.index] = el;
             }}
-            onFocus={() => {
-              setActiveInputIndex(row.index);
-            }}
+            onFocus={() => setActiveInputIndex(row.index)}
           />
-          {row.original.searchTerm && (
-            <Button
-              variant={"link"}
-              size={"icon"}
-              className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-500"
-              onClick={() => handleClearRow(row.index)}
-            >
-              <Icon name="close"/>
-            </Button>
-          )}
           {isListVisible[row.index] && (
             <DropdownList
               items={diagnosesTypeData}
@@ -281,7 +274,14 @@ const AddDx = ({
                   {diagnosis.diagnosis_name} ({diagnosis.ICD_Code})
                 </div>
               )}
-              onSelect={(diagnosis) => handleSelectDiagnosis(diagnosis, row.index)}
+              onSelect={(diagnosis) => handleSelectDiagnosis(diagnosis as DiagnosesTypeData, row.index)}
+            />
+          )}
+          {row.original.diagnosis_Id && (
+            <Icon
+              name="delete"
+              className="cursor-pointer ml-2 text-red-500"
+              onClick={() => handleClearRow(row.index)}
             />
           )}
         </div>
@@ -289,77 +289,64 @@ const AddDx = ({
     },
     {
       accessorKey: "ICD_Code",
-      header: "ICD Codes",
-      cell: ({ row }: { row: any }) => (
-        <Input
-          type="text"
-          placeholder="ICD Codes"
-          disabled
-          value={row.original.ICD_Code}
-          onChange={(e) => handleChange(row.index, "ICD_Code", e.target.value)}
-        />
-      ),
+      header: "ICD Code",
+      cell: ({ row }) => <div>{row.original.ICD_Code || "N/A"}</div>,
     },
     {
       accessorKey: "notes",
       header: "Notes",
-      cell: ({ row }: { row: any }) => (
+      cell: ({ row }) => (
         <Input
           type="text"
-          placeholder="Notes"
+          placeholder="Enter notes"
           value={row.original.notes}
           onChange={(e) => handleChange(row.index, "notes", e.target.value)}
-          className="border rounded"
         />
       ),
     },
     {
       accessorKey: "actions",
       header: "Actions",
-      cell: ({ row }: { row: any }) => (
+      cell: ({ row }) => (
         <Button
-          size={"icon"}
-          variant={"ghost"}
+          variant="ghost"
           onClick={() => handleDeleteRow(row.index)}
-          disabled={rows.length === 1}
+          disabled={!rows.length}
         >
-          <Icon name="remove"/>
+          <Icon name="delete" className="cursor-pointer ml-2 text-red-500" />
         </Button>
       ),
     },
-  ], [diagnosesTypeData, isListVisible, handleSearch]); 
-  
-
-  const tableData = useMemo(() => rows, [rows]);
+  ], [diagnosesTypeData, handleChange, handleSearch, isListVisible, rows.length, handleClearRow, handleDeleteRow, handleSelectDiagnosis]);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"}>Add Dx</Button>
+        <Button variant={"ghost"}>Add Diagnosis</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Add Diagnoses</DialogTitle>
-          {/* <DialogDescription>Add a new diagnosis to the patient's chart.</DialogDescription> */}
+          <DialogTitle>Add Diagnosis</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-4 overflow-visible">
+        <div className="flex flex-col gap-4">
           <DefaultDataTable
             columns={columns}
-            data={tableData}
+            data={rows}
             pageNo={1}
             totalPages={1}
             onPageChange={() => {}}
           />
         </div>
         <DialogFooter>
-          <div className="flex flex-row-reverse">
-            <Button
-              disabled={rows.length === 0 || rows[0].diagnosis_Id === ""}
-              onClick={handleSubmit}
-            >
-              Save Changes
-            </Button>
-          </div>
+          <Button
+            variant={"outline"}
+            onClick={() => setIsDialogOpen(false)}
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} disabled={loading}>
+            {loading ? "Loading..." : "Save"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

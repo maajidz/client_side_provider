@@ -131,6 +131,7 @@ const ChartNotesAccordion = ({
 
       const requestBody = {
         subjective: plainText,
+        encounterId: encounterId,
       };
 
       if (patientDetails.chart?.id) {
@@ -169,6 +170,7 @@ const ChartNotesAccordion = ({
       if (patientDetails.chart?.id) {
         const requestBody = {
           objective: `Weight is ${values.weightInLbs} lbs ${values.weightInOzs} ozs. Height is ${values.heightInFt} ft ${values.heightInInches} inches. BMI is ${values.bmi}. The starting weight is ${values.startingWeight} and the goal Weight is ${values.goalWeight}`,
+          encounterId: encounterId,
         };
         await updateSOAPChart({
           requestData: requestBody,

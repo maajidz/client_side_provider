@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -30,7 +28,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 

@@ -33,6 +33,7 @@ import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { Icon } from "@/components/ui/icon";
+import { ColumnDef } from "@tanstack/react-table";
 
 interface Row {
   type: string;
@@ -64,15 +65,14 @@ const FollowUpDialog = ({
   ]);
 
   // Separate state for editing
-  const [editingStates, setEditingStates] = useState<{[key: string]: string}>({});
+  const [editingStates, setEditingStates] = useState<{[key: string]: string | number | Array<"email" | "text" | "voice">}>({});
   
-  const handleChange = (index: number, field: string, value: string) => {
-    // Update editing state instead of row data
+  const handleChange = (index: number, field: keyof Row, value: string) => {
     const key = `${index}-${field}`;
     setEditingStates(prev => ({...prev, [key]: value}));
   };
 
-
+  // Debounced effect to update actual row data
   useEffect(() => {
     const timer = setTimeout(() => {
       setRows(currentRows => 
@@ -81,8 +81,9 @@ const FollowUpDialog = ({
           (Object.keys(row) as Array<keyof Row>).forEach(field => {
             const key = `${index}-${field}`;
             if (key in editingStates) {
-
-              updates[field] = editingStates[key] as any;
+              // TypeScript doesn't know that the value matches the field type
+              // Using a safer approach with unknown as the intermediate step
+              (updates as Record<string, unknown>)[field] = editingStates[key];
             }
           });
           return {...row, ...updates};
@@ -180,14 +181,14 @@ const FollowUpDialog = ({
   };
 
   // Define columns for the DefaultDataTable
-  const columns = [
+  const columns: ColumnDef<Row>[] = [
     {
       header: "Type",
       accessorKey: "type",
-      cell: (info: any) => (
+      cell: ({ row, getValue }) => (
         <Select
-          value={info.getValue()}
-          onValueChange={(value) => handleChange(info.row.index, "type", value)}
+          value={getValue() as string}
+          onValueChange={(value) => handleChange(row.index, "type", value)}
         >
           <SelectTrigger className="w-44">
             <SelectValue placeholder="Select Type" />
@@ -205,12 +206,12 @@ const FollowUpDialog = ({
     {
       header: "Notes",
       accessorKey: "notes",
-      cell: (info: any) => (
+      cell: ({ row, getValue }) => (
         <Textarea
-          value={info.getValue()}
+          value={getValue() as string}
           rows={1}
           onChange={(e) =>
-            handleChange(info.row.index, "notes", e.target.value)
+            handleChange(row.index, "notes", e.target.value)
           }
           placeholder="Enter notes"
           className="w-56"
@@ -220,12 +221,12 @@ const FollowUpDialog = ({
     {
       header: "Date",
       accessorKey: "sectionDateType",
-      cell: (info: any) => (
+      cell: ({ row }) => (
         <div className="flex gap-3">
           <Select
-            value={info.row.original.sectionDateType}
+            value={row.original.sectionDateType}
             onValueChange={(value) =>
-              handleChange(info.row.index, "sectionDateType", value)
+              handleChange(row.index, "sectionDateType", value)
             }
           >
             <SelectTrigger className="w-fit border rounded">
@@ -240,16 +241,16 @@ const FollowUpDialog = ({
           </Select>
           <Input
             type="number"
-            value={info.row.original.sectionDateNumber}
+            value={row.original.sectionDateNumber}
             onChange={(e) =>
-              handleChange(info.row.index, "sectionDateNumber", e.target.value)
+              handleChange(row.index, "sectionDateNumber", e.target.value)
             }
             className="w-16 border rounded"
           />
           <Select
-            value={info.row.original.sectionDateUnit}
+            value={row.original.sectionDateUnit}
             onValueChange={(value) =>
-              handleChange(info.row.index, "sectionDateUnit", value)
+              handleChange(row.index, "sectionDateUnit", value)
             }
           >
             <SelectTrigger className="w-fit border rounded">
@@ -269,32 +270,32 @@ const FollowUpDialog = ({
     {
       header: "Reminder",
       accessorKey: "reminders",
-      cell: (info: any) => (
+      cell: ({ row }) => (
         <div className="flex flex-row gap-2">
           <Checkbox
             label={<Icon name="email" />}
             tooltipLabel="Email"
-            checked={info.row.original.reminders.includes("email")}
+            checked={row.original.reminders.includes("email")}
             onCheckedChange={(checked) =>
-              handleReminderChange(info.row.index, "email", checked)
+              handleReminderChange(row.index, "email", checked as boolean)
             }
           />
 
           <Checkbox
             label={<Icon name="message" />}
             tooltipLabel="Text"
-            checked={info.row.original.reminders.includes("text")}
+            checked={row.original.reminders.includes("text")}
             onCheckedChange={(checked) =>
-              handleReminderChange(info.row.index, "text", checked)
+              handleReminderChange(row.index, "text", checked as boolean)
             }
           />
 
           <Checkbox
             label={<Icon name="phone" />}
             tooltipLabel="Voice"
-            checked={info.row.original.reminders.includes("voice")}
+            checked={row.original.reminders.includes("voice")}
             onCheckedChange={(checked) =>
-              handleReminderChange(info.row.index, "voice", checked)
+              handleReminderChange(row.index, "voice", checked as boolean)
             }
           />
         </div>
@@ -303,8 +304,8 @@ const FollowUpDialog = ({
     {
       header: "Actions",
       accessorKey: "actions",
-      cell: (info: any) => (
-        <Button variant="ghost" onClick={() => handleDeleteRow(info.row.index)}>
+      cell: ({ row }) => (
+        <Button variant="ghost" onClick={() => handleDeleteRow(row.index)}>
           <Trash2Icon />
         </Button>
       ),

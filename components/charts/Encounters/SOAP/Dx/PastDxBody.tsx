@@ -2,12 +2,22 @@ import LoadingButton from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { deleteDiagnoses, fetchDiagnoses, updateDiagnoses } from '@/services/chartsServices';
+import { deleteDiagnoses, fetchDiagnoses } from '@/services/chartsServices';
 import { PastDiagnosesInterface, UserEncounterData } from '@/types/chartsInterface';
 import { showToast } from '@/utils/utils';
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { Icon } from '@/components/ui/icon';
+import { ColumnDef } from '@tanstack/react-table';
+
+interface PastDiagnosisRow {
+    id: string;
+    type: {
+        diagnosis_name: string;
+        ICD_Code: string;
+    };
+    notes: string;
+}
 
 const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -35,7 +45,7 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
         fetchAndSetResponse();
     }, [patientDetails?.chart?.id, fetchAndSetResponse]);
 
-    const handleDeleteDiagnoses = async (diagnosesId: string) => {
+    const handleDeleteDiagnoses = useCallback(async (diagnosesId: string) => {
         setLoading(true);
         try {
             await deleteDiagnoses({ diagnosisId: diagnosesId });
@@ -49,45 +59,19 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
         } finally {
             setLoading(false);
         }
-    };
+    }, [toast]);
 
-    const handleChange = (index: number, field: string, value: string) => {
+    const handleChange = useCallback((index: number, field: string, value: string) => {
         const updatedDiagnoses = [...prevDiagnosis];
         updatedDiagnoses[index] = { ...updatedDiagnoses[index], [field]: value };
         setPrevDiagnosis(updatedDiagnoses);
-    };
+    }, [prevDiagnosis]);
 
-    const handleUpdateDiagnoses = async (diagnosisId: string, updatedData: PastDiagnosesInterface) => {
-        setLoading(true);
-        try {
-            const requestBody = {
-                diagnosis_name: updatedData.type.diagnosis_name,
-                ICD_Code: updatedData.type.ICD_Code,
-                notes: updatedData.notes,
-            };
-            const response = await updateDiagnoses({ diagnosisId, requestData: requestBody });
-            if (response) {
-                showToast({ toast, type: "success", message: "Updated successfully!" });
-                setPrevDiagnosis(prev =>
-                    prev.map(diagnosis =>
-                        diagnosis.id === diagnosisId ? { ...diagnosis, ...updatedData } : diagnosis
-                    )
-                );
-            }
-            console.log(response);
-        } catch (e) {
-            console.log("Error", e);
-            showToast({ toast, type: "error", message: "Failed to update Diagnosis" });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const columns = useMemo(() => [
+    const columns: ColumnDef<PastDiagnosisRow>[] = useMemo(() => [
         {
             accessorKey: "type.diagnosis_name",
             header: "Diagnosis",
-            cell: ({ row }: { row: any }) => (
+            cell: ({ row }) => (
                 <Input
                     type="text"
                     placeholder="Enter Diagnosis"
@@ -100,7 +84,7 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
         {
             accessorKey: "type.ICD_Code",
             header: "ICD Codes",
-            cell: ({ row }: { row: any }) => (
+            cell: ({ row }) => (
                 <Input
                     type="text"
                     placeholder="ICD Codes"
@@ -113,7 +97,7 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
         {
             accessorKey: "notes",
             header: "Notes",
-            cell: ({ row }: { row: any }) => (
+            cell: ({ row }) => (
                 <Input
                     type="text"
                     placeholder="Notes"
@@ -126,7 +110,7 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
         {
             accessorKey: "actions",
             header: "Actions",
-            cell: ({ row }: { row: any }) => (
+            cell: ({ row }) => (
                 <div className="flex gap-2">
                     <Button
                         variant={'ghost'}
@@ -134,18 +118,10 @@ const PastDxBody = ({ patientDetails }: { patientDetails: UserEncounterData }) =
                     >
                         <Icon name="remove" />
                     </Button>
-                    {/* <Button
-                        type="submit"
-                        variant={'ghost'}
-                        onClick={() => handleUpdateDiagnoses(row.original.id, row.original)}
-                        className='text-[#84012A]'
-                    >
-                        <Save />
-                    </Button> */}
                 </div>
             ),
         },
-    ], [handleChange, handleDeleteDiagnoses, handleUpdateDiagnoses]);
+    ], [handleChange, handleDeleteDiagnoses]);
 
     return (
         <div className='flex flex-col gap-4'>
