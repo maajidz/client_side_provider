@@ -66,17 +66,24 @@ const ChartNotes = ({
                 </CardDescription>
               </div>
               <div className="flex flex-col gap-1">
-                <ChartSubLabel label="Active Medications" />
                 <CardDescription className="flex flex-col gap-2">
-                  {patientDetails?.userDetails?.active_medications?.map(
-                    (data) => (
-                      <div
-                        key={data.id}
-                        dangerouslySetInnerHTML={{
-                          __html: data.medicationName.productName,
-                        }}
-                      />
-                    )
+                  {patientDetails?.userDetails?.active_medications &&
+                  patientDetails.userDetails.active_medications.length > 0 ? (
+                    <>
+                    <ChartSubLabel label={`Active Medications (${patientDetails?.userDetails?.active_medications?.length})`} />
+                      {patientDetails.userDetails.active_medications.map((data) => (
+                        <div className="flex flex-col gap-1" key={data.id}>
+                          <div>
+                            {data.medicationName.productName} {data.medicationName.strength} {data.medicationName.route} {data.medicationName.doseForm}
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <ChartSubLabel label="Active Medications" />
+                      <p>No active medications available.</p>
+                    </>
                   )}
                 </CardDescription>
               </div>
@@ -93,7 +100,7 @@ const ChartNotes = ({
             <div>
               {patientDetails?.chart?.objective
                 ? patientDetails?.chart?.objective
-                : "N/A"}
+                : "No Objective Available"}
             </div>
           </CardDescription>
         </Card>
@@ -107,7 +114,7 @@ const ChartNotes = ({
             <div>
               {patientDetails?.chart?.assessment
                 ? patientDetails?.chart?.assessment
-                : "N/A"}
+                : "No Assessment Available"}
             </div>
           </CardDescription>
         </Card>
@@ -122,7 +129,7 @@ const ChartNotes = ({
             <div>
               {patientDetails?.chart?.plan
                 ? patientDetails?.chart?.plan
-                : "N/A"}
+                : "No Plan Available"}
             </div>
           </CardDescription>
         </Card>

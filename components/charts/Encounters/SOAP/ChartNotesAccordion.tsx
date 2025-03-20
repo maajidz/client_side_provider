@@ -180,7 +180,6 @@ const ChartNotesAccordion = ({
             }}
             placeholder="Enter chief complaints..."
           />
-          
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -288,11 +287,6 @@ const ChartNotesAccordion = ({
                   )}
                 />
               </div>
-              {/* <div className="flex justify-end items-end w-full">
-                <Button type="submit" variant="ghost">
-                  Save Content
-                </Button>
-              </div> */}
             </div>
           </form>
         </Form>
