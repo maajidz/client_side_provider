@@ -149,7 +149,7 @@ const AddDx = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button value={"ghost"}>Add Dx</Button>
+        <Button variant={"ghost"}>Add Dx</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
