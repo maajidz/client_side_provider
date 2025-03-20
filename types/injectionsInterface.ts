@@ -152,3 +152,18 @@ export interface InjectionsData extends CreateInjectionInterface {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface InjectionsType {
+  id: string;
+  injection_name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface InjectionsTypeResponseInterface {
+  data: InjectionsType[],
+  page: number;
+  limit: number;
+  total: number;
+}

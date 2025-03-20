@@ -6,6 +6,7 @@ import {
   InjectionsResponse,
   InjectionsResponseInterface,
   InjectionsSearchParamsType,
+  InjectionsTypeResponseInterface,
   UpdateInjectionInterface,
   VaccinesResponseInterface,
   VaccinesSearchParamsType,
@@ -200,6 +201,19 @@ export const getInjection = async ({
   });
 
   const data: InjectionsResponse = await response.data;
+  return data;
+};
+
+export const getInjectionsType = async ({ search }: { search: string }) => {
+  const response = await ApiFetch({
+    url: `/injections/injection/type?search=${search}`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: InjectionsTypeResponseInterface = await response.data;
   return data;
 };
 

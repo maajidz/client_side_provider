@@ -130,6 +130,7 @@ export default function UserAuthForm() {
                     placeholder="Enter your email"
                     disabled={loading}
                     {...field}
+                    className="w-full"
                   />
                 </FormControl>
                 <FormMessage />
@@ -149,7 +150,7 @@ export default function UserAuthForm() {
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
                         {...field}
-                        className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                        className=" w-full border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
                       />
                       <button onClick={togglePasswordVisibility}>
                         {showPassword ? (

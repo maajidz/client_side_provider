@@ -1,13 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import FormLabels from "@/components/custom_buttons/FormLabels";
-import { Button } from "@/components/ui/button";
-import {
-  createSOAPChart,
-  updatePatientPhysicalStatus,
-  updateSOAPChart,
-} from "@/services/chartsServices";
-import { useToast } from "@/hooks/use-toast";
 import {
   Form,
   FormControl,
@@ -19,9 +12,10 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { UserEncounterData } from "@/types/chartsInterface";
-import LoadingButton from "@/components/LoadingButton";
-import { showToast } from "@/utils/utils";
+import {
+  PatientPhysicalStats,
+  UserEncounterData,
+} from "@/types/chartsInterface";
 import "@/app/editor.css";
 import { PlateEditor } from "@/components/ui/plate-editor/PlateEditor";
 import { Descendant } from "slate";
@@ -40,33 +34,39 @@ const formSchema = z.object({
 interface ChartNotesAccordionProps {
   patientDetails: UserEncounterData;
   subjective?: string;
-  encounterId: string;
+  setSubjective: (text: string) => void;
+  setObjective: (text: string) => void;
+  setPhysicalStats: (stats: PatientPhysicalStats) => void;
 }
 
 const ChartNotesAccordion = ({
   patientDetails,
   subjective,
-  encounterId,
+  setSubjective,
+  setObjective,
+  setPhysicalStats,
 }: ChartNotesAccordionProps) => {
   const [editorValue, setEditorValue] = React.useState<Descendant[]>([
     {
       type: "paragraph",
-      children: [{ text: "" }],
+      children: [{ text: `${subjective}` }],
     },
   ]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      weightInLbs: patientDetails?.progressTracker?.currentWeight
-        ? Number(patientDetails?.progressTracker?.currentWeight)
-        : 0,
-      weightInOzs: 0,
-      heightInFt: 0,
-      heightInInches: 0,
+      weightInLbs: patientDetails?.userDetails?.weight
+        ? Number(patientDetails?.userDetails?.weight)
+        : undefined,
+      weightInOzs: undefined,
+      heightInFt: patientDetails?.userDetails?.height
+        ? Number(patientDetails?.userDetails?.height)
+        : undefined,
+      heightInInches: undefined,
       bmi: 0,
+      startingWeight: 0,
+      goalWeight: 0,
     },
   });
 
@@ -87,7 +87,33 @@ const ChartNotesAccordion = ({
         ]);
       }
     }
-  }, [subjective]);
+    if (patientDetails?.userDetails) {
+      form.setValue("weightInLbs", Number(patientDetails?.userDetails?.weight));
+      form.setValue("heightInFt", Number(patientDetails?.userDetails?.height));
+    }
+  }, [subjective, patientDetails?.userDetails, form]);
+
+  const weightLbs = form.watch("weightInLbs");
+  const weightOzs = form.watch("weightInOzs");
+  const heightFeets = form.watch("heightInFt");
+  const heightInches = form.watch("heightInInches");
+  const bmi = form.watch("bmi");
+  const startingWeight = form.watch("startingWeight");
+  const goalWeight = form.watch("goalWeight");
+
+  useEffect(() => {
+    if (weightLbs && heightFeets && heightFeets > 0) {
+      const totalHeightInInches =
+        Number(heightFeets) * 12 + (Number(heightInches) || 0);
+      if (totalHeightInInches > 0) {
+        const bmiValue = (
+          (Number(weightLbs) / totalHeightInInches ** 2) *
+          703
+        ).toFixed(2);
+        form.setValue("bmi", Number(bmiValue));
+      }
+    }
+  }, [weightLbs, heightFeets, heightInches, form]);
 
   const extractPlainText = (content: Descendant[]): string => {
     return content
@@ -102,118 +128,44 @@ const ChartNotesAccordion = ({
       .join("\n");
   };
 
-  const handleWeightChange = ({
-    first,
-    second,
-  }: {
-    first: number;
-    second: number;
-  }) => {
-    form.setValue("weightInLbs", first);
-    form.setValue("weightInOzs", second);
+  const handleInputChange = (
+    fieldName: keyof z.infer<typeof formSchema>,
+    value: number
+  ) => {
+    form.setValue(fieldName, value);
   };
 
-  const handleHeightChange = ({
-    first,
-    second,
-  }: {
-    first: number;
-    second: number;
-  }) => {
-    form.setValue("heightInFt", first);
-    form.setValue("heightInInches", second);
-  };
+  useEffect(() => {
+    const plainText = extractPlainText(editorValue);
+    setSubjective(plainText);
+  }, [editorValue, setSubjective]);
 
-  const handleSaveContent = async () => {
-    try {
-      setLoading(true);
-      const plainText = extractPlainText(editorValue);
-
-      const requestBody = {
-        subjective: plainText,
-        encounterId: encounterId,
-      };
-
-      if (patientDetails.chart?.id) {
-        await updateSOAPChart({
-          requestData: requestBody,
-          chartId: patientDetails.chart.id,
-        });
-        showToast({
-          toast,
-          type: "success",
-          message: "Content saved successfully",
-        });
-      } else {
-        const createRequestBody = {
-          ...requestBody,
-          encounterId: encounterId,
-        };
-        await createSOAPChart({ requestData: createRequestBody });
-        showToast({
-          toast,
-          type: "success",
-          message: "Content saved successfully",
-        });
-      }
-    } catch (e) {
-      console.error("Error saving content:", e);
-      showToast({ toast, type: "error", message: "Error saving content" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      setLoading(true);
-      if (patientDetails.chart?.id) {
-        const requestBody = {
-          objective: `Weight is ${values.weightInLbs} lbs ${values.weightInOzs} ozs. Height is ${values.heightInFt} ft ${values.heightInInches} inches. BMI is ${values.bmi}. The starting weight is ${values.startingWeight} and the goal Weight is ${values.goalWeight}`,
-          encounterId: encounterId,
-        };
-        await updateSOAPChart({
-          requestData: requestBody,
-          chartId: patientDetails.chart.id,
-        });
-        await updatePatientPhysicalStatus({
-          userDetailsID: patientDetails?.userDetails?.userDetailsId,
-          requestData: {
-            height: Number(values.heightInInches),
-            weight: Number(values.weightInLbs),
-          },
-        });
-        showToast({ toast, type: "success", message: "Saved!" });
-      } else {
-        const requestBody = {
-          objective: `Weight is ${values.weightInLbs} lbs ${values.weightInOzs} ozs. Height is ${values.heightInFt} ft ${values.heightInInches} inches. BMI is ${values.bmi}. The starting weight is ${values.startingWeight} and the goal Weight is ${values.goalWeight}`,
-          encounterId: encounterId,
-        };
-        await createSOAPChart({ requestData: requestBody });
-        await updatePatientPhysicalStatus({
-          userDetailsID: patientDetails.userDetails.userDetailsId,
-          requestData: {
-            height: Number(values.heightInInches),
-            weight: Number(values.weightInLbs),
-          },
-        });
-        showToast({ toast, type: "success", message: "Saved!" });
-      }
-    } catch (e) {
-      console.log("Error", e);
-      showToast({ toast, type: "error", message: "Error while Saving!" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center">
-        <LoadingButton />
-      </div>
-    );
-  }
+  useEffect(() => {
+    const objectiveText = `Weight is ${weightLbs || 0} lbs ${
+      weightOzs || 0
+    } ozs. Height is ${heightFeets || 0} ft ${
+      heightInches || 0
+    } inches. BMI is ${bmi}. The starting weight is ${
+      startingWeight || 0
+    } and the goal Weight is ${goalWeight || 0}`;
+    const totalHeightInInches =
+      Number(heightFeets) * 12 + (Number(heightInches) || 0);
+    setObjective(objectiveText);
+    setPhysicalStats({
+      height: totalHeightInInches || 0,
+      weight: weightLbs || 0,
+    });
+  }, [
+    weightLbs,
+    weightOzs,
+    heightFeets,
+    heightInches,
+    bmi,
+    startingWeight,
+    goalWeight,
+    setObjective,
+    setPhysicalStats,
+  ]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -223,27 +175,17 @@ const ChartNotesAccordion = ({
           <PlateEditor
             value={editorValue}
             className=""
-            onChange={(value) => setEditorValue(value)}
+            onChange={(value) => {
+              setEditorValue(value);
+            }}
             placeholder="Enter chief complaints..."
           />
-        </div>
-        <div className="flex justify-end items-end w-full">
-          <Button
-            variant="ghost"
-            onClick={handleSaveContent}
-            disabled={loading}
-          >
-            Save Content
-          </Button>
         </div>
       </div>
       <div className="flex flex-col gap-2">
         <h6>Vitals</h6>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="[&_input]:!w-24 [&_input+label]:!absolute [&_input+label]:top-1/2 [&_input+label]:-translate-y-1/2 [&_input+label]:right-2 [&_input+label]:!text-xs [&_input+label]:!text-gray-500 [&_input+label]:!font-semibold"
-          >
+          <form className="[&_input]:!w-24 [&_input+label]:!absolute [&_input+label]:top-1/2 [&_input+label]:-translate-y-1/2 [&_input+label]:right-2 [&_input+label]:!text-xs [&_input+label]:!text-gray-500 [&_input+label]:!font-semibold">
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap gap-6">
                 <FormLabels
@@ -256,7 +198,10 @@ const ChartNotesAccordion = ({
                       focusAfter={3}
                       idFirst="weight-first-input"
                       idSecond="weight-second-input"
-                      onChange={handleWeightChange}
+                      onChange={({ first, second }) => {
+                        handleInputChange("weightInLbs", first);
+                        handleInputChange("weightInOzs", second);
+                      }}
                     />
                   }
                 />
@@ -270,7 +215,10 @@ const ChartNotesAccordion = ({
                       focusAfter={1}
                       idFirst="height-first-input"
                       idSecond="height-second-input"
-                      onChange={handleHeightChange}
+                      onChange={({ first, second }) => {
+                        handleInputChange("heightInFt", first);
+                        handleInputChange("heightInInches", second);
+                      }}
                     />
                   }
                 />
@@ -286,7 +234,7 @@ const ChartNotesAccordion = ({
                           {...field}
                           className="text-base font-semibold w-32"
                           onChange={(e) =>
-                            field.onChange(Number(e.target.value))
+                            field.onChange(parseInt(e.target.value))
                           }
                           type="number"
                           inputMode="numeric"
@@ -307,7 +255,7 @@ const ChartNotesAccordion = ({
                           {...field}
                           className="text-base font-semibold w-32"
                           onChange={(e) =>
-                            field.onChange(Number(e.target.value))
+                            field.onChange(parseInt(e.target.value))
                           }
                           type="number"
                           inputMode="numeric"
@@ -328,7 +276,7 @@ const ChartNotesAccordion = ({
                           {...field}
                           className="text-base font-semibold w-32"
                           onChange={(e) =>
-                            field.onChange(Number(e.target.value))
+                            field.onChange(parseInt(e.target.value))
                           }
                           type="number"
                           inputMode="numeric"
@@ -338,11 +286,6 @@ const ChartNotesAccordion = ({
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="flex justify-end items-end w-full">
-                <Button type="submit" variant="ghost">
-                  Save Content
-                </Button>
               </div>
             </div>
           </form>

@@ -31,12 +31,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   CreateInjectionInterface,
   InjectionsData,
+  InjectionsType,
   UpdateInjectionInterface,
 } from "@/types/injectionsInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import {
   createInjection,
+  getInjectionsType,
   updateInjection,
 } from "@/services/injectionsServices";
 import { showToast } from "@/utils/utils";
@@ -57,12 +59,21 @@ const InjectionsDialog = ({
   isOpen: boolean;
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
+
+  // Injections Type
+  const [injectionsType, setInjectionsType] = useState<InjectionsType[]>([]);
+
   const [loading, setLoading] = React.useState({
     post: false,
+    type: false,
     dosage: false,
     frequency: false,
   });
   const { toast } = useToast();
+
+  // Search Types
+  const [searchType, setSearchType] = useState("");
+  const [visibleTypeList, setVisibleTypeList] = useState(false);
 
   // Frequency Data
   const [frequencyData, setFrequencyData] = useState<string[]>([]);
@@ -89,6 +100,35 @@ const InjectionsDialog = ({
       comments: injectionsData?.comments || "",
     },
   });
+
+  // Fetch Injections Type
+  const fetchInjectionsType = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, type: true }));
+
+    const response = await getInjectionsType({ search: searchType });
+
+    if (response) {
+      setInjectionsType(response.data);
+    }
+    try {
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch injection types",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, type: false }));
+    }
+  }, [searchType, toast]);
 
   // GET Frequency Data
   const fetchFrequency = useCallback(async () => {
@@ -221,9 +261,14 @@ const InjectionsDialog = ({
   };
 
   useEffect(() => {
+    fetchInjectionsType();
     fetchFrequency();
     fetchDosageUnits();
-  }, [fetchDosageUnits, fetchFrequency]);
+  }, [fetchInjectionsType, fetchDosageUnits, fetchFrequency]);
+
+  const filteredInjectionTypes = injectionsType.filter((type) =>
+    type.injection_name.toLowerCase().includes(searchType.toLowerCase())
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -245,10 +290,42 @@ const InjectionsDialog = ({
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter injection to add"
-                          {...field}
-                        />
+                        <div className="relative">
+                          <Input
+                            value={searchType}
+                            placeholder="Search by name or code"
+                            className="w-full"
+                            onChange={(e) => {
+                              setSearchType(e.target.value);
+                              setVisibleTypeList(true);
+                            }}
+                          />
+                          {searchType && visibleTypeList && (
+                            <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
+                              {loading.type ? (
+                                <div>Loading...</div>
+                              ) : filteredInjectionTypes.length > 0 ? (
+                                filteredInjectionTypes.map((type) => (
+                                  <div
+                                    key={type.id}
+                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                    onClick={() => {
+                                      field.onChange(type.id);
+                                      setSearchType(type.injection_name);
+                                      setVisibleTypeList(false);
+                                    }}
+                                  >
+                                    {type.injection_name}
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="px-4 py-2 text-gray-500">
+                                  No results found
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -387,7 +464,7 @@ const InjectionsDialog = ({
                   name="parental_route"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Parenteral Route</FormLabel>
+                      <FormLabel>Parental Route</FormLabel>
                       <FormControl>
                         <Select
                           value={field.value}
