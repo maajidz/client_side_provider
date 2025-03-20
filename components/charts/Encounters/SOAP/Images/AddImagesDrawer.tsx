@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -18,7 +26,6 @@ import {
   getImagesTestsData,
 } from "@/services/chartsServices";
 import LoadingButton from "@/components/LoadingButton";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useToast } from "@/hooks/use-toast";
@@ -27,9 +34,9 @@ import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 
-const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
+const AddImagesDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<ImagesResponseInterface>();
-  const [imageTestResponse, seImageTestResponse] =
+  const [imageTestResponse, setImageTestResponse] =
     useState<ImagesTestsResponseInterface>();
   const [loadingImages, setLoadingImages] = useState<boolean>(false);
   const [loadingTests, setLoadingTests] = useState<boolean>(false);
@@ -38,7 +45,7 @@ const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
   const [selectedTest, setSelectedTest] = useState<TestInterface[]>([]);
   const providerDetails = useSelector((state: RootState) => state.login);
   const { toast } = useToast();
-
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const fetchAndSetResponse = async () => {
     setLoadingImages(true);
@@ -60,7 +67,7 @@ const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
     try {
       const responseData = await getImagesTestsData({ limit: 10, page: 1 });
       if (responseData) {
-        seImageTestResponse(responseData);
+        setImageTestResponse(responseData);
       }
     } catch (e) {
       console.log("Error", e);
@@ -70,8 +77,8 @@ const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
   };
 
   const handleImageOrder = async () => {
-    if (!selectedImage || !selectedTest) {
-      console.log("Please select both lab and test.");
+    if (!selectedImage || !selectedTest.length) {
+      console.log("Please select both image and test.");
       return;
     }
 
@@ -85,16 +92,17 @@ const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
       note_to_patients: "",
       intra_office_notes: "",
     };
-    console.log("Labs", requestData);
+    console.log("Image Order", requestData);
     try {
       await createImageOrder({ requestData });
       showToast({
         toast,
         type: "success",
-        message: "Order places successfully!",
+        message: "Order placed successfully!",
       });
       setSelectedImage("");
       setSelectedTest([]);
+      setIsOpen(false);
     } catch (e) {
       console.log("Error", e);
       setLoadingOrder(false);
@@ -111,27 +119,33 @@ const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
   }, [selectedImage]);
 
   if (loadingOrder) {
-    <LoadingButton />;
+    return <LoadingButton />;
   }
 
   return (
-    <Drawer >
-      <DrawerTrigger asChild>
-        <Button variant={"ghost"} onClick={fetchAndSetResponse}>Search & Add</Button>
-      </DrawerTrigger>
-      <DrawerContent>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant={"ghost"} onClick={fetchAndSetResponse}>
+          Search & Add
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Images</DialogTitle>
+          {/* <DialogDescription>Add images to the patient.</DialogDescription> */}
+        </DialogHeader>
         {loadingImages || loadingTests ? (
           <LoadingButton />
         ) : (
-          <div className="flex flex-col  justify-between mx-auto w-full max-w-sm p-3 gap-5">
-            <div className="flex items-center gap-3">
-              <div className="">Images</div>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="image">Images</label>
               <Select
                 onValueChange={(value) => setSelectedImage(value)}
                 defaultValue={selectedImage}
               >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder={"Select a lab"} />
+                <SelectTrigger>
+                  <SelectValue placeholder={"Select an image"} />
                 </SelectTrigger>
                 <SelectContent>
                   {response &&
@@ -146,65 +160,34 @@ const AddImagesDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
               </Select>
             </div>
             {selectedImage && (
-              <div className="flex items-center gap-3 justtify-center">
-                <FormLabels
-                  label="Test"
-                  value={
-                    <>
-                      {/* <Popover>
-                        <PopoverTrigger asChild>
-                          <button className="border px-4 py-2 rounded-md w-full text-left">
-                            {selectedTest.length > 0
-                              ? selectedTest.map((test) => test.name).join(", ")
-                              : "Select Tests"}
-                          </button>
-                        </PopoverTrigger> */}
-                        {/* <PopoverTrigger>Open</PopoverTrigger> */}
-                        {/* <PopoverTrigger  className="border px-4 py-2 rounded-md w-full text-left">
-                            {selectedTest.length > 0
-                              ? selectedTest.map((test) => test.name).join(", "): "Selected Tests"}
-                        </PopoverTrigger> */}
-                        {/* <PopoverContent className="w-72 bg-white border rounded-md p-2"> */}
-                          {imageTestResponse &&
-                            imageTestResponse.data &&
-                            imageTestResponse.data.map((item) => (
-                              <div
-                                key={item.id}
-                                className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded"
-                                onClick={(e) => e.stopPropagation()} 
-                              >
-                                <Checkbox
-                                  checked={selectedTest.some(
-                                    (test) => test.id === item.id
-                                  )}
-                                  onCheckedChange={(checked) => {
-                                    setSelectedTest((prevSelected) =>
-                                      checked
-                                        ? [...prevSelected, item]
-                                        : prevSelected.filter(
-                                            (test) => test.id !== item.id
-                                          )
-                                    );
-                                  }}
-                                />
-                                <span>{item.name}</span>
-                              </div>
-                            ))}
-                        {/* </PopoverContent>
-                      </Popover> */}
-                    </>
-                  }
-                />
-                <DefaultButton onClick={handleImageOrder}>
-                  Order Image
-                </DefaultButton>
+              <div className="flex flex-col gap-1">
+                <label>Test</label>
+                {imageTestResponse &&
+                  imageTestResponse.data &&
+                  imageTestResponse.data.map((item) => (
+                    <Checkbox
+                      label={item.name}
+                      key={item.id}
+                      checked={selectedTest.some((test) => test.id === item.id)}
+                      onCheckedChange={(checked) => {
+                        setSelectedTest((prevSelected) =>
+                          checked
+                            ? [...prevSelected, item]
+                            : prevSelected.filter((test) => test.id !== item.id)
+                        );
+                      }}
+                    />
+                  ))}
               </div>
             )}
           </div>
         )}
-      </DrawerContent>
-    </Drawer>
+        <div className="flex justify-end pt-6">
+          <Button onClick={handleImageOrder}>Order Image</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default AddImagesDrawer;
+export default AddImagesDialog;

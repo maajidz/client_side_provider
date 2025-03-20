@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerTrigger,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -15,14 +17,13 @@ import {
 import { LabsDataResponse, Test } from "@/types/chartsInterface";
 import { createLabOrder, getLabsData } from "@/services/chartsServices";
 import LoadingButton from "@/components/LoadingButton";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
 import { Button } from "@/components/ui/button";
-const SearchAndAddDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
+
+const SearchAndAddDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<LabsDataResponse>({
     data: [],
     total: 0,
@@ -34,6 +35,7 @@ const SearchAndAddDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
   const [selectedTest, setSelectedTest] = useState<string>("");
   const providerDetails = useSelector((state: RootState) => state.login);
   const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false); // State for dialog open/close
 
   const fetchAndSetResponse = async (page = 1) => {
     setLoadingLabs(true);
@@ -109,29 +111,31 @@ const SearchAndAddDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
   }, [selectedLab, fetchLabTestsData]);
 
   if (loadingOrder) {
-    <LoadingButton />;
+    return <LoadingButton />;
   }
 
   return (
-    <Drawer>
-      <DrawerTrigger asChild>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger asChild>
         <Button variant={"ghost"} onClick={() => fetchAndSetResponse(1)}>
           Search & Add
         </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerTitle />
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Search & Add Labs</DialogTitle>
+        </DialogHeader>
         {loadingLabs ? (
           <LoadingButton />
         ) : (
-          <div className="flex flex-col  justify-between mx-auto w-full max-w-sm p-3 gap-5">
-            <div className="flex items-center gap-3">
-              <div className="">Labs</div>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-1">
+              <label>Labs</label>
               <Select
                 onValueChange={(value) => setSelectedLab(value)}
                 defaultValue={selectedLab}
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger>
                   <SelectValue placeholder="Select a lab" />
                 </SelectTrigger>
                 <SelectContent>
@@ -147,40 +151,34 @@ const SearchAndAddDrawer = ({ userDetailsId }: { userDetailsId: string }) => {
               </Select>
             </div>
             {selectedLab && (
-              <div className="flex items-center gap-3 justtify-center">
-                <FormLabels
-                  label="Test"
-                  value={
-                    <Select
-                      onValueChange={(value) => {
-                        setSelectedTest(value);
-                      }}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder={"Select a Test"} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {labTestResponse &&
-                          labTestResponse.length > 0 &&
-                          labTestResponse.map((test) => (
-                            <SelectItem key={test.id} value={test.id}>
-                              {test.name}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                  }
-                />
-                <DefaultButton onClick={handleLabOrder}>
-                  Order Lab
-                </DefaultButton>
+              <div className="flex flex-col gap-1">
+                <label>Test</label>
+                <Select
+                  onValueChange={(value) => {
+                    setSelectedTest(value);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={"Select a Test"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {labTestResponse &&
+                      labTestResponse.length > 0 &&
+                      labTestResponse.map((test) => (
+                        <SelectItem key={test.id} value={test.id}>
+                          {test.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
+            <Button onClick={handleLabOrder}>Order Lab</Button>
           </div>
         )}
-      </DrawerContent>
-    </Drawer>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default SearchAndAddDrawer;
+export default SearchAndAddDialog;

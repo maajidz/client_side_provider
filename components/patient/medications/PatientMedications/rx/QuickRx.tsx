@@ -20,7 +20,7 @@ function QuickRx({ userDetailsId }: QuickRxProps) {
 
   return (
     <div className="flex flex-col justify-end">
-      <div className="flex pb-3">
+      <div className="flex">
         <div className="flex flex-row-reverse items-center gap-2 w-full">
           <Button variant={"link"} onClick={() => setIsPastPrescriptionsDialogOpen(true)}>
             Past Rx

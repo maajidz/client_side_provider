@@ -24,12 +24,11 @@ import {
   SelectContent,
   SelectValue,
 } from "@/components/ui/select";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
-import DefaultButton from "@/components/custom_buttons/buttons/DefaultButton";
+import { Icon } from "@/components/ui/icon";
 
 const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<LabsDataResponse>({
@@ -83,8 +82,9 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
           message: "New Lab added successfully",
         });
         setNewLab("");
-        await fetchAndSetResponse();
-        setShowNewLab(!showNewLab);
+        await fetchAndSetResponse(); // Refresh the labs list after adding a new lab
+        setShowNewLab(false);
+        setSelectedLab(""); // Reset selected lab after adding a new lab
       } catch (e) {
         showToast({ toast, type: "error", message: "Failed to add New Lab" });
         console.log("Error", e);
@@ -99,7 +99,9 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       if (response && response.data) {
         const selectedLab = response.data.find((lab) => lab.id === labId);
         if (selectedLab) {
-          setLabTestResponse(selectedLab ? selectedLab.tests : []);
+          setLabTestResponse(selectedLab.tests || []);
+        } else {
+          setLabTestResponse([]); // Reset tests if lab not found
         }
       }
     },
@@ -144,8 +146,12 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
     }
   }, [selectedLab, fetchLabTestsData]);
 
+  useEffect(() => {
+    fetchAndSetResponse(); // Fetch labs when component mounts
+  }, []);
+
   if (loadingOrder) {
-    <LoadingButton />;
+    return <LoadingButton />;
   }
 
   return (
@@ -155,104 +161,103 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
           Add Labs
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[625px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Lab Orders</DialogTitle>
-          <DialogDescription></DialogDescription>
-          <>
-            <div className="flex justify-between items-center">
-              <div className="font-normal text-black">Choose Labs</div>
-              {!showNewLab && (
-                <DefaultButton
-                  onClick={() => {
-                    setShowNewLab(!showNewLab);
-                  }}
-                >
-                  <PlusIcon />
-                  <span>New Lab</span>
-                </DefaultButton>
-              )}
-            </div>
-          </>
+          {/* <DialogDescription>
+            Add lab orders to the patient.
+          </DialogDescription> */}
         </DialogHeader>
         {loadingLabs ? (
           <LoadingButton />
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6">
+            {!showNewLab && (
+            <div className="flex w-full py-0">
+                <Button
+                  variant={"link"}
+                  onClick={() => {
+                    setShowNewLab(true);
+                  }}
+                >
+                  <Icon name="add" />
+                  New Lab
+                </Button>
+              </div>
+            )}
             {showNewLab ? (
-              <div className="flex w-full justify-between gap-2">
-                <div className="flex gap-2 w-full items-center">
-                  <div className="w-36">Add New Lab</div>
+              <div className="flex flex-col gap-6">
+                <div className="flex gap-1 flex-col">
+                  <label htmlFor="newLab">Add New Lab</label>
                   <Input
+                    id="newLab"
                     value={newLab}
+                    className="w-full"
                     onChange={(e) => setNewLab(e.target.value)}
                     placeholder="Enter lab name"
                   />
                 </div>
-                <div className="flex gap-3">
-                  <Button onClick={createNewLab}>Add</Button>
+                <div className="flex flex-row gap-2 flex-row-reverse">
                   <Button
-                    variant={"outline"}
+                    variant={"ghost"}
                     onClick={() => {
-                      setShowNewLab(!showNewLab);
+                      setShowNewLab(false);
                     }}
                   >
                     Cancel
                   </Button>
+                  <Button onClick={createNewLab}>Add</Button>
                 </div>
               </div>
-            ) : (
-              <div></div>
+            ) : null}
+            {!showNewLab && (
+              <div className="flex flex-col gap-1">
+                <label>Labs</label>
+                <Select
+                  onValueChange={(value) => {
+                    setSelectedLab(value);
+                    setSelectedTest(""); // Reset selected test when lab changes
+                  }}
+                  defaultValue=""
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a lab" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {response.data.map((lab) => (
+                      <SelectItem key={lab.id} value={lab.id}>
+                        {lab.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             )}
-            <div className="grid grid-cols-4 gap-4 py-4">
-              {response &&
-                response.data &&
-                response.data.length > 0 &&
-                response.data.map((lab) => (
-                  <Dialog key={lab.id}>
-                    <DialogTrigger
-                      key={lab.id}
-                      onClick={() => setSelectedLab(lab.id)}
-                    >
-                      {lab.name}
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Book test for {lab.name}</DialogTitle>
-                        <DialogDescription></DialogDescription>
-                      </DialogHeader>
-                      <div className="flex items-center gap-3 justtify-center">
-                        <FormLabels
-                          label="Test"
-                          value={
-                            <Select
-                              onValueChange={(value) => {
-                                setSelectedTest(value);
-                              }}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder={"Select a Test"} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {labTestResponse &&
-                                  labTestResponse.length > 0 &&
-                                  labTestResponse.map((test) => (
-                                    <SelectItem key={test.id} value={test.id}>
-                                      {test.name}
-                                    </SelectItem>
-                                  ))}
-                              </SelectContent>
-                            </Select>
-                          }
-                        />
-                        <DefaultButton onClick={handleLabOrder}>
-                          Order Lab
-                        </DefaultButton>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                ))}
-            </div>
+            {selectedLab && !showNewLab && (
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-1">
+                  <label>Test</label>
+                  <Select
+                    onValueChange={(value) => {
+                      setSelectedTest(value);
+                    }}
+                    defaultValue=""
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={"Select a Test"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {labTestResponse.map((test) => (
+                        <SelectItem key={test.id} value={test.id}>
+                          {test.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              <Button onClick={handleLabOrder}>Order Lab</Button>
+              </div>
+            )}
           </div>
         )}
       </DialogContent>

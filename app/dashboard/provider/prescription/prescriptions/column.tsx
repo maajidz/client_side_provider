@@ -10,7 +10,6 @@ export const columns = (): ColumnDef<PrescriptionDataInterface>[] => [
     header: "Prescription",
     cell: ({ row }) => {
       const prescription: PrescriptionDataInterface = row.original;
-
       return (
         <div className="flex flex-col gap-1 text-[13px] font-medium cursor-pointer">
           <div className="font-semibold text-sm">{prescription.drug_name}</div>

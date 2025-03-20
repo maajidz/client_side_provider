@@ -19,7 +19,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "text-rose-800 hover:bg-rose-50 font-semibold text-xs",
         greyghost: "text-gray-600 hover:bg-gray-100 hover:text-gray-800",
-        link: "text-rose-800 hover:text-rose-950",
+        link: "text-rose-800 hover:text-rose-950 !p-0 !h-fit",
       },
       size: {
         default: "h-9 px-4 py-2",

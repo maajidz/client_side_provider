@@ -42,6 +42,7 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
+import { Label } from "@/components/ui/label";
 
 const AddRx = ({
   patientDetails,
@@ -273,10 +274,12 @@ const AddRx = ({
       <DialogTrigger asChild>
         <Button variant={"ghost"}>Add Rx</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-4xl">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
-          <DialogDescription></DialogDescription>
+          {/* <DialogDescription>
+            Add a prescription to the patient's chart.
+          </DialogDescription> */}
         </DialogHeader>
         {showPrescriptionForm ? (
           <Form {...form}>
@@ -721,31 +724,30 @@ const AddRx = ({
             </form>
           </Form>
         ) : (
-          <div className="flex flex-col gap-2">
-            <RxPatientDetailsSection
+
+          <div className="flex flex-col gap-2 w-fit">
+            {/* <RxPatientDetailsSection
               userDetailsId={patientDetails.userDetails.userDetailsId}
-            />
-            <div className="flex flex-col p-3 rounded-lg border">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-lg font-semibold text-gray-700">
+            /> */}
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-2 flex-col">
+                <Label>
                   Search & Add Rx
-                </span>
+                </Label>
                 <Input
                   value={drugName}
                   placeholder="Enter drug name"
-                  className="w-1/2 rounded-md"
                   onChange={(e) => setDrugName(e.target.value)}
                 />
               </div>
-              <div className="flex items-center">
-                <div className="flex text-center">
-                  Please search for your drug. If not found,
-                </div>
+              <div className="flex flex-col gap-2">
+                <Label>
+                  Please search for your drug. If not found:
+                </Label>
                 <Button
-                  variant={"ghost"}
-                  onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
-                  className="text-[#84012A] font-semibold ml-1"
-                >
+                  variant={"link"}
+                  className="w-fit"
+                  onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}>
                   Add a custom drug
                 </Button>
               </div>

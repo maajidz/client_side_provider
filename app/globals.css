@@ -12,6 +12,10 @@ h6 {
   font-size: .85rem;
   font-weight: 600;
 }
+label {
+  font-size: .85rem;
+  font-weight: 600;
+}
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -22,9 +26,14 @@ input[type="number"] {
   -moz-appearance: textfield; /* For Firefox */
   appearance: none; /* Standard property for compatibility */
 }
-/* *:hover {
-  transition: 300ms ease-out linear; 
-} */
+
+.search-input-td {
+  overflow: visible !important;
+}
+.search-input-td > * {
+  overflow: visible !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

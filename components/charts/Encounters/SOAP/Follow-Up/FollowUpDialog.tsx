@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +31,8 @@ import {
 } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { Icon } from "@/components/ui/icon";
 
 interface Row {
   type: string;
@@ -61,6 +63,35 @@ const FollowUpDialog = ({
     },
   ]);
 
+  // Separate state for editing
+  const [editingStates, setEditingStates] = useState<{[key: string]: string}>({});
+  
+  const handleChange = (index: number, field: string, value: string) => {
+    // Update editing state instead of row data
+    const key = `${index}-${field}`;
+    setEditingStates(prev => ({...prev, [key]: value}));
+  };
+
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setRows(currentRows => 
+        currentRows.map((row, index) => {
+          const updates: Partial<Row> = {};
+          (Object.keys(row) as Array<keyof Row>).forEach(field => {
+            const key = `${index}-${field}`;
+            if (key in editingStates) {
+
+              updates[field] = editingStates[key] as any;
+            }
+          });
+          return {...row, ...updates};
+        })
+      );
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [editingStates]);
+
   const handleAddRow = () => {
     setRows([
       ...rows,
@@ -77,13 +108,6 @@ const FollowUpDialog = ({
 
   const handleDeleteRow = (index: number) => {
     setRows(rows.filter((_, i) => i !== index));
-  };
-
-  const handleChange = (index: number, field: string, value: string) => {
-    const updatedRows = rows.map((row, i) =>
-      i === index ? { ...row, [field]: value } : row
-    );
-    setRows(updatedRows);
   };
 
   const handleReminderChange = (
@@ -155,154 +179,164 @@ const FollowUpDialog = ({
     }
   };
 
+  // Define columns for the DefaultDataTable
+  const columns = [
+    {
+      header: "Type",
+      accessorKey: "type",
+      cell: (info: any) => (
+        <Select
+          value={info.getValue()}
+          onValueChange={(value) => handleChange(info.row.index, "type", value)}
+        >
+          <SelectTrigger className="w-44">
+            <SelectValue placeholder="Select Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Follow-Up Types</SelectLabel>
+              <SelectItem value="Follow-Up Type 1">Follow-Up Type 1</SelectItem>
+              <SelectItem value="Follow-Up Type 2">Follow-Up Type 2</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      ),
+    },
+    {
+      header: "Notes",
+      accessorKey: "notes",
+      cell: (info: any) => (
+        <Textarea
+          value={info.getValue()}
+          rows={1}
+          onChange={(e) =>
+            handleChange(info.row.index, "notes", e.target.value)
+          }
+          placeholder="Enter notes"
+          className="w-56"
+        />
+      ),
+    },
+    {
+      header: "Date",
+      accessorKey: "sectionDateType",
+      cell: (info: any) => (
+        <div className="flex gap-3">
+          <Select
+            value={info.row.original.sectionDateType}
+            onValueChange={(value) =>
+              handleChange(info.row.index, "sectionDateType", value)
+            }
+          >
+            <SelectTrigger className="w-fit border rounded">
+              <SelectValue placeholder="Select Date sectionDateUnit" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="after">After</SelectItem>
+                <SelectItem value="before">Before</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Input
+            type="number"
+            value={info.row.original.sectionDateNumber}
+            onChange={(e) =>
+              handleChange(info.row.index, "sectionDateNumber", e.target.value)
+            }
+            className="w-16 border rounded"
+          />
+          <Select
+            value={info.row.original.sectionDateUnit}
+            onValueChange={(value) =>
+              handleChange(info.row.index, "sectionDateUnit", value)
+            }
+          >
+            <SelectTrigger className="w-fit border rounded">
+              <SelectValue placeholder="Select sectionDateUnit" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="days">Days</SelectItem>
+                <SelectItem value="weeks">Weeks</SelectItem>
+                <SelectItem value="months">Months</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      ),
+    },
+    {
+      header: "Reminder",
+      accessorKey: "reminders",
+      cell: (info: any) => (
+        <div className="flex flex-row gap-2">
+          <Checkbox
+            label={<Icon name="email" />}
+            tooltipLabel="Email"
+            checked={info.row.original.reminders.includes("email")}
+            onCheckedChange={(checked) =>
+              handleReminderChange(info.row.index, "email", checked)
+            }
+          />
+
+          <Checkbox
+            label={<Icon name="message" />}
+            tooltipLabel="Text"
+            checked={info.row.original.reminders.includes("text")}
+            onCheckedChange={(checked) =>
+              handleReminderChange(info.row.index, "text", checked)
+            }
+          />
+
+          <Checkbox
+            label={<Icon name="phone" />}
+            tooltipLabel="Voice"
+            checked={info.row.original.reminders.includes("voice")}
+            onCheckedChange={(checked) =>
+              handleReminderChange(info.row.index, "voice", checked)
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      header: "Actions",
+      accessorKey: "actions",
+      cell: (info: any) => (
+        <Button variant="ghost" onClick={() => handleDeleteRow(info.row.index)}>
+          <Trash2Icon />
+        </Button>
+      ),
+    },
+  ];
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button variant={"ghost"}>Add Follow up</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-4xl">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Follow Up</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <div className="overflow-x-auto p-2">
-          <div className="flex flex-col gap-5">
-            <div className="flex gap-3">
-              <div className="w-48">Type</div>
-              <div className="w-56">Notes</div>
-              <div className="w-60">Date</div>
-              <div>Reminder</div>
-              <div>Actions</div>
-            </div>
-            <div className="flex flex-col gap-2">
-              {rows.map((row, index) => (
-                <div key={index} className="flex justify-between">
-                  <Select
-                    onValueChange={(value) =>
-                      handleChange(index, "type", value)
-                    }
-                  >
-                    <SelectTrigger className="w-44">
-                      <SelectValue placeholder="Select Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Follow-Up Types</SelectLabel>
-                        <SelectItem value="Follow-Up Type 1">
-                          Follow-Up Type 1
-                        </SelectItem>
-                        <SelectItem value="Follow-Up Type 2">
-                          Follow-Up Type 2
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <Textarea
-                    value={row.notes}
-                    onChange={(e) =>
-                      handleChange(index, "notes", e.target.value)
-                    }
-                    placeholder="Enter notes"
-                    className="w-56"
-                  />
-                  <div className="flex gap-3">
-                    <Select
-                      value={row.sectionDateType}
-                      onValueChange={(value) =>
-                        handleChange(index, "sectionDateType", value)
-                      }
-                    >
-                      <SelectTrigger className="w-fit border rounded">
-                        <SelectValue placeholder="Select Date sectionDateUnit" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value="after">After</SelectItem>
-                          <SelectItem value="before">Before</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      type="number"
-                      value={row.sectionDateNumber}
-                      onChange={(e) =>
-                        handleChange(index, "sectionDateNumber", e.target.value)
-                      }
-                      className="w-16 border rounded"
-                    />
-                    <Select
-                      value={row.sectionDateUnit}
-                      onValueChange={(value) =>
-                        handleChange(index, "sectionDateUnit", value)
-                      }
-                    >
-                      <SelectTrigger className="w-fit border rounded">
-                        <SelectValue placeholder="Select sectionDateUnit" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value="days">Days</SelectItem>
-                          <SelectItem value="weeks">Weeks</SelectItem>
-                          <SelectItem value="months">Months</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex flex-col gap-3 ">
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        checked={row.reminders.includes("email")}
-                        onCheckedChange={(checked) =>
-                          handleReminderChange(index, "email", Boolean(checked))
-                        }
-                      />
-                      <span>Email</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        checked={row.reminders.includes("text")}
-                        onCheckedChange={(checked) =>
-                          handleReminderChange(index, "text", Boolean(checked))
-                        }
-                      />
-                      <span>Text</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        checked={row.reminders.includes("voice")}
-                        onCheckedChange={(checked) =>
-                          handleReminderChange(index, "voice", Boolean(checked))
-                        }
-                      />
-                      <span>Voice</span>
-                    </div>
-                  </div>
-                  <Button
-                    variant={"ghost"}
-                    onClick={() => handleDeleteRow(index)}
-                  >
-                    <Trash2Icon />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="flex flex-col gap-4">
+          <DefaultDataTable
+            columns={columns}
+            data={rows}
+            className="[&_td]:align-top"
+            pageNo={1}
+            totalPages={1}
+          onPageChange={() => {}}
+        />
+        <Button variant={"link"} onClick={handleAddRow} className="self-start">
+            Add More
+          </Button>
         </div>
         <DialogFooter>
-          <div className="flex justify-between w-full">
-            <Button
-              variant={"ghost"}
-              onClick={handleAddRow}
-              className="text-blue-500 underline"
-            >
-              {" "}
-              More
-            </Button>
-            <div className="flex gap-3">
-              <Button variant={"outline"}> Cancel</Button>
-              <SubmitButton label="Save Changes" onClick={handleSubmit} />
-            </div>
-          </div>
+            <Button variant={"outline"}>Cancel</Button>
+            <SubmitButton label="Save Changes" onClick={handleSubmit} />
         </DialogFooter>
       </DialogContent>
     </Dialog>
