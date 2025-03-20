@@ -3,18 +3,20 @@ import { columns } from "@/components/tables/charts/columns";
 import { useRouter } from "next/navigation";
 import { EncounterInterface } from "@/types/encounterInterface";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
-import CreateEncounterDialog from "@/components/charts/CreateEncounterDialog";
+import CreatePatientEncounterDialog from "./CreatePatientEncounterDialog";
 
 const AllEncountersTab = ({
   chartList,
   page,
   totalPages,
   setPage,
+  userDetailsId,
 }: {
   chartList: EncounterInterface;
   page: number;
   totalPages: number;
   setPage: (page: number) => void;
+  userDetailsId: string;
 }) => {
   const router = useRouter();
   const handleRowClick = (id: string) => {
@@ -38,11 +40,12 @@ const AllEncountersTab = ({
           onPageChange={(newPage: number) => setPage(newPage)}
         />
       )}
-      <CreateEncounterDialog
+      <CreatePatientEncounterDialog
         isDialogOpen={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
         }}
+        userDetailsId={userDetailsId}
       />
     </div>
   );
