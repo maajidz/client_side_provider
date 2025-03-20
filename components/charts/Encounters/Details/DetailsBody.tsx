@@ -124,7 +124,7 @@ const DetailsBody = ({
         </div>
       </div>
       <ScrollArea className="overflow-y-scroll">
-        <div className="h-[calc(100vh-10rem)] flex flex-col [&>div]:bg-white [&>div]:rounded-xl [&>div]:shadow-sm gap-2">
+        <div className="flex flex-col [&>div]:bg-white [&>div]:rounded-xl [&>div]:shadow-sm gap-2">
           <Alerts patientDetails={patientDetails} />
           <StickyNotes patientDetails={patientDetails} />
           <Allergies patientDetails={patientDetails} />

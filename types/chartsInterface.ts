@@ -69,6 +69,7 @@ export interface SOAPInterface {
 export interface UpdateSOAPInterface {
   subjective?: string;
   objective?: string;
+  encounterId: string;
   assessment?: string;
   plan?: string;
   additionalText?: string;

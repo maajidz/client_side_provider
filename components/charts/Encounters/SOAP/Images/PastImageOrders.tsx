@@ -11,6 +11,21 @@ import LoadingButton from "@/components/LoadingButton";
 import { getImagesOrdersData } from "@/services/chartsServices";
 import { ImageOrdersResponseInterface } from "@/types/chartsInterface";
 import { Button } from "@/components/ui/button";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+
+interface ImageTest {
+  name: string;
+}
+
+interface ImageOrder {
+  imageType: {
+    name: string;
+  };
+  imageTests: ImageTest[];
+  createdAt: string;
+}
+
 const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,42 +61,45 @@ const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
     );
   }
 
+  const columns: ColumnDef<ImageOrder>[] = [
+    {
+      header: "Image Name",
+      accessorKey: "imageType.name",
+      cell: ({ getValue }) => getValue<string>() || "N/A",
+    },
+    {
+      header: "Test Name",
+      accessorKey: "imageTests",
+      cell: ({ getValue }) => getValue<ImageTest[]>().map(test => test.name).join(", ") || "N/A",
+    },
+    {
+      header: "Created At",
+      accessorKey: "createdAt",
+      cell: ({ getValue }) => getValue<string>().split("T")[0],
+    },
+  ];
+
   return (
     <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
         <Button variant={"ghost"}>Past Orders</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Past Orders</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <table>
-          <tr className="border font-semibold text-lg text-[#84012A]">
-            <td>Image Name</td>
-            <td>Test Name</td>
-            <td>Created At</td>
-          </tr>
-          {response?.data ? (
-            response?.data.map((imageData) => (
-              <tr key={imageData.id} className="border p-3 my-3">
-                <td>
-                  <div key={imageData.imageType.id}>
-                    {imageData.imageType.name}
-                  </div>
-                </td>
-                <td>
-                  {imageData.imageTests.map((test) => (
-                    <div key={test.id}>{test.name}</div>
-                  ))}
-                </td>
-                <td>{imageData.createdAt.split("T")[0]}</td>
-              </tr>
-            ))
-          ) : (
-            <div>No previous orders</div>
-          )}
-        </table>
+        {response?.data ? (
+          <DefaultDataTable
+            columns={columns}
+            data={response.data}
+            pageNo={1}
+            totalPages={1}
+            onPageChange={() => {}}
+          />
+        ) : (
+          <div>No previous orders</div>
+        )}
       </DialogContent>
     </Dialog>
   );

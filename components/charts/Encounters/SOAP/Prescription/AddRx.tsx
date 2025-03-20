@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -270,7 +269,9 @@ const AddRx = ({
       <DialogContent className="max-w-fit">
         <DialogHeader>
           <DialogTitle>Add Prescription</DialogTitle>
-          <DialogDescription></DialogDescription>
+          {/* <DialogDescription>
+            Add a prescription to the patient's chart.
+          </DialogDescription> */}
         </DialogHeader>
         {showPrescriptionForm ? (
           <Form {...form}>
@@ -752,11 +753,16 @@ const AddRx = ({
             </form>
           </Form>
         ) : (
-          <div className="flex flex-col w-full gap-2">
-            {/* <RxPatientDetailsSection userDetailsId={userDetailsId} /> */}
-            <div className="flex flex-1 flex-col gap-4 items-start">
-              <div className="flex flex-col gap-2 justify-between w-full">
-                <Label>Search & Add Rx</Label>
+
+          <div className="flex flex-col gap-2 w-fit">
+            {/* <RxPatientDetailsSection
+              userDetailsId={patientDetails.userDetails.userDetailsId}
+            /> */}
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-2 flex-col">
+                <Label>
+                  Search & Add Rx
+                </Label>
                 <Input
                   value={drugName}
                   placeholder="Enter drug name"
@@ -768,10 +774,9 @@ const AddRx = ({
                 <Label>or</Label>
                 <Button
                   variant={"link"}
-                  onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
-                  className="text-[#84012A] font-semibold ml-1"
-                >
-                  Add custom drug
+                  className="w-fit"
+                  onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}>
+                  Add a custom drug
                 </Button>
               </div>
             </div>

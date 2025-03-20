@@ -19,7 +19,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface DefaultDataTableProps<TData, TValue> {
   title?: React.ReactNode;
@@ -58,7 +57,7 @@ export function DefaultDataTable<TData, TValue>({
   });
 
   return (
-    <div className={`data-table-container flex flex-col gap-3 ${className}`}>
+    <div className={`data-table-container flex flex-col gap-3 w-full ${className}`}>
       <div className="flex flex-row items-center justify-between ">
         <div className="flex flex-row gap-2 items-center">
           {title && (
@@ -96,9 +95,8 @@ export function DefaultDataTable<TData, TValue>({
           </div>
         </div>
       </div>
-      <ScrollArea className="h-full rounded-md border">
-        <Table className="relative">
-          <TableHeader>
+      <Table className="relative h-full border border-gray-200 border-separate border-spacing-0 rounded-[6px]">
+        <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -125,7 +123,7 @@ export function DefaultDataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell className="px-4 py-3" key={cell.id}>
+                    <TableCell className="px-4 py-3 border-t" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -146,8 +144,6 @@ export function DefaultDataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
     </div>
   );
 }
