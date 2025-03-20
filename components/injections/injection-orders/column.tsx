@@ -48,7 +48,7 @@ export const columns = ({
   },
   {
     accessorKey: "injection_name",
-    header: "Drug Name",
+    header: "Injection Name",
     cell: ({ row }) => (
       <div className="cursor-pointer">{row.getValue("injection_name")}</div>
     ),
