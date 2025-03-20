@@ -15,10 +15,10 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
   );
 
   // Dialog State
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // Loading State
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Pagination State
   const itemsPerPage = 3;

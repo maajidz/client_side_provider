@@ -74,7 +74,7 @@ function FamilyHistoryDialog({
     defaultValues: {
       relationship: familyHistoryData?.relationship || "",
       deceased: familyHistoryData?.deceased || false,
-      age: familyHistoryData?.age,
+      age: familyHistoryData?.age || 0,
       activeProblems: [],
       comments: familyHistoryData?.comments || "",
     },
@@ -88,7 +88,7 @@ function FamilyHistoryDialog({
         activeProblems: familyHistoryData.activeProblems.map(
           (problem) => problem.name
         ),
-        age: familyHistoryData?.age,
+        age: familyHistoryData?.age || 0,
         comments: familyHistoryData?.comments || "",
       });
     }
@@ -152,6 +152,7 @@ function FamilyHistoryDialog({
         console.log("Error:", e);
       } finally {
         setLoading(false);
+        form.reset();
       }
     }
   };

@@ -267,7 +267,7 @@ function InsuranceDialog({
                                 Subscriber Number
                               </FormLabel>
                               <FormControl>
-                                <Input {...field} className="w-full"  />
+                                <Input {...field} className="w-full" />
                               </FormControl>
                             </FormItem>
                           )}
@@ -340,7 +340,7 @@ function InsuranceDialog({
                                       </div>
                                     ) : (
                                       selectedInsurance && (
-                                        <Image
+                                        <img
                                           alt={
                                             selectedInsurance.frontDocumentImage.split(
                                               "/"
@@ -349,6 +349,8 @@ function InsuranceDialog({
                                           src={
                                             selectedInsurance.frontDocumentImage
                                           }
+                                          width={24}
+                                          height={24}
                                           className="w-48 h-24 object-contain rounded-md"
                                         />
                                       )
@@ -412,7 +414,7 @@ function InsuranceDialog({
                                       </div>
                                     ) : (
                                       selectedInsurance && (
-                                        <Image
+                                        <img
                                           alt={
                                             selectedInsurance.backDocumentImage.split(
                                               "/"
@@ -421,6 +423,8 @@ function InsuranceDialog({
                                           src={
                                             selectedInsurance.backDocumentImage
                                           }
+                                          width={24}
+                                          height={24}
                                           className="w-48 h-24 object-contain rounded-md"
                                         />
                                       )
@@ -446,7 +450,11 @@ function InsuranceDialog({
                 >
                   Cancel
                 </Button>
-                <Button variant="default" onClick={toggleEdit} disabled={loading}>
+                <Button
+                  variant="default"
+                  onClick={toggleEdit}
+                  disabled={loading}
+                >
                   {loading ? "Saving" : "Save"}
                 </Button>
               </>

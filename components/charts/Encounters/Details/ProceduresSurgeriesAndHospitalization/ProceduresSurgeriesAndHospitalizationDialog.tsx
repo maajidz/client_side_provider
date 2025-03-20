@@ -131,7 +131,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
       if (!procedureData) {
         const requestData = {
           type: values.type ?? "",
-          nameId: procedureId,
+          nameId: values.name ?? "",
           fromDate: values.fromDate ?? "",
           toDate: values.toDate ?? "",
           notes: values.notes ?? "",
@@ -176,6 +176,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
       });
     } finally {
       setSubmitLoading(false);
+      form.reset();
     }
   };
 
@@ -255,7 +256,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
                                 key={procedure.id}
                                 value={procedure.id}
                                 onClick={() => {
-                                  field.onChange(procedure.name);
+                                  field.onChange(procedure.id);
                                   setSearchTerm(procedure.name);
                                   setProcedureId(procedure.id);
                                   // setIsListVisible(false);

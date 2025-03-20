@@ -141,6 +141,7 @@ function SocialHistoryDialog({
       setLoading(false);
       onClose();
       form.reset();
+      setEditorState(EditorState.createEmpty());
     }
   };
 

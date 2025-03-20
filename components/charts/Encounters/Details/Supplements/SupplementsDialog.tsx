@@ -107,6 +107,7 @@ function SupplementsDialog({
       }
     } finally {
       setLoading((prev) => ({ ...prev, get: false }));
+      
     }
   }, [toast]);
 
@@ -303,6 +304,7 @@ function SupplementsDialog({
     } finally {
       setLoading((prev) => ({ ...prev, post: false }));
       form.reset();
+      setSearchTerm("")
       onClose();
     }
   };
