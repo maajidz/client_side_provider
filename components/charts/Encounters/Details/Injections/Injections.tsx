@@ -144,7 +144,7 @@ const Injections = ({
                     >
                       <div>
                         <FormLabels
-                          label={injections.injection_name}
+                          label={injections.injectionType.injection_name}
                           value=""
                         />
                         <FormLabels

@@ -75,7 +75,7 @@ export default function AddDiagnosesDialog({
       diagnoses: [
         {
           diagnosis_Id: "",
-          ICD_Code: "1",
+          ICD_Code: "",
           fromDate: new Date().toISOString().split("T")[0],
           toDate: new Date().toISOString().split("T")[0],
           status: "inactive",
@@ -168,6 +168,7 @@ export default function AddDiagnosesDialog({
     } finally {
       setLoading(false);
       onClose();
+      setSearchTerm("");
       form.reset();
     }
   };

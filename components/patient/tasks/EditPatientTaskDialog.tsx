@@ -77,7 +77,9 @@ const EditPatientTaskDialog = ({
       task: tasksData?.notes ?? "",
       owner: tasksData?.assignedProvider?.id ?? "",
       priority: tasksData?.priority ?? "low",
-      dueDate: "",
+      dueDate: tasksData?.dueDate
+        ? new Date(tasksData.dueDate).toISOString().split("T")[0]
+        : "",
       sendReminder: [],
       comments: tasksData?.description ?? "",
       userDetailsId: tasksData?.userDetailsId ?? "",
@@ -90,7 +92,9 @@ const EditPatientTaskDialog = ({
         category: tasksData.categoryId || "",
         task: tasksData.notes || "",
         owner: tasksData.assignerProvider?.id || "",
-        dueDate: tasksData.dueDate,
+        dueDate: tasksData?.dueDate
+          ? new Date(tasksData.dueDate).toISOString().split("T")[0]
+          : "",
         priority: tasksData.priority || "low",
         sendReminder: tasksData.reminder || [],
         comments: tasksData.description || "",

@@ -29,7 +29,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { addInjectionSchema } from "@/schema/injectionsAndVaccinesSchema";
-import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
+import {
+  getDosageUnits,
+  getFrequencyData,
+  getParenteralRoutes,
+} from "@/services/enumServices";
 import {
   createInjectionOrder,
   getInjectionsType,
@@ -72,6 +76,9 @@ function InjectionOrders({
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
 
+  // Parenteral Routes
+  const [parenteralRoutes, setParenteralRoutes] = useState<string[]>([]);
+
   // Data State
   const [patientData, setPatientData] = useState<UserData[]>([]);
   const [providersList, setProvidersList] = useState<FetchProviderList[]>([]);
@@ -92,6 +99,8 @@ function InjectionOrders({
     type: false,
     frequency: false,
     dosage: false,
+    parenteralRoutes: false,
+    injectionSite: false,
   });
 
   // Form State
@@ -252,11 +261,58 @@ function InjectionOrders({
     }
   }, [toast]);
 
+  // Fetch Parenteral Routes
+  const fetchParenteralRoutes = useCallback(async () => {
+    try {
+      setLoading((prev) => ({ ...prev, parenteralRoutes: true }));
+      const types = await getParenteralRoutes();
+
+      if (types) {
+        setParenteralRoutes(types);
+      }
+    } catch (err) {
+      console.log("An error occurred", err);
+    } finally {
+      setLoading((prev) => ({ ...prev, parenteralRoutes: false }));
+    }
+  }, []);
+
   useEffect(() => {
     if (userDetailsIdString) {
       form.setValue("userDetailsId", userDetailsIdString);
     }
   }, [userDetailsIdString, form]);
+
+  // Effects
+  useEffect(() => {
+    if (!userDetailsId) {
+      fetchUserData();
+    }
+
+    fetchInjectionsType();
+    fetchProvidersData();
+    fetchFrequency();
+    fetchDosageUnits();
+    fetchParenteralRoutes();
+  }, [
+    fetchFrequency,
+    fetchUserData,
+    fetchInjectionsType,
+    fetchProvidersData,
+    fetchDosageUnits,
+    fetchParenteralRoutes,
+    userDetailsId,
+  ]);
+
+  const filteredPatients = patientData.filter((patient) =>
+    `${patient.user.firstName} ${patient.user.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  const filteredInjectionTypes = injectionsType.filter((type) =>
+    type.injection_name.toLowerCase().includes(searchType.toLowerCase())
+  );
 
   // POST Injection
   const onSubmit = async (formData: z.infer<typeof addInjectionSchema>) => {
@@ -279,7 +335,6 @@ function InjectionOrders({
         type: "success",
         message: "Injection order created successfully",
       });
-      onClose();
     } catch (err) {
       if (err instanceof Error) {
         showToast({
@@ -296,38 +351,11 @@ function InjectionOrders({
       }
     } finally {
       setLoading((prev) => ({ ...prev, post: false }));
+      setSearchTerm("");
       form.reset();
+      onClose();
     }
   };
-
-  // Effects
-  useEffect(() => {
-    if (!userDetailsId) {
-      fetchUserData();
-    }
-
-    fetchInjectionsType();
-    fetchProvidersData();
-    fetchFrequency();
-    fetchDosageUnits();
-  }, [
-    fetchFrequency,
-    fetchUserData,
-    fetchInjectionsType,
-    fetchProvidersData,
-    fetchDosageUnits,
-    userDetailsId,
-  ]);
-
-  const filteredPatients = patientData.filter((patient) =>
-    `${patient.user.firstName} ${patient.user.lastName}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
-
-  const filteredInjectionTypes = injectionsType.filter((type) =>
-    type.injection_name.toLowerCase().includes(searchType.toLowerCase())
-  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -336,10 +364,10 @@ function InjectionOrders({
           <DialogTitle>Add Injection Order</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <ScrollArea className="h-max-[80dvh] h-auto">
+        <ScrollArea className="h-[80dvh]">
+          <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className={formStyles.formBody}>
+              <div className="flex flex-col gap-6 p-2.5">
                 {!userDetailsId && (
                   <FormField
                     control={form.control}
@@ -623,12 +651,15 @@ function InjectionOrders({
                             <SelectValue placeholder="Select Parental Route" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="parentalRoute1">
-                              Parental Route 1
-                            </SelectItem>
-                            <SelectItem value="parentalRoute2">
-                              Parental Route 2
-                            </SelectItem>
+                            {loading.parenteralRoutes ? (
+                              <div>Loading...</div>
+                            ) : (
+                              parenteralRoutes.map((route, index) => (
+                                <SelectItem value={route} key={index}>
+                                  {route}
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -679,8 +710,8 @@ function InjectionOrders({
                 </DialogFooter>
               </div>
             </form>
-          </ScrollArea>
-        </Form>
+          </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

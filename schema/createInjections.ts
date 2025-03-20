@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const createInjectionSchema = z.object({
-  injection_name: z.string().min(1, { message: "Injection name is required" }),
+  injection_type_Id: z.string().min(1, { message: "Injection name is required" }),
   dosage_unit: z.string().min(1, { message: "Dosage unit is required" }),
   dosage_quantity: z
     .number()

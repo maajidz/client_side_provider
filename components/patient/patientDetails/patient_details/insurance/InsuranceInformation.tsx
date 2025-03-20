@@ -30,12 +30,12 @@ const InsuranceInformation = ({ userDetailsId }: InsuranceInformationProps) => {
   >();
 
   // Loading State
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { toast } = useToast();
 
   // Dialog State
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   // GET Insurance Data
   const fetchInsuranceData = useCallback(async () => {

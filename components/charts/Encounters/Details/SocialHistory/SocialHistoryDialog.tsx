@@ -92,8 +92,13 @@ function SocialHistoryDialog({
         );
         setEditorState(EditorState.createWithContent(contentState));
       }
+    } else {
+      form.reset({
+        content: "",
+      });
+      setEditorState(EditorState.createEmpty());
     }
-  }, [socialHistoryData]);
+  }, [form, socialHistoryData]);
 
   // Convert editor content to HTML
   const getHtmlOutput = () => {
@@ -141,6 +146,7 @@ function SocialHistoryDialog({
       setLoading(false);
       onClose();
       form.reset();
+      setEditorState(EditorState.createEmpty());
     }
   };
 
