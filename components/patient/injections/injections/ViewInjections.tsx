@@ -105,7 +105,7 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
               >
                 <div className="flex flex-col gap-4">
                   <div className="font-semibold flex flex-col gap-2">
-                    {injections.injection_name}
+                    {injections.injectionType.injection_name}
                   </div>
                   <div className="flex flex-row gap-1">
                     <FormLabels label="Intake" value="" />

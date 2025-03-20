@@ -62,8 +62,8 @@ const AlertDialog = ({
   const form = useForm<z.infer<typeof alertSchema>>({
     resolver: zodResolver(alertSchema),
     defaultValues: {
-      alertName: "",
-      alertDescription: "",
+      alertName: alertData?.alertId ?? "",
+      alertDescription: alertData?.alertDescription ?? "",
     },
   });
 
@@ -94,6 +94,11 @@ const AlertDialog = ({
         alertName: matchedAlertType?.id || "",
         alertDescription: alertData.alertDescription || "",
       });
+    } else{
+      form.reset({
+        alertName: "",
+        alertDescription: ""
+      })
     }
   }, [alertData, alertTypeData, form]);
 

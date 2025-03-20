@@ -126,8 +126,8 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
               selectedSupplement={editData}
               onClose={() => {
                 setIsDialogOpen(false);
-                fetchSupplements();
                 setEditData(null);
+                fetchSupplements();
               }}
               isOpen={isDialogOpen}
             />

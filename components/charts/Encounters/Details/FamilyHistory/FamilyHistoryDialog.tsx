@@ -91,6 +91,14 @@ function FamilyHistoryDialog({
         age: familyHistoryData?.age || 0,
         comments: familyHistoryData?.comments || "",
       });
+    } else {
+      form.reset({
+        relationship: "",
+        deceased: false,
+        activeProblems: [],
+        age: 0,
+        comments: "",
+      });
     }
   }, [familyHistoryData, form]);
 

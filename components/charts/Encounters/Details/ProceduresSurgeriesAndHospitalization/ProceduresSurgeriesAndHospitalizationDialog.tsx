@@ -92,7 +92,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
     resolver: zodResolver(addProceduresSurgeriesAndHospitalizationFormSchema),
     defaultValues: {
       type: procedureData?.type || "",
-      name: procedureData?.nameId || "",
+      name: procedureData?.nameType.id || "",
       fromDate:
         procedureData?.fromDate || new Date().toISOString().split("T")[0],
       toDate: procedureData?.toDate || new Date().toISOString().split("T")[0],
@@ -108,18 +108,26 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
     if (procedureData) {
       form.reset({
         type: procedureData?.type || "",
-        name: procedureData?.nameId || "",
+        name: procedureData?.nameType.id || "",
         fromDate:
           procedureData?.fromDate || new Date().toISOString().split("T")[0],
         toDate: procedureData?.toDate || new Date().toISOString().split("T")[0],
         notes: procedureData?.notes || "",
       });
       if (procedureData.nameId) {
-        setProcedureId(procedureData.nameId);
+        setProcedureId(procedureData.nameType.id);
       }
       if (procedureData.nameType.name) {
         setSearchTerm(procedureData.nameType.name);
       }
+    } else {
+      form.reset({
+        type: "",
+        name: "",
+        fromDate: new Date().toISOString().split("T")[0],
+        toDate: new Date().toISOString().split("T")[0],
+        notes: "",
+      });
     }
   }, [procedureData, form]);
 

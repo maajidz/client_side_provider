@@ -102,7 +102,7 @@ export interface CreateVaccineInterface {
 export type VaccinesSearchParamsType = InjectionsSearchParamsType;
 
 export interface CreateInjectionInterface {
-  injection_name: string;
+  injection_type_Id: string;
   dosage_unit: string;
   dosage_quantity: number;
   frequency: string;
@@ -123,7 +123,7 @@ export interface CreateInjectionInterface {
 }
 
 export interface UpdateInjectionInterface {
-  injection_name: string;
+  injection_type_Id: string;
   dosage_unit: string;
   dosage_quantity: number;
   frequency: string;
@@ -151,6 +151,7 @@ export interface InjectionsData extends CreateInjectionInterface {
   id: string;
   createdAt: string;
   updatedAt: string;
+  injectionType: InjectionsType;
 }
 
 export interface InjectionsType {
@@ -162,7 +163,7 @@ export interface InjectionsType {
 }
 
 export interface InjectionsTypeResponseInterface {
-  data: InjectionsType[],
+  data: InjectionsType[];
   page: number;
   limit: number;
   total: number;

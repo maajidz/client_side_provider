@@ -97,7 +97,7 @@ const InjectionsDialog = ({
   const form = useForm<z.infer<typeof createInjectionSchema>>({
     resolver: zodResolver(createInjectionSchema),
     defaultValues: {
-      injection_name: injectionsData?.injection_name || "",
+      injection_type_Id: injectionsData?.injectionType.id || "",
       dosage_unit: injectionsData?.dosage_unit || "",
       dosage_quantity: injectionsData?.dosage_quantity || 0,
       frequency: injectionsData?.frequency || "",
@@ -247,7 +247,7 @@ const InjectionsDialog = ({
   useEffect(() => {
     if (injectionsData) {
       form.reset({
-        injection_name: injectionsData.injection_name || "",
+        injection_type_Id: injectionsData.injectionType.id || "",
         dosage_unit: injectionsData.dosage_unit || "",
         dosage_quantity: injectionsData.dosage_quantity || 0,
         frequency: injectionsData.frequency || "",
@@ -262,6 +262,25 @@ const InjectionsDialog = ({
         note_to_nurse: injectionsData.note_to_nurse || "",
         comments: injectionsData.comments || "",
       });
+      setSearchType(injectionsData?.injectionType.injection_name);
+    } else {
+      form.reset({
+        injection_type_Id: "",
+        dosage_unit: "",
+        dosage_quantity: 0,
+        frequency: "",
+        period_number: 0,
+        period_unit: "",
+        parental_route: "",
+        site: "",
+        lot_number: 0,
+        expiration_date: "",
+        administered_date: "",
+        administered_time: "",
+        note_to_nurse: "",
+        comments: "",
+      });
+      setSearchType("");
     }
   }, [form, injectionsData]);
 
@@ -348,7 +367,7 @@ const InjectionsDialog = ({
               <div className="flex flex-col gap-6 p-2.5">
                 <FormField
                   control={form.control}
-                  name="injection_name"
+                  name="injection_type_Id"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Name</FormLabel>
@@ -542,7 +561,9 @@ const InjectionsDialog = ({
                               <div>Loading...</div>
                             ) : (
                               parenteralRoutes.map((route, index) => (
-                                <SelectItem value={route} key={index}>{route}</SelectItem>
+                                <SelectItem value={route} key={index}>
+                                  {route}
+                                </SelectItem>
                               ))
                             )}
                           </SelectContent>
@@ -571,7 +592,9 @@ const InjectionsDialog = ({
                               <div>Loading...</div>
                             ) : (
                               injectionSite.map((site, index) => (
-                                <SelectItem value={site} key={index}>{site}</SelectItem>
+                                <SelectItem value={site} key={index}>
+                                  {site}
+                                </SelectItem>
                               ))
                             )}
                           </SelectContent>
