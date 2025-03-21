@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { getPrescriptionsData } from "@/services/chartsServices";
 import { RootState } from "@/store/store";
-import { FetchPrescription } from "@/types/chartsInterface";
+import { Prescription } from "@/types/chartsInterface";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -27,7 +27,7 @@ const PastPrescriptionsDialog = ({
   onClose,
 }: PastPrescriptionsDialogProps) => {
   // Data State
-  const [response, setResponse] = useState<FetchPrescription>();
+  const [response, setResponse] = useState<Prescription[]>([]);
 
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
@@ -98,8 +98,8 @@ const PastPrescriptionsDialog = ({
                 Past Rx
               </span>
               <div className="flex flex-col gap-3">
-                {response && response?.prescriptions?.length > 0 ? (
-                  response.prescriptions.map((prescription) => (
+                {response && response?.length > 0 ? (
+                  response.map((prescription) => (
                     <div
                       key={prescription.id}
                       className="p-3 border rounded-lg bg-white shadow-sm"

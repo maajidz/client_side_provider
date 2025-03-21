@@ -6,8 +6,10 @@ import { UserEncounterData } from "@/types/chartsInterface";
 
 const ImagesBody = ({
   patientDetails,
+  signed,
 }: {
   patientDetails: UserEncounterData;
+  signed: boolean;
 }) => {
   return (
     <div className="flex justify-between border-b pb-3">
@@ -15,6 +17,7 @@ const ImagesBody = ({
       <div className="flex h-5 items-center space-x-4 text-sm">
         <AddImagesDrawer
           userDetailsId={patientDetails.userDetails.userDetailsId}
+          signed={signed}
         />
         <PastImageOrders
           userDetailsId={patientDetails.userDetails.userDetailsId}

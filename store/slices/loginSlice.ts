@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface LoginState {
   providerAuthId: string;
+  providerUniqueId: string;
   token: string | null;
   providerId: string;
   firstName: string;
@@ -15,6 +16,7 @@ interface LoginState {
 
 const initialState: LoginState = {
   providerAuthId: "",
+  providerUniqueId: "",
   providerId: "",
   token: null,
   firstName: "",

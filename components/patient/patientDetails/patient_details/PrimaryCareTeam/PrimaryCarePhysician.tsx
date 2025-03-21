@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { searchProviders } from "@/services/registerServices";
-import LoadingButton from "@/components/LoadingButton";
 import { PatientCareTeamInterface } from "@/types/userInterface";
 import styles from "./patient_care_team.module.css";
 import { Trash2Icon } from "lucide-react";
@@ -147,38 +146,35 @@ const PrimaryCarePhysician = ({
             placeholder="Search providers..."
           />
 
-          {/* Loading State */}
-          {loading && (
-            <div className="flex justify-center mt-2">
-              <LoadingButton />
-            </div>
-          )}
-
-          {!loading && searchPrimaryCarePhysician && (
-            <div className="absolute w-full top-8">
-              {!selectedPrimaryCarePhysician && providers.length > 0 ? (
-                <div className="mt-2 w-full bg-white shadow-lg rounded-lg z-10">
-                  {providers.map((user) => (
-                    <div
-                      key={user.id}
-                      className="rounded-lg px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handlePrimaryCarePhysicianSelect(user)}
-                    >
-                      <div className="text-[#84012A] text-base font-medium">
-                        {user.firstName} {user.lastName}
+          {loading ? (
+            <div>Loading... </div>
+          ) : (
+            searchPrimaryCarePhysician && (
+              <div className="absolute w-full top-8">
+                {!selectedPrimaryCarePhysician && providers.length > 0 ? (
+                  <div className="mt-2 w-full bg-white shadow-lg rounded-lg z-10">
+                    {providers.map((user) => (
+                      <div
+                        key={user.id}
+                        className="rounded-lg px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handlePrimaryCarePhysicianSelect(user)}
+                      >
+                        <div className="text-[#84012A] text-base font-medium">
+                          {user.firstName} {user.lastName}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                // No Results Found
-                !selectedPrimaryCarePhysician && (
-                  <p className="absolute w-full bg-white p-2 text-xs rounded shadow-lg">
-                    No results found.
-                  </p>
-                )
-              )}
-            </div>
+                    ))}
+                  </div>
+                ) : (
+                  // No Results Found
+                  !selectedPrimaryCarePhysician && (
+                    <p className="absolute w-full bg-white p-2 text-xs rounded shadow-lg">
+                      No results found.
+                    </p>
+                  )
+                )}
+              </div>
+            )
           )}
         </div>
       </div>
@@ -221,7 +217,9 @@ const PhysicianData = ({
           )}
         </div>
       ) : (
-        <div className="text-xs font-semibold text-gray-500">No Assigned Physician found!</div>
+        <div className="text-xs font-semibold text-gray-500">
+          No Assigned Physician found!
+        </div>
       )}
     </div>
   );

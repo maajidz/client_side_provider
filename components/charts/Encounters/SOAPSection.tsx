@@ -23,6 +23,7 @@ const SOAPSection = ({
   onClose: () => void;
   onRefresh: React.Dispatch<React.SetStateAction<number>>;
 }) => {
+  const [signed, setSigned] = useState<boolean>(false);
   const [subjectiveContent, setSubjectiveContent] = useState<string>("");
   const [objectiveContent, setObjectiveContent] = useState<string>("");
   const [physicalStatsContent, setPhysicalStatsContent] =
@@ -56,6 +57,7 @@ const SOAPSection = ({
             objectiveContent={objectiveContent}
             physicalStatsContent={physicalStatsContent}
             onRefresh={onRefresh}
+            setSigned={setSigned}
           />
         </div>
         <TabsContent value="chartNotes">
@@ -65,6 +67,7 @@ const SOAPSection = ({
             setSubjectiveContent={setSubjectiveContent}
             setObjectiveContent={setObjectiveContent}
             setPhysicalStatsContent={setPhysicalStatsContent}
+            signed={signed}
           />
         </TabsContent>
         <TabsContent value="mu">

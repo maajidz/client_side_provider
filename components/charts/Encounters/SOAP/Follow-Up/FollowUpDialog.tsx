@@ -47,9 +47,11 @@ interface Row {
 const FollowUpDialog = ({
   patientDetails,
   encounterId,
+  signed,
 }: {
   patientDetails: UserEncounterData;
   encounterId: string;
+  signed: boolean;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
@@ -65,20 +67,22 @@ const FollowUpDialog = ({
   ]);
 
   // Separate state for editing
-  const [editingStates, setEditingStates] = useState<{[key: string]: string | number | Array<"email" | "text" | "voice">}>({});
-  
+  const [editingStates, setEditingStates] = useState<{
+    [key: string]: string | number | Array<"email" | "text" | "voice">;
+  }>({});
+
   const handleChange = (index: number, field: keyof Row, value: string) => {
     const key = `${index}-${field}`;
-    setEditingStates(prev => ({...prev, [key]: value}));
+    setEditingStates((prev) => ({ ...prev, [key]: value }));
   };
 
   // Debounced effect to update actual row data
   useEffect(() => {
     const timer = setTimeout(() => {
-      setRows(currentRows => 
+      setRows((currentRows) =>
         currentRows.map((row, index) => {
           const updates: Partial<Row> = {};
-          (Object.keys(row) as Array<keyof Row>).forEach(field => {
+          (Object.keys(row) as Array<keyof Row>).forEach((field) => {
             const key = `${index}-${field}`;
             if (key in editingStates) {
               // TypeScript doesn't know that the value matches the field type
@@ -86,7 +90,7 @@ const FollowUpDialog = ({
               (updates as Record<string, unknown>)[field] = editingStates[key];
             }
           });
-          return {...row, ...updates};
+          return { ...row, ...updates };
         })
       );
     }, 100);
@@ -129,16 +133,20 @@ const FollowUpDialog = ({
   };
 
   const handleSubmit = async () => {
-    console.log("Follow-Up:", rows);
     try {
       if (patientDetails.chart?.id) {
         const chartId = patientDetails.chart?.id;
+        const requestData = rows.map((row) => ({
+          ...row,
+          chartId,
+        }));
 
         const data = {
           plan: `Follow Up: ${rows.map((row) => row.type)}`,
           encounterId: encounterId,
         };
 
+        createFollowUp({ requestData });
         updateSOAPChart({
           chartId,
           requestData: data,
@@ -210,9 +218,7 @@ const FollowUpDialog = ({
         <Textarea
           value={getValue() as string}
           rows={1}
-          onChange={(e) =>
-            handleChange(row.index, "notes", e.target.value)
-          }
+          onChange={(e) => handleChange(row.index, "notes", e.target.value)}
           placeholder="Enter notes"
           className="w-56"
         />
@@ -315,7 +321,7 @@ const FollowUpDialog = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"}>Add Follow up</Button>
+        <Button variant={"ghost"} disabled={signed}>Add Follow up</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -329,15 +335,36 @@ const FollowUpDialog = ({
             className="[&_td]:align-top"
             pageNo={1}
             totalPages={1}
-          onPageChange={() => {}}
-        />
-        <Button variant={"link"} onClick={handleAddRow} className="self-start">
+            onPageChange={() => {}}
+          />
+          <Button
+            variant={"link"}
+            onClick={handleAddRow}
+            className="self-start"
+          >
             Add More
           </Button>
         </div>
         <DialogFooter>
-            <Button variant={"outline"}>Cancel</Button>
-            <SubmitButton label="Save Changes" onClick={handleSubmit} />
+          <Button
+            variant={"outline"}
+            onClick={() => {
+              setIsDialogOpen(false);
+              setRows([
+                {
+                  type: "",
+                  notes: "",
+                  sectionDateType: "after",
+                  sectionDateNumber: 0,
+                  sectionDateUnit: "weeks",
+                  reminders: [],
+                },
+              ]);
+            }}
+          >
+            Cancel
+          </Button>
+          <SubmitButton label="Save Changes" onClick={handleSubmit} />
         </DialogFooter>
       </DialogContent>
     </Dialog>

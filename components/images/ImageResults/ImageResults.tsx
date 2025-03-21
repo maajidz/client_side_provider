@@ -27,11 +27,11 @@ import { ImageResultResponseInterface } from "@/types/imageResults";
 import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
-import { usePathname, useRouter } from "next/navigation";
 import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import { imagesStatus } from "@/constants/data";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
+import { usePathname, useRouter } from "next/navigation";
 
 interface ImageResultsProps {
   userDetailsId?: string;
@@ -274,6 +274,7 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
         <TableShimmer />
       ) : (
         <DefaultDataTable
+          title="Image Results"
           onAddClick={goToCreateImage}
           columns={columns()}
           title={"Image Results"}

@@ -8,7 +8,6 @@ import {
   CreatePrescriptionInterface,
   CreateTestsRequestBody,
   CreateTransferInterface,
-  FetchPrescription,
   FollowUpInterface,
   ImageOrdersInterface,
   ImagesResponseInterface,
@@ -30,6 +29,8 @@ import {
   DiagnosesResponseInterface,
   PastDiagnosesInterface,
   DiagnosesTypeDataInterface,
+  Prescription,
+  UpdateEncounterInterface,
 } from "@/types/chartsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";
 
@@ -51,12 +52,34 @@ export const createEncounterRequest = async ({
   return data;
 };
 
+export const updateEncounterRequest = async ({
+  encounterId,
+  requestData,
+}: {
+  encounterId: string;
+  requestData: UpdateEncounterInterface;
+}) => {
+  const response = await ApiFetch({
+    method: "PATCH",
+    url: `/provider/encounters/${encounterId}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data: CreateEncounterResponseInterface = await response.data;
+  return data;
+};
+
 export const getLabsData = async ({
   page,
   limit,
+  search,
 }: {
   page: number;
   limit: number;
+  search?: string
 }) => {
   const response = await ApiFetch({
     method: "GET",
@@ -473,13 +496,15 @@ export const getLabTestsData = async ({
 export const getImagesData = async ({
   page,
   limit,
+  search,
 }: {
   page: number;
   limit: number;
+  search?: string;
 }) => {
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/images/types?limit=${limit}&page=${page}`,
+    url: `/provider/images/types?limit=${limit}&page=${page}&search=${search}`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -513,7 +538,7 @@ export const getLabOrdersData = async ({
   providerId = "",
   status = "",
   page = 1,
-  limit = 10,
+  limit,
   orderedBy = "",
 }: {
   userDetailsId?: string;
@@ -533,7 +558,7 @@ export const getLabOrdersData = async ({
 
   const response = await ApiFetch({
     method: "GET",
-    url: `/provider/lab/orders?${queryParams}`,
+    url: `/provider/lab/orders/?${queryParams}`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -559,7 +584,7 @@ export const getImagesOrdersData = async ({
   const queryParams = new URLSearchParams();
   if (userDetailsId) queryParams.append("userDetailsId", userDetailsId);
   if (providerId) queryParams.append("providerId", providerId);
-  if (status) queryParams.append('status', status);
+  if (status) queryParams.append("status", status);
   if (page) queryParams.append("page", page.toString());
   if (limit) queryParams.append("limit", limit.toString());
 
@@ -605,8 +630,8 @@ export const getPrescriptionsData = async ({
       "Content-Type": "application/json",
     },
   });
-  console.log(response.data);
-  const data: FetchPrescription = await response.data;
+
+  const data: Prescription[] = await response.data;
   return data;
 };
 
@@ -642,7 +667,7 @@ export const getTransferData = async ({
     | "referringToProviderID"
     | "referringFromProviderID";
   referralType?: "external" | "internal";
-  statusType?: "responseStatus" | "requestStatus" | '';
+  statusType?: "responseStatus" | "requestStatus" | "";
   status?: string;
 }) => {
   const queryParams = new URLSearchParams();

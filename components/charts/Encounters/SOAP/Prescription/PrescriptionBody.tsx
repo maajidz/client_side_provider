@@ -8,14 +8,14 @@ import { UserEncounterData } from '@/types/chartsInterface'
 //     PopoverTrigger,
 // } from "@/components/ui/popover"
 
-const PrescriptionBody = ({patientDetails, encounterId}: {patientDetails: UserEncounterData, encounterId: string }) => {
+const PrescriptionBody = ({patientDetails, encounterId, signed}: {patientDetails: UserEncounterData, encounterId: string , signed: boolean}) => {
     
     return (
         <div className='flex justify-between border-b pb-3'>
             <label className='text-sm font-semibold'>Prescriptions</label>
             <div className="flex h-5 items-center space-x-4 text-sm">
-                <AddRx patientDetails={patientDetails} encounterId={encounterId}/>
-                <PastRx patientDetails={patientDetails}/>
+                <AddRx patientDetails={patientDetails} encounterId={encounterId}  signed={signed}/>
+                <PastRx patientDetails={patientDetails} encounterId={encounterId} />
                 {/* <Popover>
                     <PopoverTrigger asChild>
                         <Button variant="ghost" className='text-blue-500 underline'>Sign</Button>

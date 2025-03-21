@@ -1,4 +1,10 @@
-import React, { useCallback, useState, useEffect, useRef, useMemo } from "react";
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+} from "react";
 import {
   Dialog,
   DialogContent,
@@ -55,19 +61,25 @@ interface DiagnosisRow {
 const AddDx = ({
   patientDetails,
   encounterId,
+  signed,
 }: {
   patientDetails: UserEncounterData;
   encounterId: string;
+  signed?: boolean;
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
 
   const [diagnosisName, setDiagnosisName] = useState<string[]>([]);
-  const [diagnosesTypeData, setDiagnosesTypeData] = useState<DiagnosesTypeData[]>([]);
+  const [diagnosesTypeData, setDiagnosesTypeData] = useState<
+    DiagnosesTypeData[]
+  >([]);
   const [isListVisible, setIsListVisible] = useState<boolean[]>([]);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
-  const [rows, setRows] = useState<DiagnosisRow[]>([{ diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" }]);
+  const [rows, setRows] = useState<DiagnosisRow[]>([
+    { diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" },
+  ]);
 
   // Track the active input index
   const [activeInputIndex, setActiveInputIndex] = useState<number | null>(null);
@@ -104,20 +116,29 @@ const AddDx = ({
     ]);
   }, []);
 
-  const handleDeleteRow = useCallback((index: number) => {
-    const updatedRows = rows.filter((_, i) => i !== index);
-    setRows(updatedRows);
-  }, [rows]);
+  const handleDeleteRow = useCallback(
+    (index: number) => {
+      const updatedRows = rows.filter((_, i) => i !== index);
+      setRows(updatedRows);
+    },
+    [rows]
+  );
 
-  const handleChange = useCallback((index: number, field: keyof DiagnosisRow, value: string) => {
-    setRows(prevRows =>
-      prevRows.map((row, i) => (i === index ? { ...row, [field]: value } : row))
-    );
-  }, []);
+  const handleChange = useCallback(
+    (index: number, field: keyof DiagnosisRow, value: string) => {
+      setRows((prevRows) =>
+        prevRows.map((row, i) =>
+          i === index ? { ...row, [field]: value } : row
+        )
+      );
+    },
+    []
+  );
 
   const handleSearch = useCallback(
     debounce(async (searchTerm: string, index: number) => {
       console.log(`Searching for ${searchTerm} in row ${index}`);
+
       if (searchTerm.length < 2) {
         setIsListVisible((prev) => {
           const newListVisible = [...prev];
@@ -126,6 +147,7 @@ const AddDx = ({
         });
         return;
       }
+
       setLoading(true);
       try {
         const response = await fetchDiagnosesType({
@@ -150,32 +172,38 @@ const AddDx = ({
         setLoading(false);
       }
     }, 500),
-    []
+    [setIsListVisible, setDiagnosesTypeData]
   );
 
-  const handleSelectDiagnosis = useCallback((diagnosis: DiagnosesTypeData, index: number) => {
-    handleChange(index, "diagnosis_Id", diagnosis.id);
-    handleChange(index, "ICD_Code", diagnosis.ICD_Code);
-    handleChange(index, "searchTerm", diagnosis.diagnosis_name);
-    setIsListVisible((prev) => {
-      const newListVisible = [...prev];
-      newListVisible[index] = false;
-      return newListVisible;
-    });
-    setDiagnosisName((name) => [...name, diagnosis.diagnosis_name]);
+  const handleSelectDiagnosis = useCallback(
+    (diagnosis: DiagnosesTypeData, index: number) => {
+      handleChange(index, "diagnosis_Id", diagnosis.id);
+      handleChange(index, "ICD_Code", diagnosis.ICD_Code);
+      handleChange(index, "searchTerm", diagnosis.diagnosis_name);
+      setIsListVisible((prev) => {
+        const newListVisible = [...prev];
+        newListVisible[index] = false;
+        return newListVisible;
+      });
+      setDiagnosisName((name) => [...name, diagnosis.diagnosis_name]);
 
-    // Add a new row and focus the input of the new row
-    handleAddRow();
-    setActiveInputIndex(rows.length); // Set the new row as active
-  }, [handleChange, handleAddRow, rows.length]);
+      // Add a new row and focus the input of the new row
+      handleAddRow();
+      setActiveInputIndex(rows.length); // Set the new row as active
+    },
+    [handleChange, handleAddRow, rows.length]
+  );
 
-  const handleClearRow = useCallback((index: number) => {
-    // Clear the inputs for the specified row
-    handleChange(index, "diagnosis_Id", "");
-    handleChange(index, "ICD_Code", "");
-    handleChange(index, "notes", "");
-    handleChange(index, "searchTerm", "");
-  }, [handleChange]);
+  const handleClearRow = useCallback(
+    (index: number) => {
+      // Clear the inputs for the specified row
+      handleChange(index, "diagnosis_Id", "");
+      handleChange(index, "ICD_Code", "");
+      handleChange(index, "notes", "");
+      handleChange(index, "searchTerm", "");
+    },
+    [handleChange]
+  );
 
   const handleSubmit = async () => {
     try {
@@ -234,95 +262,115 @@ const AddDx = ({
     }
   };
 
-
-  const columns: ColumnDef<DiagnosisRow>[] = useMemo(() => [
-    {
-      accessorKey: "diagnosis",
-      header: "Diagnosis",
-      cell: ({ row }) => (
-        <div className="relative flex items-center">
+  const columns: ColumnDef<DiagnosisRow>[] = useMemo(
+    () => [
+      {
+        accessorKey: "diagnosis",
+        header: "Diagnosis",
+        cell: ({ row }) => (
+          <div className="relative flex items-center">
+            <Input
+              type="text"
+              placeholder="Enter Diagnosis"
+              required
+              value={
+                diagnosesTypeData.find(
+                  (d) => d.id === row.original.diagnosis_Id
+                )?.diagnosis_name || row.original.searchTerm
+              }
+              onChange={(e) => {
+                const value = e.target.value;
+                handleChange(row.index, "searchTerm", value);
+                if (value.length >= 2) {
+                  handleSearch(value, row.index);
+                } else {
+                  setIsListVisible((prev) => {
+                    const newListVisible = [...prev];
+                    newListVisible[row.index] = false;
+                    return newListVisible;
+                  });
+                }
+              }}
+              ref={(el) => {
+                inputRefs.current[row.index] = el;
+              }}
+              onFocus={() => setActiveInputIndex(row.index)}
+            />
+            {isListVisible[row.index] && (
+              <DropdownList
+                items={diagnosesTypeData}
+                renderItem={(diagnosis) => (
+                  <div>
+                    {diagnosis.diagnosis_name} ({diagnosis.ICD_Code})
+                  </div>
+                )}
+                onSelect={(diagnosis) =>
+                  handleSelectDiagnosis(
+                    diagnosis as DiagnosesTypeData,
+                    row.index
+                  )
+                }
+              />
+            )}
+            {row.original.diagnosis_Id && (
+              <Icon
+                name="delete"
+                className="cursor-pointer ml-2 text-red-500"
+                onClick={() => handleClearRow(row.index)}
+              />
+            )}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "ICD_Code",
+        header: "ICD Code",
+        cell: ({ row }) => <div>{row.original.ICD_Code || "N/A"}</div>,
+      },
+      {
+        accessorKey: "notes",
+        header: "Notes",
+        cell: ({ row }) => (
           <Input
             type="text"
-            placeholder="Enter Diagnosis"
-            value={
-              diagnosesTypeData.find((d) => d.id === row.original.diagnosis_Id)
-                ?.diagnosis_name || row.original.searchTerm
-            }
-            onChange={(e) => {
-              const value = e.target.value;
-              handleChange(row.index, "searchTerm", value);
-              if (value.length >= 2) {
-                handleSearch(value, row.index);
-              } else {
-                setIsListVisible((prev) => {
-                  const newListVisible = [...prev];
-                  newListVisible[row.index] = false;
-                  return newListVisible;
-                });
-              }
-            }}
-            ref={(el) => {
-              inputRefs.current[row.index] = el;
-            }}
-            onFocus={() => setActiveInputIndex(row.index)}
+            placeholder="Enter notes"
+            value={row.original.notes}
+            onChange={(e) => handleChange(row.index, "notes", e.target.value)}
           />
-          {isListVisible[row.index] && (
-            <DropdownList
-              items={diagnosesTypeData}
-              renderItem={(diagnosis) => (
-                <div>
-                  {diagnosis.diagnosis_name} ({diagnosis.ICD_Code})
-                </div>
-              )}
-              onSelect={(diagnosis) => handleSelectDiagnosis(diagnosis as DiagnosesTypeData, row.index)}
-            />
-          )}
-          {row.original.diagnosis_Id && (
-            <Icon
-              name="delete"
-              className="cursor-pointer ml-2 text-red-500"
-              onClick={() => handleClearRow(row.index)}
-            />
-          )}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "ICD_Code",
-      header: "ICD Code",
-      cell: ({ row }) => <div>{row.original.ICD_Code || "N/A"}</div>,
-    },
-    {
-      accessorKey: "notes",
-      header: "Notes",
-      cell: ({ row }) => (
-        <Input
-          type="text"
-          placeholder="Enter notes"
-          value={row.original.notes}
-          onChange={(e) => handleChange(row.index, "notes", e.target.value)}
-        />
-      ),
-    },
-    {
-      accessorKey: "actions",
-      header: "Actions",
-      cell: ({ row }) => (
-        <Button
-          variant="ghost"
-          onClick={() => handleDeleteRow(row.index)}
-          disabled={!rows.length}
-        >
-          <Icon name="delete" className="cursor-pointer ml-2 text-red-500" />
-        </Button>
-      ),
-    },
-  ], [diagnosesTypeData, handleChange, handleSearch, isListVisible, rows.length, handleClearRow, handleDeleteRow, handleSelectDiagnosis]);
+        ),
+      },
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <Button
+            variant="ghost"
+            onClick={() => handleDeleteRow(row.index)}
+            disabled={!rows.length}
+          >
+            <Icon name="delete" className="cursor-pointer ml-2 text-red-500" />
+          </Button>
+        ),
+      },
+    ],
+    [
+      diagnosesTypeData,
+      handleChange,
+      handleSearch,
+      isListVisible,
+      rows.length,
+      handleClearRow,
+      handleDeleteRow,
+      handleSelectDiagnosis,
+    ]
+  );
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"}>Add Diagnosis</Button>
+        <Button variant={"ghost"} disabled={signed}>
+          Add Diagnosis
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
@@ -338,10 +386,7 @@ const AddDx = ({
           />
         </div>
         <DialogFooter>
-          <Button
-            variant={"outline"}
-            onClick={() => setIsDialogOpen(false)}
-          >
+          <Button variant={"outline"} onClick={() => setIsDialogOpen(false)}>
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={loading}>
