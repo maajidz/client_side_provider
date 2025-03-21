@@ -20,6 +20,7 @@ import "@/app/editor.css";
 import { PlateEditor } from "@/components/ui/plate-editor/PlateEditor";
 import { Descendant } from "slate";
 import TwoInput from "@/components/ui/TwoInput";
+import { formatSentAt } from "@/utils/dateUtils";
 
 const formSchema = z.object({
   weightInLbs: z.number(),
@@ -171,6 +172,11 @@ const ChartNotesAccordion = ({
 
   return (
     <div className="flex flex-col gap-2">
+      <div
+        className="flex justify-end w-full text-sm"
+      >
+        Last saved at: {formatSentAt(patientDetails?.chart.updatedAt)}
+      </div>
       <div className="flex flex-col gap-2">
         <h6>Chief Complaints</h6>
         <div className="flex flex-col gap-2">
