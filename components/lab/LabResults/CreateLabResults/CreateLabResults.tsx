@@ -172,16 +172,16 @@ const CreateLabResults = () => {
   }, [searchTerm]);
 
   useEffect(() => {
+    fetchPatientList();
     fetchLabsData();
     fetchProvidersList();
-  }, [fetchLabsData, fetchProvidersList]);
+  }, [fetchLabsData, fetchProvidersList, fetchPatientList]);
 
   useEffect(() => {
-    fetchPatientList();
     if (selectedLab) {
       fetchLabTestsData(selectedLab);
     }
-  }, [selectedLab, fetchLabTestsData, searchTerm, fetchPatientList]);
+  }, [selectedLab, fetchLabTestsData, searchTerm]);
 
   const filteredPatients = patients.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
