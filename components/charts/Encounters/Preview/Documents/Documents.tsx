@@ -53,7 +53,6 @@ function Documents({ patientDetails }: { patientDetails: UserEncounterData }) {
 
   return (
     <>
-      <div className="py-5">
         {documentsData && (
           <DefaultDataTable
             columns={columns()}
@@ -63,7 +62,6 @@ function Documents({ patientDetails }: { patientDetails: UserEncounterData }) {
             onPageChange={(newPage: number) => setPage(newPage)}
           />
         )}
-      </div>
     </>
   );
 }

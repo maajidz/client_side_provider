@@ -16,7 +16,7 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 
-// Define the structure for column definitions with mobile options
+
 type ExtendedColumnDef<TData, TValue = unknown> = ColumnDef<TData, TValue> & {
   mobileOptions?: {
     showInHeader?: boolean;
@@ -134,8 +134,8 @@ export function DefaultDataTable<TData, TValue = unknown>({
   }
 
   return (
-    <div className={`data-table-container flex flex-col gap-3 flex-1 ${className}`}>
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-0">
+    <div className={`data-table-container flex flex-col gap-3 flex-1 @container ${className}`}>
+      <div className="flex flex-col @[768px]:flex-row items-start @[768px]:items-center justify-between gap-3 @[768px]:gap-0">
         <div className="flex flex-row gap-2 items-center">
           {title && <span className="font-bold text-lg">{title}</span>}
           {onAddClick && (
@@ -144,11 +144,11 @@ export function DefaultDataTable<TData, TValue = unknown>({
             </Button>
           )}
         </div>
-        <div className="flex flex-row text-sm items-center gap-2 w-full md:w-auto">
+        <div className="flex flex-row text-sm items-center gap-2 w-full @[768px]:w-auto">
           <div className="text-gray-400">
             Page {pageNo} of {totalPages}
           </div>
-          <div className="space-x-2 ml-auto md:ml-0">
+          <div className="space-x-2 ml-auto @[768px]:ml-0">
             <Button variant="outline" size="sm" onClick={() => onPageChange(pageNo - 1)} disabled={pageNo <= 1}>
               Previous
             </Button>
@@ -165,7 +165,7 @@ export function DefaultDataTable<TData, TValue = unknown>({
       </div>
 
       {/* Desktop view - regular table */}
-      <div className="hidden md:block">
+      <div className="hidden @[768px]:block">
         <Table className="relative h-full border border-gray-200 border-separate border-spacing-0 rounded-[6px]">
           <TableHeader>{renderHeaderGroups()}</TableHeader>
           <TableBody>
@@ -195,7 +195,7 @@ export function DefaultDataTable<TData, TValue = unknown>({
       </div>
 
       {/* Mobile view - card-like layout */}
-      <div className="md:hidden space-y-4">
+      <div className="@[768px]:hidden space-y-4">
         {hasRows ? (
           rows.map((row) => {
             const headerCells = getHeaderCells(row)
