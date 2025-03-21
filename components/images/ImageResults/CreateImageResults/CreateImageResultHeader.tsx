@@ -16,7 +16,7 @@ const CreateImageResultHeader = ({
   return (
     <>
       <div className="flex justify-between">
-        Add Image Results
+        <h2>Add Image Results</h2>
         <div className="flex gap-3">
           <Button
             variant={"outline"}

@@ -57,7 +57,7 @@ export function DefaultDataTable<TData, TValue>({
   });
 
   return (
-    <div className={`data-table-container flex flex-col gap-3 w-full ${className}`}>
+    <div className={`data-table-container flex flex-col gap-3 flex-1 ${className}`}>
       <div className="flex flex-row items-center justify-between ">
         <div className="flex flex-row gap-2 items-center">
           {title && (

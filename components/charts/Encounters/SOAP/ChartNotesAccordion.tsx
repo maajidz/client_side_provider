@@ -128,12 +128,12 @@ const ChartNotesAccordion = ({
       .join("\n");
   };
 
-  const handleInputChange = (
-    fieldName: keyof z.infer<typeof formSchema>,
-    value: number
-  ) => {
-    form.setValue(fieldName, value);
-  };
+  // const handleInputChange = (
+  //   fieldName: keyof z.infer<typeof formSchema>,
+  //   value: number
+  // ) => {
+  //   form.setValue(fieldName, value);
+  // };
 
   useEffect(() => {
     const plainText = extractPlainText(editorValue);
@@ -192,16 +192,22 @@ const ChartNotesAccordion = ({
                   className="flex-col !items-start"
                   label="Weight"
                   value={
-                    <TwoInput
-                      postfixFirst="lbs"
-                      postfixSecond="ozs"
-                      focusAfter={3}
-                      idFirst="weight-first-input"
-                      idSecond="weight-second-input"
-                      onChange={({ first, second }) => {
-                        handleInputChange("weightInLbs", first);
-                        handleInputChange("weightInOzs", second);
-                      }}
+                    <FormField
+                      control={form.control}
+                      name="weightInLbs"
+                      render={({ field }) => (
+                        <TwoInput
+                          postfixFirst="lbs"
+                          postfixSecond="ozs"
+                          focusAfter={3}
+                          idFirst="weight-first-input"
+                          idSecond="weight-second-input"
+                          onChange={({ first, second }) => {
+                            field.onChange(first);
+                            form.setValue("weightInOzs", second);
+                          }}
+                        />
+                      )}
                     />
                   }
                 />
@@ -209,16 +215,22 @@ const ChartNotesAccordion = ({
                   label="Height"
                   className="flex-col !items-start"
                   value={
-                    <TwoInput
-                      postfixFirst="ft"
-                      postfixSecond="in"
-                      focusAfter={1}
-                      idFirst="height-first-input"
-                      idSecond="height-second-input"
-                      onChange={({ first, second }) => {
-                        handleInputChange("heightInFt", first);
-                        handleInputChange("heightInInches", second);
-                      }}
+                    <FormField
+                      control={form.control}
+                      name="heightInFt"
+                      render={({ field }) => (
+                        <TwoInput
+                          postfixFirst="ft"
+                          postfixSecond="in"
+                          focusAfter={1}
+                          idFirst="height-first-input"
+                          idSecond="height-second-input"
+                          onChange={({ first, second }) => {
+                            field.onChange(first);
+                            form.setValue("heightInInches", second);
+                          }}
+                        />
+                      )}
                     />
                   }
                 />

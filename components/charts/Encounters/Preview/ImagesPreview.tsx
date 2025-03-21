@@ -3,12 +3,9 @@ import PageContainer from "@/components/layout/page-container";
 
 const ImagesPreview = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
-    <PageContainer>
-      <div className="flex flex-col gap-5">
-        Image Results
-        <div className="flex flex-col gap-3 border-b">
-          <ImageResults userDetailsId={userDetailsId} />
-        </div>
+    <PageContainer className="">
+      <div className="flex flex-col gap-4 p-4 overflow-x-scroll">
+        <ImageResults userDetailsId={userDetailsId} />
       </div>
     </PageContainer>
   );

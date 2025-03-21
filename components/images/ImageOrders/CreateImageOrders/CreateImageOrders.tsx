@@ -30,9 +30,8 @@ import {
   getImagesTestsData,
 } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MultiSelectCheckbox, Option } from "@/components/ui/multiselectDropdown";
 
 const CreateImageResults = () => {
   const [providerListData, setProviderListData] =
@@ -129,6 +128,12 @@ const CreateImageResults = () => {
       .includes(searchTerm.toLowerCase())
   );
 
+  // Prepare options for MultiSelectCheckbox
+  const testOptions: Option[] = imageTests.map((test) => ({
+    id: test.id,
+    label: test.name,
+  }));
+
   const onSubmit = async (values: z.infer<typeof createImageOrderSchema>) => {
     setLoading((prev) => ({ ...prev, image: true }));
 
@@ -164,6 +169,30 @@ const CreateImageResults = () => {
     }
   };
 
+  // Function to check if all required fields are filled
+  const isFormValid = () => {
+    const values = form.getValues();
+    const hasPatient = !!values.patient;
+    const hasOrderedBy = !!values.orderedBy;
+    const hasOrderedDate = !!values.orderedDate;
+    const hasImageTypeId = !!values.imageTypeId;
+    const hasImageTestIds = values.imageTestIds.length > 0;
+
+    return hasPatient && hasOrderedBy && hasOrderedDate && hasImageTypeId && hasImageTestIds;
+  };
+
+  // Effect to re-evaluate form validity on changes
+  useEffect(() => {
+    const subscription = form.watch(() => {
+      // Trigger a re-render when form values change
+      setIsSubmitDisabled(!isFormValid());
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form]);
+
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(!isFormValid());
+
   if (loading.image || loading.patient || loading.provider) {
     return <LoadingButton />;
   }
@@ -172,7 +201,7 @@ const CreateImageResults = () => {
     <>
       <div>
         <div className="flex justify-between">
-          Add Image Orders
+          <h2>Add Image Orders</h2>
           <div className="flex gap-3">
             <Button
               variant={"outline"}
@@ -191,7 +220,7 @@ const CreateImageResults = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
-            <div className={formStyles.formBody}>
+            <div className="flex flex-row gap-4">
               <FormField
                 control={form.control}
                 name="patient"
@@ -315,12 +344,15 @@ const CreateImageResults = () => {
                           </SelectTrigger>
                           <SelectContent>
                             {imageTests.map((imageTest) => {
-                              return (
-                                <SelectItem
-                                  key={imageTest.id}
-                                  value={imageTest.imageType.id}
-                                >{`${imageTest.imageType.name}`}</SelectItem>
-                              );
+                              if (imageTest.imageType) {
+                                return (
+                                  <SelectItem
+                                    key={imageTest.id}
+                                    value={imageTest.imageType.id}
+                                  >{`${imageTest.imageType.name}`}</SelectItem>
+                                );
+                              }
+                              return null;
                             })}
                           </SelectContent>
                         </Select>
@@ -338,51 +370,25 @@ const CreateImageResults = () => {
                   <FormItem className={formStyles.formItem}>
                     <FormLabel>Tests</FormLabel>
                     <FormControl>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <button
-                            className="border px-4 py-2 rounded-md w-full text-left"
-                            type="button"
-                          >
-                            {field.value.length > 0
-                              ? imageTests
-                                  .filter((test) =>
-                                    field.value.includes(test.id)
-                                  )
-                                  .map((test) => test.name)
-                                  .join(", ")
-                              : "Select tests"}
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-72 bg-white border rounded-md p-2">
-                          {imageTests.map((test) => (
-                            <div
-                              key={test.id}
-                              className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded"
-                              onClick={() => {
-                                const updatedTests = field.value.includes(
-                                  test.id
-                                )
-                                  ? field.value.filter((id) => id !== test.id)
-                                  : [...field.value, test.id];
-
-                                form.setValue("imageTestIds", updatedTests);
-                              }}
-                            >
-                              <Checkbox
-                                checked={field.value.includes(test.id)}
-                              />
-                              <span>{test.name}</span>
-                            </div>
-                          ))}
-                        </PopoverContent>
-                      </Popover>
+                      <MultiSelectCheckbox
+                        options={testOptions}
+                        onChange={(selectedOptions) => {
+                          form.setValue("imageTestIds", selectedOptions);
+                        }}
+                        defaultSelected={field.value}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <SubmitButton label="Submit" />
+              <SubmitButton
+                label="Submit"
+                disabled={isSubmitDisabled}
+                onClick={() => {
+                  form.handleSubmit(onSubmit);
+                }}
+              />
             </div>
           </form>
         </Form>

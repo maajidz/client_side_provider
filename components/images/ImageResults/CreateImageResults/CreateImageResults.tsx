@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from "react";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import { Button } from "@/components/ui/button";
+
 import {
   Form,
   FormControl,
@@ -22,7 +22,7 @@ import {
 } from "@/types/chartsInterface";
 import LoadingButton from "@/components/LoadingButton";
 import { createImageResultsSchema } from "@/schema/createImageResultsSchema";
-import UploadImageResults from "./UploadImageResults";
+import ImageFileUploader from "./ImageFileUploader";
 import { TestsField } from "./TestsField";
 import CreateImageResultHeader from "./CreateImageResultHeader";
 import { createImageResultRequest } from "@/services/imageResultServices";
@@ -34,9 +34,16 @@ import { useToast } from "@/hooks/use-toast";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+
+interface TestUploadMap {
+  [testId: string]: string[];
+}
 
 const CreateImageResults = () => {
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  // Track uploads per test
+  const [uploadedImagesMap, setUploadedImagesMap] = useState<TestUploadMap>({});
   const [patients, setPatients] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
@@ -79,9 +86,12 @@ const CreateImageResults = () => {
     }
   }, [searchTerm]);
 
-  const handleUploadComplete = (images: string[]) => {
-    setUploadedImages((prevImages) => [...prevImages, ...images]);
-    console.log("Received images:", images);
+  const handleUploadComplete = (images: string[], testId: string) => {
+    setUploadedImagesMap((prev) => ({
+      ...prev,
+      [testId]: [...(prev[testId] || []), ...images],
+    }));
+    console.log(`Received images for test ${testId}:`, images);
   };
 
   const fetchImageTestsData = useCallback(async () => {
@@ -104,6 +114,19 @@ const CreateImageResults = () => {
     fetchImageTestsData();
   }, [fetchImageTestsData, searchTerm, fetchPatientList]);
 
+  // Ensure form has enough test result fields for each selected test
+  useEffect(() => {
+    const currentValues = form.getValues().testResults || [];
+    if (selectedTests.length > currentValues.length) {
+      // Add more test result fields if needed
+      const newTestResults = [...currentValues];
+      for (let i = currentValues.length; i < selectedTests.length; i++) {
+        newTestResults.push({ interpretation: "" });
+      }
+      form.setValue("testResults", newTestResults);
+    }
+  }, [selectedTests, form]);
+
   const filteredPatients = patients.filter((patient) =>
     `${patient.user.firstName} ${patient.user.lastName}`
       .toLowerCase()
@@ -116,27 +139,23 @@ const CreateImageResults = () => {
       const requestData: CreateImageResultInterface = {
         userDetailsId: values.patient,
         reviewerId: providerDetails.providerId,
-        testResults: selectedTests.map((test) => ({
+        testResults: selectedTests.map((test, index) => ({
           imageTestId: test.id,
-          interpretation: test.name ? `${test.name}` : "",
-          documents: uploadedImages,
+          interpretation: values.testResults[index]?.interpretation || "",
+          documents: uploadedImagesMap[test.id] || [],
         })),
       };
-      const response = await createImageResultRequest({
-        requestData: requestData,
-      });
+
+      const response = await createImageResultRequest({ requestData });
       if (response) {
         showToast({
           toast,
           type: "success",
           message: "Added image result successfully",
         });
-        setUploadedImages([]);
-        const originPath = sessionStorage.getItem("lab-result-origin");
-
-        if (originPath) {
-          router.replace(originPath);
-        }
+        setUploadedImagesMap({});
+        form.reset();
+        router.push("/dashboard/provider/images");
       }
     } catch (e) {
       console.log("Error", e);
@@ -145,9 +164,20 @@ const CreateImageResults = () => {
         type: "error",
         message: "Error while adding image results!",
       });
-    } finally {
-      form.reset();
     }
+  };
+
+  const isSubmitDisabled = () => {
+    const patientSelected = form.getValues().patient;
+    const testSelected = selectedTests.length > 0;
+    const interpretationEntered = selectedTests.some((test, index) => {
+      const interpretation = form.getValues().testResults[index]?.interpretation;
+      return (
+        interpretation ||
+        (uploadedImagesMap[test.id] && uploadedImagesMap[test.id].length > 0)
+      );
+    });
+    return !(patientSelected && testSelected && interpretationEntered);
   };
 
   if (loading) {
@@ -156,109 +186,113 @@ const CreateImageResults = () => {
 
   return (
     <>
-      <div>
+      <div className="space-y-4">
         <CreateImageResultHeader form={form} />
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
-            <FormField
-              control={form.control}
-              name="patient"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Patient</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="Search Patient "
-                        value={searchTerm}
-                        onChange={(e) => {
-                          setSearchTerm(e.target.value);
-                          setVisibleSearchList(true);
-                        }}
-                      />
-                      {searchTerm && visibleSearchList && (
-                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full">
-                          {filteredPatients.length > 0 ? (
-                            filteredPatients.map((patient) => (
-                              <div
-                                key={patient.id}
-                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                onClick={() => {
-                                  field.onChange(patient.id);
-                                  setSearchTerm(
-                                    `${patient.user.firstName} ${patient.user.lastName}`
-                                  );
-                                  setVisibleSearchList(false);
-                                }}
-                              >
-                                {`${patient.user.firstName} ${patient.user.lastName}`}
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="patient"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Patient</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder="Search Patient "
+                          value={searchTerm}
+                          onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setVisibleSearchList(true);
+                          }}
+                        />
+                        {searchTerm && visibleSearchList && (
+                          <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full z-10">
+                            {filteredPatients.length > 0 ? (
+                              filteredPatients.map((patient) => (
+                                <div
+                                  key={patient.id}
+                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                  onClick={() => {
+                                    field.onChange(patient.id);
+                                    setSearchTerm(
+                                      `${patient.user.firstName} ${patient.user.lastName}`
+                                    );
+                                    setVisibleSearchList(false);
+                                  }}
+                                >
+                                  {`${patient.user.firstName} ${patient.user.lastName}`}
+                                </div>
+                              ))
+                            ) : (
+                              <div className="px-4 py-2 text-gray-500">
+                                No results found
                               </div>
-                            ))
-                          ) : (
-                            <div className="px-4 py-2 text-gray-500">
-                              No results found
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {imageTestResponse?.data && (
-              <TestsField
-                form={form}
-                selectedTests={selectedTests}
-                setSelectedTests={setSelectedTests}
-                tests={imageTestResponse?.data}
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            )}
-            {selectedTests.map((test, index) => (
-              <div
-                key={index}
-                className="border border-gray-300 rounded-lg p-4 mb-4"
-              >
-                <h3 className="text-lg font-semibold">{`Test Results for ${test.name}`}</h3>
-                <div key={test.id}>
-                  <UploadImageResults
-                    onUploadComplete={(images) => handleUploadComplete(images)}
-                    userDetailsId={form.getValues().patient}
-                  />
-                  {uploadedImages &&
-                    uploadedImages.map((image) => (
-                      <Button key={image} variant={"link"}>
-                        {image}
-                      </Button>
-                    ))}
-                  <FormField
-                    control={form.control}
-                    name={`testResults.${index}.interpretation`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Interpretation</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            placeholder="Interpretation"
-                            value={
-                              typeof field.value === "string" ? field.value : ""
-                            }
-                            onChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-            ))}
-            <SubmitButton label="Submit" />
+              {form.getValues().patient && imageTestResponse?.data && (
+                <TestsField
+                  form={form}
+                  selectedTests={selectedTests}
+                  setSelectedTests={setSelectedTests}
+                  tests={imageTestResponse?.data}
+                />
+              )}
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {selectedTests.map((test, index) => (
+                <Card className="w-full sm:w-1/2 lg:w-1/3" key={index}>
+                  <CardHeader>
+                  <CardTitle>{`${test.name}`}</CardTitle>
+                </CardHeader>
+                <CardContent className="w-full">
+                  <div key={test.id} className="flex gap-4 w-full flex-col">
+                    <ImageFileUploader
+                      onUploadComplete={(images) =>
+                        handleUploadComplete(images, test.id)
+                      }
+                      userDetailsId={form.getValues().patient}
+                      testId={test.id}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`testResults.${index}.interpretation`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">Interpretation</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Enter interpretation for this test"
+                              className="min-h-[80px]"
+                              value={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : ""
+                              }
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+                </Card>
+              ))}
+            </div>
+            <SubmitButton label="Submit" disabled={isSubmitDisabled()} />
           </form>
         </Form>
       </div>
