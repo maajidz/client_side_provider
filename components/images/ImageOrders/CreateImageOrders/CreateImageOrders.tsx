@@ -170,7 +170,7 @@ const CreateImageResults = () => {
   };
 
   // Function to check if all required fields are filled
-  const isFormValid = () => {
+  const isFormValid = useCallback(() => {
     const values = form.getValues();
     const hasPatient = !!values.patient;
     const hasOrderedBy = !!values.orderedBy;
@@ -179,7 +179,7 @@ const CreateImageResults = () => {
     const hasImageTestIds = values.imageTestIds.length > 0;
 
     return hasPatient && hasOrderedBy && hasOrderedDate && hasImageTypeId && hasImageTestIds;
-  };
+  }, [form]);
 
   // Effect to re-evaluate form validity on changes
   useEffect(() => {
@@ -189,7 +189,7 @@ const CreateImageResults = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [form]);
+  }, [form, isFormValid]);
 
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(!isFormValid());
 
