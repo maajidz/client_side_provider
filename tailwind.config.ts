@@ -97,7 +97,8 @@ const config: Config = {
   },
   plugins: [
     require("tailwind-scrollbar")({ nocompatible: true, preferredStrategy: 'pseudoelements' }),
-    require("tailwindcss-animate")
+    require("tailwindcss-animate"),
+    require("@tailwindcss/container-queries")
   ],
 };
 export default config;

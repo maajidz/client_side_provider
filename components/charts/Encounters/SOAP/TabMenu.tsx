@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+// import {
+//   DropdownMenu,
+//   DropdownMenuTrigger,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+// } from "@/components/ui/dropdown-menu";
 import {
   PatientPhysicalStats,
   UserEncounterData,
 } from "@/types/chartsInterface";
-import { MoreHorizontal } from "lucide-react";
-import React, { useState } from "react";
+// import { MoreHorizontal } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +35,7 @@ interface TabMenuProps {
   objectiveContent: string;
   physicalStatsContent: PatientPhysicalStats;
   onRefresh: React.Dispatch<React.SetStateAction<number>>;
+  setSigned: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const TabMenu: React.FC<TabMenuProps> = ({
@@ -44,11 +45,16 @@ const TabMenu: React.FC<TabMenuProps> = ({
   objectiveContent,
   physicalStatsContent,
   onRefresh,
+  setSigned,
 }) => {
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [isSigned, setIsSigned] = useState<boolean>(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setSigned(isSigned);
+  }, [isSigned, setSigned, setIsSigned]);
 
   const handleSOAPSave = async () => {
     try {
@@ -57,7 +63,7 @@ const TabMenu: React.FC<TabMenuProps> = ({
       const requestBody = {
         subjective: subjectiveContent,
         objective: objectiveContent,
-        encounterId
+        encounterId: encounterId,
       };
 
       if (patientDetails.chart?.id) {
@@ -109,13 +115,17 @@ const TabMenu: React.FC<TabMenuProps> = ({
     }
   };
 
-  if(loading){
-    return <div>Loading...</div>
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
     <div className="flex flex-row gap-2">
-      {patientDetails.chart === null ? <div> </div> : <Button onClick={handleSOAPSave}>Save</Button>}
+      {patientDetails.chart === null ? (
+        <div> </div>
+      ) : (
+        <Button onClick={handleSOAPSave} disabled={isSigned}>Save</Button>
+      )}
       <Dialog>
         <DialogTrigger asChild>
           <Button variant={"outline"} className="px-2">
@@ -151,8 +161,14 @@ const TabMenu: React.FC<TabMenuProps> = ({
           </div>
         </DialogContent>
       </Dialog>
-      <Button variant={'outline'} className=''>Sign</Button>
-      <DropdownMenu>
+      <Button
+        variant={"outline"}
+        className=""
+        onClick={() => setIsSigned((prev) => !prev)}
+      >
+        {isSigned ? "Unsign":"Sign"}
+      </Button>
+      {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="px-2">
             <span className="sr-only">Open menu</span>
@@ -171,7 +187,7 @@ const TabMenu: React.FC<TabMenuProps> = ({
           <DropdownMenuItem>Quick Message</DropdownMenuItem>
           <DropdownMenuItem>Surveillance Report</DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
     </div>
   );
 };

@@ -7,13 +7,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   ImagesResponseInterface,
   ImagesTestsResponseInterface,
   TestInterface,
@@ -30,8 +23,15 @@ import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-const AddImagesDialog = ({ userDetailsId }: { userDetailsId: string }) => {
+const AddImagesDialog = ({
+  userDetailsId,
+  signed,
+}: {
+  userDetailsId: string;
+  signed?: boolean;
+}) => {
   const [response, setResponse] = useState<ImagesResponseInterface>();
   const [imageTestResponse, setImageTestResponse] =
     useState<ImagesTestsResponseInterface>();
@@ -43,11 +43,17 @@ const AddImagesDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleSearchList, setVisibleSearchList] = useState(false);
 
   const fetchAndSetResponse = async () => {
     setLoadingImages(true);
     try {
-      const data = await getImagesData({ page: 1, limit: 10 });
+      const data = await getImagesData({
+        page: 1,
+        limit: 10,
+        search: searchTerm,
+      });
       if (data) {
         setResponse(data);
       }
@@ -99,6 +105,7 @@ const AddImagesDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       });
       setSelectedImage("");
       setSelectedTest([]);
+      setSearchTerm("");
       setIsOpen(false);
     } catch (e) {
       console.log("Error", e);
@@ -115,6 +122,11 @@ const AddImagesDialog = ({ userDetailsId }: { userDetailsId: string }) => {
     }
   }, [selectedImage]);
 
+  // Filter Images
+  const filteredImages = response?.data.filter((image) =>
+    `${image.name}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (loadingOrder) {
     return <LoadingButton />;
   }
@@ -122,7 +134,7 @@ const AddImagesDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"} onClick={fetchAndSetResponse}>
+        <Button variant={"ghost"} onClick={fetchAndSetResponse} disabled={signed}>
           Search & Add
         </Button>
       </DialogTrigger>
@@ -137,24 +149,45 @@ const AddImagesDialog = ({ userDetailsId }: { userDetailsId: string }) => {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-1">
               <label htmlFor="image">Images</label>
-              <Select
-                onValueChange={(value) => setSelectedImage(value)}
-                defaultValue={selectedImage}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={"Select an image"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {response &&
-                    response.data &&
-                    response.data.length > 0 &&
-                    response.data.map((image) => (
-                      <SelectItem key={image.id} value={image.id}>
-                        {image.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
+              <div className="relative">
+                <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                  <Input
+                    placeholder="Search Images"
+                    value={searchTerm}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setSearchTerm(value);
+                      setVisibleSearchList(true);
+                    }}
+                    className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                  />
+                </div>
+                {searchTerm && visibleSearchList && (
+                  <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-[100]">
+                    {loadingImages ? (
+                      <div>Loading... </div>
+                    ) : filteredImages && filteredImages?.length > 0 ? (
+                      filteredImages?.map((image) => (
+                        <div
+                          key={image.id}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                          onClick={() => {
+                            setSearchTerm(`${image.name}`);
+                            setVisibleSearchList(false);
+                            setSelectedImage(image.id);
+                          }}
+                        >
+                          {image.name}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-gray-500">
+                        No results found
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
             {selectedImage && (
               <div className="flex flex-col gap-1">

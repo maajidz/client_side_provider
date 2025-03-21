@@ -37,6 +37,7 @@ interface ChartNotesAccordionProps {
   setSubjective: (text: string) => void;
   setObjective: (text: string) => void;
   setPhysicalStats: (stats: PatientPhysicalStats) => void;
+  signed: boolean;
 }
 
 const ChartNotesAccordion = ({
@@ -45,6 +46,7 @@ const ChartNotesAccordion = ({
   setSubjective,
   setObjective,
   setPhysicalStats,
+  signed,
 }: ChartNotesAccordionProps) => {
   const [editorValue, setEditorValue] = React.useState<Descendant[]>([
     {
@@ -128,12 +130,12 @@ const ChartNotesAccordion = ({
       .join("\n");
   };
 
-  const handleInputChange = (
-    fieldName: keyof z.infer<typeof formSchema>,
-    value: number
-  ) => {
-    form.setValue(fieldName, value);
-  };
+  // const handleInputChange = (
+  //   fieldName: keyof z.infer<typeof formSchema>,
+  //   value: number
+  // ) => {
+  //   form.setValue(fieldName, value);
+  // };
 
   useEffect(() => {
     const plainText = extractPlainText(editorValue);
@@ -172,14 +174,20 @@ const ChartNotesAccordion = ({
       <div className="flex flex-col gap-2">
         <h6>Chief Complaints</h6>
         <div className="flex flex-col gap-2">
-          <PlateEditor
-            value={editorValue}
-            className=""
-            onChange={(value) => {
-              setEditorValue(value);
-            }}
-            placeholder="Enter chief complaints..."
-          />
+          {signed ? (
+            <div className="border rounded-md p-2.5">
+              {extractPlainText(editorValue)}
+            </div>
+          ) : (
+            <PlateEditor
+              value={editorValue}
+              className=""
+              onChange={(value) => {
+                setEditorValue(value);
+              }}
+              placeholder="Enter chief complaints..."
+            />
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -192,16 +200,23 @@ const ChartNotesAccordion = ({
                   className="flex-col !items-start"
                   label="Weight"
                   value={
-                    <TwoInput
-                      postfixFirst="lbs"
-                      postfixSecond="ozs"
-                      focusAfter={3}
-                      idFirst="weight-first-input"
-                      idSecond="weight-second-input"
-                      onChange={({ first, second }) => {
-                        handleInputChange("weightInLbs", first);
-                        handleInputChange("weightInOzs", second);
-                      }}
+                    <FormField
+                      control={form.control}
+                      name="weightInLbs"
+                      render={({ field }) => (
+                        <TwoInput
+                          postfixFirst="lbs"
+                          postfixSecond="ozs"
+                          focusAfter={3}
+                          idFirst="weight-first-input"
+                          idSecond="weight-second-input"
+                          onChange={({ first, second }) => {
+                            field.onChange(first);
+                            form.setValue("weightInOzs", second);
+                          }}
+                          disabled={signed}
+                        />
+                      )}
                     />
                   }
                 />
@@ -209,16 +224,23 @@ const ChartNotesAccordion = ({
                   label="Height"
                   className="flex-col !items-start"
                   value={
-                    <TwoInput
-                      postfixFirst="ft"
-                      postfixSecond="in"
-                      focusAfter={1}
-                      idFirst="height-first-input"
-                      idSecond="height-second-input"
-                      onChange={({ first, second }) => {
-                        handleInputChange("heightInFt", first);
-                        handleInputChange("heightInInches", second);
-                      }}
+                    <FormField
+                      control={form.control}
+                      name="heightInFt"
+                      render={({ field }) => (
+                        <TwoInput
+                          postfixFirst="ft"
+                          postfixSecond="in"
+                          focusAfter={1}
+                          idFirst="height-first-input"
+                          idSecond="height-second-input"
+                          onChange={({ first, second }) => {
+                            field.onChange(first);
+                            form.setValue("heightInInches", second);
+                          }}
+                          disabled={signed}
+                        />
+                      )}
                     />
                   }
                 />
@@ -238,6 +260,7 @@ const ChartNotesAccordion = ({
                           }
                           type="number"
                           inputMode="numeric"
+                          disabled={signed}
                         />
                       </FormControl>
                       <FormMessage />
@@ -259,6 +282,7 @@ const ChartNotesAccordion = ({
                           }
                           type="number"
                           inputMode="numeric"
+                          disabled={signed}
                         />
                       </FormControl>
                       <FormMessage />
@@ -280,6 +304,7 @@ const ChartNotesAccordion = ({
                           }
                           type="number"
                           inputMode="numeric"
+                          disabled={signed}
                         />
                       </FormControl>
                       <FormMessage />

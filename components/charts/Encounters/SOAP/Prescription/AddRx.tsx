@@ -48,9 +48,11 @@ import { Label } from "@/components/ui/label";
 const AddRx = ({
   patientDetails,
   encounterId,
+  signed,
 }: {
   patientDetails: UserEncounterData;
   encounterId: string;
+  signed: boolean;
 }) => {
   const [loading, setLoading] = useState({
     post: false,
@@ -264,7 +266,7 @@ const AddRx = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"ghost"}>Add Rx</Button>
+        <Button variant={"ghost"} disabled={signed}>Add Rx</Button>
       </DialogTrigger>
       <DialogContent className="max-w-fit">
         <DialogHeader>
@@ -753,16 +755,13 @@ const AddRx = ({
             </form>
           </Form>
         ) : (
-
           <div className="flex flex-col gap-2 w-fit">
             {/* <RxPatientDetailsSection
               userDetailsId={patientDetails.userDetails.userDetailsId}
             /> */}
             <div className="flex flex-col gap-4">
               <div className="flex gap-2 flex-col">
-                <Label>
-                  Search & Add Rx
-                </Label>
+                <Label>Search & Add Rx</Label>
                 <Input
                   value={drugName}
                   placeholder="Enter drug name"
@@ -775,7 +774,8 @@ const AddRx = ({
                 <Button
                   variant={"link"}
                   className="w-fit"
-                  onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}>
+                  onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
+                >
                   Add a custom drug
                 </Button>
               </div>

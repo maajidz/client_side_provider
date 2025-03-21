@@ -16,6 +16,7 @@ export interface CreateImageResultInterface {
 
 export interface TestResult {
   imageTestId: string;
+  name?: string;
   interpretation: string;
   documents: string[];
 }

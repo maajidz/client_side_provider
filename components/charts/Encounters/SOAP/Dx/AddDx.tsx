@@ -61,9 +61,11 @@ interface DiagnosisRow {
 const AddDx = ({
   patientDetails,
   encounterId,
+  signed,
 }: {
   patientDetails: UserEncounterData;
   encounterId: string;
+  signed?: boolean;
 }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
 
@@ -134,45 +136,42 @@ const AddDx = ({
   );
 
   const handleSearch = useCallback(
-    debounce(
-      async (searchTerm: string, index: number) => {
-        console.log(`Searching for ${searchTerm} in row ${index}`);
+    debounce(async (searchTerm: string, index: number) => {
+      console.log(`Searching for ${searchTerm} in row ${index}`);
 
-        if (searchTerm.length < 2) {
+      if (searchTerm.length < 2) {
+        setIsListVisible((prev) => {
+          const newListVisible = [...prev];
+          newListVisible[index] = false;
+          return newListVisible;
+        });
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await fetchDiagnosesType({
+          search: searchTerm,
+          page: 1,
+          limit: 10,
+        });
+
+        if (response) {
+          setDiagnosesTypeData(response.data);
           setIsListVisible((prev) => {
             const newListVisible = [...prev];
-            newListVisible[index] = false;
+            newListVisible[index] = true;
             return newListVisible;
           });
-          return;
+        } else {
+          setDiagnosesTypeData([]);
         }
-
-        setLoading(true);
-        try {
-          const response = await fetchDiagnosesType({
-            search: searchTerm,
-            page: 1,
-            limit: 10,
-          });
-
-          if (response) {
-            setDiagnosesTypeData(response.data);
-            setIsListVisible((prev) => {
-              const newListVisible = [...prev];
-              newListVisible[index] = true;
-              return newListVisible;
-            });
-          } else {
-            setDiagnosesTypeData([]);
-          }
-        } catch (error) {
-          console.error("Error fetching diagnoses data:", error);
-        } finally {
-          setLoading(false);
-        }
-      },
-      500
-    ),
+      } catch (error) {
+        console.error("Error fetching diagnoses data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }, 500),
     [setIsListVisible, setLoading, fetchDiagnosesType, setDiagnosesTypeData]
   );
 
@@ -369,7 +368,9 @@ const AddDx = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"}>Add Diagnosis</Button>
+        <Button variant={"ghost"} disabled={signed}>
+          Add Diagnosis
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>

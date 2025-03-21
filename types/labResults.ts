@@ -8,6 +8,7 @@ export interface CreateLabResults {
   testIds: string[];
   testResults: TestResult[];
   tags: string;
+  fileUrls?: string[];
 }
 
 export interface TestResult {

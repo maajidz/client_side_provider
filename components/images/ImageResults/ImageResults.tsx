@@ -27,7 +27,6 @@ import { ImageResultResponseInterface } from "@/types/imageResults";
 import { filterImageResultsSchema } from "@/schema/createImageResultsSchema";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
-import { usePathname, useRouter } from "next/navigation";
 import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import { imagesStatus } from "@/constants/data";
 import { useToast } from "@/hooks/use-toast";
@@ -60,8 +59,8 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
-  const router = useRouter();
-  const pathname = usePathname();
+  // const router = useRouter();
+  // const pathname = usePathname();
 
   const { toast } = useToast();
 
@@ -76,10 +75,10 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
 
   const filters = form.watch();
 
-  const goToCreateImage = () => {
-    sessionStorage.setItem("image-origin", pathname);
-    router.push("/dashboard/provider/images/create_image_results");
-  };
+  // const goToCreateImage = () => {
+  //   sessionStorage.setItem("image-origin", pathname);
+  //   router.push("/dashboard/provider/images/create_image_results");
+  // };
 
   // GET Patients Data
   const fetchPatientData = useCallback(async () => {
@@ -172,9 +171,9 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
   }, [page, fetchImageResultsList]);
 
   return (
-    <div className="space-y-4">
+    <>
       <Form {...form}>
-        <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <form className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
           <FormField
             control={form.control}
             name="status"
@@ -274,8 +273,7 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
         <TableShimmer />
       ) : (
         <DefaultDataTable
-          title={"Image Results"}
-          onAddClick={goToCreateImage}
+          // onAddClick={goToCreateImage}
           columns={columns()}
           data={resultList?.data || []}
           pageNo={page}
@@ -283,7 +281,7 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
           onPageChange={(newPage: number) => setPage(newPage)}
         />
       )}
-    </div>
+    </>
   );
 }
 

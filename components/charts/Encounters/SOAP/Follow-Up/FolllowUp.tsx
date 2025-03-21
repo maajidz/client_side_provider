@@ -4,7 +4,7 @@ import { UserEncounterData } from '@/types/chartsInterface'
 import ViewFollowUps from './ViewFollowUps'
 
 
-const FolllowUp = ({patientDetails, encounterId}: {patientDetails: UserEncounterData, encounterId: string }) => {
+const FolllowUp = ({patientDetails, encounterId, signed}: {patientDetails: UserEncounterData, encounterId: string; signed: boolean; }) => {
     return (
       <div className="flex justify-between border-b pb-3">
         <label className="text-sm font-semibold">Follow Up</label>
@@ -12,6 +12,7 @@ const FolllowUp = ({patientDetails, encounterId}: {patientDetails: UserEncounter
           <FollowUpDialog
             patientDetails={patientDetails}
             encounterId={encounterId}
+            signed={signed}
           />
           <ViewFollowUps
             patientDetails={patientDetails}

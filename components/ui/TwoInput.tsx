@@ -11,8 +11,9 @@ interface TwoInputProps {
   focusAfter?: number;
   postfixFirst?: string;
   postfixSecond?: string;
-  idFirst?: string; // New prop for the first input ID
-  idSecond?: string; // New prop for the second input ID
+  idFirst?: string;
+  idSecond?: string;
+  disabled? : boolean;
 }
 
 const TwoInput: React.FC<TwoInputProps> = ({
@@ -24,8 +25,9 @@ const TwoInput: React.FC<TwoInputProps> = ({
   focusAfter = 1,
   postfixFirst,
   postfixSecond,
-  idFirst = "first-input", // Default ID for the first input
-  idSecond = "second-input", // Default ID for the second input
+  idFirst = "first-input",
+  idSecond = "second-input",
+  disabled,
 }) => {
   const [first, setFirst] = useState<number | "">("");
   const [second, setSecond] = useState<number | "">("");
@@ -33,10 +35,9 @@ const TwoInput: React.FC<TwoInputProps> = ({
   const handleFirstChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (/^[0-9]*$/.test(value)) {
-      // Allow any number of digits
       setFirst(value ? parseInt(value) : "");
       if (value.length === focusAfter) {
-        document.getElementById(idSecond)?.focus(); // Move focus to second input
+        document.getElementById(idSecond)?.focus();
       }
       onChange({
         first: value ? parseInt(value) : 0,
@@ -69,6 +70,7 @@ const TwoInput: React.FC<TwoInputProps> = ({
             value={first}
             onChange={handleFirstChange}
             placeholder={placeholderFirst || ""}
+            disabled={disabled}
           />
           {postfixFirst && (
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
@@ -88,6 +90,7 @@ const TwoInput: React.FC<TwoInputProps> = ({
             value={second}
             onChange={handleSecondChange}
             placeholder={placeholderSecond || ""}
+            disabled={disabled}
           />
           {postfixSecond && (
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">

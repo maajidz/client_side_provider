@@ -14,12 +14,14 @@ import {
 const ChartNotesTabBody = ({
   encounterId,
   patientDetails,
+  signed,
   setSubjectiveContent,
   setObjectiveContent,
   setPhysicalStatsContent,
 }: {
   encounterId: string;
   patientDetails: UserEncounterData;
+  signed: boolean;
   setSubjectiveContent: (text: string) => void;
   setObjectiveContent: (text: string) => void;
   setPhysicalStatsContent: (stats: PatientPhysicalStats) => void;
@@ -35,8 +37,14 @@ const ChartNotesTabBody = ({
     if (subjective) setSubjectiveContent(subjective);
     if (objective) setObjectiveContent(objective);
     if (physicalStats) setPhysicalStatsContent(physicalStats);
-  }, [subjective, objective, physicalStats, setObjectiveContent, setPhysicalStatsContent, setSubjectiveContent]);
-
+  }, [
+    subjective,
+    objective,
+    physicalStats,
+    setObjectiveContent,
+    setPhysicalStatsContent,
+    setSubjectiveContent,
+  ]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -46,20 +54,26 @@ const ChartNotesTabBody = ({
             ? patientDetails.chart.subjective
             : ""
         }
+        signed={signed}
         patientDetails={patientDetails}
         setSubjective={setSubjective}
         setObjective={setObjective}
         setPhysicalStats={setPhysicalStats}
       />
-      <DxCodeBody patientDetails={patientDetails} encounterId={encounterId} />
+      <DxCodeBody
+        patientDetails={patientDetails}
+        encounterId={encounterId}
+        signed={signed}
+      />
       <PrescriptionBody
         patientDetails={patientDetails}
         encounterId={encounterId}
+        signed={signed}
       />
-      <LabsBody patientDetails={patientDetails} />
-      <ImagesBody patientDetails={patientDetails} />
-      <FolllowUp patientDetails={patientDetails} encounterId={encounterId} />
-      <ReferralBody patientDetails={patientDetails} encounterId={encounterId} />
+      <LabsBody patientDetails={patientDetails} signed={signed} />
+      <ImagesBody patientDetails={patientDetails} signed={signed} />
+      <FolllowUp patientDetails={patientDetails} encounterId={encounterId} signed={signed}/>
+      <ReferralBody patientDetails={patientDetails} encounterId={encounterId} signed= {signed}/>
     </div>
   );
 };
