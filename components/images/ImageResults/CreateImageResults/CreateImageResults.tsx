@@ -20,7 +20,6 @@ import {
   ImagesTestsResponseInterface,
   TestInterface,
 } from "@/types/chartsInterface";
-import LoadingButton from "@/components/LoadingButton";
 import { createImageResultsSchema } from "@/schema/createImageResultsSchema";
 import ImageFileUploader from "./ImageFileUploader";
 import { TestsField } from "./TestsField";
@@ -171,7 +170,8 @@ const CreateImageResults = () => {
     const patientSelected = form.getValues().patient;
     const testSelected = selectedTests.length > 0;
     const interpretationEntered = selectedTests.some((test, index) => {
-      const interpretation = form.getValues().testResults[index]?.interpretation;
+      const interpretation =
+        form.getValues().testResults[index]?.interpretation;
       return (
         interpretation ||
         (uploadedImagesMap[test.id] && uploadedImagesMap[test.id].length > 0)
@@ -179,10 +179,6 @@ const CreateImageResults = () => {
     });
     return !(patientSelected && testSelected && interpretationEntered);
   };
-
-  if (loading) {
-    return <LoadingButton />;
-  }
 
   return (
     <>
@@ -202,17 +198,27 @@ const CreateImageResults = () => {
                     <FormLabel>Patient</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Input
-                          placeholder="Search Patient "
-                          value={searchTerm}
-                          onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setVisibleSearchList(true);
-                          }}
-                        />
+                        <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                          <Input
+                            placeholder="Search Patient "
+                            value={searchTerm}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setSearchTerm(value);
+                              setVisibleSearchList(true);
+
+                              if (!value) {
+                                field.onChange("");
+                              }
+                            }}
+                            className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                          />
+                        </div>
                         {searchTerm && visibleSearchList && (
-                          <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg  w-full z-10">
-                            {filteredPatients.length > 0 ? (
+                          <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg z-[100] w-full">
+                            {loading ? (
+                              <div>Loading...</div>
+                            ) : filteredPatients.length > 0 ? (
                               filteredPatients.map((patient) => (
                                 <div
                                   key={patient.id}
@@ -225,7 +231,7 @@ const CreateImageResults = () => {
                                     setVisibleSearchList(false);
                                   }}
                                 >
-                                  {`${patient.user.firstName} ${patient.user.lastName}`}
+                                  {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
                                 </div>
                               ))
                             ) : (
@@ -254,41 +260,43 @@ const CreateImageResults = () => {
               {selectedTests.map((test, index) => (
                 <Card className="w-full sm:w-1/2 lg:w-1/3" key={index}>
                   <CardHeader>
-                  <CardTitle>{`${test.name}`}</CardTitle>
-                </CardHeader>
-                <CardContent className="w-full">
-                  <div key={test.id} className="flex gap-4 w-full flex-col">
-                    <ImageFileUploader
-                      onUploadComplete={(images) =>
-                        handleUploadComplete(images, test.id)
-                      }
-                      userDetailsId={form.getValues().patient}
-                      testId={test.id}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`testResults.${index}.interpretation`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-sm">Interpretation</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Enter interpretation for this test"
-                              className="min-h-[80px]"
-                              value={
-                                typeof field.value === "string"
-                                  ? field.value
-                                  : ""
-                              }
-                              onChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
+                    <CardTitle>{`${test.name}`}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="w-full">
+                    <div key={test.id} className="flex gap-4 w-full flex-col">
+                      <ImageFileUploader
+                        onUploadComplete={(images) =>
+                          handleUploadComplete(images, test.id)
+                        }
+                        userDetailsId={form.getValues().patient}
+                        testId={test.id}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`testResults.${index}.interpretation`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm">
+                              Interpretation
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Enter interpretation for this test"
+                                className="min-h-[80px]"
+                                value={
+                                  typeof field.value === "string"
+                                    ? field.value
+                                    : ""
+                                }
+                                onChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </CardContent>
                 </Card>
               ))}
             </div>

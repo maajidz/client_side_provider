@@ -172,7 +172,7 @@ const AddDx = ({
         setLoading(false);
       }
     }, 500),
-    [setIsListVisible, setLoading, fetchDiagnosesType, setDiagnosesTypeData]
+    [setIsListVisible, setDiagnosesTypeData]
   );
 
   const handleSelectDiagnosis = useCallback(

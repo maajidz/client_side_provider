@@ -3,10 +3,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { columns } from "./columns";
-import LoadingButton from "@/components/LoadingButton";
 import { UserData, UserResponseInterface } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 export const PatientClient = () => {
   const [response, setResponse] = useState<UserResponseInterface>();
@@ -51,23 +51,21 @@ export const PatientClient = () => {
     router.push(`/dashboard/provider/patient/add_patient`);
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <LoadingButton />
-      </div>
-    );
-  }
-
   return (
-    <DefaultDataTable
-      columns={columns(handleRowClick)}
-      onAddClick={handleAddPatientClick}
-      title={`Patients (${response?.total})`}
-      data={userResponse || []}
-      pageNo={pageNo}
-      totalPages={totalPages}
-      onPageChange={(newPage: number) => setPageNo(newPage)}
-    />
+    <>
+      {loading ? (
+        <TableShimmer />
+      ) : (
+        <DefaultDataTable
+          columns={columns(handleRowClick)}
+          onAddClick={handleAddPatientClick}
+          title={`Patients (${response?.total})`}
+          data={userResponse || []}
+          pageNo={pageNo}
+          totalPages={totalPages}
+          onPageChange={(newPage: number) => setPageNo(newPage)}
+        />
+      )}
+    </>
   );
 };

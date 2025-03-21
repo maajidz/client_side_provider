@@ -22,6 +22,7 @@ import {
 import { Icon } from "@/components/ui/icon";
 import {
   createSOAPChart,
+  updateEncounterRequest,
   updatePatientPhysicalStatus,
   updateSOAPChart,
 } from "@/services/chartsServices";
@@ -56,10 +57,15 @@ const TabMenu: React.FC<TabMenuProps> = ({
     setSigned(isSigned);
   }, [isSigned, setSigned, setIsSigned]);
 
+  useEffect(() => {
+    if (patientDetails?.isVerified) {
+      setIsSigned(patientDetails?.isVerified);
+    }
+  }, [patientDetails?.isVerified]);
+
   const handleSOAPSave = async () => {
     try {
       setLoading(true);
-
       const requestBody = {
         subjective: subjectiveContent,
         objective: objectiveContent,
@@ -119,12 +125,41 @@ const TabMenu: React.FC<TabMenuProps> = ({
     return <div>Loading...</div>;
   }
 
+  const handleChartSign = async () => {
+    if (!patientDetails.id) return;
+    try {
+      const response = await updateEncounterRequest({
+        encounterId: patientDetails.id,
+        requestData: {
+          isVerified: isSigned,
+        },
+      });
+      if (response) {
+        showToast({
+          toast,
+          type: "success",
+          message: `Chart ${isSigned ? "Unsigned" : "Signed"} successfully!`,
+        });
+      }
+    } catch (err) {
+      showToast({
+        toast,
+        type: "error",
+        message: `Error updating sign status: ${err}`,
+      });
+    } finally {
+      setIsSigned((prev) => !prev);
+    }
+  };
+
   return (
     <div className="flex flex-row gap-2">
       {patientDetails.chart === null ? (
         <div> </div>
       ) : (
-        <Button onClick={handleSOAPSave} disabled={isSigned}>Save</Button>
+        <Button onClick={handleSOAPSave} disabled={isSigned}>
+          Save
+        </Button>
       )}
       <Dialog>
         <DialogTrigger asChild>
@@ -161,12 +196,8 @@ const TabMenu: React.FC<TabMenuProps> = ({
           </div>
         </DialogContent>
       </Dialog>
-      <Button
-        variant={"outline"}
-        className=""
-        onClick={() => setIsSigned((prev) => !prev)}
-      >
-        {isSigned ? "Unsign":"Sign"}
+      <Button variant={"outline"} className="" onClick={handleChartSign}>
+        {isSigned ? "Unsign" : "Sign"}
       </Button>
       {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>

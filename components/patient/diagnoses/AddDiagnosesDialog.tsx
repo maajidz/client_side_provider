@@ -1,396 +1,365 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+} from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import GhostButton from "@/components/custom_buttons/buttons/GhostButton";
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { addDiagnosesSchema } from "@/schema/diagnosesSchema";
-import { createDiagnoses, fetchDiagnosesType } from "@/services/chartsServices";
-import { RootState } from "@/store/store";
 import {
   CreateDiagnosesRequestBody,
   DiagnosesTypeData,
 } from "@/types/chartsInterface";
+import { useToast } from "@/hooks/use-toast";
+import { createDiagnoses, fetchDiagnosesType } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash2Icon } from "lucide-react";
-import { useFieldArray, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { z } from "zod";
+import { RootState } from "@/store/store";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import DropdownList from "@/components/ui/DropdownList";
+import { Icon } from "@/components/ui/icon";
+import { ColumnDef } from "@tanstack/react-table";
 
-interface AddDiagnosesDialogProps {
-  isOpen: boolean;
-  chartId: string;
-  userDetailsId: string;
-  onClose: () => void;
+// Debounce function with specific type for this use case
+const debounce = (
+  func: (searchTerm: string, index: number) => Promise<void>,
+  delay: number
+) => {
+  let timeoutId: NodeJS.Timeout;
+  return (searchTerm: string, index: number) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func(searchTerm, index);
+    }, delay);
+  };
+};
+
+interface DiagnosisRow {
+  diagnosis_Id: string;
+  ICD_Code: string;
+  notes: string;
+  searchTerm: string;
 }
 
-export default function AddDiagnosesDialog({
-  isOpen,
+const AddDiagnosesDialog = ({
   chartId,
+  isOpen,
   userDetailsId,
   onClose,
-}: AddDiagnosesDialogProps) {
-  // Provider Details
+}: {
+  chartId: string;
+  isOpen: boolean;
+  userDetailsId: string;
+  onClose: () => void;
+}) => {
   const providerDetails = useSelector((state: RootState) => state.login);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+
   const [diagnosesTypeData, setDiagnosesTypeData] = useState<
     DiagnosesTypeData[]
   >([]);
-  const [isListVisible, setIsListVisible] = useState<boolean>(false);
-
-  // Loading State
+  const [isListVisible, setIsListVisible] = useState<boolean[]>([]);
   const [loading, setLoading] = useState(false);
-
-  // Toast State
   const { toast } = useToast();
+  const [rows, setRows] = useState<DiagnosisRow[]>([
+    { diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" },
+  ]);
 
-  // Form State
-  const form = useForm<z.infer<typeof addDiagnosesSchema>>({
-    resolver: zodResolver(addDiagnosesSchema),
-    defaultValues: {
-      diagnoses: [
-        {
-          diagnosis_Id: "",
-          ICD_Code: "",
-          fromDate: new Date().toISOString().split("T")[0],
-          toDate: new Date().toISOString().split("T")[0],
-          status: "inactive",
-          notes: "",
-        },
-      ],
-    },
-  });
+  // Track the active input index
+  const [activeInputIndex, setActiveInputIndex] = useState<number | null>(null);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "diagnoses",
-  });
-
-  const handleSearch = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await fetchDiagnosesType({
-        search: searchTerm,
-        page: 1,
-        limit: 10,
-      });
-
-      if (response) {
-        setDiagnosesTypeData(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching diagnoses data:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [searchTerm]);
-
+  // Focus the active input after any state change that might cause a re-render
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchTerm.trim()) {
-        handleSearch();
-      } else {
-        setDiagnosesTypeData([]);
-      }
-    }, 300);
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, handleSearch]);
+    if (activeInputIndex !== null && inputRefs.current[activeInputIndex]) {
+      // Use a small timeout to ensure the DOM has settled
+      const timeoutId = setTimeout(() => {
+        inputRefs.current[activeInputIndex]?.focus();
+      }, 0);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [activeInputIndex, rows, isListVisible]);
 
-  const filteredDiagnoses = diagnosesTypeData.filter(
-    (diagnoses) =>
-      diagnoses.diagnosis_name.toLocaleLowerCase().includes(searchTerm) ||
-      diagnoses.ICD_Code.includes(searchTerm)
+  // Function to reset rows to include one empty row
+  const resetRows = () => {
+    setRows([{ diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" }]);
+  };
+
+  const handleAddRow = useCallback(() => {
+    setRows((prevRows) => [
+      ...prevRows,
+      { diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" },
+    ]);
+  }, []);
+
+  const handleDeleteRow = useCallback(
+    (index: number) => {
+      const updatedRows = rows.filter((_, i) => i !== index);
+      setRows(updatedRows);
+    },
+    [rows]
   );
 
-  // POST Diagnosis Data
-  const onSubmit = async (values: z.infer<typeof addDiagnosesSchema>) => {
-    setLoading(true);
+  const handleChange = useCallback(
+    (index: number, field: keyof DiagnosisRow, value: string) => {
+      setRows((prevRows) =>
+        prevRows.map((row, i) =>
+          i === index ? { ...row, [field]: value } : row
+        )
+      );
+    },
+    []
+  );
 
-    const requestData: CreateDiagnosesRequestBody = {
-      userDetailsId,
-      providerId: providerDetails.providerId,
-      diagnoses: values.diagnoses.map((diagnosis) => ({
-        diagnosis_Id: diagnosis.diagnosis_Id,
-        status: diagnosis.status,
-        fromDate: diagnosis.fromDate,
-        toDate: diagnosis.toDate,
-        notes: diagnosis.notes,
-        chartId,
-      })),
-    };
+  const handleSearch = useCallback(
+    debounce(async (searchTerm: string, index: number) => {
+      console.log(`Searching for ${searchTerm} in row ${index}`);
 
-    try {
-      await createDiagnoses({ requestData });
-
-      showToast({
-        toast,
-        type: "success",
-        message: "Diagnoses data created successfully",
-      });
-    } catch (err) {
-      if (err instanceof Error) {
-        showToast({
-          toast,
-          type: "error",
-          message: "Could not create diagnoses data",
+      if (searchTerm.length < 2) {
+        setIsListVisible((prev) => {
+          const newListVisible = [...prev];
+          newListVisible[index] = false;
+          return newListVisible;
         });
-      } else {
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await fetchDiagnosesType({
+          search: searchTerm,
+          page: 1,
+          limit: 10,
+        });
+
+        if (response) {
+          setDiagnosesTypeData(response.data);
+          setIsListVisible((prev) => {
+            const newListVisible = [...prev];
+            newListVisible[index] = true;
+            return newListVisible;
+          });
+        } else {
+          setDiagnosesTypeData([]);
+        }
+      } catch (error) {
+        console.error("Error fetching diagnoses data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }, 500),
+    [setIsListVisible, setLoading, fetchDiagnosesType, setDiagnosesTypeData]
+  );
+
+  const handleSelectDiagnosis = useCallback(
+    (diagnosis: DiagnosesTypeData, index: number) => {
+      handleChange(index, "diagnosis_Id", diagnosis.id);
+      handleChange(index, "ICD_Code", diagnosis.ICD_Code);
+      handleChange(index, "searchTerm", diagnosis.diagnosis_name);
+      setIsListVisible((prev) => {
+        const newListVisible = [...prev];
+        newListVisible[index] = false;
+        return newListVisible;
+      });
+
+      // Add a new row and focus the input of the new row
+      handleAddRow();
+      setActiveInputIndex(rows.length); // Set the new row as active
+    },
+    [handleChange, handleAddRow, rows.length]
+  );
+
+  const handleClearRow = useCallback(
+    (index: number) => {
+      handleChange(index, "diagnosis_Id", "");
+      handleChange(index, "ICD_Code", "");
+      handleChange(index, "notes", "");
+      handleChange(index, "searchTerm", "");
+    },
+    [handleChange]
+  );
+
+  const handleSubmit = async () => {
+    try {
+      if (chartId) {
+        const requestData: CreateDiagnosesRequestBody = {
+          userDetailsId,
+          providerId: providerDetails.providerId,
+          diagnoses: rows.map((row) => ({
+            ...row,
+            chartId,
+          })),
+        };
+        await createDiagnoses({ requestData });
         showToast({
           toast,
-          type: "error",
-          message: "Could not create diagnoses data. An unknown error occurred",
+          type: "success",
+          message: "Diagnosis created successfully",
         });
       }
+    } catch (e) {
+      showToast({
+        toast,
+        type: "error",
+        message: "Error while creating diagnosis",
+      });
+      console.log("Error", e);
     } finally {
-      setLoading(false);
+      setRows([{ diagnosis_Id: "", ICD_Code: "", notes: "", searchTerm: "" }]);
       onClose();
-      setSearchTerm("");
-      form.reset();
     }
   };
 
+  const columns: ColumnDef<DiagnosisRow>[] = useMemo(
+    () => [
+      {
+        accessorKey: "diagnosis",
+        header: "Diagnosis",
+        cell: ({ row }) => (
+          <div className="relative flex items-center">
+            <Input
+              type="text"
+              placeholder="Enter Diagnosis"
+              required
+              value={
+                diagnosesTypeData.find(
+                  (d) => d.id === row.original.diagnosis_Id
+                )?.diagnosis_name || row.original.searchTerm
+              }
+              onChange={(e) => {
+                const value = e.target.value;
+                handleChange(row.index, "searchTerm", value);
+                if (value.length >= 2) {
+                  handleSearch(value, row.index);
+                } else {
+                  setIsListVisible((prev) => {
+                    const newListVisible = [...prev];
+                    newListVisible[row.index] = false;
+                    return newListVisible;
+                  });
+                }
+              }}
+              ref={(el) => {
+                inputRefs.current[row.index] = el;
+              }}
+              onFocus={() => setActiveInputIndex(row.index)}
+            />
+            {isListVisible[row.index] && (
+              <DropdownList
+                items={diagnosesTypeData}
+                renderItem={(diagnosis) => (
+                  <div>
+                    {diagnosis.diagnosis_name} ({diagnosis.ICD_Code})
+                  </div>
+                )}
+                onSelect={(diagnosis) =>
+                  handleSelectDiagnosis(
+                    diagnosis as DiagnosesTypeData,
+                    row.index
+                  )
+                }
+              />
+            )}
+            {row.original.diagnosis_Id && (
+              <Icon
+                name="delete"
+                className="cursor-pointer ml-2 text-red-500"
+                onClick={() => handleClearRow(row.index)}
+              />
+            )}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "ICD_Code",
+        header: "ICD Code",
+        cell: ({ row }) => <div>{row.original.ICD_Code || "N/A"}</div>,
+      },
+      {
+        accessorKey: "notes",
+        header: "Notes",
+        cell: ({ row }) => (
+          <Input
+            type="text"
+            placeholder="Enter notes"
+            value={row.original.notes}
+            onChange={(e) => handleChange(row.index, "notes", e.target.value)}
+          />
+        ),
+      },
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <Button
+            variant="ghost"
+            onClick={() => handleDeleteRow(row.index)}
+            disabled={!rows.length}
+          >
+            <Icon name="delete" className="cursor-pointer ml-2 text-red-500" />
+          </Button>
+        ),
+      },
+    ],
+    [
+      diagnosesTypeData,
+      handleChange,
+      handleSearch,
+      isListVisible,
+      rows.length,
+      handleClearRow,
+      handleDeleteRow,
+      handleSelectDiagnosis,
+    ]
+  );
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-5xl">
+    <Dialog
+      open={isOpen}
+      onOpenChange={() => {
+        onClose();
+        resetRows();
+      }}
+    >
+      <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Add Diagnoses</DialogTitle>
-          <DialogDescription></DialogDescription>
+          <DialogTitle>Add Diagnosis</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <ScrollArea className="max-h-[30rem] h-auto">
-              <table className=" table-auto">
-                <thead>
-                  <tr className="text-left font-medium">
-                    <th className="">Diagnosis</th>
-                    <th className="indent-2">ICD Code</th>
-                    <th className="indent-2">From Date</th>
-                    <th className="indent-2">To Date</th>
-                    <th className="indent-2">Status</th>
-                    <th className="indent-2">Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {fields.map((field, index) => (
-                    <tr key={field.id}>
-                      <td>
-                        <FormField
-                          control={form.control}
-                          name={`diagnoses.${index}.diagnosis_Id`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <div className="relative">
-                                <Input
-                                  value={searchTerm}
-                                  placeholder="Search by name or code"
-                                  onChange={(e) => {
-                                    setSearchTerm(e.target.value);
-                                    setIsListVisible(true);
-                                  }}
-                                />
-                                {searchTerm && isListVisible && (
-                                  <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
-                                    {filteredDiagnoses.length > 0 ? (
-                                      filteredDiagnoses.map((diagnoses) => (
-                                        <div
-                                          key={diagnoses.id}
-                                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                          onClick={() => {
-                                            field.onChange(
-                                              diagnoses.id
-                                            );
-                                            setSearchTerm(
-                                              diagnoses.diagnosis_name
-                                            );
-                                            setIsListVisible(false);
-                                            form.setValue(`diagnoses.${index}.ICD_Code`, diagnoses.ICD_Code)
-                                          }}
-                                        >
-                                          {diagnoses.diagnosis_name}
-                                        </div>
-                                      ))
-                                    ) : (
-                                      <div className="px-4 py-2 text-gray-500">
-                                        No results found
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </td>
-
-                      <td className="">
-                        <FormField
-                          control={form.control}
-                          name={`diagnoses.${index}.ICD_Code`}
-                          render={({ field }) => (
-                            <FormItem className="m-2">
-                              <FormControl>
-                                <Input {...field} value={field.value} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </td>
-
-                      <td className="">
-                        <FormField
-                          control={form.control}
-                          name={`diagnoses.${index}.fromDate`}
-                          render={({ field }) => (
-                            <FormItem className="m-2">
-                              <Input
-                                {...field}
-                                type="date"
-                                value={field.value}
-                              />
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </td>
-
-                      <td className="">
-                        <FormField
-                          control={form.control}
-                          name={`diagnoses.${index}.toDate`}
-                          render={({ field }) => (
-                            <FormItem className="m-2">
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  type="date"
-                                  value={field.value}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </td>
-
-                      <td className="">
-                        <FormField
-                          control={form.control}
-                          name={`diagnoses.${index}.status`}
-                          render={({ field }) => (
-                            <FormItem className="m-2">
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select status" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="active">Active</SelectItem>
-                                  <SelectItem value="inactive">
-                                    Inactive
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </td>
-
-                      <td className="">
-                        <FormField
-                          control={form.control}
-                          name={`diagnoses.${index}.notes`}
-                          render={({ field }) => (
-                            <FormItem className="m-2">
-                              <FormControl>
-                                <Input {...field} value={field.value} />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      </td>
-
-                      {fields.length > 1 && (
-                        <td className="">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => remove(index)}
-                          >
-                            <Trash2Icon />
-                          </Button>
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <DialogFooter className="flex flex-between">
-                <div className="w-full">
-                  <GhostButton
-                    onClick={() =>
-                      append({
-                        diagnosis_Id: "",
-                        ICD_Code: "1",
-                        fromDate: "",
-                        toDate: "",
-                        status: "active",
-                        notes: "",
-                      })
-                    }
-                  >
-                    Add More
-                  </GhostButton>
-                </div>
-
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      onClose();
-                      form.reset();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <SubmitButton label="Save" disabled={loading} />
-                </div>
-              </DialogFooter>
-            </ScrollArea>
-          </form>
-        </Form>
+        <div className="flex flex-col gap-4">
+          <DefaultDataTable
+            columns={columns}
+            data={rows}
+            pageNo={1}
+            totalPages={1}
+            onPageChange={() => {}}
+          />
+        </div>
+        <DialogFooter>
+          <Button
+            variant={"outline"}
+            onClick={() => {
+              resetRows();
+              onClose();
+            }}
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} disabled={loading}>
+            {loading ? "Loading..." : "Save"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default AddDiagnosesDialog;
