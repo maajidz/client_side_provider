@@ -469,6 +469,7 @@ export interface Test {
 export interface TestInterface {
   id: string;
   name: string;
+  interpretation?: string;
 }
 
 export interface CreatePrescriptionInterface {

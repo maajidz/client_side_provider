@@ -140,7 +140,7 @@ function TasksDialog({
         comments: "",
       });
     }
-  }, [form, tasksData, ownersList, selectedOwner?.providerDetails?.id, setShowDueDate]);
+  }, [form, tasksData, ownersList, selectedOwner?.providerDetails?.id, setShowDueDate, showDueDate]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     const requestData: CreateTaskType | UpdateTaskType = {
