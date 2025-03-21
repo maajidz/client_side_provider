@@ -23,7 +23,13 @@ import { showToast } from "@/utils/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const SearchAndAddDialog = ({ userDetailsId }: { userDetailsId: string }) => {
+const SearchAndAddDialog = ({
+  userDetailsId,
+  signed,
+}: {
+  userDetailsId: string;
+  signed: boolean;
+}) => {
   const [response, setResponse] = useState<LabsDataResponse>({
     data: [],
     total: 0,
@@ -130,7 +136,7 @@ const SearchAndAddDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"} onClick={() => fetchAndSetResponse(1)}>
+        <Button variant={"ghost"} onClick={() => fetchAndSetResponse(1)} disabled={signed}>
           Search & Add
         </Button>
       </DialogTrigger>

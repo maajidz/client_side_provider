@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { ImageResultDataResponse } from "@/types/imageResults";
 import { ColumnDef } from "@tanstack/react-table";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
   // {
@@ -20,7 +25,7 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
     cell: ({ row }) => (
       <div className="flex flex-col gap-1">
         <a
-          href={`/patient-details/${row.original.userDetails.user.id}`}
+          href={`/dashboard/provider/patient/${row.original.userDetails.id}/patientDetails`}
           className="text-blue-600 hover:underline"
         >
           {`${row.original.userDetails.user.firstName} ${row.original.userDetails.user.lastName}`}
@@ -60,7 +65,9 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
     accessorKey: "testResults",
     header: "Tests",
     cell: ({ row }) => {
-      const testResults = row.getValue("testResults") as ImageResultDataResponse["testResults"];
+      const testResults = row.getValue(
+        "testResults"
+      ) as ImageResultDataResponse["testResults"];
       return (
         <div>
           {testResults.map((results) => (
@@ -71,7 +78,9 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
                 results.documents.length === 1 ? (
                   <Button
                     variant="link"
-                    onClick={() => window.open((results.documents as string[])[0], "_blank")}
+                    onClick={() =>
+                      window.open((results.documents as string[])[0], "_blank")
+                    }
                   >
                     <Icon name="picture_as_pdf" />
                   </Button>
@@ -79,14 +88,18 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost">
-                        {results.documents.length} <Icon name="picture_as_pdf" />
+                        {results.documents.length}{" "}
+                        <Icon name="picture_as_pdf" />
                         <Icon name="arrow_drop_down" className="ml-1" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       {results.documents?.map((docs, index) => (
-                        <DropdownMenuItem key={index} onClick={() => window.open(docs, "_blank")}>
-                          {docs.split('/').pop()}
+                        <DropdownMenuItem
+                          key={index}
+                          onClick={() => window.open(docs, "_blank")}
+                        >
+                          {docs.split("/").pop()}
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>

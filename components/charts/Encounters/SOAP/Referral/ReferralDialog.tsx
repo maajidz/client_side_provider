@@ -47,9 +47,11 @@ import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 const ReferralDialog = ({
   patientDetails,
   encounterId,
+  signed,
 }: {
   patientDetails: UserEncounterData;
   encounterId: string;
+  signed: boolean;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -132,7 +134,9 @@ const ReferralDialog = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"}>Add Referral </Button>
+        <Button variant={"ghost"} disabled={signed}>
+          Add Referral{" "}
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[98rem]">
         <DialogHeader>

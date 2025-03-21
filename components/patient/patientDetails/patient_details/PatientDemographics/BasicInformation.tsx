@@ -20,7 +20,7 @@ const BasicInformation = ({
     return date.toLocaleDateString("en-US", options);
   };
 
-  const age = calculateAge(patientDetails.dob);
+  const age = calculateAge(patientDetails?.dob);
 
   return (
     <div className="flex border-gray-100 border group p-6 py-4 flex-1 rounded-lg">

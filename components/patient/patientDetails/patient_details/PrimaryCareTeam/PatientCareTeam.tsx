@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import { useToast } from "@/hooks/use-toast";
 import { fetchUserCareTeam } from "@/services/userServices";
 import { PatientCareTeamInterface } from "@/types/userInterface";
@@ -6,6 +5,7 @@ import { showToast } from "@/utils/utils";
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./patient_care_team.module.css";
 import PrimaryCarePhysician from "./PrimaryCarePhysician";
+import DataListShimmer from "@/components/custom_buttons/shimmer/DataListShimmer";
 // import ReferringPhysicianSelect from "./ReferringPhysicianSelect";
 // import InHouseCareTeam from "./InHouseCareTeam";
 
@@ -32,24 +32,24 @@ const PatientCareTeam = ({ userDetailsId }: { userDetailsId: string }) => {
     } finally {
       setLoading(false);
     }
-  }, [toast, userDetailsId,]);
+  }, [toast, userDetailsId]);
 
   useEffect(() => {
     fetchPatientCareTeam();
   }, [fetchPatientCareTeam, refreshKey]);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <div className={styles.infoContainer}>
-      <PrimaryCarePhysician
-        careTeam={careTeam ? careTeam : null}
-        refreshKey={refreshKey}
-        userDetailsId={userDetailsId}
-        onRefresh={setRefreshKey}
-      />
+      {loading ? (
+        <DataListShimmer />
+      ) : (
+        <PrimaryCarePhysician
+          careTeam={careTeam ? careTeam : null}
+          refreshKey={refreshKey}
+          userDetailsId={userDetailsId}
+          onRefresh={setRefreshKey}
+        />
+      )}
       {/* <ReferringPhysicianSelect />
       <InHouseCareTeam /> */}
     </div>

@@ -25,7 +25,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const AddImagesDialog = ({ userDetailsId }: { userDetailsId: string }) => {
+const AddImagesDialog = ({
+  userDetailsId,
+  signed,
+}: {
+  userDetailsId: string;
+  signed?: boolean;
+}) => {
   const [response, setResponse] = useState<ImagesResponseInterface>();
   const [imageTestResponse, setImageTestResponse] =
     useState<ImagesTestsResponseInterface>();
@@ -128,7 +134,7 @@ const AddImagesDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"} onClick={fetchAndSetResponse}>
+        <Button variant={"ghost"} onClick={fetchAndSetResponse} disabled={signed}>
           Search & Add
         </Button>
       </DialogTrigger>

@@ -13,6 +13,7 @@ interface TwoInputProps {
   postfixSecond?: string;
   idFirst?: string;
   idSecond?: string;
+  disabled? : boolean;
 }
 
 const TwoInput: React.FC<TwoInputProps> = ({
@@ -26,6 +27,7 @@ const TwoInput: React.FC<TwoInputProps> = ({
   postfixSecond,
   idFirst = "first-input",
   idSecond = "second-input",
+  disabled,
 }) => {
   const [first, setFirst] = useState<number | "">("");
   const [second, setSecond] = useState<number | "">("");
@@ -68,6 +70,7 @@ const TwoInput: React.FC<TwoInputProps> = ({
             value={first}
             onChange={handleFirstChange}
             placeholder={placeholderFirst || ""}
+            disabled={disabled}
           />
           {postfixFirst && (
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
@@ -87,6 +90,7 @@ const TwoInput: React.FC<TwoInputProps> = ({
             value={second}
             onChange={handleSecondChange}
             placeholder={placeholderSecond || ""}
+            disabled={disabled}
           />
           {postfixSecond && (
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">

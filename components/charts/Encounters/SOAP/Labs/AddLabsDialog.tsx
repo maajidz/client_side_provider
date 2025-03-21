@@ -28,7 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 import { Icon } from "@/components/ui/icon";
 
-const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
+const AddLabsDialog = ({ userDetailsId, signed }: { userDetailsId: string; signed: boolean }) => {
   const [response, setResponse] = useState<LabsDataResponse>({
     data: [],
     total: 0,
@@ -160,7 +160,7 @@ const AddLabsDialog = ({ userDetailsId }: { userDetailsId: string }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"} onClick={() => fetchAndSetResponse(1)}>
+        <Button variant={"ghost"} onClick={() => fetchAndSetResponse(1)} disabled={signed}>
           Add Labs
         </Button>
       </DialogTrigger>
