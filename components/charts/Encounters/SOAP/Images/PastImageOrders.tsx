@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,12 +7,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import LoadingButton from "@/components/LoadingButton";
 import { getImagesOrdersData } from "@/services/chartsServices";
 import { ImageOrdersResponseInterface } from "@/types/chartsInterface";
 import { Button } from "@/components/ui/button";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { ColumnDef } from "@tanstack/react-table";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 interface ImageTest {
   name: string;
@@ -30,13 +30,17 @@ const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<ImageOrdersResponseInterface>();
+  const limit = 8;
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPages] = useState(1);
 
-  const fetchAndSetResponse = async () => {
+  const fetchAndSetResponse = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getImagesOrdersData({ userDetailsId: userDetailsId });
+      const data = await getImagesOrdersData({ limit, page, userDetailsId });
       if (data) {
         setResponse(data);
+        setTotalPages(Math.ceil(data.total / limit));
       }
     } catch (e) {
       console.log("Error", e);
@@ -44,22 +48,15 @@ const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, userDetailsId]);
 
   const handleDialogOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
-    if (isOpen) {
-      fetchAndSetResponse();
-    }
   };
 
-  if (loading) {
-    return (
-      <div>
-        <LoadingButton />
-      </div>
-    );
-  }
+  useEffect(() => {
+    fetchAndSetResponse();
+  }, [fetchAndSetResponse]);
 
   const columns: ColumnDef<ImageOrder>[] = [
     {
@@ -70,7 +67,10 @@ const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
     {
       header: "Test Name",
       accessorKey: "imageTests",
-      cell: ({ getValue }) => getValue<ImageTest[]>().map(test => test.name).join(", ") || "N/A",
+      cell: ({ getValue }) =>
+        getValue<ImageTest[]>()
+          .map((test) => test.name)
+          .join(", ") || "N/A",
     },
     {
       header: "Created At",
@@ -89,17 +89,21 @@ const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
           <DialogTitle>Past Orders</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        {response?.data ? (
-          <DefaultDataTable
-            columns={columns}
-            data={response.data}
-            pageNo={1}
-            totalPages={1}
-            onPageChange={() => {}}
-          />
-        ) : (
-          <div>No previous orders</div>
-        )}
+        <>
+          {loading ? (
+            <TableShimmer />
+          ) : response?.data ? (
+            <DefaultDataTable
+              columns={columns}
+              data={response.data}
+              pageNo={page}
+              totalPages={totalPage}
+              onPageChange={(newPage) => setPage(newPage)}
+            />
+          ) : (
+            <div>No previous orders</div>
+          )}
+        </>
       </DialogContent>
     </Dialog>
   );

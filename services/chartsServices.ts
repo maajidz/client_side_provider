@@ -517,7 +517,7 @@ export const getLabOrdersData = async ({
   providerId = "",
   status = "",
   page = 1,
-  limit = 10,
+  limit,
   orderedBy = "",
 }: {
   userDetailsId?: string;
