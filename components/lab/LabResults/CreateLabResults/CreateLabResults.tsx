@@ -47,6 +47,8 @@ import { fetchUserDataResponse } from "@/services/userServices";
 import { UserData } from "@/types/userInterface";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
+import LabFileUploader from "./LabFileUploader";
+import { Textarea } from "@/components/ui/textarea";
 
 const CreateLabResults = () => {
   const form = useForm<z.infer<typeof createLabResultsSchema>>({
@@ -98,6 +100,7 @@ const CreateLabResults = () => {
       total: 0,
     });
   const [selectedLab, setSelectedLab] = useState<string>("");
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -204,6 +207,7 @@ const CreateLabResults = () => {
         groupComment: result.groupComment || "",
       })),
       tags: values.tags || "",
+      fileUrls: uploadedFiles,
     };
     try {
       const response = await createLabResultRequest({ requestData });
@@ -227,6 +231,21 @@ const CreateLabResults = () => {
         message: "Error while saving Lab Results",
       });
     }
+  };
+
+  const isSubmitDisabled = () => {
+    const patientSelected = form.getValues().patient;
+    const labSelected = form.getValues().labId;
+    const testsSelected = selectedTests.length > 0;
+    const hasTestData = testGroupFields.some((_, groupIndex) => {
+      const result = form.getValues().testResults[groupIndex]?.result;
+      return !!result;
+    });
+    
+    // Check if there are either test results or uploaded files
+    const hasUploadedFiles = uploadedFiles.length > 0;
+    
+    return !(patientSelected && labSelected && testsSelected && (hasTestData || hasUploadedFiles));
   };
 
   return (
@@ -515,8 +534,9 @@ const CreateLabResults = () => {
                             <FormItem>
                               <FormLabel>Interpretation</FormLabel>
                               <FormControl>
-                                <Input
-                                  placeholder="Interpretation"
+                                <Textarea
+                                  placeholder="Enter interpretation"
+                                  className="min-h-[80px]"
                                   {...field}
                                 />
                               </FormControl>
@@ -544,7 +564,20 @@ const CreateLabResults = () => {
                 </FormItem>
               )}
             />
-            <SubmitButton label="Submit" />
+            
+            {form.getValues().patient && (
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2">Lab Documents</h3>
+                <LabFileUploader
+                  onUploadComplete={(files) => setUploadedFiles(files)}
+                  userDetailsId={form.getValues().patient}
+                  testId={selectedTests.length > 0 ? selectedTests[0].id : undefined}
+                  label="Upload Lab Documents"
+                />
+              </div>
+            )}
+            
+            <SubmitButton label="Submit" disabled={isSubmitDisabled()} />
           </form>
         </Form>
       </div>

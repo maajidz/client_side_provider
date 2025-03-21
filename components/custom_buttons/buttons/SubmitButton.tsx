@@ -13,9 +13,8 @@ const SubmitButton = ({
   return (
     <Button
       type="submit"
-      variant="outline"
+      className="self-end"
       disabled={disabled}
-      className="bg-[#84012A] font-medium text-sm text-white hover:text-white hover:bg-rose-950 py-4 px-8 rounded-md border-0"
       onClick={onClick}
     >
       {label}

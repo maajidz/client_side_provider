@@ -27,7 +27,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof CheckboxPrimitive.Root
         <Tooltip>
           <TooltipTrigger>
             <div 
-            className="flex gap-2 items-center justify-center cursor-pointer hover:bg-gray-100 rounded-md p-2" 
+            className="flex gap-2 items-center cursor-pointer hover:bg-gray-100 rounded-md p-2" 
             onClick={handleWrapperClick}
           >
             <CheckboxPrimitive.Root

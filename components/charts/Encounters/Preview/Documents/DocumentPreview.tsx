@@ -10,7 +10,7 @@ const DocumentPreview = ({
 }) => {
   return (
     <PageContainer>
-      <div className="flex flex-col gap-5 w-full">
+      <div className="flex flex-col gap-5 w-full p-4">
         Documents
         <Documents patientDetails={patientDetails} />
       </div>
