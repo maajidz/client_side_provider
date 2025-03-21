@@ -34,7 +34,7 @@ function Images() {
             </TabsList>
           </div>
           {imageTab.map(({ value, component: Component }) => (
-            <TabsContent value={value} key={value}>
+            <TabsContent value={value} key={value} className="flex flex-col gap-4">
               <Component />
             </TabsContent>
           ))}

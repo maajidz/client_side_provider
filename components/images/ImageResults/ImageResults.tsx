@@ -274,8 +274,9 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
         <TableShimmer />
       ) : (
         <DefaultDataTable
-          // onAddClick={goToCreateImage}
+          onAddClick={goToCreateImage}
           columns={columns()}
+          title={"Image Results"}
           data={resultList?.data || []}
           pageNo={page}
           totalPages={totalPages}
