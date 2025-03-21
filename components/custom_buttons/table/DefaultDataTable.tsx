@@ -9,43 +9,25 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
+  Row,
 } from "@tanstack/react-table"
-import {
-  ChevronDown,
-  ChevronUp,
-  Edit,
-  Trash2,
-  Eye,
-  Star,
-  Clock,
-  AlertCircle,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react"
+import { ChevronDown, ChevronUp } from "lucide-react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 
-// Extended column definition with mobile display options
-interface ExtendedColumnDef<TData, TValue> {
-  // Ensure this matches the structure of ColumnDef
-  accessorKey?: keyof TData; // Example property
-  header: string | React.ReactNode; // Ensure header is defined
-  cell: (info: { row: any; getValue: (key: keyof TData) => TValue }) => React.ReactNode; // Example cell function
+// Define the structure for column definitions with mobile options
+type ExtendedColumnDef<TData, TValue = unknown> = ColumnDef<TData, TValue> & {
   mobileOptions?: {
-    // Whether to show this column in the mobile card header
     showInHeader?: boolean;
-    // Whether to show this column in the mobile card preview (before expanding)
     showInPreview?: boolean;
-    // Custom label for mobile view
     mobileLabel?: string;
   };
 }
 
-interface DefaultDataTableProps<TData, TValue> {
+interface DefaultDataTableProps<TData, TValue = unknown> {
   title?: React.ReactNode
-  columns: ExtendedColumnDef<TData, TValue>[]
+  columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageNo: number
   totalPages: number
@@ -54,95 +36,7 @@ interface DefaultDataTableProps<TData, TValue> {
   className?: string
 }
 
-// Sample data types
-interface UserType {
-  id: string
-  name: string
-  email: string
-  role: string
-  status: string
-  lastActive: string
-  priority: string
-  isSelected: boolean
-  actions?: string
-}
-
-// Status badge component
-const StatusBadge = ({ status }: { status: string }) => {
-  const getStatusProps = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "active":
-        return { variant: "success" as const, icon: <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> }
-      case "inactive":
-        return { variant: "secondary" as const, icon: <Clock className="h-3.5 w-3.5 mr-1" /> }
-      case "pending":
-        return { variant: "warning" as const, icon: <AlertCircle className="h-3.5 w-3.5 mr-1" /> }
-      case "blocked":
-        return { variant: "destructive" as const, icon: <XCircle className="h-3.5 w-3.5 mr-1" /> }
-      default:
-        return { variant: "outline" as const, icon: null }
-    }
-  }
-
-  const { variant, icon } = getStatusProps(status)
-
-  return (
-    <Badge variant={variant} className="flex items-center">
-      {icon}
-      {status}
-    </Badge>
-  )
-}
-
-// Priority badge component
-const PriorityBadge = ({ priority }: { priority: string }) => {
-  const getPriorityProps = (priority: string) => {
-    switch (priority.toLowerCase()) {
-      case "high":
-        return {
-          color: "text-red-500",
-          bgColor: "bg-red-50",
-          icon: <Star className="h-3.5 w-3.5 mr-1" fill="currentColor" />,
-        }
-      case "medium":
-        return {
-          color: "text-amber-500",
-          bgColor: "bg-amber-50",
-          icon: <Star className="h-3.5 w-3.5 mr-1" fill="currentColor" />,
-        }
-      case "low":
-        return { color: "text-green-500", bgColor: "bg-green-50", icon: <Star className="h-3.5 w-3.5 mr-1" /> }
-      default:
-        return { color: "text-gray-500", bgColor: "bg-gray-50", icon: null }
-    }
-  }
-
-  const { color, bgColor, icon } = getPriorityProps(priority)
-
-  return (
-    <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${color} ${bgColor}`}>
-      {icon}
-      {priority}
-    </div>
-  )
-}
-
-// Action buttons component
-const ActionButtons = () => (
-  <div className="flex space-x-2">
-    <Button variant="ghost" size="icon" className="h-8 w-8">
-      <Eye className="h-4 w-4" />
-    </Button>
-    <Button variant="ghost" size="icon" className="h-8 w-8">
-      <Edit className="h-4 w-4" />
-    </Button>
-    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive">
-      <Trash2 className="h-4 w-4" />
-    </Button>
-  </div>
-)
-
-export function DefaultDataTable<TData, TValue>({
+export function DefaultDataTable<TData, TValue = unknown>({
   title,
   columns,
   data,
@@ -155,13 +49,12 @@ export function DefaultDataTable<TData, TValue>({
   const [globalFilter, setGlobalFilter] = useState<string>("")
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({})
 
-  // Ensure columns and data are valid arrays
   const validColumns = Array.isArray(columns) ? columns : []
   const validData = Array.isArray(data) ? data : []
 
   const table = useReactTable({
     data: validData,
-    columns: validColumns as ColumnDef<TData, TValue>[],
+    columns: validColumns,
     state: {
       globalFilter,
     },
@@ -178,7 +71,6 @@ export function DefaultDataTable<TData, TValue>({
     }))
   }
 
-  // Helper function to safely render header groups
   const renderHeaderGroups = () => {
     try {
       const headerGroups = table.getHeaderGroups()
@@ -199,7 +91,6 @@ export function DefaultDataTable<TData, TValue>({
     }
   }
 
-  // Helper function to safely get rows
   const getRows = () => {
     try {
       return table.getRowModel().rows || []
@@ -212,36 +103,33 @@ export function DefaultDataTable<TData, TValue>({
   const rows = getRows()
   const hasRows = rows.length > 0
 
-  // Get header cells for a row that should be shown in the mobile preview
-  const getHeaderCells = (row: any) => {
+  const getHeaderCells = (row: Row<TData>) => {
     const cells = row.getVisibleCells()
     if (!cells || cells.length === 0) return []
 
-    return cells.filter((cell: any, index: number) => {
-      const column = cell.column.columnDef as ExtendedColumnDef<any, any>
-      return column.mobileOptions?.showInHeader || (index === 0 && !column.mobileOptions)
+    return cells.filter((cell, index) => {
+      const columnDef = cell.column.columnDef as Partial<ExtendedColumnDef<TData>>
+      return columnDef.mobileOptions?.showInHeader || (index === 0 && !columnDef.mobileOptions)
     })
   }
 
-  // Get preview cells for a row that should be shown in the mobile preview
-  const getPreviewCells = (row: any) => {
+  const getPreviewCells = (row: Row<TData>) => {
     const cells = row.getVisibleCells()
     if (!cells || cells.length === 0) return []
 
-    return cells.filter((cell: any, index: number) => {
-      const column = cell.column.columnDef as ExtendedColumnDef<any, any>
-      return column.mobileOptions?.showInPreview && !column.mobileOptions?.showInHeader
+    return cells.filter((cell) => {
+      const columnDef = cell.column.columnDef as Partial<ExtendedColumnDef<TData>>
+      return columnDef.mobileOptions?.showInPreview && !columnDef.mobileOptions?.showInHeader
     })
   }
 
-  // Get detail cells for a row that should be shown when expanded
-  const getDetailCells = (row: any) => {
+  const getDetailCells = (row: Row<TData>) => {
     const cells = row.getVisibleCells()
     if (!cells || cells.length === 0) return []
 
-    return cells.filter((cell: any, index: number) => {
-      const column = cell.column.columnDef as ExtendedColumnDef<any, any>
-      return !column.mobileOptions?.showInHeader && !column.mobileOptions?.showInPreview
+    return cells.filter((cell) => {
+      const columnDef = cell.column.columnDef as Partial<ExtendedColumnDef<TData>>
+      return !columnDef.mobileOptions?.showInHeader && !columnDef.mobileOptions?.showInPreview
     })
   }
 
@@ -322,7 +210,7 @@ export function DefaultDataTable<TData, TValue>({
                   onClick={() => toggleRow(row.id)}
                 >
                   <div className="flex-1">
-                    {headerCells.map((cell: any) => (
+                    {headerCells.map((cell) => (
                       <div key={cell.id} className="font-medium">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </div>
@@ -336,12 +224,12 @@ export function DefaultDataTable<TData, TValue>({
                 {/* Preview Section (always visible) */}
                 {previewCells.length > 0 && (
                   <div className="px-4 py-2 bg-white border-t border-gray-100">
-                    {previewCells.map((cell: any) => {
-                      const column = cell.column.columnDef as ExtendedColumnDef<any, any>
+                    {previewCells.map((cell) => {
+                      const columnDef = cell.column.columnDef as Partial<ExtendedColumnDef<TData>>
                       return (
                         <div key={cell.id} className="flex items-center justify-between py-1">
                           <span className="text-sm text-gray-500">
-                            {column.mobileOptions?.mobileLabel || String(column.header || "")}
+                            {columnDef.mobileOptions?.mobileLabel || String(columnDef.header || "")}
                           </span>
                           <div>{flexRender(cell.column.columnDef.cell, cell.getContext())}</div>
                         </div>
@@ -353,12 +241,12 @@ export function DefaultDataTable<TData, TValue>({
                 {/* Expanded Details */}
                 {expandedRows[row.id] && detailCells.length > 0 && (
                   <div className="p-4 space-y-3 bg-white border-t border-gray-100">
-                    {detailCells.map((cell: any) => {
-                      const column = cell.column.columnDef as ExtendedColumnDef<any, any>
+                    {detailCells.map((cell) => {
+                      const columnDef = cell.column.columnDef as Partial<ExtendedColumnDef<TData>>
                       return (
                         <div key={cell.id} className="flex flex-col">
                           <span className="text-sm text-gray-500">
-                            {column.mobileOptions?.mobileLabel || String(column.header || "")}
+                            {columnDef.mobileOptions?.mobileLabel || String(columnDef.header || "")}
                           </span>
                           <div className="font-medium py-1">
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -378,4 +266,3 @@ export function DefaultDataTable<TData, TValue>({
     </div>
   )
 }
-
