@@ -47,9 +47,11 @@ interface Row {
 const FollowUpDialog = ({
   patientDetails,
   encounterId,
+  signed,
 }: {
   patientDetails: UserEncounterData;
   encounterId: string;
+  signed: boolean;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
@@ -319,7 +321,7 @@ const FollowUpDialog = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"}>Add Follow up</Button>
+        <Button variant={"ghost"} disabled={signed}>Add Follow up</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
