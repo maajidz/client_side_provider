@@ -1,31 +1,41 @@
 "use client";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { ImageResultDataResponse } from "@/types/imageResults";
 import { ColumnDef } from "@tanstack/react-table";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
-  {
-    accessorKey: "id",
-    header: "Result ID",
-    cell: ({ row }) => (
-      <div className="cursor-pointer">{row.getValue("id")}</div>
-    ),
-  },
+  // {
+  //   accessorKey: "id",
+  //   header: "Result ID",
+  //   cell: ({ row }) => (
+  //     <div >{row.getValue("id")}</div>
+  //   ),
+  // },
   {
     accessorKey: "userDetails",
-    header: "Patient ID",
+    header: "Patient Name",
     cell: ({ row }) => (
-      <div className="cursor-pointer">{`${row.original.userDetails.user.firstName} ${row.original.userDetails.user.lastName} - ${row.original.userDetails.patientId}`}</div>
+      <div className="flex flex-col gap-1">
+        <a
+          href={`/patient-details/${row.original.userDetails.user.id}`}
+          className="text-blue-600 hover:underline"
+        >
+          {`${row.original.userDetails.user.firstName} ${row.original.userDetails.user.lastName}`}
+        </a>
+        <Badge>{`${row.original.userDetails.patientId}`}</Badge>
+      </div>
     ),
   },
   {
     accessorKey: "providerDetails",
-    header: "Reviewer id",
+    header: "Reviewer",
     cell: ({ row }) => (
-      <div className="cursor-pointer">
-        {row.original.providerDetails.providerDetails.providerUniqueId}
+      <div>
+        {row.original.providerDetails.firstName}{" "}
+        {row.original.providerDetails.lastName}
       </div>
     ),
   },
@@ -36,7 +46,7 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
       const dob = getValue() as string;
       const date = new Date(dob);
       return (
-        <div className="cursor-pointer">
+        <div>
           {date.toLocaleDateString("en-US", {
             month: "short",
             day: "2-digit",
@@ -48,36 +58,43 @@ export const columns = (): ColumnDef<ImageResultDataResponse>[] => [
   },
   {
     accessorKey: "testResults",
-    header: "Results",
+    header: "Tests",
     cell: ({ row }) => {
-      const testResults = row.getValue(
-        "testResults"
-      ) as ImageResultDataResponse["testResults"];
+      const testResults = row.getValue("testResults") as ImageResultDataResponse["testResults"];
       return (
-        <div className="cursor-pointer">
+        <div>
           {testResults.map((results) => (
-            <div key={results.id} className="flex flex-col gap-2">
-              <FormLabels
-                label="Image Type"
-                value={results.imageTest?.imageType?.name}
-              />
-              <FormLabels
-                label="Interpretation"
-                value={results.interpretation}
-              />
-                <FormLabels
-                  label="Documents"
-                  value={results.documents?.map((docs, index) => (
-                    <Button
-                      key={index}
-                      variant={"link"}
-                      onClick={() => window.open(docs, "_blank")}
-                      className="text-blue-500"
-                    >
-                      {docs.split("/").pop()}
-                    </Button>
-                  ))}
-                />
+            <div key={results.id} className="flex flex-row gap-2 items-center">
+              <span>{results.imageTest?.imageType?.name}</span>
+              <span className="text-gray-500">({results.interpretation})</span>
+              {results.documents && results.documents.length > 0 ? (
+                results.documents.length === 1 ? (
+                  <Button
+                    variant="link"
+                    onClick={() => window.open((results.documents as string[])[0], "_blank")}
+                  >
+                    <Icon name="picture_as_pdf" />
+                  </Button>
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost">
+                        {results.documents.length} <Icon name="picture_as_pdf" />
+                        <Icon name="arrow_drop_down" className="ml-1" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {results.documents?.map((docs, index) => (
+                        <DropdownMenuItem key={index} onClick={() => window.open(docs, "_blank")}>
+                          {docs.split('/').pop()}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )
+              ) : (
+                <span>-</span>
+              )}
             </div>
           ))}
         </div>

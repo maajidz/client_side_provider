@@ -172,9 +172,9 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
   }, [page, fetchImageResultsList]);
 
   return (
-    <div className="space-y-4">
+    <>
       <Form {...form}>
-        <form className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <form className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
           <FormField
             control={form.control}
             name="status"
@@ -274,8 +274,7 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
         <TableShimmer />
       ) : (
         <DefaultDataTable
-          title={"Image Results"}
-          onAddClick={goToCreateImage}
+          // onAddClick={goToCreateImage}
           columns={columns()}
           data={resultList?.data || []}
           pageNo={page}
@@ -283,7 +282,7 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
           onPageChange={(newPage: number) => setPage(newPage)}
         />
       )}
-    </div>
+    </>
   );
 }
 
