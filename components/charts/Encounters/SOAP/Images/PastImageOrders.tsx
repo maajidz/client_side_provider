@@ -37,7 +37,7 @@ const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const fetchAndSetResponse = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getImagesOrdersData({ limit, page, userDetailsId });
+      const data = await getImagesOrdersData({ page, limit, userDetailsId });
       if (data) {
         setResponse(data);
         setTotalPages(Math.ceil(data.total / limit));
