@@ -14,8 +14,8 @@ const PrescriptionBody = ({patientDetails, encounterId}: {patientDetails: UserEn
         <div className='flex justify-between border-b pb-3'>
             <label className='text-sm font-semibold'>Prescriptions</label>
             <div className="flex h-5 items-center space-x-4 text-sm">
-                <AddRx patientDetails={patientDetails} encounterId={encounterId}/>
-                <PastRx patientDetails={patientDetails}/>
+                <AddRx patientDetails={patientDetails} encounterId={encounterId} />
+                <PastRx patientDetails={patientDetails} encounterId={encounterId} />
                 {/* <Popover>
                     <PopoverTrigger asChild>
                         <Button variant="ghost" className='text-blue-500 underline'>Sign</Button>

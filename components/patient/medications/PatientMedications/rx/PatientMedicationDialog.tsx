@@ -522,6 +522,7 @@ const PatientMedicationDialog = ({
                                 <SelectContent>
                                   <SelectItem value="days">Days</SelectItem>
                                   <SelectItem value="weeks">Weeks</SelectItem>
+                                  <SelectItem value="years">Years</SelectItem>
                                 </SelectContent>
                               </Select>
                             </FormControl>

@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -34,14 +35,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createTransfer, getEncounterList } from "@/services/chartsServices";
+import { createTransfer } from "@/services/chartsServices";
 import LoadingButton from "@/components/LoadingButton";
 import { Textarea } from "@/components/ui/textarea";
 import { TrashIcon } from "lucide-react";
 import { DiagnosesClient } from "@/components/tables/charts/diagnoses/client";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { fetchProviderListDetails } from "@/services/registerServices";
-import { EncounterInterface } from "@/types/encounterInterface";
+import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 
 const ReferralDialog = ({
   patientDetails,
@@ -53,7 +54,6 @@ const ReferralDialog = ({
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const providerDetails = useSelector((state: RootState) => state.login);
   const [providerList, setProviderList] = useState<FetchProviderList[]>([]);
-  const [chartList, setChartList] = useState<EncounterInterface>();
   const [selectedDiagnoses, setSelectedDiagnoses] = useState<
     PastDiagnosesInterface[]
   >([]);
@@ -72,7 +72,7 @@ const ReferralDialog = ({
       userDetailsId: patientDetails.userDetails.userDetailsId,
       referralDate: new Date().toISOString().split("T")[0],
       priority: "Normal",
-      relatedEncounter: "",
+      relatedEncounter: encounterId,
       referralNotes: "",
     },
   });
@@ -93,31 +93,7 @@ const ReferralDialog = ({
     }
   }, []);
 
-  const fetchEncounterList = useCallback(
-    async (page: number) => {
-      setLoading(true);
-      try {
-        if (providerDetails) {
-          const response = await getEncounterList({
-            id: providerDetails.providerId,
-            idType: "providerID",
-            limit: 2,
-            page,
-          });
-          if (response) {
-            setChartList(response);
-          }
-          setLoading(false);
-        }
-      } catch (e) {
-        console.log("Error", e);
-      }
-    },
-    [providerDetails]
-  );
-
   const onSubmit = async (values: z.infer<typeof referralFormSchema>) => {
-    console.log("Form Values:", values);
     const requestData = {
       referringToProviderID: values.referralTo,
       referringFromProviderID: providerDetails.providerId,
@@ -125,7 +101,7 @@ const ReferralDialog = ({
       referralReason: values.referralReason,
       priority: values.priority,
       notes: values.referralNotes ?? "",
-      relatedEncounterId: encounterId,
+      relatedEncounterId: values.relatedEncounter,
       diagnoses: selectedDiagnoses.map((diagnosis) => diagnosis.id),
       insuranceId: "",
       attachments: [""],
@@ -139,13 +115,13 @@ const ReferralDialog = ({
     } finally {
       setLoading(false);
       setIsDialogOpen(false);
+      form.reset();
     }
   };
 
   useEffect(() => {
-    fetchEncounterList(1);
     fetchProviderList();
-  }, [fetchEncounterList, fetchProviderList]);
+  }, [fetchProviderList]);
 
   if (loading) {
     <div>
@@ -169,10 +145,7 @@ const ReferralDialog = ({
               <div className="flex flex-col gap-5">
                 <div className="flex justify-between">
                   <div>Add Referral Out</div>
-                  <div className="flex gap-3">
-                    {/* <Button type='submit' className='bg-[#84012A]'>Save</Button> */}
-                    {/* <Button variant={'outline'}>Preview</Button>  */}
-                  </div>
+                  <div className="flex gap-3"></div>
                 </div>
                 <div className="flex flex-col">
                   <div className="flex w-full">
@@ -280,25 +253,7 @@ const ReferralDialog = ({
                           <FormItem>
                             <FormLabel>Related Encounter:</FormLabel>
                             <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select encounter" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {chartList?.response?.map((chart) => (
-                                    <SelectItem
-                                      key={chart?.id}
-                                      value={chart?.id}
-                                    >
-                                      {chart?.createdAt.split("T")[0]}{" "}
-                                      {chart?.id}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <Input {...field} disabled />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -369,64 +324,12 @@ const ReferralDialog = ({
                         )}
                       </div>
                     </div>
-                    {/* <div className='flex border p-3 w-full items-center justify-between'>
-                                        <div>Insurance</div>
-                                        <Dialog>
-                                            <DialogTrigger asChild>
-                                                <Button variant="ghost" className='text-blue-400'>Choose</Button>
-                                            </DialogTrigger>
-                                            <DialogContent className="sm:max-w-[425px]">
-                                                <DialogHeader>
-                                                    <DialogTitle>Insurance</DialogTitle>
-                                                    <DialogDescription></DialogDescription>
-                                                </DialogHeader>
-                                            </DialogContent>
-                                        </Dialog>
-                                    </div>
-                                    <div className='flex border p-3 w-full items-center justify-between'>
-                                        <div>Attachements</div>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" className='text-blue-400'>Attach</Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent className="w-56">
-                                                <DropdownMenuGroup>
-                                                    <DropdownMenuItem>
-                                                        <span>Chart Notes</span>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        <span>Face Sheet</span>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        <span>Growth Chart</span>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        <span>Labs</span>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        <span>Images</span>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        <span>Patient Documents</span>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        <span>From Local Drive</span>
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuGroup>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </div> */}
                   </div>
                 </div>
               </div>
-              <Button
-                type="submit"
-                onClick={() => {
-                  console.log(form.getValues());
-                }}
-              >
-                Save
-              </Button>
+              <DialogFooter>
+                <SubmitButton label="Save" />
+              </DialogFooter>
             </form>
           </Form>
         )}
