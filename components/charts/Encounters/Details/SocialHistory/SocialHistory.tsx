@@ -14,15 +14,21 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import { SocialHistoryInterface } from "@/types/socialHistoryInterface";
 import SocialHistoryDialog from "./SocialHistoryDialog";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Edit2Icon,
+  EllipsisVertical,
   PlusCircle,
-  Trash2Icon,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { showToast } from "@/utils/utils";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface SocialHistoryProps {
   patientDetails: UserEncounterData;
@@ -109,6 +115,56 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
     }
   };
 
+  // Define the columns for the social history table
+  const columns: ColumnDef<SocialHistoryInterface>[] = [
+    {
+      accessorKey: "content",
+      header: "Social History",
+      cell: ({ row }) => (
+        <div 
+          className="cursor-pointer"
+          dangerouslySetInnerHTML={{ __html: row.original.content }}
+        />
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: "",
+      cell: ({ row }) => (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  setEditData({
+                    id: row.original.id,
+                    content: row.original.content,
+                    userDetailsId: row.original.userDetailsId,
+                    providerId: row.original.providerId,
+                    createdAt: row.original.createdAt,
+                    updatedAt: row.original.updatedAt,
+                  });
+                  setIsDialogOpen(true);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDeleteSocialHistory(row.original.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
+
   // Effects
   useEffect(() => {
     fetchSocialHistory();
@@ -145,60 +201,19 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
               <p className="text-center">No social history available</p>
             ) : (
               <div className="flex flex-col gap-2">
-                <div className="space-x-2 self-end">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(page - 1)}
-                    disabled={page <= 1}
-                  >
-                    <ChevronLeft />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(page + 1)}
-                    disabled={page >= totalPages}
-                  >
-                    <ChevronRight />
-                  </Button>
-                </div>
-                {socialHistory.map((history) => (
-                  <div
-                    key={history.id}
-                    className="flex justify-between rounded-md"
-                  >
-                    <div
-                      dangerouslySetInnerHTML={{ __html: history.content }}
-                    />
-                    <div className="flex">
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          setEditData({
-                            id: history.id,
-                            content: history.content,
-                            userDetailsId: history.userDetailsId,
-                            providerId: history.providerId,
-                            createdAt: history.createdAt,
-                            updatedAt: history.updatedAt,
-                          });
-                          setIsDialogOpen(true);
-                        }}
-                        disabled={loading}
-                      >
-                        <Edit2Icon color="#84012A" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={() => handleDeleteSocialHistory(history.id)}
-                        disabled={loading}
-                      >
-                        <Trash2Icon color="#84012A" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+                <DefaultDataTable
+                  title="Social History"
+                  columns={columns}
+                  data={socialHistory}
+                  pageNo={page}
+                  totalPages={totalPages}
+                  onPageChange={(newPage) => setPage(newPage)}
+                  onAddClick={() => {
+                    setEditData(null);
+                    setIsDialogOpen(true);
+                  }}
+                  className="mt-4"
+                />
               </div>
             )}
           </AccordionContent>

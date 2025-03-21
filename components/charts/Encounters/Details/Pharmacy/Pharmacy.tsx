@@ -9,11 +9,20 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import { UserPharmacyInterface } from "@/types/pharmacyInterface";
 import { deleteUserPharmacyData, getUserPharmacyData } from "@/services/chartDetailsServices";
 import PharmacyDialog from "./PharmacyDialog";
-import { PlusCircle, Trash2Icon } from "lucide-react";
+import { EllipsisVertical, PlusCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface PharmacyProps {
   patientDetails: UserEncounterData;
@@ -47,7 +56,7 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
       showToast({
         toast,
         type: "error",
-        message: `Error fetching supplement data: ${err}`,
+        message: `Error fetching pharmacy data: ${err}`,
       });
     } finally {
       setLoading(false);
@@ -83,6 +92,66 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
     }
   };
 
+  // Define columns for the pharmacy table
+  const columns: ColumnDef<UserPharmacyInterface>[] = [
+    {
+      accessorKey: "name",
+      header: "Pharmacy Name",
+      cell: ({ row }) => (
+        <div className="cursor-pointer font-semibold">
+          {row.original.name}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "address",
+      header: "Address",
+      cell: ({ row }) => (
+        <div className="cursor-pointer text-sm text-gray-700">
+          <span className="font-semibold">
+            {row.original.address}
+          </span>
+          {" - "}
+          <span>
+            {row.original.city}, {row.original.state}, {row.original.country}
+          </span>
+          {", "}
+          <span>{row.original.zipCode}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "phoneNumber",
+      header: "Phone",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.phoneNumber}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: "",
+      cell: ({ row }) => (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => handleDeleteUserPharmacy(row.original.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
@@ -111,39 +180,17 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
             ) : (
               <>
                 {pharmacyData !== undefined ? (
-                  <div
-                    key={pharmacyData.id}
-                    className="flex flex-col gap-2 border rounded-md p-2"
-                  >
-                    <div className="flex justify-between items-center">
-                      <h5 className="text-lg font-semibold">
-                        {pharmacyData?.name}
-                      </h5>
-                      <div className="flex items-center">
-                        <Button
-                          variant="ghost"
-                          onClick={() => {
-                            handleDeleteUserPharmacy(pharmacyData?.id);
-                          }}
-                          disabled={loading}
-                        >
-                          <Trash2Icon color="#84012A" />
-                        </Button>
-                      </div>
-                    </div>
-                    <span className="text-sm text-gray-700">
-                      <span className="font-semibold">
-                        {pharmacyData?.address}
-                      </span>
-                      {" - "}
-                      <span>
-                        {pharmacyData?.city}, {pharmacyData?.state},{" "}
-                        {pharmacyData?.country}
-                      </span>
-                      {", "}
-                      <span>{pharmacyData?.zipCode}</span>
-                    </span>
-                    <span className="text-md">{pharmacyData?.phoneNumber}</span>
+                  <div className="flex flex-col gap-2">
+                    <DefaultDataTable
+                      title="Pharmacy"
+                      columns={columns}
+                      data={[pharmacyData]}
+                      pageNo={1}
+                      totalPages={1}
+                      onPageChange={() => {}}
+                      onAddClick={() => setIsDialogOpen(true)}
+                      className="mt-4"
+                    />
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">

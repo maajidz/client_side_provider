@@ -27,6 +27,8 @@ import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionC
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { showToast } from "@/utils/utils";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { columns } from "@/components/patient/medications/PatientSupplements/columns";
 
 interface SupplementsProps {
   patientDetails: UserEncounterData;
@@ -45,6 +47,12 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
   const [editData, setEditData] = useState<SupplementInterfaceResponse | null>(
     null
   );
+
+  // Dialog state for columns
+  const [dialogState, setDialogState] = useState<{
+    create: boolean;
+    edit: boolean;
+  }>({ create: false, edit: false });
 
   // Pagination State
   const [page, setPage] = useState<number>(1);
@@ -82,6 +90,12 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
   useEffect(() => {
     fetchSupplements();
   }, [fetchSupplements]);
+
+  useEffect(() => {
+    if (dialogState.edit && editData) {
+      setIsDialogOpen(true);
+    }
+  }, [dialogState.edit, editData]);
 
   // DELETE Supplement
   const handleDeleteSupplement = async (supplementId: string) => {
@@ -127,6 +141,7 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
               onClose={() => {
                 setIsDialogOpen(false);
                 setEditData(null);
+                setDialogState({ create: false, edit: false });
                 fetchSupplements();
               }}
               isOpen={isDialogOpen}
@@ -135,87 +150,34 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
           <AccordionContent className="sm:max-w-4xl">
             {loading ? (
               <AccordionShimmerCard />
-            ) : supplementData && supplementData.total > 0 ? (
-              supplementData.data && (
-                <div className="flex flex-col gap-2">
-                  <div className="space-x-2 self-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page - 1)}
-                      disabled={page <= 1}
-                    >
-                      <ChevronLeft />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page + 1)}
-                      disabled={page >= totalPages}
-                    >
-                      <ChevronRight />
-                    </Button>
-                  </div>
-                  {supplementData?.data.map((supplement) => (
-                    <div
-                      key={supplement.id}
-                      className="flex flex-col gap-2 border rounded-md p-2"
-                    >
-                      <div className="flex justify-between items-center">
-                        <h5 className="text-lg font-semibold">
-                          {supplement?.type?.supplement_name}{" "}
-                          <span className="text-sm text-gray-400 font-light">
-                            ({supplement?.manufacturer})
-                          </span>
-                        </h5>
-                        <div className="flex items-center">
-                          <Button
-                            variant={"ghost"}
-                            onClick={() => {
-                              setEditData(supplement);
-                              setIsDialogOpen(true);
-                            }}
-                          >
-                            <Edit2 color="#84012A" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            onClick={() =>
-                              handleDeleteSupplement(supplement.id)
-                            }
-                            disabled={loading}
-                          >
-                            <Trash2Icon color="#84012A" />
-                          </Button>
-                        </div>
-                      </div>
-                      <span className="text-sm text-gray-700">
-                        <span className="font-semibold">
-                          {supplement.dosage}
-                        </span>{" "}
-                        <span>{supplement.intake_type},</span>{" "}
-                        <span className="capitalize">
-                          {supplement.frequency}
-                        </span>
-                      </span>
-                      <span className="text-md font-medium">
-                        {supplement.comments}
-                      </span>
-                      <Badge
-                        className={`w-fit px-2 py-0.5 text-md rounded-full border-[1px] ${
-                          supplement.status.toLowerCase() === "active"
-                            ? "bg-[#ABEFC6] text-[#067647] border-[#067647] hover:bg-[#ABEFC6]"
-                            : "bg-[#FECDCA] text-[#B42318] border-[#B42318] hover:bg-[#FECDCA]"
-                        }`}
-                      >
-                        {supplement.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              )
             ) : (
-              <div className="text-center">No Supplements found!</div>
+              <div className="flex flex-col gap-2">
+                {supplementData?.data && supplementData.data.length > 0 ? (
+                  <DefaultDataTable
+                    title="Supplements"
+                    columns={columns({
+                      setEditData,
+                      setIsDialogOpen: setDialogState,
+                      setLoading,
+                      showToast: ({ type, message }: { type: string; message: string }) => 
+                        showToast({ toast, type: type as "success" | "error", message }),
+                      fetchSupplementsList: fetchSupplements,
+                      userDetailsId: patientDetails.userDetails.userDetailsId,
+                    })}
+                    data={supplementData.data}
+                    pageNo={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => setPage(newPage)}
+                    onAddClick={() => {
+                      setEditData(null);
+                      setIsDialogOpen(true);
+                    }}
+                    className="mt-4"
+                  />
+                ) : (
+                  <div className="text-center">No Supplements found!</div>
+                )}
+              </div>
             )}
           </AccordionContent>
         </AccordionItem>

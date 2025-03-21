@@ -8,11 +8,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Edit2,
+  EllipsisVertical,
   PlusCircle,
-  Trash2Icon,
 } from "lucide-react";
 import RecallsDialog from "./RecallsDialog";
 import { UserEncounterData } from "@/types/chartsInterface";
@@ -23,9 +20,17 @@ import {
 import { deleteRecalls, getRecallsData } from "@/services/chartDetailsServices";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import { showToast } from "@/utils/utils";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   // Loading State
@@ -87,7 +92,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
       showToast({
         toast,
         type: "success",
-        message: "Recalls  deleted successfully",
+        message: "Recalls deleted successfully",
       });
       fetchRecalls();
     } catch (e) {
@@ -98,6 +103,94 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
       fetchRecalls();
     }
   };
+
+  // Define columns for the recalls table
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "type",
+      header: "Type",
+      cell: ({ row }) => (
+        <div className="cursor-pointer font-semibold">
+          {row.original.type}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "notes",
+      header: "Notes",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.notes}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "auto_reminders",
+      header: "Auto Reminders",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.auto_reminders ? "On" : "Off"}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "due_date",
+      header: "Due Date",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {`${row.original.due_date_period} ${row.original.due_date_value} ${row.original.due_date_unit}`}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Created On",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.createdAt.split("T")[0]}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: "",
+      cell: ({ row }) => (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  setEditData({
+                    status: row.original.status,
+                    id: row.original.id,
+                    type: row.original.type,
+                    notes: row.original.notes,
+                    providerId: row.original.providerId,
+                    due_date_period: row.original.due_date_period,
+                    due_date_value: row.original.due_date_value,
+                    due_date_unit: row.original.due_date_unit,
+                    auto_reminders: row.original.auto_reminders,
+                  });
+                  setIsDialogOpen(true);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDeleteRecall(row.original.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-3 group">
@@ -132,78 +225,19 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
             ) : (
               data?.data && (
                 <div className="flex flex-col gap-2">
-                  <div className="space-x-2 self-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page - 1)}
-                      disabled={page <= 1}
-                    >
-                      <ChevronLeft />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page + 1)}
-                      disabled={page >= totalPages}
-                    >
-                      <ChevronRight />
-                    </Button>
-                  </div>
-                  {data.data.flatMap((recall, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col gap-2 border rounded-lg p-2"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div className="text-base font-semibold">
-                          {recall.type}{" "}
-                        </div>
-                        <div className="flex">
-                          <Button
-                            variant={"ghost"}
-                            onClick={() => {
-                              setEditData({
-                                status: recall.status,
-                                id: recall.id,
-                                type: recall.type,
-                                notes: recall.notes,
-                                providerId: recall.providerId,
-                                due_date_period: recall.due_date_period,
-                                due_date_value: recall.due_date_value,
-                                due_date_unit: recall.due_date_unit,
-                                auto_reminders: recall.auto_reminders,
-                              });
-                              setIsDialogOpen(true);
-                            }}
-                          >
-                            <Edit2 color="#84012A" />
-                          </Button>
-                          <Button
-                            variant={"ghost"}
-                            onClick={() => handleDeleteRecall(recall.id)}
-                          >
-                            <Trash2Icon color="#84012A" />
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap gap-2 ">
-                        <FormLabels label="Notes" value={recall.notes} />
-                        <FormLabels
-                          label="Auto reminders"
-                          value={recall.auto_reminders ? "On" : "Off"}
-                        />
-                        <FormLabels
-                          label="Due date"
-                          value={`${recall.due_date_period} ${recall.due_date_value} ${recall.due_date_unit}`}
-                        />
-                        <FormLabels
-                          label="Created on"
-                          value={recall.createdAt.split("T")[0]}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                  <DefaultDataTable
+                    title="Recalls"
+                    columns={columns}
+                    data={data.data}
+                    pageNo={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => setPage(newPage)}
+                    onAddClick={() => {
+                      setEditData(null);
+                      setIsDialogOpen(true);
+                    }}
+                    className="mt-4"
+                  />
                 </div>
               )
             )}

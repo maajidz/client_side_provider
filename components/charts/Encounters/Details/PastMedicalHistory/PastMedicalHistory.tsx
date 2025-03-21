@@ -16,16 +16,22 @@ import {
 import { UserEncounterData } from "@/types/chartsInterface";
 import PastMedicalHistoryDialog from "./PastMedicalHistoryDialog";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Edit2,
+  EllipsisVertical,
   PlusCircle,
-  Trash2Icon,
 } from "lucide-react";
 import { useEffect, useCallback, useState } from "react";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface PastMedicalHistoryProps {
   patientDetails: UserEncounterData;
@@ -105,6 +111,57 @@ const PastMedicalHistory = ({ patientDetails }: PastMedicalHistoryProps) => {
     }
   };
 
+  // Define the columns for the past medical history table
+  const columns: ColumnDef<PastMedicalHistoryInterface>[] = [
+    {
+      accessorKey: "notes",
+      header: "Notes",
+      cell: ({ row }) => (
+        <div className="cursor-pointer font-semibold">
+          {row.getValue("notes")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "glp_refill_note_practice",
+      header: "GLP Refill Note",
+      cell: ({ row }) => (
+        <div className="cursor-pointer text-sm text-gray-700">
+          {row.getValue("glp_refill_note_practice")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: "",
+      cell: ({ row }) => (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  setEditData(row.original);
+                  setIsDialogOpen(true);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDeletePastMedicalHistory(row.original.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
@@ -133,63 +190,18 @@ const PastMedicalHistory = ({ patientDetails }: PastMedicalHistoryProps) => {
             {loading ? (
               <AccordionShimmerCard />
             ) : medicalHistory && medicalHistory.total > 0 ? (
-              medicalHistory.items && (
-                <div className="flex flex-col gap-2">
-                  <div className="space-x-2 self-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page - 1)}
-                      disabled={page <= 1}
-                    >
-                      <ChevronLeft />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page + 1)}
-                      disabled={page >= totalPages}
-                    >
-                      <ChevronRight />
-                    </Button>
-                  </div>
-                  {medicalHistory?.items.map((history) => (
-                    <div
-                      key={history.id}
-                      className="flex flex-col gap-2 border rounded-md p-2"
-                    >
-                      <div className="flex justify-between items-center">
-                        <h5 className="text-lg font-semibold">
-                          {history.notes}
-                        </h5>
-                        <div className="flex items-center">
-                          <Button
-                            variant={"ghost"}
-                            onClick={() => {
-                              setEditData(history);
-                              setIsDialogOpen(true);
-                            }}
-                          >
-                            <Edit2 color="#84012A" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            disabled={loading}
-                            onClick={() =>
-                              handleDeletePastMedicalHistory(history.id)
-                            }
-                          >
-                            <Trash2Icon color="#84012A" />
-                          </Button>
-                        </div>
-                      </div>
-                      <span className="text-sm text-gray-700">
-                        {history.glp_refill_note_practice}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )
+              <div className="flex flex-col gap-2">
+                <DefaultDataTable
+                  title="Medical History"
+                  columns={columns}
+                  data={medicalHistory.items || []}
+                  pageNo={page}
+                  totalPages={totalPages}
+                  onPageChange={(newPage) => setPage(newPage)}
+                  onAddClick={() => setIsDialogOpen(true)}
+                  className="mt-4"
+                />
+              </div>
             ) : (
               <div className="text-center">No Medical History found!</div>
             )}

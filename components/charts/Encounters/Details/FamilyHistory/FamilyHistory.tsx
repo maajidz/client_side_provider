@@ -15,12 +15,20 @@ import {
   EditFamilyHistoryInterface,
   FamilyHistoryResponseInterface,
 } from "@/types/familyHistoryInterface";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Edit2, PlusCircle, Trash2Icon } from "lucide-react";
+import { EllipsisVertical, PlusCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const FamilyHistory = ({
   patientDetails,
@@ -71,16 +79,90 @@ const FamilyHistory = ({
       showToast({
         toast,
         type: "success",
-        message: "Alert deleted successfully",
+        message: "Family history deleted successfully",
       });
       fetchFamilyHistory();
     } catch (e) {
       console.log("Error:", e);
-      showToast({ toast, type: "error", message: "Error" });
+      showToast({ toast, type: "error", message: "Error deleting family history" });
     } finally {
       setLoading(false);
     }
   };
+
+  // Define the columns for the family history table
+  const columns: ColumnDef<FamilyHistoryResponseInterface>[] = [
+    {
+      accessorKey: "relationship",
+      header: "Relationship",
+      cell: ({ row }) => (
+        <div className="cursor-pointer font-semibold">
+          {row.getValue("relationship")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "age",
+      header: "Age",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.getValue("age")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "activeProblems",
+      header: "Active Problems",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.activeProblems.map((problem) => (
+            <div key={problem.id}>{problem.name}</div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: "",
+      cell: ({ row }) => (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  setEditData({
+                    relationship: row.original.relationship,
+                    deceased: row.original.deceased,
+                    age: row.original.age,
+                    comments: row.original.comments,
+                    activeProblems: row.original.activeProblems?.map(
+                      (problemName) => ({
+                        name: problemName.name,
+                        addtionaltext: "",
+                      })
+                    ),
+                    id: row.original.id,
+                  });
+                  setIsDialogOpen(true);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDeleteFamilyHistory(row.original.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-3 group">
@@ -114,79 +196,23 @@ const FamilyHistory = ({
               <AccordionShimmerCard />
             ) : (
               <div className="flex flex-col gap-2">
-                <div className="space-x-2 self-end">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(page - 1)}
-                    disabled={page <= 1}
-                  >
-                    <ChevronLeft />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(page + 1)}
-                    disabled={page >= totalPages}
-                  >
-                    <ChevronRight />
-                  </Button>
-                </div>
-                {data.map((familyHistory, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-col gap-2 border rounded-lg p-2"
-                  >
-                    <div className="flex justify-between items-center">
-                      <div className="text-base font-semibold">
-                  
-                      </div>
-                      <div className="flex">
-                        <Button
-                          variant={"ghost"}
-                          onClick={() => {
-                            setEditData({
-                              relationship: familyHistory.relationship,
-                              deceased: familyHistory.deceased,
-                              age: familyHistory.age,
-                              comments: familyHistory.comments,
-                              activeProblems: familyHistory.activeProblems?.map(
-                                (problemName) => ({
-                                  name: problemName.name,
-                                  addtionaltext: "",
-                                })
-                              ),
-                              id: familyHistory.id,
-                            });
-                            setIsDialogOpen(true);
-                          }}
-                        >
-                          <Edit2 color="#84012A" />
-                        </Button>
-                        <Button
-                          variant={"ghost"}
-                          onClick={() =>
-                            handleDeleteFamilyHistory(familyHistory.id)
-                          }
-                        >
-                          <Trash2Icon color="#84012A" />
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-1 ">
-                      <FormLabels
-                        label="Relationship/Age"
-                        value={`${familyHistory.relationship}/${familyHistory.age}`}
-                      />
-                      <FormLabels
-                        label="Active Problems"
-                        value={familyHistory.activeProblems.map((problems) => (
-                          <div key={problems.id}> {problems.name} </div>
-                        ))}
-                      />
-                    </div>
-                  </div>
-                ))}
+                {data && data.length > 0 ? (
+                  <DefaultDataTable
+                    title="Family History"
+                    columns={columns}
+                    data={data}
+                    pageNo={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => setPage(newPage)}
+                    onAddClick={() => {
+                      setEditData(null);
+                      setIsDialogOpen(true);
+                    }}
+                    className="mt-4"
+                  />
+                ) : (
+                  <p className="text-center">No family history found</p>
+                )}
               </div>
             )}
           </AccordionContent>

@@ -12,7 +12,7 @@ import {
   UserEncounterData,
 } from "@/types/chartsInterface";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Edit2Icon, PlusCircle, Trash2Icon } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import {
   deleteHistoricalVaccine,
   getHistoricalVaccine,
@@ -20,6 +20,16 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
 import { showToast } from "@/utils/utils";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { EllipsisVertical } from "lucide-react";
 
 const Vaccines = ({
   patientDetails,
@@ -80,38 +90,104 @@ const Vaccines = ({
     }
   };
 
-  // DELETE Historical Vaccine
+  // Handle Delete Historical Vaccine
   const handleDeleteHistoricalVaccine = async (id: string) => {
     setLoading(true);
 
     try {
       await deleteHistoricalVaccine({ id });
-
       showToast({
         toast,
         type: "success",
         message: "Historical vaccine deleted successfully",
       });
     } catch (err) {
-      if (err instanceof Error) {
-        showToast({
-          toast,
-          type: "error",
-          message: "Could not delete historical vaccine",
-        });
-      } else {
-        showToast({
-          toast,
-          type: "error",
-          message:
-            "Could not delete historical vaccine. Unknown error occurred",
-        });
-      }
+      showToast({
+        toast,
+        type: "error",
+        message: "Could not delete historical vaccine",
+      });
     } finally {
       setLoading(false);
       fetchHistoricalVaccine();
     }
   };
+
+  // Define columns inline since we need specialized columns for this component
+  const columns: ColumnDef<HistoricalVaccineInterface>[] = [
+    {
+      accessorKey: "vaccine_name",
+      header: "Vaccine Name",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">{row.getValue("vaccine_name")}</div>
+      ),
+    },
+    {
+      accessorKey: "date",
+      header: "Date",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">{row.getValue("date")}</div>
+      ),
+    },
+    {
+      accessorKey: "source",
+      header: "Source",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.getValue("source") || "Not specified"}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "in_series",
+      header: "# In Series",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.getValue("in_series") || "Not specified"}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "notes",
+      header: "Notes",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.getValue("notes") || "No notes"}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: "",
+      cell: ({ row }) => (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500"/>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  setEditData(row.original);
+                  setIsDialogOpen(true);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  handleDeleteHistoricalVaccine(row.original.id);
+                }}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-3 group">
@@ -150,77 +226,26 @@ const Vaccines = ({
           <AccordionContent className="sm:max-w-4xl">
             {loading ? (
               <AccordionShimmerCard />
-            ) : historicalVaccineData?.total ? (
+            ) : (
               <div className="flex flex-col gap-2">
-                <div className="space-x-2 self-end">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(page - 1)}
-                    disabled={page <= 1}
-                  >
-                    <ChevronLeft />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(page + 1)}
-                    disabled={page >= totalPages}
-                  >
-                    <ChevronRight />
-                  </Button>
-                </div>
-                {historicalVaccineData.data && (
-                  <ul>
-                    {historicalVaccineData?.data.map((vaccine) => (
-                      <li key={vaccine.id} className="border-b py-2">
-                        <div className="flex justify-between items-center">
-                          <p className="font-bold">{vaccine.vaccine_name}</p>
-                          <div className="flex items-center">
-                            <Button
-                              variant="ghost"
-                              onClick={() => {
-                                setEditData(vaccine);
-                                setIsDialogOpen(true);
-                              }}
-                            >
-                              <Edit2Icon color="#84012A" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              onClick={() => {
-                                handleDeleteHistoricalVaccine(vaccine?.id);
-                              }}
-                              disabled={loading}
-                            >
-                              <Trash2Icon color="#84012A" />
-                            </Button>
-                          </div>
-                        </div>
-                        <p>Date: {vaccine.date}</p>
-                        <p>
-                          Source:{" "}
-                          {vaccine.source === ""
-                            ? "Source not specified"
-                            : vaccine.source}
-                        </p>
-                        <p>
-                          Notes:{" "}
-                          {vaccine.notes === "" ? "No notes" : vaccine.notes}
-                        </p>
-                        <p>
-                          # In Series:{" "}
-                          {vaccine.in_series === ""
-                            ? "Not specified"
-                            : vaccine.in_series}
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
+                {historicalVaccineData?.data && historicalVaccineData.data.length > 0 ? (
+                  <DefaultDataTable
+                    title="Vaccines"
+                    columns={columns}
+                    data={historicalVaccineData.data}
+                    pageNo={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => setPage(newPage)}
+                    onAddClick={() => {
+                      setEditData(undefined);
+                      setIsDialogOpen(true);
+                    }}
+                    className="mt-4"
+                  />
+                ) : (
+                  <div className="text-center">No Vaccine data found!</div>
                 )}
               </div>
-            ) : (
-              <div className="text-center">No Vaccine data found!</div>
             )}
           </AccordionContent>
         </AccordionItem>
