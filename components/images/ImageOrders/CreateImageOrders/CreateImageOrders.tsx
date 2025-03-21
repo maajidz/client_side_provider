@@ -189,7 +189,7 @@ const CreateImageResults = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [form]);
+  }, [form, isFormValid]);
 
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(!isFormValid());
 
