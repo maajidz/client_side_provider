@@ -12,6 +12,19 @@ export interface CreateEncounterInterface {
   date: string;
 }
 
+export interface UpdateEncounterInterface {
+  visit_type?: string;
+  mode?: string;
+  isVerified?: boolean;
+  chart?: {
+    subjective: string;
+    objective: string;
+    assessment: string;
+    plan: string;
+    additionalText: string;
+  };
+}
+
 export interface CreateEncounterResponseInterface {
   visit_type: string;
   mode: string;
@@ -104,13 +117,13 @@ export interface ChartUserDetails {
   medication_history?: MedicationHistory[];
   history_of_present_illness?: HistoryOfPresentIllness[];
   active_medications: ActiveMedications[];
-  gender: string
-  height: number
-  heightType: string
-  weight: string
-  weightType: string
-  dob: string
-  phone_number: string
+  gender: string;
+  height: number;
+  heightType: string;
+  weight: string;
+  weightType: string;
+  dob: string;
+  phone_number: string;
 }
 
 export interface ProgressTracker {

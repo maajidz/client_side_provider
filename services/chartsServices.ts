@@ -30,6 +30,7 @@ import {
   PastDiagnosesInterface,
   DiagnosesTypeDataInterface,
   Prescription,
+  UpdateEncounterInterface,
 } from "@/types/chartsInterface";
 import { EncounterInterface } from "@/types/encounterInterface";
 
@@ -41,6 +42,26 @@ export const createEncounterRequest = async ({
   const response = await ApiFetch({
     method: "POST",
     url: "/provider/encounters",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: requestData,
+  });
+  console.log(response.data);
+  const data: CreateEncounterResponseInterface = await response.data;
+  return data;
+};
+
+export const updateEncounterRequest = async ({
+  encounterId,
+  requestData,
+}: {
+  encounterId: string;
+  requestData: UpdateEncounterInterface;
+}) => {
+  const response = await ApiFetch({
+    method: "PATCH",
+    url: `/provider/encounters/${encounterId}`,
     headers: {
       "Content-Type": "application/json",
     },

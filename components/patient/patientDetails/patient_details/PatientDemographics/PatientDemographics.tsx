@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import LoadingButton from "../../../../LoadingButton";
 import { PatientDetails } from "@/types/userInterface";
 import { fetchUserEssentials } from "@/services/userServices";
 import BasicInformation from "./BasicInformation";
 import ContactDetails from "./ContactDetails";
 import EditBasicInformation from "./EditBasicInformation";
 import EditContactDetails from "./EditContactDetails";
+import DemographicsShimmer from "@/components/custom_buttons/shimmer/DemographicsShimmer";
 
 const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
   const [response, setResponse] = useState<PatientDetails>();
@@ -64,31 +64,23 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
         setEditPatient={setEditPatient}
       />
     );
-
-  if (loading) return <LoadingButton />;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <>
-      {loading ? (
-        <LoadingButton />
-      ) : response ? (
-        <div className="flex flex-col">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-1 flex-row gap-4">
-              {renderBasicInformation()}
-              {renderContactDetails()}
-              {/* <PHRRegistration patientDetails={response} />
+      <div className="flex flex-col">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-1 flex-row gap-4">
+            {loading ? <DemographicsShimmer /> : renderBasicInformation()}
+            {loading ? <DemographicsShimmer /> : renderContactDetails()}
+            {/* <PHRRegistration patientDetails={response} />
                   <PatientId patientDetails={response} />
                   <EmergencyContact patientDetails={response} />
                   <PatientPreferences patientDetails={response} />
                   <AdditionalInformation patientDetails={response} /> */}
-            </div>
           </div>
         </div>
-      ) : (
-        <p>No data available.</p>
-      )}
+      </div>
     </>
   );
 };
