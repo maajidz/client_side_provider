@@ -198,10 +198,10 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                     pageNo={page}
                     totalPages={totalPages}
                     onPageChange={(newPage) => setPage(newPage)}
-                    onAddClick={() => {
-                      setEditData(null);
-                      setIsDialogOpen(true);
-                    }}
+                    // onAddClick={() => {
+                    //   setEditData(null);
+                    //   setIsDialogOpen(true);
+                    // }}
                     className="mt-4"
                   />
                 </div>

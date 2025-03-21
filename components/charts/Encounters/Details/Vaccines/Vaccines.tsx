@@ -236,10 +236,10 @@ const Vaccines = ({
                     pageNo={page}
                     totalPages={totalPages}
                     onPageChange={(newPage) => setPage(newPage)}
-                    onAddClick={() => {
-                      setEditData(undefined);
-                      setIsDialogOpen(true);
-                    }}
+                      // onAddClick={() => {
+                      //   setEditData(undefined);
+                      //   setIsDialogOpen(true);
+                      // }}
                     className="mt-4"
                   />
                 ) : (

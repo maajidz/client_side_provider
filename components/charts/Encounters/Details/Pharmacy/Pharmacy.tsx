@@ -188,7 +188,7 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
                       pageNo={1}
                       totalPages={1}
                       onPageChange={() => {}}
-                      onAddClick={() => setIsDialogOpen(true)}
+                      // onAddClick={() => setIsDialogOpen(true)}
                       className="mt-4"
                     />
                   </div>

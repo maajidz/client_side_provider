@@ -198,7 +198,7 @@ const PastMedicalHistory = ({ patientDetails }: PastMedicalHistoryProps) => {
                   pageNo={page}
                   totalPages={totalPages}
                   onPageChange={(newPage) => setPage(newPage)}
-                  onAddClick={() => setIsDialogOpen(true)}
+                  // onAddClick={() => setIsDialogOpen(true)}
                   className="mt-4"
                 />
               </div>
