@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { EllipsisVertical, PlusCircle } from "lucide-react";
 import {
+  ProcedureData,
   ProcedureResponse,
   UpdateProceduresInterface,
 } from "@/types/procedureInterface";
@@ -92,7 +93,7 @@ const ProceduresSurgeriesAndHospitalization = ({
   };
 
   // Define columns for the procedures table
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<ProcedureData>[] = [
     {
       accessorKey: "type",
       header: "Type",

@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
-  deleteSupplement,
   getSupplements,
 } from "@/services/chartDetailsServices";
 import { UserEncounterData } from "@/types/chartsInterface";
@@ -16,16 +15,11 @@ import {
 } from "@/types/supplementsInterface";
 import SupplementsDialog from "./SupplementsDialog";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Edit2,
   PlusCircle,
-  Trash2Icon,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
 import { useToast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
 import { showToast } from "@/utils/utils";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { columns } from "@/components/patient/medications/PatientSupplements/columns";
@@ -98,29 +92,29 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
   }, [dialogState.edit, editData]);
 
   // DELETE Supplement
-  const handleDeleteSupplement = async (supplementId: string) => {
-    setLoading(true);
+  // const handleDeleteSupplement = async (supplementId: string) => {
+  //   setLoading(true);
 
-    try {
-      await deleteSupplement(supplementId);
+  //   try {
+  //     await deleteSupplement(supplementId);
 
-      showToast({
-        toast,
-        type: "success",
-        message: `Supplement deleted successfully`,
-      });
-    } catch (err) {
-      if (err instanceof Error)
-        showToast({
-          toast,
-          type: "error",
-          message: `Supplement deletion failed`,
-        });
-    } finally {
-      setLoading(false);
-      await fetchSupplements();
-    }
-  };
+  //     showToast({
+  //       toast,
+  //       type: "success",
+  //       message: `Supplement deleted successfully`,
+  //     });
+  //   } catch (err) {
+  //     if (err instanceof Error)
+  //       showToast({
+  //         toast,
+  //         type: "error",
+  //         message: `Supplement deletion failed`,
+  //       });
+  //   } finally {
+  //     setLoading(false);
+  //     await fetchSupplements();
+  //   }
+  // };
 
   return (
     <div className="flex flex-col gap-3 group">

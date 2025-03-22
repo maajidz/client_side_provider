@@ -103,7 +103,7 @@ export function StickyNote({
   const [currentTitle, setCurrentTitle] = useState(title);
   const [currentDescription, setCurrentDescription] = useState(description);
   const [currentColor, setCurrentColor] = useState<StickyNoteColor>(color);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const isNewNote = title === "" && description === "";
@@ -114,6 +114,12 @@ export function StickyNote({
       titleRef.current.focus();
     }
   }, [isExpanded, isNewNote]);
+
+  const saveChanges = () => {
+    if (onUpdate) {
+      onUpdate(id, currentTitle, currentDescription, currentColor);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -135,25 +141,19 @@ export function StickyNote({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isExpanded, currentTitle, currentDescription, currentColor]);
+  }, [isExpanded, currentTitle, currentDescription, currentColor, onClose, saveChanges]);
 
-  const saveChanges = () => {
-    if (onUpdate) {
-      onUpdate(id, currentTitle, currentDescription, currentColor);
+  const handleDelete = (e: React.MouseEvent | React.KeyboardEvent) => {
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
+    }
+    if (onDelete) {
+      onDelete(id);
+    }
+    if (onClose) {
+      onClose();
     }
   };
-
-const handleDelete = (e: React.MouseEvent | React.KeyboardEvent | any) => {
-  if (e && e.stopPropagation) {
-    e.stopPropagation();
-  }
-  if (onDelete) {
-    onDelete(id);
-  }
-  if (onClose) {
-    onClose();
-  }
-};
 
   const handleColorChange = (newColor: StickyNoteColor) => {
     setCurrentColor(newColor);
@@ -162,6 +162,7 @@ const handleDelete = (e: React.MouseEvent | React.KeyboardEvent | any) => {
   const handleOpen = () => {
     if (onOpen) {
       onOpen();
+      console.log(isHovered);
     } else {
       setIsExpandedInternal(true);
     }

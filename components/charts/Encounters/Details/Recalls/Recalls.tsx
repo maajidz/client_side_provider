@@ -14,6 +14,7 @@ import {
 import RecallsDialog from "./RecallsDialog";
 import { UserEncounterData } from "@/types/chartsInterface";
 import {
+  RecallsData,
   RecallsEditData,
   RecallsResponseInterface,
 } from "@/types/recallsInterface";
@@ -105,7 +106,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   };
 
   // Define columns for the recalls table
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<RecallsData>[] = [
     {
       accessorKey: "type",
       header: "Type",

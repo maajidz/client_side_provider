@@ -105,7 +105,7 @@ const Vaccines = ({
       showToast({
         toast,
         type: "error",
-        message: "Could not delete historical vaccine",
+        message: `Could not delete historical vaccine, ${err}`,
       });
     } finally {
       setLoading(false);

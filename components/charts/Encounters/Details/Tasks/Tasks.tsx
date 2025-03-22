@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
-  deleteTask,
   getTasks,
   getTasksTypes,
 } from "@/services/chartDetailsServices";
@@ -17,17 +16,12 @@ import {
 } from "@/types/tasksInterface";
 import TasksDialog from "./TasksDialog";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Edit2,
   PlusCircle,
-  Trash2Icon,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
-import { Badge } from "@/components/ui/badge";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { columns } from "@/components/tasks/columns";
 
@@ -102,30 +96,30 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     fetchTasksList();
   }, [fetchTasks, fetchTasksList]);
 
-  const handleDeleteTask = async (taskId: string) => {
-    setLoading(true);
-    console.log(`Task ID: ${taskId}`);
+  // const handleDeleteTask = async (taskId: string) => {
+  //   setLoading(true);
+  //   console.log(`Task ID: ${taskId}`);
 
-    try {
-      await deleteTask({ id: taskId });
+  //   try {
+  //     await deleteTask({ id: taskId });
 
-      showToast({
-        toast,
-        type: "success",
-        message: `Task deleted successfully`,
-      });
-    } catch (err) {
-      if (err instanceof Error)
-        showToast({
-          toast,
-          type: "error",
-          message: `Could not delete selected task`,
-        });
-    } finally {
-      setLoading(false);
-      fetchTasks();
-    }
-  };
+  //     showToast({
+  //       toast,
+  //       type: "success",
+  //       message: `Task deleted successfully`,
+  //     });
+  //   } catch (err) {
+  //     if (err instanceof Error)
+  //       showToast({
+  //         toast,
+  //         type: "error",
+  //         message: `Could not delete selected task`,
+  //       });
+  //   } finally {
+  //     setLoading(false);
+  //     fetchTasks();
+  //   }
+  // };
 
   return (
     <div className="flex flex-col gap-3 group">

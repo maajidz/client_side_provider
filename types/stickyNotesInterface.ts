@@ -2,11 +2,11 @@ import { ProviderDetails } from "./providerDetailsInterface"
 
 export interface StickyNotesInterface {
     chartId: string
-    title: string
+    title?: string
     note: string
     providerId: string
-    color: string
-    isPinned: boolean
+    color?: string
+    isPinned?: boolean
 }
 
 export interface UpdateStickyNotesInterface {

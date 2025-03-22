@@ -277,7 +277,6 @@ function ImageResults({ userDetailsId }: ImageResultsProps) {
           title="Image Results"
           onAddClick={goToCreateImage}
           columns={columns()}
-          title={"Image Results"}
           data={resultList?.data || []}
           pageNo={page}
           totalPages={totalPages}

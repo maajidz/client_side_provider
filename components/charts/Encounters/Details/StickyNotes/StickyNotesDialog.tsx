@@ -65,6 +65,7 @@ const StickyNotesDialog = ({
             chartId: chartId,
             note: content,
             providerId: providerDetails.providerId,
+            // isPinned: false
           };
           const response = await createStickyNotes({ requestData });
           console.log("Sticky note auto-saved:", response);

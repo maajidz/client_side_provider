@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import AlertDialog from "./AlertDialog";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { deleteAlert, getAlertData } from "@/services/chartDetailsServices";
-import { AlertResponseInterface } from "@/types/alertInterface";
+import { AlertDataInterface, AlertResponseInterface } from "@/types/alertInterface";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -86,7 +86,7 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   };
 
   // Define columns for the alerts table
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<AlertDataInterface>[] = [
     {
       accessorKey: "alert.alertType.alertName",
       header: "Alert Name",

@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils"
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
+>(({ className, ...props }, 
+  // ref
+) => {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const [isRow, setIsRow] = useState(false);
 

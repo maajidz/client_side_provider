@@ -1,10 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Edit2Icon,
   PlusCircle,
-  Trash2Icon,
 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -22,7 +18,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { deleteInjection, getInjection } from "@/services/injectionsServices";
 import { showToast } from "@/utils/utils";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { ColumnDef } from "@tanstack/react-table";
