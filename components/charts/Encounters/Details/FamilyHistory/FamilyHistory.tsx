@@ -198,7 +198,7 @@ const FamilyHistory = ({
               <div className="flex flex-col gap-2">
                 {data && data.length > 0 ? (
                   <DefaultDataTable
-                    title="Family History"
+                    // title="Family History"
                     columns={columns}
                     data={data}
                     pageNo={page}

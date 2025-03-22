@@ -187,7 +187,7 @@ function MedicationPrescriptionsList() {
       ) : prescriptionsData && prescriptionsData.length > 0 ? (
         <div className="flex flex-col gap-2">
           <DefaultDataTable
-            title="Medications"
+            // title="Medications"
             columns={columns}
             data={prescriptionsData}
             pageNo={page}

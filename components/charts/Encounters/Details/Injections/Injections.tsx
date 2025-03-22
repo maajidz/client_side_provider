@@ -205,7 +205,7 @@ const Injections = ({
                 <div className="flex flex-col gap-2">
                   {injectionsData?.data && injectionsData.data.length > 0 ? (
                     <DefaultDataTable
-                      title="Injections"
+                      // title="Injections"
                       columns={columns}
                       data={injectionsData.data}
                       pageNo={page}

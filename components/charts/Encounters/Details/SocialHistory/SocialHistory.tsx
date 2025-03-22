@@ -202,7 +202,7 @@ const SocialHistory = ({ patientDetails }: SocialHistoryProps) => {
             ) : (
               <div className="flex flex-col gap-2">
                 <DefaultDataTable
-                  title="Social History"
+                  // title="Social History"
                   columns={columns}
                   data={socialHistory}
                   pageNo={page}

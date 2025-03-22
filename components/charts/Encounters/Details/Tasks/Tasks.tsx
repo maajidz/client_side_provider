@@ -161,7 +161,7 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
             ) : (
               <div className="flex flex-col gap-2">
                 <DefaultDataTable
-                  title="Tasks"
+                  // title="Tasks"
                   columns={columns({
                     setEditData,
                     setIsEditDialogOpen: setIsDialogOpen,

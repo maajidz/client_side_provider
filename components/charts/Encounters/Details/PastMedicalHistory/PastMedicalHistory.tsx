@@ -192,7 +192,7 @@ const PastMedicalHistory = ({ patientDetails }: PastMedicalHistoryProps) => {
             ) : medicalHistory && medicalHistory.total > 0 ? (
               <div className="flex flex-col gap-2">
                 <DefaultDataTable
-                  title="Medical History"
+                  // title="Medical History"
                   columns={columns}
                   data={medicalHistory.items || []}
                   pageNo={page}

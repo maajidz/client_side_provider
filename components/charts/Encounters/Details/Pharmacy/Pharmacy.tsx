@@ -182,7 +182,7 @@ const Pharmacy = ({ patientDetails }: PharmacyProps) => {
                 {pharmacyData !== undefined ? (
                   <div className="flex flex-col gap-2">
                     <DefaultDataTable
-                      title="Pharmacy"
+                      // title="Pharmacy"
                       columns={columns}
                       data={[pharmacyData]}
                       pageNo={1}

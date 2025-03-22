@@ -192,7 +192,7 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
               data?.data && (
                 <div className="flex flex-col gap-2">
                   <DefaultDataTable
-                    title="Alerts"
+                    // title="Alerts"
                     columns={columns}
                     data={data.data}
                     pageNo={page}

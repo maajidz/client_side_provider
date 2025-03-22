@@ -219,7 +219,7 @@ const Allergies = ({
               <div className="flex flex-col gap-2">
                 {allergies && allergies.length > 0 ? (
                   <DefaultDataTable
-                    title="Allergies"
+                    // title="Allergies"
                     columns={columns}
                     data={allergies}
                     pageNo={page}

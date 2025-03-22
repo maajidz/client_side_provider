@@ -220,7 +220,7 @@ const ProceduresSurgeriesAndHospitalization = ({
               <div className="flex flex-col gap-2">
                 {data?.data && data.data.length > 0 ? (
                   <DefaultDataTable
-                    title="Procedures"
+                    // title="Procedures"
                     columns={columns}
                     data={data.data}
                     pageNo={page}

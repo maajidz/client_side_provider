@@ -230,7 +230,7 @@ const Vaccines = ({
               <div className="flex flex-col gap-2">
                 {historicalVaccineData?.data && historicalVaccineData.data.length > 0 ? (
                   <DefaultDataTable
-                    title="Vaccines"
+                    // title="Vaccines"
                     columns={columns}
                     data={historicalVaccineData.data}
                     pageNo={page}

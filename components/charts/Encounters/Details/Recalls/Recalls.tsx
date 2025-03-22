@@ -226,7 +226,7 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
               data?.data && (
                 <div className="flex flex-col gap-2">
                   <DefaultDataTable
-                    title="Recalls"
+                    // title="Recalls"
                     columns={columns}
                     data={data.data}
                     pageNo={page}

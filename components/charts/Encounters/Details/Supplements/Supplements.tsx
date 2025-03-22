@@ -154,7 +154,7 @@ const Supplements = ({ patientDetails }: SupplementsProps) => {
               <div className="flex flex-col gap-2">
                 {supplementData?.data && supplementData.data.length > 0 ? (
                   <DefaultDataTable
-                    title="Supplements"
+                    // title="Supplements"
                     columns={columns({
                       setEditData,
                       setIsDialogOpen: setDialogState,
