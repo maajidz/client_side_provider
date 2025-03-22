@@ -8,7 +8,7 @@ const ChartsBody = () => {
             <div className="flex items-start justify-between">
                 <Heading
                     title={`Chart Notes`}
-                    description=""
+                    // description=""
                 />
             </div>
             <Separator />

@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import {
   deleteAllergies,
   getAllergiesData,
@@ -17,14 +16,20 @@ import { showToast } from "@/utils/utils";
 import AllergiesDialog from "./AllergiesDialog";
 import EditAllergy from "./EditAllergy";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Edit2,
   PlusCircle,
-  Trash2Icon,
+  EllipsisVertical
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Allergies = ({
   patientDetails,
@@ -35,6 +40,7 @@ const Allergies = ({
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [allergies, setAllergies] = useState<AllergenResponseInterfae[]>([]);
+  const [selectedAllergy, setSelectedAllergy] = useState<AllergenResponseInterfae | null>(null);
   const [error, setError] = useState("");
 
   // Pagination State
@@ -94,6 +100,83 @@ const Allergies = ({
     }
   };
 
+  // Define the columns for the allergies table
+  const columns: ColumnDef<AllergenResponseInterfae>[] = [
+    {
+      accessorKey: "allergen",
+      header: "Allergen",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">{row.getValue("allergen")}</div>
+      ),
+    },
+    {
+      accessorKey: "severity",
+      header: "Severity",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">{row.getValue("severity")}</div>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">{row.getValue("status")}</div>
+      ),
+    },
+    {
+      accessorKey: "observedOn",
+      header: "Observed On",
+      cell: ({ getValue }) => {
+        const date = new Date(getValue() as string);
+        return (
+          <div className="cursor-pointer">
+            {date.toLocaleDateString()}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "reactions",
+      header: "Reactions",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.reactions.map((reaction) => (
+            <div key={reaction.id}>{reaction.name}</div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: "",
+      cell: ({ row }) => (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500"/>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedAllergy(row.original);
+                  setIsEditDialogOpen(true);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDeleteAllergy(row.original.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
@@ -115,85 +198,40 @@ const Allergies = ({
               }}
               isOpen={isDialogOpen}
             />
+            {selectedAllergy && (
+              <EditAllergy
+                onClose={() => {
+                  setIsEditDialogOpen(false);
+                  setSelectedAllergy(null);
+                }}
+                isOpen={isEditDialogOpen}
+                selectedAllergy={selectedAllergy}
+                fetchAllergies={fetchAllergies}
+              />
+            )}
           </div>
           <AccordionContent className="sm:max-w-4xl">
             {loading ? (
               <AccordionShimmerCard />
-            ) : allergies && allergies.length !== 0 ? (
-              <div className="flex flex-col gap-2">
-                <div className="space-x-2 self-end">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(page - 1)}
-                    disabled={page <= 1}
-                  >
-                    <ChevronLeft />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(page + 1)}
-                    disabled={page >= totalPages}
-                  >
-                    <ChevronRight />
-                  </Button>
-                </div>
-                {allergies.map((allergy) => (
-                  <div
-                    key={allergy.id}
-                    className="flex flex-col gap-2 p-2 border rounded-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="text-base font-semibold">
-                        {allergy?.allergen}
-                      </div>
-                      <div className="flex">
-                        <Button
-                          variant="ghost"
-                          onClick={() => setIsEditDialogOpen(true)}
-                        >
-                          <Edit2 color="#84012A" />
-                        </Button>
-                        <EditAllergy
-                          onClose={() => {
-                            setIsEditDialogOpen(false);
-                          }}
-                          isOpen={isEditDialogOpen}
-                          selectedAllergy={allergy}
-                          fetchAllergies={fetchAllergies}
-                        />
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleDeleteAllergy(allergy.id)}
-                        >
-                          <Trash2Icon color="#84012A" />
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-1 ">
-                      <FormLabels
-                        label="Observed On"
-                        value={new Date(
-                          allergy.observedOn
-                        ).toLocaleDateString()}
-                      />
-                      <FormLabels label="Severity" value={allergy.severity} />
-                      <FormLabels label="Status" value={allergy.status} />
-                      <FormLabels
-                        label="Reaction"
-                        value={allergy.reactions.map((reaction) => (
-                          <div key={reaction.name}>{reaction.name} </div>
-                        ))}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
             ) : error ? (
               <p className="text-center">{error}</p>
             ) : (
-              <p className="text-center">No allergies data found</p>
+              <div className="flex flex-col gap-2">
+                {allergies && allergies.length > 0 ? (
+                  <DefaultDataTable
+                    // title="Allergies"
+                    columns={columns}
+                    data={allergies}
+                    pageNo={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => setPage(newPage)}
+                    // onAddClick={() => setIsDialogOpen(true)}
+                    className="mt-4"
+                  />
+                ) : (
+                  <p className="text-center">No allergies data found</p>
+                )}
+              </div>
             )}
           </AccordionContent>
         </AccordionItem>

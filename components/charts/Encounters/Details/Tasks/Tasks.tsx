@@ -28,6 +28,8 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
 import { Badge } from "@/components/ui/badge";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { columns } from "@/components/tasks/columns";
 
 const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -37,7 +39,7 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   const [tasksListData, setTasksListData] = useState<TaskTypeResponse | null>(
     null
   );
-  const [tasksData, setTasksData] = useState<TasksResponseDataInterface[]>();
+  const [tasksData, setTasksData] = useState<TasksResponseDataInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   // Pagination State
@@ -69,7 +71,7 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
       showToast({
         toast,
         type: "error",
-        message: `Error fetching supplement data: ${error}`,
+        message: `Error fetching tasks: ${error}`,
       });
     } finally {
       setLoading(false);
@@ -158,78 +160,27 @@ const Tasks = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
               <AccordionShimmerCard />
             ) : (
               <div className="flex flex-col gap-2">
-                <div className="space-x-2 self-end">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(page - 1)}
-                    disabled={page <= 1}
-                  >
-                    <ChevronLeft />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(page + 1)}
-                    disabled={page >= totalPages}
-                  >
-                    <ChevronRight />
-                  </Button>
-                </div>
-                {tasksData && tasksData.length > 0 ? (
-                  tasksData.map((task) => (
-                    <div
-                      key={task.id}
-                      className="flex flex-col gap-2 border rounded-md p-2"
-                    >
-                      <div className="flex justify-between items-center">
-                        <h5 className="text-lg font-semibold">
-                          {task?.taskType.name}
-                        </h5>
-                        <div className="flex items-center">
-                          <Button
-                            variant={"ghost"}
-                            onClick={() => {
-                              setEditData(task);
-                              setIsDialogOpen(true);
-                            }}
-                          >
-                            <Edit2 color="#84012A" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            onClick={() => {
-                              handleDeleteTask(task?.id);
-                            }}
-                            disabled={loading}
-                          >
-                            <Trash2Icon color="#84012A" />
-                          </Button>
-                        </div>
-                      </div>
-                      <span className="font-semibold">
-                        Due Date: {new Date(task?.dueDate).toLocaleDateString()}
-                      </span>
-                      <span className="text-md">
-                        <span>Description: {task.description}</span>
-                      </span>
-                      <span className="text-md">Notes: {task.notes}</span>
-                      <Badge
-                        className={`w-fit px-2 py-0.5 text-md rounded-full border-[1px] ${
-                          task.status.toLowerCase() === "pending"
-                            ? "bg-yellow-100 text-yellow-500 border-yellow-500 hover:bg-yellow-100"
-                            : "bg-[#ABEFC6] text-[#067647] border-[#067647] hover:bg-[#ABEFC6]"
-                        }`}
-                      >
-                        {task.status}
-                      </Badge>
-                    </div>
-                  ))
-                ) : (
-                  <div className="flex items-center justify-center">
-                    No tasks available
-                  </div>
-                )}
+                <DefaultDataTable
+                  // title="Tasks"
+                  columns={columns({
+                    setEditData,
+                    setIsEditDialogOpen: setIsDialogOpen,
+                    setTaskLoading: setLoading,
+                    showToast: ({ type, message }: { type: "success" | "error"; message: string }) => showToast({ toast, type, message }),
+                    fetchTasksList,
+                    setIsCommentDialogOpen: () => {},
+                    isPatientTask: true,
+                  })}
+                  data={tasksData}
+                  pageNo={page}
+                  totalPages={totalPages}
+                  onPageChange={(newPage) => setPage(newPage)}
+                  // onAddClick={() => {
+                  //   setEditData(null);
+                  //   setIsDialogOpen(true);
+                  // }}
+                  className="mt-4"
+                />
               </div>
             )}
           </AccordionContent>

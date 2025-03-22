@@ -17,7 +17,7 @@ import { Badge } from "../ui/badge";
 const handleTasksDelete = async (
   taskId: string,
   setTaskLoading: (loading: boolean) => void,
-  showToast: (args: { type: string; message: string }) => void,
+  showToast: (args: { type: "success" | "error"; message: string }) => void,
   fetchTasks: () => void
 ) => {
   setTaskLoading(true);
@@ -39,7 +39,7 @@ const handleTasksDelete = async (
 const handleTasksStatusUpdate = async (
   taskId: string,
   setTaskLoading: (loading: boolean) => void,
-  showToast: (args: { type: string; message: string }) => void,
+  showToast: (args: { type: "success" | "error"; message: string }) => void,
   fetchTasks: () => void
 ) => {
   setTaskLoading(true);
@@ -80,7 +80,7 @@ export const columns = ({
   setIsEditDialogOpen: (isOpen: boolean) => void;
   setIsCommentDialogOpen: (isOpen: boolean) => void;
   setTaskLoading: (loading: boolean) => void;
-  showToast: (args: { type: string; message: string }) => void;
+  showToast: (args: { type: "success" | "error"; message: string }) => void;
   fetchTasksList: () => void;
   isPatientTask: boolean;
 }): ColumnDef<TasksResponseDataInterface>[] => [

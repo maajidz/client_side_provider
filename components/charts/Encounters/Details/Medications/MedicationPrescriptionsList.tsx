@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -8,10 +7,19 @@ import {
 } from "@/services/chartDetailsServices";
 import { MedicationPrescriptionInterface } from "@/types/medicationInterface";
 import { showToast } from "@/utils/utils";
-import { ChevronLeft, ChevronRight, Trash2Icon } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import EditMedicationPrescription from "./EditMedicationPrescription";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 function MedicationPrescriptionsList() {
   // Data State
@@ -90,6 +98,85 @@ function MedicationPrescriptionsList() {
     }
   }
 
+  // Define columns for the medications table
+  const columns: ColumnDef<MedicationPrescriptionInterface>[] = [
+    {
+      accessorKey: "medicationName.productName",
+      header: "Medication",
+      cell: ({ row }) => (
+        <div className="cursor-pointer font-semibold">
+          {row.original.medicationName?.productName}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "medicationDetails",
+      header: "Details",
+      cell: ({ row }) => (
+        <div className="cursor-pointer text-sm text-gray-700">
+          <span className="font-semibold">
+            {row.original.medicationName.strength}
+          </span>{" "}
+          <span>{row.original.medicationName.doseForm},</span>{" "}
+          <span className="capitalize">
+            {row.original.medicationName.route}
+          </span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "directions",
+      header: "Directions",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.directions}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <Badge
+          className={`w-fit px-2 py-0.5 text-md rounded-full border-[1px] ${
+            row.original.status.toLowerCase() === "active"
+              ? "bg-[#ABEFC6] text-[#067647] border-[#067647] hover:bg-[#ABEFC6]"
+              : "bg-[#FECDCA] text-[#B42318] border-[#B42318] hover:bg-[#FECDCA]"
+          }`}
+        >
+          {row.original.status}
+        </Badge>
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: "",
+      cell: ({ row }) => (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <EditMedicationPrescription
+                  selectedPrescription={row.original}
+                  fetchPrescriptionData={fetchPrescriptionData}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDeleteMedicationPrescription(row.original.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
+
   if (error)
     return <div className="flex items-center justify-center">{error}</div>;
 
@@ -99,70 +186,15 @@ function MedicationPrescriptionsList() {
         <AccordionShimmerCard />
       ) : prescriptionsData && prescriptionsData.length > 0 ? (
         <div className="flex flex-col gap-2">
-          <div className="space-x-2 self-end">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page - 1)}
-              disabled={page <= 1}
-            >
-              <ChevronLeft />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page + 1)}
-              disabled={page >= totalPages}
-            >
-              <ChevronRight />
-            </Button>
-          </div>
-          {prescriptionsData.map((prescription) => (
-            <div
-              key={prescription.id}
-              className="flex flex-col gap-2 border rounded-md p-2"
-            >
-              <div className="flex justify-between items-center">
-                <h5 className="text-lg font-semibold">
-                  {prescription?.medicationName?.productName}
-                </h5>
-                <div className="flex items-center">
-                  <EditMedicationPrescription
-                    selectedPrescription={prescription}
-                    fetchPrescriptionData={fetchPrescriptionData}
-                  />
-                  <Button
-                    variant="ghost"
-                    onClick={() =>
-                      handleDeleteMedicationPrescription(prescription.id)
-                    }
-                    disabled={loading}
-                  >
-                    <Trash2Icon color="#84012A" />
-                  </Button>
-                </div>
-              </div>
-              <span className="text-sm text-gray-700">
-                <span className="font-semibold">
-                  {prescription.medicationName.strength}
-                </span>{" "}
-                <span>{prescription.medicationName.doseForm},</span>{" "}
-                <span className="capitalize">
-                  {prescription.medicationName.route}
-                </span>
-              </span>
-              <span className="text-md">{prescription.directions}</span>
-              <Badge
-                className={`w-fit px-2 py-0.5 text-md rounded-full border-[1px] ${
-                  prescription.status.toLowerCase() === "active"
-                    ? "bg-[#ABEFC6] text-[#067647] border-[#067647] hover:bg-[#ABEFC6]"
-                    : "bg-[#FECDCA] text-[#B42318] border-[#B42318] hover:bg-[#FECDCA]"
-                }`}
-              >
-                {prescription.status}
-              </Badge>
-            </div>
-          ))}
+          <DefaultDataTable
+            // title="Medications"
+            columns={columns}
+            data={prescriptionsData}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage)}
+            className="mt-4"
+          />
         </div>
       ) : (
         <div className="flex items-center justify-center">

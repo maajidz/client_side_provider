@@ -1,20 +1,35 @@
 import * as React from "react"
+import { useEffect, useRef, useState } from 'react';
 
 import { cn } from "@/lib/utils"
 
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "transition-all flex flex-col flex-grow items-start gap-3 rounded-xl border border-gray-300/50 hover:border-gray-300 hover:cursor-pointer bg-card text-card-foreground px-4 py-3 hover:shadow-sm",
-      className
-    )}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  const parentRef = useRef<HTMLDivElement | null>(null);
+  const [isRow, setIsRow] = useState(false);
+
+  useEffect(() => {
+    if (parentRef.current) {
+      const computedStyle = window.getComputedStyle(parentRef.current);
+      setIsRow(computedStyle.flexDirection === 'row');
+    }
+  }, [parentRef]);
+
+  return (
+    <div
+      ref={parentRef}
+      className={cn(
+        "transition-all flex flex-col",
+        isRow ? "flex-grow" : "",
+        "items-start gap-3 rounded-xl border border-gray-300/50 hover:border-gray-300 hover:cursor-pointer bg-card text-card-foreground px-4 py-3 hover:shadow-sm",
+        className
+      )}
+      {...props}
+    />
+  )
+})
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<

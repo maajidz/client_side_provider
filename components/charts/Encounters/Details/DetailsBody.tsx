@@ -21,6 +21,7 @@ import SocialHistory from "./SocialHistory/SocialHistory";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 const DetailsBody = ({
   patientDetails,
@@ -34,16 +35,14 @@ const DetailsBody = ({
   const age = calculateAge(patientDetails.userDetails?.dob);
   const bmiValue = (
     (Number(patientDetails.progressTracker?.currentWeight) /
-    (Number(patientDetails.userDetails?.height)/30.48) ** 2) *
+      (Number(patientDetails.userDetails?.height) / 30.48) ** 2) *
     703
   ).toFixed(2);
 
   return (
-    <div
-      className={`flex flex-col gap-2 p-4 h-full font-medium bg-[#F3EFF0] ${className}`}
-    >
-      <div className="flex flex-col gap-4 bg-white rounded-xl p-4 shadow-sm">
-        <div className="flex flex-row items-center gap-2">
+    <div className={`flex flex-col gap-2 p-4 font-medium ${className}`}>
+      <Card>
+        <CardHeader className="flex flex-row items-center gap-2">
           <Avatar
             className={`flex h-16 w-16 rounded-full border-2 border-[#FFE7E7]`}
           >
@@ -77,54 +76,48 @@ const DetailsBody = ({
               />
             </div>
           </div>
-        </div>
-        <div className="flex flex-row gap-2 flex-wrap">
+        </CardHeader>
+        <CardContent className="flex flex-row gap-2 flex-wrap">
           <Badge popoverLabel="Weight">
             <Icon name="weight" size={16} />
             <FormLabels
               label=""
-              value={`${patientDetails.progressTracker?.currentWeight} kg`}
+              value={`${Number(
+                patientDetails.progressTracker?.currentWeight
+              ).toFixed(2)} kg`}
             />
           </Badge>
           <Badge popoverLabel="Height">
             <Icon name="height" size={16} />
             <FormLabels
               label=""
-              value={`${(Number(patientDetails.userDetails?.height)/30.48)} ft`}
+              value={`${(
+                Number(patientDetails.userDetails?.height) / 30.48
+              ).toFixed(2)} ft`}
             />
           </Badge>
           <Badge popoverLabel="BMI">
             <Icon name="digital_wellbeing" size={16} />
-            <FormLabels
-              label=""
-              value={bmiValue}
-            />
+            <FormLabels value={bmiValue} />
           </Badge>
           <Badge popoverLabel="Visit Type">
             <Icon name="meeting_room" size={16} />
             <FormLabels
-              label=""
               value={formatVisitType(patientDetails?.visit_type ?? "")}
             />
           </Badge>
           <Badge popoverLabel="Mode">
             <Icon name="switches" size={16} />
-            <FormLabels
-              label=""
-              value={formatVisitType(patientDetails?.mode ?? "")}
-            />
+            <FormLabels value={formatVisitType(patientDetails?.mode ?? "")} />
           </Badge>
           <Badge popoverLabel="Phone">
             <Icon name="phone" size={16} />
-            <FormLabels
-              label=""
-              value={patientDetails?.userDetails.phone_number}
-            />
+            <FormLabels value={patientDetails?.userDetails.phone_number} />
           </Badge>
-        </div>
-      </div>
-      <ScrollArea className="overflow-y-scroll">
-        <div className="flex flex-col [&>div]:bg-white [&>div]:rounded-xl [&>div]:shadow-sm gap-2">
+        </CardContent>
+      </Card>
+      <ScrollArea className="overflow-y-scroll flex flex-1">
+        <div className="flex flex-1 flex-col [&>div]:bg-white [&>div]:rounded-xl [&>div]:shadow-sm gap-2">
           <Alerts patientDetails={patientDetails} />
           <StickyNotes patientDetails={patientDetails} />
           <Allergies patientDetails={patientDetails} />

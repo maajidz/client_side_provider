@@ -44,6 +44,7 @@ import { priority } from "@/constants/data";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { fetchProviderListDetails } from "@/services/registerServices";
+import { MultiSelectCheckbox } from "@/components/ui/multiselectDropdown";
 
 function TasksDialog({
   isOpen,
@@ -81,10 +82,12 @@ function TasksDialog({
     defaultValues: {
       category: tasksData?.categoryId ?? "",
       task: tasksData?.notes ?? "",
-      owner: tasksData?.assignedProvider.id ?? "",
+      owner: tasksData?.assignedProvider?.id ?? "",
       priority: tasksData?.priority ?? "low",
-      dueDate: tasksData?.dueDate ?? new Date().toISOString().split("T")[0],
-      sendReminder: [],
+      dueDate: tasksData?.dueDate 
+        ? new Date(tasksData.dueDate).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      sendReminder: tasksData?.reminder ?? [],
       comments: tasksData?.description ?? "",
     },
   });
@@ -124,23 +127,28 @@ function TasksDialog({
           .toISOString()
           .split("T")[0];
         form.setValue("dueDate", formattedDueDate);
-        setShowDueDate(!showDueDate);
+        setShowDueDate(true);
       }
-      setSelectedOwner(
-        ownersList.find((owner) => owner.providerDetails?.id === tasksData.assignerProvider?.id)
+      
+      const matchingOwner = ownersList.find(
+        (owner) => owner.providerDetails?.id === tasksData.assignerProvider?.id
       );
-      form.setValue("owner", selectedOwner?.providerDetails?.id ?? "")
+      
+      if (matchingOwner) {
+        setSelectedOwner(matchingOwner);
+        form.setValue("owner", matchingOwner.providerDetails?.id ?? "");
+      }
     } else {
       form.reset({
-        category:  "",
+        category: "",
         task: "",
-        owner:  "",
+        owner: "",
         priority: "low",
         sendReminder: [],
         comments: "",
       });
     }
-  }, [form, tasksData, ownersList, selectedOwner?.providerDetails?.id, setShowDueDate, showDueDate]);
+  }, [form, tasksData, ownersList]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     const requestData: CreateTaskType | UpdateTaskType = {
@@ -272,7 +280,10 @@ function TasksDialog({
                               <div> Loading...</div>
                             ) : (
                               ownersList.map((owner) => (
-                                <SelectItem key={owner.id} value={owner.providerDetails?.id ?? owner.id}>
+                                <SelectItem
+                                  key={owner.id}
+                                  value={owner.providerDetails?.id ?? owner.id}
+                                >
                                   {owner.firstName} {owner.lastName}
                                 </SelectItem>
                               ))
@@ -313,93 +324,56 @@ function TasksDialog({
                     </FormItem>
                   )}
                 />
-                <div className="flex items-center space-x-3">
+                <div className="flex flex-col gap-3 border rounded-md p-2">
                   <Checkbox
                     id="assignDueDate"
                     checked={showDueDate}
-                    onCheckedChange={() => setShowDueDate(!showDueDate)}
+                    onCheckedChange={(checked) => setShowDueDate(checked)}
+                    label="Assign due date"
                   />
-                  <label
-                    htmlFor="assignDueDate"
-                    className="text-sm font-medium"
-                  >
-                    Assign due date
-                  </label>
-                </div>
-
-                {showDueDate && (
-                  <>
-                    <div className="flex gap-4 flex-col flex-1">
-                      <h4 className="text-lg font-semibold">
-                        Date and Reminder
-                      </h4>
-                      <div className="flex flex-row gap-2">
-                        <FormField
-                          control={form.control}
-                          name="dueDate"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>From Date:</FormLabel>
-                              <FormControl>
-                                <Input type="date" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="sendReminder"
-                          render={({ field }) => {
-                            const selectedValues = field.value ?? [];
-                            return (
+                  {showDueDate && (
+                    <>
+                      <div className="flex gap-4 flex-col flex-1 px-2">
+                        <div className="flex flex-row gap-2">
+                          <FormField
+                            control={form.control}
+                            name="dueDate"
+                            render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Send Reminder Mail</FormLabel>
-                                <Select>
-                                  <SelectTrigger className="w-full max-w-full">
-                                    <SelectValue
-                                      placeholder={
-                                        selectedValues.length > 0
-                                          ? selectedValues.join(", ")
-                                          : "Select Reminder Day"
-                                      }
-                                    />
-                                  </SelectTrigger>
-                                  <SelectContent className="pt-1 pb-1">
-                                    {reminderOptions.map((option) => (
-                                      <div
-                                        key={option}
-                                        className="text-sm font-medium rounded-md hover:bg-gray-100 flex items-center gap-2 p-2 cursor-pointer"
-                                        onClick={() => {
-                                          const updatedValues =
-                                            selectedValues.includes(option)
-                                              ? selectedValues.filter(
-                                                  (val) => val !== option
-                                                )
-                                              : [...selectedValues, option];
-
-                                          field.onChange(updatedValues);
-                                        }}
-                                      >
-                                        <Checkbox
-                                          checked={selectedValues.includes(
-                                            option
-                                          )}
-                                        />
-                                        {option}
-                                      </div>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                                <FormLabel>From Date:</FormLabel>
+                                <FormControl>
+                                  <Input type="date" {...field} />
+                                </FormControl>
                                 <FormMessage />
                               </FormItem>
-                            );
-                          }}
-                        />
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="sendReminder"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Select Reminder Days</FormLabel>
+                                <MultiSelectCheckbox
+                                  options={reminderOptions.map((option) => ({
+                                    id: option,
+                                    label: option,
+                                  }))}
+                                  onChange={(selectedValues: string[]) => {
+                                    field.onChange(selectedValues);
+                                  }}
+                                  defaultSelected={field.value ?? []}
+                                  className="flex-1 truncate"
+                                />
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
+                </div>
                 <FormField
                   control={form.control}
                   name="comments"
