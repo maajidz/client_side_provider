@@ -2,8 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import AlertDialog from "./AlertDialog";
 import { UserEncounterData } from "@/types/chartsInterface";
 import { deleteAlert, getAlertData } from "@/services/chartDetailsServices";
-import { AlertResponseInterface } from "@/types/alertInterface";
-import FormLabels from "@/components/custom_buttons/FormLabels";
+import { AlertDataInterface, AlertResponseInterface } from "@/types/alertInterface";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -12,15 +11,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Edit2,
+  EllipsisVertical,
   PlusCircle,
-  Trash2Icon,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -80,6 +85,79 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
     }
   };
 
+  // Define columns for the alerts table
+  const columns: ColumnDef<AlertDataInterface>[] = [
+    {
+      accessorKey: "alert.alertType.alertName",
+      header: "Alert Name",
+      cell: ({ row }) => (
+        <div className="cursor-pointer font-semibold">
+          {row.original.alert.alertType.alertName}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "alert.alertDescription",
+      header: "Description",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.alert.alertDescription}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "alert.alertType.notes",
+      header: "Notes",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.alert.alertType.notes}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "alert.alertType.createdAt",
+      header: "Created On",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.alert.alertType.createdAt.split("T")[0]}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "alert.id",
+      header: "",
+      cell: ({ row }) => (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  setEditData({
+                    alertName: row.original.alert.alertType.alertName,
+                    alertDescription: row.original.alert.alertDescription,
+                    alertId: row.original.alert.id,
+                  });
+                  setIsDialogOpen(true);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDeleteAlert(row.original.alert.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-3 group">
       <Accordion type="single" collapsible className="w-full">
@@ -113,71 +191,19 @@ const Alerts = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
             ) : (data?.total ?? 0) > 0 ? (
               data?.data && (
                 <div className="flex flex-col gap-2">
-                  <div className="space-x-2 self-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page - 1)}
-                      disabled={page <= 1}
-                    >
-                      <ChevronLeft />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page + 1)}
-                      disabled={page >= totalPages}
-                    >
-                      <ChevronRight />
-                    </Button>
-                  </div>
-                  {data.data.flatMap((alert, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col gap-2 border p-2 rounded-lg"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div className="text-base font-semibold">
-                          {alert.alert.alertType.alertName}{" "}
-                        </div>
-                        <div className="flex">
-                          <Button
-                            variant={"ghost"}
-                            onClick={() => {
-                              setEditData({
-                                alertName: alert.alert.alertType.alertName,
-                                alertDescription: alert.alert.alertDescription,
-                                alertId: alert.alert.id,
-                              });
-                              setIsDialogOpen(true);
-                            }}
-                          >
-                            <Edit2 color="#84012A" />
-                          </Button>
-                          <Button
-                            variant={"ghost"}
-                            onClick={() => handleDeleteAlert(alert.alert.id)}
-                          >
-                            <Trash2Icon color="#84012A" />
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1 ">
-                        <FormLabels
-                          label="Description"
-                          value={alert.alert.alertDescription}
-                        />
-                        <FormLabels
-                          label="Notes"
-                          value={alert.alert.alertType.notes}
-                        />
-                        <FormLabels
-                          label="Created on"
-                          value={alert.alert.alertType.createdAt.split("T")[0]}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                  <DefaultDataTable
+                    // title="Alerts"
+                    columns={columns}
+                    data={data.data}
+                    pageNo={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => setPage(newPage)}
+                    // onAddClick={() => {
+                    //   setEditData(null);
+                    //   setIsDialogOpen(true);
+                    // }}
+                    className="mt-4"
+                  />
                 </div>
               )
             ) : (

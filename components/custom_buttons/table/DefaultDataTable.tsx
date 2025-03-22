@@ -134,9 +134,9 @@ export function DefaultDataTable<TData, TValue = unknown>({
   }
 
   return (
-    <div className={`data-table-container flex flex-col gap-3 flex-1 @container ${className}`}>
+    <div className={`data-table-container flex flex-col gap-4 flex-1 @container ${className}`}>
       <div className="flex flex-col @[768px]:flex-row items-start @[768px]:items-center justify-between gap-3 @[768px]:gap-0">
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row gap-6 items-center">
           {title && <span className="font-bold text-lg">{title}</span>}
           {onAddClick && (
             <Button variant="ghost" onClick={onAddClick} className="flex items-center gap-1">

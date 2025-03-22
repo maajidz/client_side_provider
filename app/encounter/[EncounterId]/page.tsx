@@ -10,6 +10,13 @@ import { UserEncounterData } from "@/types/chartsInterface";
 import { ResizablePanelGroup, ResizablePanel } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+
+const breadcrumbItems = [
+  { title: "Dashboard", link: "/dashboard" },
+  { title: "All Encounters", link: "/encounter" },
+  { title: "Encounter Details", link: "/encounter/[EncounterId]" },
+];
 
 const Encounter = ({
   params,
@@ -72,11 +79,20 @@ const Encounter = ({
 
   return (
     <div className="flex flex-1 w-full flex-row bg-[#F3EFF0]">
-      <DetailsBody
-        patientDetails={data}
-        encounterId={encounterId!}
-        className="flex w-1/4"
-      />
+      <div className="flex flex-col gap-1 w-1/4">
+        <div className="flex px-4 pt-6">
+          <Breadcrumbs items={breadcrumbItems} />
+          {/* <div className="flex flex-row gap-2">
+            <Button variant={"outline"}>
+              <Icon name="arrow_back" />
+            </Button>
+          </div> */}
+        </div>
+        <DetailsBody
+          patientDetails={data}
+          encounterId={encounterId!}
+        />
+      </div>
       <ResizablePanelGroup
         direction="horizontal"
         className="flex flex-1 gap-2 "
@@ -100,7 +116,7 @@ const Encounter = ({
           <div className="flex h-full items-start bg-white shadow-lg">
             <Button
               variant={"outline"}
-              className="px-2 h-full border-none"
+              className="px-2 h-full items-start border-none"
               onClick={() => setIsSOAPSectionVisible(true)}
             >
               <Icon name="menu_open" />

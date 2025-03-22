@@ -1,10 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Edit2Icon,
   PlusCircle,
-  Trash2Icon,
 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -22,8 +18,17 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { deleteInjection, getInjection } from "@/services/injectionsServices";
 import { showToast } from "@/utils/utils";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import AccordionShimmerCard from "@/components/custom_buttons/shimmer/AccordionCardShimmer";
+import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { EllipsisVertical } from "lucide-react";
 
 const Injections = ({
   patientDetails,
@@ -86,11 +91,85 @@ const Injections = ({
     }
   };
 
+  // Define columns inline
+  const columns: ColumnDef<InjectionsData>[] = [
+    {
+      accessorKey: "injectionType.injection_name",
+      header: "Injection Name",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">{row.original.injectionType.injection_name}</div>
+      ),
+    },
+    {
+      accessorKey: "dosage_quantity",
+      header: "Dosage",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.dosage_quantity} {row.original.dosage_unit}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "frequency",
+      header: "Frequency",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">{row.original.frequency}</div>
+      ),
+    },
+    {
+      accessorKey: "site",
+      header: "Site",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">{row.original.site}</div>
+      ),
+    },
+    {
+      accessorKey: "administered_date",
+      header: "Administered Date",
+      cell: ({ row }) => (
+        <div className="cursor-pointer">
+          {row.original.administered_date.split("T")[0]}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: "",
+      cell: ({ row }) => (
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical size={16} className="text-gray-500"/>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  setEditData(row.original);
+                  setIsDialogOpen(true);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  handleDeleteInjection(row.original.id);
+                }}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <>
       <div className="flex flex-col gap-3 group">
         <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="familyHistory">
+          <AccordionItem value="injections">
             <div className="flex justify-between items-center">
               <AccordionTrigger>Injections</AccordionTrigger>
               <Button
@@ -117,87 +196,26 @@ const Injections = ({
             <AccordionContent className="sm:max-w-4xl">
               {loading ? (
                 <AccordionShimmerCard />
-              ) : injectionsData ? (
-                <div className="flex flex-col gap-2">
-                  <div className="space-x-2 self-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page - 1)}
-                      disabled={page <= 1}
-                    >
-                      <ChevronLeft />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(page + 1)}
-                      disabled={page >= totalPages}
-                    >
-                      <ChevronRight />
-                    </Button>
-                  </div>
-                  {injectionsData?.data.map((injections) => (
-                    <div
-                      key={injections.id}
-                      className="flex flex-row justify-between border rounded-md w-full p-3"
-                    >
-                      <div>
-                        <FormLabels
-                          label={injections.injectionType.injection_name}
-                          value=""
-                        />
-                        <FormLabels
-                          label="Intake"
-                          value={`${injections.dosage_quantity} ${injections.dosage_unit},  ${injections.frequency}    ${injections.period_number} ${injections.period_unit} ,  ${injections.parental_route} ${injections.site}`}
-                        />
-                        <FormLabels
-                          label="Lot number"
-                          value={`${injections.lot_number}`}
-                        />
-                        <FormLabels
-                          label="Expiration date"
-                          value={`${injections.expiration_date.split("T")[0]}`}
-                        />
-                        <FormLabels
-                          label="Note to nurse"
-                          value={`${injections.note_to_nurse}`}
-                        />
-                        <FormLabels
-                          label="comments"
-                          value={`${injections.comments}`}
-                        />
-                        <FormLabels
-                          label="Administered date"
-                          value={`${
-                            injections.administered_date.split("T")[0]
-                          }`}
-                        />
-                      </div>
-                      <div>
-                        <Button
-                          variant={"ghost"}
-                          className="text-[#84012A]"
-                          onClick={() => {
-                            setEditData(injections);
-                            setIsDialogOpen(true);
-                          }}
-                        >
-                          <Edit2Icon />
-                        </Button>
-                        <Button
-                          variant={"ghost"}
-                          className="text-[#84012A]"
-                          onClick={() => handleDeleteInjection(injections.id)}
-                        >
-                          <Trash2Icon />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               ) : (
-                <div> No data </div>
+                <div className="flex flex-col gap-2">
+                  {injectionsData?.data && injectionsData.data.length > 0 ? (
+                    <DefaultDataTable
+                      // title="Injections"
+                      columns={columns}
+                      data={injectionsData.data}
+                      pageNo={page}
+                      totalPages={totalPages}
+                      onPageChange={(newPage) => setPage(newPage)}
+                      // onAddClick={() => {
+                      //   setEditData(null);
+                      //   setIsDialogOpen(true);
+                      // }}
+                      className="mt-4"
+                    />
+                  ) : (
+                    <div className="text-center">No injections data found</div>
+                  )}
+                </div>
               )}
             </AccordionContent>
           </AccordionItem>

@@ -173,7 +173,7 @@ const ChartNotesAccordion = ({
   return (
     <div className="flex flex-col gap-2">
       <div
-        className="flex justify-end w-full text-sm"
+        className="flex self-end text-xs text-gray-500"
       >
         Last saved at: {formatSentAt(patientDetails?.chart.updatedAt)}
       </div>

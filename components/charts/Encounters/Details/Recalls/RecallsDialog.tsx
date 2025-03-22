@@ -220,7 +220,7 @@ const RecallsDialog = ({
                     </FormItem>
                   )}
                 />
-                <div className="flex flex-wrap gap-1 ">
+                <div className="flex flex-row gap-2">
                   <FormField
                     control={form.control}
                     name="dueDate.period"
@@ -255,6 +255,7 @@ const RecallsDialog = ({
                           <Input
                             type="number"
                             min={1}
+                            className="w-full"
                             {...field}
                             onChange={(e) =>
                               field.onChange(Number(e.target.value))
@@ -343,9 +344,9 @@ const RecallsDialog = ({
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
+                          label="Send Auto Reminders to Patient"
                         />
                       </FormControl>
-                      <FormLabel>Send Auto Reminders to Patient</FormLabel>
                     </FormItem>
                   )}
                 />

@@ -89,7 +89,7 @@ function PrescriptionsClient() {
           title={
             <Heading
               title="Prescriptions"
-              description="A list of prescriptions assigned to the patients"
+              // description="A list of prescriptions assigned to the patients"
             />
           }
           columns={columns()}
