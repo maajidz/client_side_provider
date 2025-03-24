@@ -1,5 +1,4 @@
 import { CustomDataTable } from "@/components/custom_buttons/table/CustomDataTable";
-import LoadingButton from "@/components/LoadingButton";
 import { Device } from "@/types/implantedDevices";
 import { columns } from "./columns";
 import { Dispatch, SetStateAction } from "react";
@@ -17,19 +16,21 @@ const ImplantedDevicesClient = ({
   loading,
   pageNo,
   totalPages,
-  onSetPageNo
+  onSetPageNo,
 }: ImplantedDevicesClientProps) => {
-  if (loading) return <LoadingButton />;
-
   return (
     <>
-      <CustomDataTable
-        columns={columns()}
-        data={data || []}
-        pageNo={pageNo}
-        totalPages={totalPages}
-        onPageChange={(newPage) => onSetPageNo(newPage)}
-      />
+      {loading ? (
+        <div> Loading...</div>
+      ) : (
+        <CustomDataTable
+          columns={columns()}
+          data={data || []}
+          pageNo={pageNo}
+          totalPages={totalPages}
+          onPageChange={(newPage) => onSetPageNo(newPage)}
+        />
+      )}
     </>
   );
 };

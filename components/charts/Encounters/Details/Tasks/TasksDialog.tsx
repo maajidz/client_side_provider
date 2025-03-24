@@ -120,7 +120,7 @@ function TasksDialog({
       form.reset({
         category: tasksData.categoryId ?? "",
         task: tasksData.notes ?? "",
-        owner: tasksData.id ?? "",
+        owner: tasksData.assignedProvider?.id ?? "",
         priority: tasksData?.priority ?? "low",
         sendReminder: tasksData?.reminder ?? [],
         comments: tasksData.notes,
@@ -314,6 +314,7 @@ function TasksDialog({
                       <FormLabel className="w-fit">Owner</FormLabel>
                       <FormControl>
                         <Select
+                          value={field.value}
                           onValueChange={(value) => {
                             field.onChange(value);
                             const selected = ownersList.find(
