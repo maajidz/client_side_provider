@@ -14,17 +14,18 @@ import GhostButton from "../custom_buttons/buttons/GhostButton";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatSentAt } from "@/utils/dateUtils";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { Descendant } from "slate";
-import PlateEditor from "../ui/plate-editor/PlateEditor";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
+import PlateEditor from "../ui/plate-editor/PlateEditor";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { EllipsisVertical } from "lucide-react";
 
 const ConversationBody = ({
   userId,
@@ -263,31 +264,18 @@ const ConversationBody = ({
         <div className="font-semibold text-base capitalize">
           {selectedConversation.partnerUsername}
         </div>
-        <Select
-          onValueChange={(value) => {
-            if (value === "archive" || value === "unarchive") {
-              handleArchiveChat();
-            }
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select" />
-          </SelectTrigger>
-          <SelectContent>
-            {selectedConversation.status ? (
-              <SelectItem value="unarchive" className="cursor-pointer">
-                Unarchive
-              </SelectItem>
-            ) : (
-              <SelectItem value="archive" className="cursor-pointer">
-                Archive
-              </SelectItem>
-            )}
-            <SelectItem value="report" className="cursor-pointer">
-              Report
-            </SelectItem>
-          </SelectContent>
-        </Select>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <EllipsisVertical size={24} className="text-gray-500" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleArchiveChat}>
+              {selectedConversation.status ? "Unarchive" : "Archive"}
+            </DropdownMenuItem>
+            <DropdownMenuItem>Report User</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <Separator />
       <ScrollArea className="h-[40vh]">

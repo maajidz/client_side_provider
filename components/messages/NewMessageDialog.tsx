@@ -19,8 +19,7 @@ import { Label } from "../ui/label";
 import { UserData } from "@/types/userInterface";
 import { showToast } from "@/utils/utils";
 import { Icon } from "../ui/icon";
-import { Descendant } from "slate";
-import PlateEditor from "../ui/plate-editor/PlateEditor";
+import { Textarea } from "../ui/textarea";
 const NewMessageDialog = ({
   isOpen,
   onClose,
@@ -33,12 +32,7 @@ const NewMessageDialog = ({
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [userData, setUserData] = useState<UserData[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
-  const [editorValue, setEditorValue] = useState<Descendant[]>([
-    {
-      type: "paragraph",
-      children: [{ text: "" }],
-    },
-  ]);
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
   const providerDetails = useSelector((state: RootState) => state.login);
   const { toast } = useToast();
@@ -115,26 +109,12 @@ const NewMessageDialog = ({
   }, [searchTerm, selectedUser, handleSearch]);
 
   const handleSendMessage = () => {
-    const messageText = editorValue
-      .map((node) => {
-        if ("children" in node) {
-          return node.children
-            .map((child) => ("text" in child ? child.text : ""))
-            .join(" ");
-        }
-        return "";
-      })
-      .join("\n")
-      .trim();
-
-    if (!messageText) return;
-
-    if (selectedUser?.user.userDetailsId) {
+    if (input.trim() && selectedUser?.user.userDetailsId) {
       const message: Message = {
         id: uuidv4(),
         senderID: providerDetails.providerId,
         receiverID: selectedUser?.user.userDetailsId,
-        content: messageText,
+        content: input,
         timestamp: new Date(),
         sender: "me",
         isArchived: false,
@@ -142,12 +122,7 @@ const NewMessageDialog = ({
       };
       sendMessage(message);
 
-      setEditorValue([
-        {
-          type: "paragraph",
-          children: [{ text: "" }],
-        },
-      ]);
+      setInput("");
 
       showToast({
         toast,
@@ -165,12 +140,7 @@ const NewMessageDialog = ({
         message: message.content,
       });
     }
-    setEditorValue([
-      {
-        type: "paragraph",
-        children: [{ text: "" }],
-      },
-    ]);
+    setInput("");
   };
 
   return (
@@ -255,11 +225,11 @@ const NewMessageDialog = ({
                   {selectedUser.user.firstName} {selectedUser.user.lastName}
                 </span>
               </div>
-              <PlateEditor
-                placeholder="Type a Message..."
-                value={editorValue}
+              <Textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type a message..."
                 className="w-full"
-                onChange={(value) => setEditorValue(value)}
               />
               <Button
                 className="border-collapse border-[#84012A] bg-[#84012A] items-center"
