@@ -11,6 +11,7 @@ export const tasksSchema = z.object({
   sendReminder: z.array(z.string()).optional(),
   comments: z.string().optional(),
   userDetailsId: z.string().optional(),
+  assignDueDate: z.boolean().optional(),
 });
 
 export const filterTasksSchema = z.object({

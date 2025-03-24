@@ -185,7 +185,7 @@ function PharmacyDialog({
           <DialogTitle>Add Pharmacy</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[30rem] h-auto">
+        <ScrollArea className="h-[30rem] min-h-32">
           <div className={formStyles.formBody}>
             {/* Search Form */}
             <Form {...form}>

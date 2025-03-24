@@ -1,6 +1,6 @@
 "use client";
 import PageContainer from "@/components/layout/page-container";
-import PatientTasks from "@/components/patient/tasks/PatientTasks";
+import ViewPatientTasks from "@/components/patient/tasks/ViewPatientTasks";
 import { useParams } from "next/navigation";
 
 function Page() {
@@ -12,7 +12,7 @@ function Page() {
 
   return (
     <PageContainer>
-      <PatientTasks userDetailsId={userDetailsId} />
+      <ViewPatientTasks userDetailsId={userDetailsId} />
     </PageContainer>
   );
 }

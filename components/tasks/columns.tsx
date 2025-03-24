@@ -1,6 +1,6 @@
 "use client";
 
-import { Status, TasksResponseDataInterface } from "@/types/tasksInterface";
+import { Status, TasksResponseDataInterface, TaskTypeList } from "@/types/tasksInterface";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   DropdownMenu,
@@ -75,6 +75,7 @@ export const columns = ({
   fetchTasksList,
   setIsCommentDialogOpen,
   isPatientTask,
+  taskTypes,
 }: {
   setEditData: (data: TasksResponseDataInterface | null) => void;
   setIsEditDialogOpen: (isOpen: boolean) => void;
@@ -83,6 +84,7 @@ export const columns = ({
   showToast: (args: { type: "success" | "error"; message: string }) => void;
   fetchTasksList: () => void;
   isPatientTask: boolean;
+  taskTypes?: TaskTypeList[]
 }): ColumnDef<TasksResponseDataInterface>[] => [
   {
     accessorKey: "notes",
@@ -185,7 +187,7 @@ export const columns = ({
                   setIsCommentDialogOpen(true);
                 }}
               >
-                Add comment
+                {row.original.description ? "Edit comment": "Add comment"}
               </DropdownMenuItem>
             )}
             <DropdownMenuItem
@@ -194,7 +196,7 @@ export const columns = ({
                 setIsEditDialogOpen(true);
               }}
             >
-              Edit
+              Edit Task
             </DropdownMenuItem>
             {row.original.status === "PENDING" && (
               <DropdownMenuItem
@@ -223,7 +225,7 @@ export const columns = ({
               Delete
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => generateTasksPDF({ tasksData: row.original })}
+              onClick={() => generateTasksPDF({ tasksData: row.original, taskType: taskTypes?.find((task) => task.id === row.original.categoryId)?.name || '' })}
             >
               Print
             </DropdownMenuItem>

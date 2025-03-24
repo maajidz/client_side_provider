@@ -16,7 +16,6 @@ import {
   FormSectionVert,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
   SelectItem,
@@ -31,13 +30,16 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { US_STATES } from "@/constants/data";
+import DemographicsShimmer from "@/components/custom_buttons/shimmer/DemographicsShimmer";
 
 const EditContactDetails = ({
   patientDetails,
   setEditPatient,
+  onRefresh,
 }: {
   patientDetails: PatientDetails;
   setEditPatient: React.Dispatch<React.SetStateAction<boolean>>;
+  onRefresh: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
@@ -73,7 +75,6 @@ const EditContactDetails = ({
         zipCode: patientDetails.location.split(",")[4],
       });
       methods.setValue("state", patientDetails.location.split(",")[2] ?? "");
-      // console.log(patientDetails.location.split(",")[2], "HEHEHEHHEH");
     }
   }, [patientDetails, methods]);
 
@@ -93,7 +94,7 @@ const EditContactDetails = ({
           phoneNumber: data.phoneNumber,
         },
         userDetails: {
-          dob: patientDetails.dob ? patientDetails.dob : "",
+          dob: patientDetails.dob ? patientDetails.dob.split('T')[0] : "",
           height: patientDetails.height,
           heightType: patientDetails.heightType,
           weight: patientDetails.weight,
@@ -128,6 +129,7 @@ const EditContactDetails = ({
         setLoading(false);
         methods.reset();
         setEditPatient(false);
+        onRefresh((prev) => prev + 1);
       }
     }
   };
@@ -138,171 +140,179 @@ const EditContactDetails = ({
     );
   }, [search]);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
-    <div className="flex border-gray-100 border group p-6 py-4 flex-1 rounded-lg">
-      <Form {...methods}>
-        <form
-          onSubmit={methods.handleSubmit(onSubmit)}
-          className="flex gap-6 flex-col"
-        >
-          <FormSectionVert>
-          <div className="font-semibold text-xs text-gray-600">Contact Details</div>
-            <FormSectionHor>
-              <FormField
-                control={methods.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[#344054] font-medium text-sm">
-                      Address
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={methods.control}
-                name="state"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="w-full">State:</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a State">
-                            {field.value || "Select a State"}
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
+    <>
+      {loading ? (
+        <DemographicsShimmer />
+      ) : (
+        <div className="flex border-gray-100 border group p-6 py-4 flex-1 rounded-lg">
+          <Form {...methods}>
+            <form
+              onSubmit={methods.handleSubmit(onSubmit)}
+              className="flex gap-6 flex-col"
+            >
+              <FormSectionVert>
+                <div className="font-semibold text-xs text-gray-600">
+                  Contact Details
+                </div>
+                <FormSectionHor>
+                  <FormField
+                    control={methods.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[#344054] font-medium text-sm">
+                          Address
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={methods.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="w-full">State:</FormLabel>
+                        <FormControl>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a State">
+                                {field.value || "Select a State"}
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              <Input
+                                type="text"
+                                placeholder="Search states..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="p-2 w-full -b -gray-300"
+                                autoFocus={true}
+                              />
+                              {filteredStates.map((state) => (
+                                <SelectItem key={state.name} value={state.name}>
+                                  {state.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={methods.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[#344054] font-medium text-sm">
+                          City
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </FormSectionHor>
+                <FormSectionHor>
+                  <FormField
+                    control={methods.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[#344054] font-medium text-sm">
+                          Country
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={methods.control}
+                    name="zipCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[#344054] font-medium text-sm">
+                          Zipcode
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </FormSectionHor>
+                <FormSectionHor>
+                  <FormField
+                    control={methods.control}
+                    name="phoneNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="w-full">Phone Number:</FormLabel>
+                        <FormControl>
                           <Input
-                            type="text"
-                            placeholder="Search states..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="p-2 w-full -b -gray-300"
+                            placeholder="Contact Number"
+                            inputMode="tel"
+                            value={field.value}
+                            onChange={(e) =>
+                              field.onChange(e.currentTarget.value)
+                            }
+                            className="font-normal text-base"
                             autoFocus={true}
                           />
-                          {filteredStates.map((state) => (
-                            <SelectItem key={state.name} value={state.name}>
-                              {state.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={methods.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[#344054] font-medium text-sm">
-                      City
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </FormSectionHor>
-            <FormSectionHor>
-
-              <FormField
-                control={methods.control}
-                name="country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[#344054] font-medium text-sm">
-                      Country
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={methods.control}
-                name="zipCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[#344054] font-medium text-sm">
-                      Zipcode
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </FormSectionHor>
-            <FormSectionHor>
-              <FormField
-                control={methods.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="w-full">Phone Number:</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Contact Number"
-                        inputMode="tel"
-                        value={field.value}
-                        onChange={(e) => field.onChange(e.currentTarget.value)}
-                        className="font-normal text-base"
-                        autoFocus={true}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={methods.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="w-full">Email:</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Email"
-                        type="email"
-                        {...field}
-                        className="font-normal text-base"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </FormSectionHor>
-          </FormSectionVert>
-          <div className="flex self-end gap-5">
-            <Button variant={"outline"} onClick={() => setEditPatient(false)}>
-              Cancel
-            </Button>
-            <SubmitButton label="Update" />
-          </div>
-        </form>
-      </Form>
-    </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={methods.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="w-full">Email:</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Email"
+                            type="email"
+                            {...field}
+                            className="font-normal text-base"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </FormSectionHor>
+              </FormSectionVert>
+              <div className="flex self-end gap-5">
+                <Button
+                  variant={"outline"}
+                  onClick={() => setEditPatient(false)}
+                >
+                  Cancel
+                </Button>
+                <SubmitButton label="Update" />
+              </div>
+            </form>
+          </Form>
+        </div>
+      )}
+    </>
   );
 };
 
