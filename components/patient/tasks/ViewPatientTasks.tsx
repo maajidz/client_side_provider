@@ -335,6 +335,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
                   },
                   fetchTasksList: () => fetchTasks(page, userDetailsId),
                   isPatientTask: true,
+                  taskTypes: taskTypes
                 })}
                 data={resultList?.data}
                 pageNo={page}

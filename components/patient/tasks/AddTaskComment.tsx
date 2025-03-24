@@ -107,7 +107,9 @@ function AddTaskComment({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-auto">
         <DialogHeader>
-          <DialogTitle>Add comment</DialogTitle>
+          <DialogTitle>
+            {tasksData?.description ? "Edit comment" : "Add comment"}
+          </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3">
