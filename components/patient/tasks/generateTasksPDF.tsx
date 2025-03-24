@@ -4,8 +4,10 @@ import { TasksResponseDataInterface } from "@/types/tasksInterface";
 
 const generateTasksPDF = ({
   tasksData,
+  taskType,
 }: {
   tasksData: TasksResponseDataInterface;
+  taskType: string;
 }) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.width;
@@ -25,13 +27,17 @@ const generateTasksPDF = ({
 
   autoTable(doc, {
     startY: 40,
-    head: [["Task ID", "Category", "Status", "Priority"]], 
-    body:  [[
-      tasksData.id ?? "",
-      tasksData.categoryId ?? "",
-      tasksData.status ?? "",
-      tasksData.priority ?? "",
-    ]],
+    head: [["Task", "Category", "Status", "Priority", "Patient", "Assigned To"]],
+    body: [
+      [
+        tasksData.taskType.name ?? "",
+        taskType ?? "",
+        tasksData.status ?? "",
+        tasksData.priority ?? "",
+        tasksData?.patientId ?? "",
+        tasksData?.assignedProvider.providerUniqueId ?? ""
+      ],
+    ],
     theme: "grid",
     styles: { fontSize: 12, lineColor: "#84012A" },
     headStyles: {

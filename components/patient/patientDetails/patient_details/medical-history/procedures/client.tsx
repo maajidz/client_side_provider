@@ -1,6 +1,5 @@
 "use client";
 
-import LoadingButton from "@/components/LoadingButton";
 import { ProcedureData } from "@/types/procedureInterface";
 import { columns } from "./column";
 import { Dispatch, SetStateAction } from "react";
@@ -21,16 +20,21 @@ function ProceduresSurgeriesAndHospitalizationClient({
   totalPages,
   onSetPageNo,
 }: ProceduresSurgeriesAndHospitalizationClientProps) {
-  if (loading) return <LoadingButton />;
 
   return (
-    <DefaultDataTable
-      columns={columns()}
-      data={data || []}
-      pageNo={pageNo}
-      totalPages={totalPages}
-      onPageChange={(newPage) => onSetPageNo(newPage)}
-    />
+    <>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <DefaultDataTable
+          columns={columns()}
+          data={data || []}
+          pageNo={pageNo}
+          totalPages={totalPages}
+          onPageChange={(newPage) => onSetPageNo(newPage)}
+        />
+      )}
+    </>
   );
 }
 

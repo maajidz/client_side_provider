@@ -16,7 +16,6 @@ import {
   FormSectionVert,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import LoadingButton from "@/components/LoadingButton";
 import {
   Select,
   SelectItem,
@@ -30,13 +29,16 @@ import { updateExistingPatient } from "@/services/userServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import DemographicsShimmer from "@/components/custom_buttons/shimmer/DemographicsShimmer";
 
 const EditBasicInformation = ({
   patientDetails,
   setEditPatient,
+  onRefresh,
 }: {
   patientDetails: PatientDetails;
   setEditPatient: React.Dispatch<React.SetStateAction<boolean>>;
+  onRefresh: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -48,7 +50,9 @@ const EditBasicInformation = ({
       patientDetails,
       firstName: patientDetails.user.firstName || "",
       lastName: patientDetails.user.lastName || "",
-      dob: patientDetails.dob ? new Date(patientDetails.dob).toISOString().split("T")[0] : "",
+      dob: patientDetails.dob
+        ? new Date(patientDetails.dob).toISOString().split("T")[0]
+        : "",
       gender: patientDetails.gender || "",
     },
   });
@@ -59,7 +63,9 @@ const EditBasicInformation = ({
         patientDetails,
         firstName: patientDetails.user.firstName,
         lastName: patientDetails.user.lastName,
-        dob: patientDetails.dob ? new Date(patientDetails.dob).toISOString().split("T")[0] : "",
+        dob: patientDetails.dob
+          ? new Date(patientDetails.dob).toISOString().split("T")[0]
+          : "",
         gender: patientDetails.gender,
       });
     }
@@ -114,117 +120,128 @@ const EditBasicInformation = ({
         setLoading(false);
         methods.reset();
         setEditPatient(false);
+        onRefresh((prev) => prev + 1);
       }
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
   return (
-    <div className="flex border-gray-100 border group p-6 py-4 flex-1 rounded-lg">
-      <Form {...methods}>
-        <form
-          onSubmit={methods.handleSubmit(onSubmit)}
-          className="flex gap-6 flex-col"
-        >
-          <FormSectionVert>
-            <div className="font-semibold text-xs text-gray-600">Basic Information</div>
-            <FormSectionHor>
-              <FormField
-                control={methods.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="w-full">First Name:</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="First Name"
-                        inputMode="text"
-                        {...field}
-                        className="font-normal text-base capitalize "
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={methods.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="w-full">Last Name:</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Last Name"
-                        inputMode="text"
-                        {...field}
-                        className="font-normal text-base capitalize"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              </FormSectionHor>
-              <FormSectionHor>
-              <FormField
-                control={methods.control}
-                name="dob"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="w-full">DOB:</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="date"
-                        {...field}
-                        className="text-center  justify-center "
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={methods.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="w-full">Birth Gender:</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={(value: string) => field.onChange(value)}
-                      >
-                        <SelectTrigger className="">
-                          <SelectValue placeholder="Select here" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Male">Male</SelectItem>
-                          <SelectItem value="Female">Female</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </FormSectionHor>
-          </FormSectionVert>
+    <>
+      {loading ? (
+        <DemographicsShimmer />
+      ) : (
+        <div className="flex border-gray-100 border group p-6 py-4 flex-1 rounded-lg">
+          <Form {...methods}>
+            <form
+              onSubmit={methods.handleSubmit(onSubmit)}
+              className="flex gap-6 flex-col"
+            >
+              <FormSectionVert>
+                <div className="font-semibold text-xs text-gray-600">
+                  Basic Information
+                </div>
+                <FormSectionHor>
+                  <FormField
+                    control={methods.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="w-full">First Name:</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="First Name"
+                            inputMode="text"
+                            {...field}
+                            className="font-normal text-base capitalize "
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={methods.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="w-full">Last Name:</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="Last Name"
+                            inputMode="text"
+                            {...field}
+                            className="font-normal text-base capitalize"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </FormSectionHor>
+                <FormSectionHor>
+                  <FormField
+                    control={methods.control}
+                    name="dob"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="w-full">DOB:</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            {...field}
+                            className="text-center  justify-center "
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={methods.control}
+                    name="gender"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="w-full">Birth Gender:</FormLabel>
+                        <FormControl>
+                          <Select
+                            value={field.value}
+                            onValueChange={(value: string) =>
+                              field.onChange(value)
+                            }
+                          >
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Select here" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Male">Male</SelectItem>
+                              <SelectItem value="Female">Female</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </FormSectionHor>
+              </FormSectionVert>
 
-          <div className="flex self-end gap-5">
-            <Button variant={"outline"} onClick={() => setEditPatient(false)}>
-              Cancel
-            </Button>
-            <SubmitButton label="Update" />
-          </div>
-        </form>
-      </Form>
-    </div>
+              <div className="flex self-end gap-5">
+                <Button
+                  variant={"outline"}
+                  onClick={() => setEditPatient(false)}
+                >
+                  Cancel
+                </Button>
+                <SubmitButton label="Update" />
+              </div>
+            </form>
+          </Form>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { X, Pin, PinOff, Trash, MoreHorizontalIcon } from "lucide-react";
 import { Button } from "../button";
@@ -115,11 +115,13 @@ export function StickyNote({
     }
   }, [isExpanded, isNewNote]);
 
-  const saveChanges = () => {
-    if (onUpdate) {
-      onUpdate(id, currentTitle, currentDescription, currentColor);
-    }
-  };
+  const saveChanges = useCallback(
+    () => {
+      if (onUpdate) {
+        onUpdate(id, currentTitle, currentDescription, currentColor);
+      }
+    }, [id, currentTitle, currentDescription, currentColor, onUpdate]
+  );
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

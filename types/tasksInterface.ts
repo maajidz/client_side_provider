@@ -46,7 +46,7 @@ export interface TasksResponseDataInterface {
   status: string;
   notes: string;
   priority?: "low" | "medium" | "high";
-  dueDate: string;
+  dueDate?: string;
   reminder: any;
   assignedByAdmin: boolean;
   userDetailsId: string;

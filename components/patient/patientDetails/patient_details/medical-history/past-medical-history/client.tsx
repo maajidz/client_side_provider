@@ -3,7 +3,7 @@ import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterf
 import { columns } from "./column";
 import { useCallback, useEffect, useState } from "react";
 import { getPastMedicalHistory } from "@/services/chartDetailsServices";
-import LoadingButton from "@/components/LoadingButton";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 interface PastMedicalHistoryClientProps {
   userDetailsId: string;
@@ -49,16 +49,20 @@ function PastMedicalHistoryClient({
     fetchPastMedicalHistory();
   }, [fetchPastMedicalHistory]);
 
-  if (loading) return <LoadingButton />;
-
   return (
-    <DefaultDataTable
-      columns={columns()}
-      data={data}
-      pageNo={page}
-      totalPages={totalPages}
-      onPageChange={(newPage) => setPage(newPage)}
-    />
+    <>
+      {loading ? (
+        <TableShimmer />
+      ) : (
+        <DefaultDataTable
+          columns={columns()}
+          data={data}
+          pageNo={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+      )}
+    </>
   );
 }
 
