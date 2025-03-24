@@ -59,7 +59,7 @@ function TasksDialog({
   onClose: () => void;
   tasksListData: TaskTypeResponse | null;
 }) {
-  const [showDueDate, setShowDueDate] = useState<boolean>(false);
+  // const [showDueDate, setShowDueDate] = useState<boolean>(false);
   const [taskDataLoading, setTaskDataLoading] = useState<boolean>(false);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
@@ -84,13 +84,16 @@ function TasksDialog({
       task: tasksData?.notes ?? "",
       owner: tasksData?.assignedProvider?.id ?? "",
       priority: tasksData?.priority ?? "low",
-      dueDate: tasksData?.dueDate 
+      dueDate: tasksData?.dueDate
         ? new Date(tasksData.dueDate).toISOString().split("T")[0]
         : new Date().toISOString().split("T")[0],
       sendReminder: tasksData?.reminder ?? [],
       comments: tasksData?.description ?? "",
+      assignDueDate: tasksData?.dueDate ? true : false,
     },
   });
+
+  const showDueDate = form.watch("assignDueDate");
 
   const fetchOwnersList = useCallback(async () => {
     setLoading(true);
@@ -117,7 +120,7 @@ function TasksDialog({
       form.reset({
         category: tasksData.categoryId ?? "",
         task: tasksData.notes ?? "",
-        owner: tasksData.id ?? "",
+        owner: tasksData.assignedProvider?.id ?? "",
         priority: tasksData?.priority ?? "low",
         sendReminder: tasksData?.reminder ?? [],
         comments: tasksData.notes,
@@ -127,16 +130,19 @@ function TasksDialog({
           .toISOString()
           .split("T")[0];
         form.setValue("dueDate", formattedDueDate);
-        setShowDueDate(true);
+        form.setValue("assignDueDate", true);
       }
-      
-      const matchingOwner = ownersList.find(
-        (owner) => owner.providerDetails?.id === tasksData.assignerProvider?.id
-      );
-      
-      if (matchingOwner) {
-        setSelectedOwner(matchingOwner);
-        form.setValue("owner", matchingOwner.providerDetails?.id ?? "");
+
+      if (tasksData?.assignerProvider?.id) {
+        const matchingOwner = ownersList.find(
+          (owner) =>
+            owner.providerDetails?.id === tasksData.assignerProvider?.id
+        );
+
+        if (matchingOwner) {
+          setSelectedOwner(matchingOwner);
+          form.setValue("owner", matchingOwner.providerDetails?.id ?? "");
+        }
       }
     } else {
       form.reset({
@@ -151,24 +157,39 @@ function TasksDialog({
   }, [form, tasksData, ownersList]);
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
-    const requestData: CreateTaskType | UpdateTaskType = {
-      category: values.category,
-      description: values.comments ?? "",
-      priority: values.priority,
-      status: "PENDING",
-      notes: values.task,
-      dueDate: `${values.dueDate}`,
-      reminder: values.sendReminder,
-      assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
-      assignerProviderId: providerDetails.providerId,
-      assignedByAdmin: true,
-      userDetailsId: userDetailsId,
-    };
-
     setTaskDataLoading(true);
     try {
       if (!tasksData) {
-        await createTask({ requestBody: requestData });
+        if (values.dueDate) {
+          const requestData: CreateTaskType = {
+            category: values.category,
+            description: values.comments ?? "",
+            priority: values.priority,
+            status: "PENDING",
+            notes: values.task,
+            dueDate: `${values.dueDate}`,
+            reminder: values.sendReminder,
+            assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
+            assignerProviderId: providerDetails.providerId,
+            assignedByAdmin: true,
+            userDetailsId: userDetailsId,
+          };
+          await createTask({ requestBody: requestData });
+        } else {
+          const requestData: CreateTaskType = {
+            category: values.category,
+            description: values.comments ?? "",
+            priority: values.priority,
+            status: "PENDING",
+            notes: values.task,
+            reminder: values.sendReminder,
+            assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
+            assignerProviderId: providerDetails.providerId,
+            assignedByAdmin: true,
+            userDetailsId: userDetailsId,
+          };
+          await createTask({ requestBody: requestData });
+        }
 
         showToast({
           toast,
@@ -176,7 +197,36 @@ function TasksDialog({
           message: "Task created successfully",
         });
       } else {
-        await updateTask({ requestData, id: tasksData.id });
+        if (values.dueDate) {
+          const requestData: UpdateTaskType = {
+            category: values.category,
+            description: values.comments ?? "",
+            priority: values.priority,
+            status: "PENDING",
+            notes: values.task,
+            reminder: values.sendReminder,
+            assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
+            assignerProviderId: providerDetails.providerId,
+            assignedByAdmin: true,
+            userDetailsId: userDetailsId,
+            dueDate: values.dueDate ? values.dueDate : "",
+          };
+          await updateTask({ requestData, id: tasksData.id });
+        } else {
+          const requestData: UpdateTaskType = {
+            category: values.category,
+            description: values.comments ?? "",
+            priority: values.priority,
+            status: "PENDING",
+            notes: values.task,
+            reminder: values.sendReminder,
+            assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
+            assignerProviderId: providerDetails.providerId,
+            assignedByAdmin: true,
+            userDetailsId: userDetailsId,
+          };
+          await updateTask({ requestData, id: tasksData.id });
+        }
         showToast({
           toast,
           type: "success",
@@ -193,7 +243,7 @@ function TasksDialog({
     } finally {
       onClose();
       setTaskDataLoading(false);
-      setShowDueDate(false);
+      form.setValue("assignDueDate", false);
       form.reset();
     }
   };
@@ -264,6 +314,7 @@ function TasksDialog({
                       <FormLabel className="w-fit">Owner</FormLabel>
                       <FormControl>
                         <Select
+                          value={field.value}
                           onValueChange={(value) => {
                             field.onChange(value);
                             const selected = ownersList.find(
@@ -328,7 +379,9 @@ function TasksDialog({
                   <Checkbox
                     id="assignDueDate"
                     checked={showDueDate}
-                    onCheckedChange={(checked) => setShowDueDate(checked)}
+                    onCheckedChange={(checked) =>
+                      form.setValue("assignDueDate", checked)
+                    }
                     label="Assign due date"
                   />
                   {showDueDate && (

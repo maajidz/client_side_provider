@@ -79,7 +79,7 @@ const PatientQuestionnaires = ({
         });
         if (response) {
           setResultList(response);
-          setTotalPages(Math.ceil(response.total / (limit || 5)));
+          setTotalPages(Math.ceil(Number(response.total ?? 0) / Number(limit)));
         }
       } catch (error) {
         setLoading(false);
@@ -112,7 +112,7 @@ const PatientQuestionnaires = ({
           </TabsList>
           <div className="flex items-center justify-end gap-2">
             <div className="text-sm text-muted-foreground">
-              Page {page} of {totalPages}
+              Page {page} of {totalPages} 
             </div>
             <div className="space-x-2">
               <Button

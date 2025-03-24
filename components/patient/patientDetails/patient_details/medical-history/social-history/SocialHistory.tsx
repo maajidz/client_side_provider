@@ -95,7 +95,7 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
         {loading ? (
           <div>Loading...</div>
         ) : (
-          socialHistory.map((history) => (
+          socialHistory.length > 0 ? socialHistory.map((history) => (
             <div className="flex flex-col gap-3" key={history.id}>
               <div className="font-semibold text-large">
                 Social History recorded on{" "}
@@ -110,7 +110,9 @@ function SocialHistory({ userDetailsId }: SocialHistoryProps) {
                 dangerouslySetInnerHTML={{ __html: history.content }}
               />
             </div>
-          ))
+          )) : (
+            <div className="flex flex-row justify-center items-center px-4 py-2 h-24 text-center font-semibold text-[13px]">No results.</div>
+          )
         )}
       </div>
     </div>

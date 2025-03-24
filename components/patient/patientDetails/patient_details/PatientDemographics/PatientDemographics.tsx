@@ -15,6 +15,7 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
   const [editBasicPatientDetails, setBasicPatientDetails] =
     useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
   const fetchAndSetResponse = useCallback(async () => {
@@ -37,13 +38,14 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
 
   useEffect(() => {
     fetchAndSetResponse();
-  }, [fetchAndSetResponse]);
+  }, [fetchAndSetResponse, refreshKey]);
 
   const renderBasicInformation = () =>
     editBasicPatientDetails ? (
       <EditBasicInformation
         patientDetails={response!}
         setEditPatient={setBasicPatientDetails}
+        onRefresh={setRefreshKey}
       />
     ) : (
       <BasicInformation
@@ -57,6 +59,7 @@ const PatientDemographics = ({ userDetailsId }: { userDetailsId: string }) => {
       <EditContactDetails
         patientDetails={response!}
         setEditPatient={setEditPatient}
+        onRefresh={setRefreshKey}
       />
     ) : (
       <ContactDetails

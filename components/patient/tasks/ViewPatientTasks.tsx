@@ -32,18 +32,15 @@ import { priority, taskStatus } from "@/constants/data";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import AddTaskComment from "./AddTaskComment";
-import EditPatientTaskDialog from "./EditPatientTaskDialog";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import { Button } from "@/components/ui/button";
-import { Search, XCircle } from "lucide-react";
+import { Search } from "lucide-react";
 import TasksDialog from "@/components/charts/Encounters/Details/Tasks/TasksDialog";
-import { FetchProviderList } from "@/types/providerDetailsInterface";
-import { fetchProviderListDetails } from "@/services/registerServices";
 import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
-  const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
+  // const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [tasksListData, setTasksListData] = useState<TaskTypeResponse | null>(
     null
   );
@@ -54,7 +51,6 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   const limit = 10;
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [isCommentDialogOpen, setIsCommentDialogOpen] =
     useState<boolean>(false);
   const [editData, setEditData] = useState<TasksResponseDataInterface | null>(
@@ -78,23 +74,23 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
     },
   });
 
-  const fetchOwnersList = useCallback(async () => {
-    try {
-      const response = await fetchProviderListDetails({ page: 1, limit: 10 });
+  // const fetchOwnersList = useCallback(async () => {
+  //   try {
+  //     const response = await fetchProviderListDetails({ page: 1, limit: 10 });
 
-      if (response) {
-        setOwnersList(response.data || []);
-      }
-    } catch (err) {
-      console.log(err);
-      showToast({
-        toast,
-        type: "error",
-        message: "Failed to fetch owners list.",
-        icon: XCircle,
-      });
-    }
-  }, [toast]);
+  //     if (response) {
+  //       setOwnersList(response.data || []);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //     showToast({
+  //       toast,
+  //       type: "error",
+  //       message: "Failed to fetch owners list.",
+  //       icon: XCircle,
+  //     });
+  //   }
+  // }, [toast]);
 
   const fetchTasksList = useCallback(async () => {
     try {
@@ -176,16 +172,8 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
   useEffect(() => {
     fetchTasks(page, userDetailsId);
     fetchTaskTypes();
-    fetchOwnersList();
     fetchTasksList();
-  }, [
-    page,
-    fetchTasksList,
-    fetchTasks,
-    fetchTaskTypes,
-    fetchOwnersList,
-    userDetailsId,
-  ]);
+  }, [page, fetchTasksList, fetchTasks, fetchTaskTypes, userDetailsId]);
 
   const handleCommentDialogClose = () => {
     setIsCommentDialogOpen(false);
@@ -193,14 +181,9 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
     fetchTasks(page, userDetailsId);
   };
 
-  const handleEditDialogClose = () => {
-    setIsEditDialogOpen(false);
-    setEditData(null);
-    fetchTasks(page, userDetailsId);
-  };
-
   const handleDialogClose = () => {
     setIsDialogOpen(false);
+    setEditData(null);
     fetchTasks(page, userDetailsId);
   };
 
@@ -313,6 +296,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             onClose={handleDialogClose}
             isOpen={isDialogOpen}
             tasksListData={tasksListData}
+            tasksData={editData}
           />
           {taskLoading ? (
             <TableShimmer />
@@ -323,7 +307,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
                 onAddClick={() => setIsDialogOpen(true)}
                 columns={columns({
                   setEditData,
-                  setIsEditDialogOpen,
+                  setIsEditDialogOpen: setIsDialogOpen,
                   setIsCommentDialogOpen,
                   setTaskLoading,
                   showToast: ({ type, message }) => {
@@ -335,6 +319,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
                   },
                   fetchTasksList: () => fetchTasks(page, userDetailsId),
                   isPatientTask: true,
+                  taskTypes: taskTypes,
                 })}
                 data={resultList?.data}
                 pageNo={page}
@@ -349,7 +334,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             onClose={handleCommentDialogClose}
             isOpen={isCommentDialogOpen}
           />
-          <EditPatientTaskDialog
+          {/* <EditPatientTaskDialog
             tasksData={editData}
             userDetailsId={userDetailsId}
             isOpen={isEditDialogOpen}
@@ -357,7 +342,7 @@ const ViewPatientTasks = ({ userDetailsId }: { userDetailsId: string }) => {
             tasksListData={tasksListData}
             onClose={handleEditDialogClose}
             onFetchTasks={fetchTasksList}
-          />
+          /> */}
         </div>
       </div>
     </>
