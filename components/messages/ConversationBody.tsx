@@ -1,5 +1,9 @@
-import { fetchMessages } from "@/services/messageService";
-import { ConversationInterface, Message, UserMessagesInterface } from "@/types/messageInterface";
+import { archiveChat, fetchMessages } from "@/services/messageService";
+import {
+  ConversationInterface,
+  Message,
+  UserMessagesInterface,
+} from "@/types/messageInterface";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
@@ -9,8 +13,18 @@ import LoadingButton from "../LoadingButton";
 import GhostButton from "../custom_buttons/buttons/GhostButton";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatSentAt } from "@/utils/dateUtils";
-import { Textarea } from "../ui/textarea";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Descendant } from "slate";
+import PlateEditor from "../ui/plate-editor/PlateEditor";
+import { showToast } from "@/utils/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const ConversationBody = ({
   userId,
@@ -22,15 +36,22 @@ const ConversationBody = ({
   const socketRef = useRef<Socket | null>(null);
   const [connectionAttempts, setConnectionAttempts] = useState<number>(0);
   const [messages, setMessages] = useState<UserMessagesInterface[]>([]);
-  const [input, setInput] = useState<string>("");
+  const [editorValue, setEditorValue] = useState<Descendant[]>([
+    {
+      type: "paragraph",
+      children: [{ text: "" }],
+    },
+  ]);
   const [page, setPage] = useState<number>(1);
   const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const { toast } = useToast();
   const pageSize = 15;
   const maxRetries = 3;
 
   const fetchUserMessages = useCallback(
     async (newPage: number) => {
+      setMessages([]);
       try {
         setLoading(true);
         const response = await fetchMessages({
@@ -56,6 +77,54 @@ const ConversationBody = ({
     },
     [userId, selectedConversation.conversationPartnerId, pageSize]
   );
+
+  const handleArchiveChat = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      await archiveChat({
+        userID: userId,
+        recipientId: selectedConversation.conversationPartnerId,
+      });
+
+      if (selectedConversation.status) {
+        showToast({
+          toast,
+          type: "success",
+          message: "Chat un-archived successfully",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "success",
+          message: "Chat archived successfully",
+        });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        if (selectedConversation.status) {
+          showToast({
+            toast,
+            type: "error",
+            message: "Could not un-archive selected chat",
+          });
+        } else {
+          showToast({
+            toast,
+            type: "error",
+            message: "Could not archive selected chat",
+          });
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    selectedConversation.conversationPartnerId,
+    selectedConversation.status,
+    toast,
+    userId,
+  ]);
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({
@@ -129,20 +198,44 @@ const ConversationBody = ({
     };
   }, [connectSocket]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [selectedConversation.conversationPartnerId]);
+
   const handleSendMessage = () => {
-    if (input.trim()) {
-      const message: Message = {
-        id: uuidv4(),
-        senderID: userId,
-        receiverID: selectedConversation.conversationPartnerId,
-        content: input,
-        timestamp: new Date(),
-        sender: "me",
-        isArchived: false,
-        sentAt: new Date().toISOString(),
-      };
-      sendMessage(message);
-    }
+    const messageText = editorValue
+      .map((node) => {
+        if ("children" in node) {
+          return node.children
+            .map((child) => ("text" in child ? child.text : ""))
+            .join(" ");
+        }
+        return "";
+      })
+      .join("\n")
+      .trim();
+
+    if (!messageText) return;
+
+    const message: Message = {
+      id: uuidv4(),
+      senderID: userId,
+      receiverID: selectedConversation.conversationPartnerId,
+      content: messageText, // Use extracted text
+      timestamp: new Date(),
+      sender: "me",
+      isArchived: false,
+      sentAt: new Date().toISOString(),
+    };
+
+    sendMessage(message);
+
+    setEditorValue([
+      {
+        type: "paragraph",
+        children: [{ text: "" }],
+      },
+    ]);
   };
 
   const sendMessage = (message: Message) => {
@@ -156,15 +249,45 @@ const ConversationBody = ({
       const updatedMessages = [...prevMessages, message];
       return updatedMessages;
     });
-    setInput("");
+    setEditorValue([
+      {
+        type: "paragraph",
+        children: [{ text: "" }],
+      },
+    ]);
   };
 
   return (
     <div className="flex flex-col gap-4 h-full">
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div className="font-semibold text-base capitalize">
           {selectedConversation.partnerUsername}
         </div>
+        <Select
+          onValueChange={(value) => {
+            if (value === "archive" || value === "unarchive") {
+              handleArchiveChat();
+            }
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select" />
+          </SelectTrigger>
+          <SelectContent>
+            {selectedConversation.status ? (
+              <SelectItem value="unarchive" className="cursor-pointer">
+                Unarchive
+              </SelectItem>
+            ) : (
+              <SelectItem value="archive" className="cursor-pointer">
+                Archive
+              </SelectItem>
+            )}
+            <SelectItem value="report" className="cursor-pointer">
+              Report
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <Separator />
       <ScrollArea className="h-[40vh]">
@@ -181,26 +304,44 @@ const ConversationBody = ({
             messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.senderID === userId ? "flex-row-reverse" : ""} gap-2`}
+                className={`flex ${
+                  msg.senderID === userId ? "flex-row-reverse" : ""
+                } gap-2`}
               >
-                <Avatar className={`flex h-8 w-8 rounded-full ${msg.senderID === userId ? "border-2 border-[#FFE7E7]" : ""}`}>
+                <Avatar
+                  className={`flex h-8 w-8 rounded-full ${
+                    msg.senderID === userId ? "border-2 border-[#FFE7E7]" : ""
+                  }`}
+                >
                   <AvatarImage src="" className="border-2 border-[#FFE7E7]" />
                   <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
                     <span className="text-xs font-semibold">
-                      {selectedConversation.partnerUsername?.split(" ")[0].charAt(0)}
-                      {selectedConversation.partnerUsername?.split(" ")[1].charAt(0)}
-                      </span>
+                      {selectedConversation.partnerUsername
+                        ?.split(" ")[0]
+                        .charAt(0)}
+                      {selectedConversation.partnerUsername
+                        ?.split(" ")[1]
+                        .charAt(0)}
+                    </span>
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col gap-1">
-                <div className="flex flex-col text-sm font-normal">
-                    <div className={`flex w-fit rounded-full ${msg.senderID === userId ? "bg-rose-950 text-rose-100 p-3 pl-4 pr-4" : "bg-[#F3EFF0] font-medium text-gray-900 p-3 pl-4 pr-4"}`}>
+                  <div className="flex flex-col text-sm font-normal">
+                    <div
+                      className={`flex w-fit rounded-full ${
+                        msg.senderID === userId
+                          ? "bg-rose-950 text-rose-100 p-3 pl-4 pr-4"
+                          : "bg-[#F3EFF0] font-medium text-gray-900 p-3 pl-4 pr-4"
+                      }`}
+                    >
                       <div className="inline">{msg.content}</div>
                     </div>
-                    <div className={`text-[10px] font-medium text-gray-400 self-end`}>
+                    <div
+                      className={`text-[10px] font-medium text-gray-400 self-end`}
+                    >
                       {formatSentAt(msg.sentAt)}
                     </div>
-                </div>
+                  </div>
                 </div>
               </div>
             ))
@@ -213,11 +354,24 @@ const ConversationBody = ({
         </div>
       </ScrollArea>
       <div className="flex flex-row gap-3 border-t pt-6 border-gray-100 items-start">
-        <Textarea
+        {/* <Textarea
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) =>
+            setEditorValue([
+              {
+                type: "paragraph",
+                children: [{ text: e.target.value }],
+              },
+            ])
+          }
           placeholder="Type a message..."
           className="resize-none"
+        /> */}
+        <PlateEditor
+          placeholder="Type a Message..."
+          value={editorValue}
+          className="w-full"
+          onChange={(value) => setEditorValue(value)}
         />
         <Button onClick={() => handleSendMessage()}>Send</Button>
       </div>
