@@ -15,7 +15,6 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectTrigger,
@@ -45,6 +44,16 @@ import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { MultiSelectCheckbox } from "@/components/ui/multiselectDropdown";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
 
 function TasksDialog({
   isOpen,
@@ -395,7 +404,38 @@ function TasksDialog({
                               <FormItem>
                                 <FormLabel>From Date:</FormLabel>
                                 <FormControl>
-                                  <Input type="date" {...field} />
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button
+                                        variant={"outline"}
+                                        className={cn(
+                                          "justify-start text-left font-normal",
+                                          !field.value &&
+                                            "text-muted-foreground"
+                                        )}
+                                      >
+                                        <CalendarIcon />
+                                        {field.value
+                                          ? format(new Date(field.value), "PPP")
+                                          : "Select a date"}
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0 pointer-events-auto">
+                                      <Calendar
+                                        mode="single"
+                                        selected={
+                                          field.value
+                                            ? new Date(field.value)
+                                            : undefined
+                                        }
+                                        onSelect={(date) => {
+                                          if (date) {
+                                            field.onChange(date.toISOString());
+                                          }
+                                        }}
+                                      />
+                                    </PopoverContent>
+                                  </Popover>
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>

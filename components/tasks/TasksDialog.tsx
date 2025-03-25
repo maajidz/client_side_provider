@@ -47,6 +47,11 @@ import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import { ScrollArea } from "../ui/scroll-area";
 import formStyles from "@/components/formStyles.module.css";
 import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "../ui/calendar";
+import { cn } from "@/lib/utils";
 
 const TasksDialog = ({
   tasksData,
@@ -288,7 +293,12 @@ const TasksDialog = ({
                                 <div>Loading...</div>
                               ) : (
                                 ownersList.map((owner) => (
-                                  <SelectItem key={owner.id} value={owner.providerDetails?.id ?? owner.id}>
+                                  <SelectItem
+                                    key={owner.id}
+                                    value={
+                                      owner.providerDetails?.id ?? owner.id
+                                    }
+                                  >
                                     {owner.firstName} {owner.lastName}
                                   </SelectItem>
                                 ))
@@ -422,7 +432,38 @@ const TasksDialog = ({
                               <FormItem className={formStyles.formItem}>
                                 <FormLabel>From Date:</FormLabel>
                                 <FormControl>
-                                  <Input type="date" {...field} />
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button
+                                        variant={"outline"}
+                                        className={cn(
+                                          "justify-start text-left font-normal",
+                                          !field.value &&
+                                            "text-muted-foreground"
+                                        )}
+                                      >
+                                        <CalendarIcon />
+                                        {field.value
+                                          ? format(new Date(field.value), "PPP")
+                                          : "Select a date"}
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0 pointer-events-auto">
+                                      <Calendar
+                                        mode="single"
+                                        selected={
+                                          field.value
+                                            ? new Date(field.value)
+                                            : undefined
+                                        }
+                                        onSelect={(date) => {
+                                          if (date) {
+                                            field.onChange(date.toISOString());
+                                          }
+                                        }}
+                                      />
+                                    </PopoverContent>
+                                  </Popover>
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
