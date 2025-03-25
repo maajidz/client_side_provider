@@ -33,7 +33,7 @@ export interface AllergenResponseInterfae {
 
 export interface UpdateAllergenInterface {
   typeId: string;
-  serverity: string;
+  severity: string;
   observedOn: string;
   Allergen: string;
   status: string;
