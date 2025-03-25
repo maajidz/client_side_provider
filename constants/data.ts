@@ -263,6 +263,81 @@ export const timeSlots = [
   "15:30",
 ];
 
+export const availabilityTimeSlots = [
+  {
+    id: "07:00-07:30",
+    label: "07:00 - 07:30",
+    startTime: "07:00",
+    endTime: "07:30",
+  },
+  {
+    id: "07:30-08:00",
+    label: "07:30 - 08:00",
+    startTime: "07:30",
+    endTime: "08:00",
+  },
+  {
+    id: "08:00-08:30",
+    label: "08:00 - 08:30",
+    startTime: "08:00",
+    endTime: "08:30",
+  },
+  {
+    id: "08:30-09:00",
+    label: "08:30 - 09:00",
+    startTime: "08:30",
+    endTime: "09:00",
+  },
+  {
+    id: "09:00-09:30",
+    label: "09:00 - 09:30",
+    startTime: "09:00",
+    endTime: "09:30",
+  },
+  {
+    id: "09:30-10:00",
+    label: "09:30 - 10:00",
+    startTime: "09:30",
+    endTime: "10:00",
+  },
+  {
+    id: "10:00-10:30",
+    label: "10:00 - 10:30",
+    startTime: "10:00",
+    endTime: "10:30",
+  },
+  {
+    id: "10:30-11:00",
+    label: "10:30 - 11:00",
+    startTime: "10:30",
+    endTime: "11:00",
+  },
+  {
+    id: "14:00-14:30",
+    label: "14:00 - 14:30",
+    startTime: "14:00",
+    endTime: "14:30",
+  },
+  {
+    id: "14:30-15:00",
+    label: "14:30 - 15:00",
+    startTime: "14:30",
+    endTime: "15:00",
+  },
+  {
+    id: "15:00-15:30",
+    label: "15:00 - 15:30",
+    startTime: "15:00",
+    endTime: "15:30",
+  },
+  {
+    id: "15:30-16:00",
+    label: "15:30 - 16:00",
+    startTime: "15:30",
+    endTime: "16:00",
+  },
+];
+
 export const reminderOptions = [
   "On Due Date",
   "1 Day Before",
