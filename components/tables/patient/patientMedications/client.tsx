@@ -4,9 +4,9 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { columns } from "./columns";
 import { useEffect, useState } from "react";
+import LoadingButton from "@/components/LoadingButton";
 import { fetchUserMedicationData } from "@/services/medicationServices";
 import { UserMedicationInterface } from "@/types/medicationInterface";
-import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 export const PatientMedicationsClient = ({
   userDetailsId,
@@ -40,6 +40,14 @@ export const PatientMedicationsClient = ({
     fetchAndSetResponse();
   }, [userDetailsId]);
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingButton />
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="flex items-start justify-between">
@@ -49,9 +57,7 @@ export const PatientMedicationsClient = ({
         />
       </div>
       <Separator />
-      {loading ? (
-        <TableShimmer />
-      ) : userMedications?.data && userMedications?.data.length > 0 ? (
+      {userMedications?.data && userMedications?.data.length > 0 ? (
         <DefaultDataTable
           columns={columns()}
           data={userMedications?.data}
