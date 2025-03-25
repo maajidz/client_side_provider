@@ -1,6 +1,6 @@
 import RxPatientDetailsSection from "@/components/charts/Encounters/SOAP/Prescription/RxPatientDetailsSection";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import LoadingButton from "@/components/LoadingButton";
+import DataListShimmer from "@/components/custom_buttons/shimmer/DataListShimmer";
 import {
   Dialog,
   DialogContent,
@@ -55,10 +55,6 @@ const PastPrescriptionsDialog = ({
     fetchAndSetResponse();
   }, [fetchAndSetResponse]);
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <Dialog open={isDialogOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[625px]">
@@ -98,7 +94,9 @@ const PastPrescriptionsDialog = ({
                 Past Rx
               </span>
               <div className="flex flex-col gap-3">
-                {response && response?.length > 0 ? (
+                {loading ? (
+                  <DataListShimmer />
+                ) : response && response?.length > 0 ? (
                   response.map((prescription) => (
                     <div
                       key={prescription.id}

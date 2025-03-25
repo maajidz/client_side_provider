@@ -1,4 +1,3 @@
-import LoadingButton from "@/components/LoadingButton";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +21,7 @@ import AddOrViewNotes from "./actions/AddOrViewNotes";
 import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 
 interface InsuranceTableProps {
   insuranceData: InsuranceResponse | undefined;
@@ -91,9 +91,10 @@ function InsuranceTable({
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
-        {loading && <LoadingButton />}
         <TableBody>
-          {insuranceData ? (
+          {loading ? (
+            <TableShimmer />
+          ) : insuranceData ? (
             <TableRow>
               <TableCell>{insuranceData.type}</TableCell>
               <TableCell>{insuranceData.companyName}</TableCell>
