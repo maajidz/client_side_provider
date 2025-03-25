@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StickyNotesDialog from "../charts/Encounters/Details/StickyNotes/StickyNotesDialog";
-import MessagesDialog from "../messages/MessagesDialog";
+import MessagesDialog from "../messages/NewMessageDialog";
 import { Label } from "@/components/ui/label";
 import {
   DropdownMenu,
@@ -31,6 +31,8 @@ function UserList({ users }: { users: UserData[] }) {
   const [isStickyDialogOpen, setIsStickyDialogOpen] = useState<boolean>(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] =
     useState<boolean>(false);
+
+  const [userInfo, setUserInfo] = useState<UserData>();
 
   const openStickyDialog = () => setIsStickyDialogOpen(true);
   const closeStickyDialog = () => setIsStickyDialogOpen(false);
@@ -137,7 +139,10 @@ function UserList({ users }: { users: UserData[] }) {
                     <DropdownMenuItem
                       key={link.label}
                       className="font-medium group hover:first:text-sky-600 hover:text-sky-600  flex flex-1 w-full"
-                      onClick={openMessageDialog}
+                      onClick={() => {
+                        setUserInfo(user);
+                        openMessageDialog();
+                      }}
                     >
                       {link.label}{" "}
                       <PlusIcon
@@ -174,6 +179,7 @@ function UserList({ users }: { users: UserData[] }) {
         isOpen={isStickyDialogOpen}
       />
       <MessagesDialog
+        userInfo={userInfo}
         onClose={closeMessageDialog}
         isOpen={isMessageDialogOpen}
       />

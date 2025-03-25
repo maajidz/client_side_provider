@@ -21,9 +21,11 @@ import { showToast } from "@/utils/utils";
 import { Icon } from "../ui/icon";
 import { Textarea } from "../ui/textarea";
 const NewMessageDialog = ({
+  userInfo,
   isOpen,
   onClose,
 }: {
+  userInfo?: UserData;
   isOpen: boolean;
   onClose: () => void;
 }) => {
@@ -79,6 +81,11 @@ const NewMessageDialog = ({
     };
   }, [connectSocket]);
 
+  // * Set patient details from Dashboard
+  useEffect(() => {
+    if (userInfo) setSelectedUser(userInfo);
+  }, [userInfo]);
+
   const handleSearch = useCallback(async () => {
     setLoading(true);
     try {
@@ -109,11 +116,13 @@ const NewMessageDialog = ({
   }, [searchTerm, selectedUser, handleSearch]);
 
   const handleSendMessage = () => {
-    if (input.trim() && selectedUser?.user.userDetailsId) {
+    const receiverID = selectedUser?.user?.userDetailsId ?? "";
+
+    if (input.trim() && receiverID) {
       const message: Message = {
         id: uuidv4(),
         senderID: providerDetails.providerId,
-        receiverID: selectedUser?.user.userDetailsId,
+        receiverID,
         content: input,
         timestamp: new Date(),
         sender: "me",
@@ -222,7 +231,7 @@ const NewMessageDialog = ({
             <div className="flex flex-col gap-3 w-full">
               <div className="flex gap-1 w-full items-baseline font-medium">
                 <span className="capitalize text-xs">
-                  {selectedUser.user.firstName} {selectedUser.user.lastName}
+                  {selectedUser?.user.firstName} {selectedUser?.user.lastName}
                 </span>
               </div>
               <Textarea
