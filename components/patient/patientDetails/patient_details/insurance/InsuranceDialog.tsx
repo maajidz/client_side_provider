@@ -27,8 +27,7 @@ import {
 } from "@/types/insuranceInterface";
 import { showToast } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UploadCloudIcon } from "lucide-react";
-import Image from "next/image";
+import { Eye, FileIcon, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -179,8 +178,22 @@ function InsuranceDialog({
         subscriberNumber: "",
         idNumber: "",
       });
+      setFrontImageFile(undefined);
+      setBackImageFile(undefined);
     }
   }, [methods, selectedInsurance]);
+
+  const previewFile = (preview: string) => {
+    window.open(preview, "_blank");
+  };
+
+  const removeFrontFile = () => {
+    setFrontImageFile(undefined);
+  };
+
+  const removeBackFile = () => {
+    setBackImageFile(undefined);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleIsDialogOpen}>
@@ -287,6 +300,7 @@ function InsuranceDialog({
                             </FormItem>
                           )}
                         />
+                        {/* Front Document Image */}
                         <FormField
                           control={methods.control}
                           name="frontDocumentImage"
@@ -296,22 +310,13 @@ function InsuranceDialog({
                                 Upload Front Side of Insurance Document
                               </FormLabel>
                               <FormControl>
-                                <div className="flex flex-col justify-center border-[#B0BEC5] border-dashed border-2  rounded-md py-2">
-                                  <label className="flex justify-center items-center text-[#84012A] font-semibold cursor-pointer">
-                                    <div className="flex flex-col justify-center items-center p-3">
-                                      <UploadCloudIcon
-                                        className="border-[#D5D5D5] border-2 p-1 rounded-sm"
-                                        color="#D5D5D5"
-                                      />
-                                      <div className="flex flex-row w-full gap-1">
-                                        <div>Click to Upload</div>
-                                        <div className="text-[#475467] font-normal">
-                                          or drag and drop
-                                        </div>
-                                      </div>
-                                      <div className="text-[#475467] font-normal">
-                                        PNG, JPG, or JPEG (max. 800 x400px)
-                                      </div>
+                                <div className="w-full space-y-2">
+                                  <label>
+                                    <div className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors">
+                                      <Upload className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
+                                      <p className="text-sm font-medium">
+                                        Click to select files
+                                      </p>
                                     </div>
                                     <Input
                                       type="file"
@@ -325,42 +330,77 @@ function InsuranceDialog({
                                       className="hidden"
                                     />
                                   </label>
-                                  <div className="flex flex-1 justify-center items-center">
-                                    {frontImageFile ? (
-                                      <div>
-                                        <Image
-                                          src={URL.createObjectURL(
-                                            frontImageFile as Blob
-                                          )}
-                                          width={24}
-                                          height={24}
-                                          alt="Front Side of Insurance"
-                                          className="w-48 h-24 object-contain rounded-md"
-                                        />
+                                  {frontImageFile && (
+                                    <div className="bg-card rounded-lg p-3 shadow-sm border">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <p className="text-sm font-medium truncate">
+                                          {frontImageFile?.name}
+                                        </p>
+                                        <div className="flex items-center gap-2">
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                              previewFile(
+                                                URL.createObjectURL(
+                                                  frontImageFile as Blob
+                                                )
+                                              )
+                                            }
+                                          >
+                                            <Eye className="w-4 h-4" />
+                                          </Button>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-5 w-5 p-0 rounded-full"
+                                            onClick={() => removeFrontFile()}
+                                          >
+                                            <X className="w-3 h-3" />
+                                          </Button>
+                                        </div>
                                       </div>
-                                    ) : (
-                                      selectedInsurance && (
-                                        <img
-                                          alt={
-                                            selectedInsurance.frontDocumentImage.split(
-                                              "/"
-                                            )[6]
-                                          }
-                                          src={
-                                            selectedInsurance.frontDocumentImage
-                                          }
-                                          width={24}
-                                          height={24}
-                                          className="w-48 h-24 object-contain rounded-md"
-                                        />
-                                      )
-                                    )}
-                                  </div>
+                                    </div>
+                                  )}
+
+                                  {selectedInsurance?.frontDocumentImage && (
+                                    <div className="space-y-1">
+                                      <h4 className="text-sm font-medium">
+                                        Uploaded Files
+                                      </h4>
+                                      <div className="flex flex-wrap gap-2">
+                                        <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-full text-xs">
+                                          <FileIcon className="w-3.5 h-3.5" />
+                                          <span className="truncate max-w-[150px]">
+                                            {
+                                              selectedInsurance?.frontDocumentImage.split(
+                                                "/"
+                                              )[6]
+                                            }
+                                          </span>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-5 w-5 p-0 rounded-full"
+                                            type="button"
+                                            onClick={() =>
+                                              previewFile(
+                                                selectedInsurance?.frontDocumentImage
+                                              )
+                                            }
+                                          >
+                                            <Eye className="w-3 h-3" />
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </FormControl>
                             </FormItem>
                           )}
                         />
+                        {/* Back Document Image */}
                         <FormField
                           control={methods.control}
                           name="backDocumentImage"
@@ -370,22 +410,13 @@ function InsuranceDialog({
                                 Upload Back Side of Insurance Document
                               </FormLabel>
                               <FormControl>
-                                <div className="flex flex-col justify-center border-[#B0BEC5] border-dashed border-2 rounded-md py-2">
-                                  <label className="flex justify-center items-center text-[#84012A] font-semibold cursor-pointer">
-                                    <div className="flex flex-col justify-center items-center p-3">
-                                      <UploadCloudIcon
-                                        className="border-[#D5D5D5] border-2 p-1 rounded-sm"
-                                        color="#D5D5D5"
-                                      />
-                                      <div className="flex flex-row w-full gap-1">
-                                        <div>Click to Upload</div>
-                                        <div className="text-[#475467] font-normal">
-                                          or drag and drop
-                                        </div>
-                                      </div>
-                                      <div className="text-[#475467] font-normal">
-                                        PNG, JPG, or JPEG (max. 800 x400px)
-                                      </div>
+                                <div className="w-full space-y-2">
+                                  <label>
+                                    <div className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors">
+                                      <Upload className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
+                                      <p className="text-sm font-medium">
+                                        Click to select files
+                                      </p>
                                     </div>
                                     <Input
                                       type="file"
@@ -399,37 +430,71 @@ function InsuranceDialog({
                                       className="hidden"
                                     />
                                   </label>
-                                  <div className="flex flex-1 justify-center items-center">
-                                    {backImageFile ? (
-                                      <div>
-                                        <Image
-                                          src={URL.createObjectURL(
-                                            backImageFile as Blob
-                                          )}
-                                          width={24}
-                                          height={24}
-                                          alt="Back Side of Insurance"
-                                          className="w-48 h-24 object-contain rounded-md"
-                                        />
+                                  {backImageFile && (
+                                    <div className="bg-card rounded-lg p-3 shadow-sm border">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <p className="text-sm font-medium truncate">
+                                          {backImageFile?.name}
+                                        </p>
+                                        <div className="flex items-center gap-2">
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                              previewFile(
+                                                URL.createObjectURL(
+                                                  backImageFile as Blob
+                                                )
+                                              )
+                                            }
+                                          >
+                                            <Eye className="w-4 h-4" />
+                                          </Button>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-5 w-5 p-0 rounded-full"
+                                            onClick={() => removeBackFile()}
+                                          >
+                                            <X className="w-3 h-3" />
+                                          </Button>
+                                        </div>
                                       </div>
-                                    ) : (
-                                      selectedInsurance && (
-                                        <img
-                                          alt={
-                                            selectedInsurance.backDocumentImage.split(
-                                              "/"
-                                            )[6]
-                                          }
-                                          src={
-                                            selectedInsurance.backDocumentImage
-                                          }
-                                          width={24}
-                                          height={24}
-                                          className="w-48 h-24 object-contain rounded-md"
-                                        />
-                                      )
-                                    )}
-                                  </div>
+                                    </div>
+                                  )}
+
+                                  {selectedInsurance?.backDocumentImage && (
+                                    <div className="space-y-1">
+                                      <h4 className="text-sm font-medium">
+                                        Uploaded Files
+                                      </h4>
+                                      <div className="flex flex-wrap gap-2">
+                                        <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-full text-xs">
+                                          <FileIcon className="w-3.5 h-3.5" />
+                                          <span className="truncate max-w-[150px]">
+                                            {
+                                              selectedInsurance.backDocumentImage.split(
+                                                "/"
+                                              )[6]
+                                            }
+                                          </span>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-5 w-5 p-0 rounded-full"
+                                            type="button"
+                                            onClick={() =>
+                                              previewFile(
+                                                selectedInsurance?.backDocumentImage
+                                              )
+                                            }
+                                          >
+                                            <Eye className="w-3 h-3" />
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </FormControl>
                             </FormItem>
