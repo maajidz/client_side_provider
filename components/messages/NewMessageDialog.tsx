@@ -32,7 +32,7 @@ const NewMessageDialog = ({
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [userData, setUserData] = useState<UserData[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
-  const [input, setInput] = useState<string>("");
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
   const providerDetails = useSelector((state: RootState) => state.login);
   const { toast } = useToast();
@@ -121,6 +121,9 @@ const NewMessageDialog = ({
         sentAt: new Date().toISOString(),
       };
       sendMessage(message);
+
+      setInput("");
+
       showToast({
         toast,
         type: "success",
@@ -137,7 +140,6 @@ const NewMessageDialog = ({
         message: message.content,
       });
     }
-    console.log(message);
     setInput("");
   };
 
@@ -146,98 +148,98 @@ const NewMessageDialog = ({
       <DialogContent className="flex flex-col gap-6 overflow-visible">
         <DialogHeader className="w-full border-b border-gray-200">
           <div className="flex flex-row gap-2 w-full">
-            <Icon name="message" size={24} className="text-[#84012A]"/>
+            <Icon name="message" size={24} className="text-[#84012A]" />
             <div className="flex flex-col gap-2 w-full flex-1">
               New Message
-            <DialogDescription className="text-xs tracking-normal">
-              Start your new conversation with a patient
+              <DialogDescription className="text-xs tracking-normal">
+                Start your new conversation with a patient
               </DialogDescription>
             </div>
           </div>
-          </DialogHeader>
-          <div className="flex flex-col gap-6 py-4 overflow-visible">
-            {!selectedUser && (
-              <div className="flex flex-col relative w-full">
-                <div className="flex flex-col w-full relative justify-center gap-2">
-                  <Label
-                    className="text-xs text-gray-700 font-medium"
-                    htmlFor="email"
-                  >
-                    Search for patients
-                  </Label>
-                  <div className="flex flex-1 items-center peer-focus-visible:bg-red-700">
-                    <Input
-                      value={searchTerm}
-                      onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        setSelectedUser(null);
-                      }}
-                      placeholder="eg. Frederick Norman or PAT567378..."
-                      className="w-full h-11 focus-visible:ring-pink-100 focus-visible:ring-2 focus-visible:border-pink-300 hover:border-gray-300 peer"
-                    />
-                    <SearchIcon
-                      size={20}
-                      className="text-[#D5D7DA] absolute right-2 peer-focus-visible:text-[#84012A]"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-            <div className="absolute w-full flex justify-center overflow-visible">
-              {loading && <UserCardShimmer />}
-              {!selectedUser && userData.length > 0 ? (
-                <div className="absolute top-14 left-0 shadow-md rounded-lg space-y-2 w-full p-2 bg-white z-50">
-                  {userData.map((user) => (
-                    <div
-                      key={user.id}
-                      className="flex gap-3 items-center w-full"
-                      onClick={() => setSelectedUser(user)}
-                    >
-                      <div className="flex bg-pink-50 text-[#63293b] text-lg font-medium rounded-full h-10 w-12 justify-center items-center">
-                        <span className="uppercase">
-                          {user.user.firstName?.charAt(0)}
-                          {user.user.lastName?.charAt(0)}
-                        </span>
-                      </div>
-                      <div className="flex gap-1 w-full items-baseline capitalize font-semibold">
-                        {user.user.firstName} {user.user.lastName}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                !selectedUser &&
-                !loading &&
-                userData.length === 0 &&
-                searchTerm.length > 1 && (
-                  <p className="absolute top-14 left-0 shadow-md rounded-lg text-md text-gray-500 space-y-2 w-full p-4 bg-white">
-                    No results found.
-                  </p>
-                )
-              )}
-            </div>
-            {selectedUser && (
-              <div className="flex flex-col gap-3 w-full">
-                <div className="flex gap-1 w-full items-baseline font-medium">
-                  <span className="capitalize text-xs">
-                    {selectedUser.user.firstName} {selectedUser.user.lastName}
-                  </span>
-                </div>
-                <Textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type a message..."
-                  className="w-full"
-                />
-                <Button
-                  className="border-collapse border-[#84012A] bg-[#84012A] items-center"
-                  onClick={() => handleSendMessage()}
+        </DialogHeader>
+        <div className="flex flex-col gap-6 py-4 overflow-visible">
+          {!selectedUser && (
+            <div className="flex flex-col relative w-full">
+              <div className="flex flex-col w-full relative justify-center gap-2">
+                <Label
+                  className="text-xs text-gray-700 font-medium"
+                  htmlFor="email"
                 >
-                  Submit Request
-                </Button>
+                  Search for patients
+                </Label>
+                <div className="flex flex-1 items-center peer-focus-visible:bg-red-700">
+                  <Input
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setSelectedUser(null);
+                    }}
+                    placeholder="eg. Frederick Norman or PAT567378..."
+                    className="w-full h-11 focus-visible:ring-pink-100 focus-visible:ring-2 focus-visible:border-pink-300 hover:border-gray-300 peer"
+                  />
+                  <SearchIcon
+                    size={20}
+                    className="text-[#D5D7DA] absolute right-2 peer-focus-visible:text-[#84012A]"
+                  />
+                </div>
               </div>
+            </div>
+          )}
+          <div className="absolute w-full flex justify-center overflow-visible">
+            {loading && <UserCardShimmer />}
+            {!selectedUser && userData.length > 0 ? (
+              <div className="absolute top-14 left-0 shadow-md rounded-lg space-y-2 w-full p-2 bg-white z-50">
+                {userData.map((user) => (
+                  <div
+                    key={user.id}
+                    className="flex gap-3 items-center w-full"
+                    onClick={() => setSelectedUser(user)}
+                  >
+                    <div className="flex bg-pink-50 text-[#63293b] text-lg font-medium rounded-full h-10 w-12 justify-center items-center">
+                      <span className="uppercase">
+                        {user.user.firstName?.charAt(0)}
+                        {user.user.lastName?.charAt(0)}
+                      </span>
+                    </div>
+                    <div className="flex gap-1 w-full items-baseline capitalize font-semibold">
+                      {user.user.firstName} {user.user.lastName}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              !selectedUser &&
+              !loading &&
+              userData.length === 0 &&
+              searchTerm.length > 1 && (
+                <p className="absolute top-14 left-0 shadow-md rounded-lg text-md text-gray-500 space-y-2 w-full p-4 bg-white">
+                  No results found.
+                </p>
+              )
             )}
           </div>
+          {selectedUser && (
+            <div className="flex flex-col gap-3 w-full">
+              <div className="flex gap-1 w-full items-baseline font-medium">
+                <span className="capitalize text-xs">
+                  {selectedUser.user.firstName} {selectedUser.user.lastName}
+                </span>
+              </div>
+              <Textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type a message..."
+                className="w-full"
+              />
+              <Button
+                className="border-collapse border-[#84012A] bg-[#84012A] items-center"
+                onClick={() => handleSendMessage()}
+              >
+                Submit Request
+              </Button>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

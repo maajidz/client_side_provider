@@ -1,6 +1,5 @@
-import { useForm, useFieldArray, Control, FormProvider } from "react-hook-form";
+import { useForm, Control, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   FormControl,
@@ -24,7 +23,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import { Icon } from "@/components/ui/icon";
+import { MultiSelectCheckbox } from "@/components/ui/multiselectDropdown";
+import { availabilityTimeSlots } from "@/constants/data";
 
 const AppointmentForm = () => {
   const router = useRouter();
@@ -43,11 +43,6 @@ const AppointmentForm = () => {
   const [isTimeSlotVisible, setIsTimeSlotVisible] = useState(false);
   const [date, setDate] = React.useState<Date>();
   const providerID = useSelector((state: RootState) => state.login.providerId);
-
-  const { fields, append, remove } = useFieldArray({
-    control: methods.control,
-    name: "timeSlot",
-  });
 
   useEffect(() => {
     if (date) {
@@ -109,13 +104,15 @@ const AppointmentForm = () => {
                   />
                 ) : (
                   <div className="flex flex-col gap-3">
-                    <span className="text-xs font-normal text-[#444444]">Availability Date:</span>
+                    <span className="text-xs font-normal text-[#444444]">
+                      Availability Date:
+                    </span>
                     <span className="border border-gray-300 rounded-lg">
-                    <CalendarField
-                      control={methods.control}
-                      date={date}
-                      setDate={setDate}
-                    />
+                      <CalendarField
+                        control={methods.control}
+                        date={date}
+                        setDate={setDate}
+                      />
                     </span>
                   </div>
                 )}
@@ -125,45 +122,32 @@ const AppointmentForm = () => {
                   <div>
                     <div className=" flex flex-col gap-3 text-sm font-normal text-[#444444]">
                       <label>Time Slot:</label>
-                      {fields.map((field, index) => (
-                        <div
-                          key={field.id}
-                          style={{
-                            display: "flex",
-                            gap: "10px",
-                            marginBottom: "10px",
-                          }}
-                        >
-                          <Input
-                            type="time"
-                            className="w-fit"
-                            {...methods.register(
-                              `timeSlot.${index}.startTime` as const
-                            )}
-                            placeholder="HH:MM"
+                      <FormField
+                        name="timeSlot"
+                        control={methods.control}
+                        render={({ field }) => (
+                          <MultiSelectCheckbox
+                            options={availabilityTimeSlots}
+                            onChange={(selectedIds) => {
+                              const selectedSlots = selectedIds
+                                .map((id) => {
+                                  const slot = availabilityTimeSlots.find(
+                                    (t) => t.id === id
+                                  );
+                                  return slot
+                                    ? {
+                                        startTime: slot.startTime,
+                                        endTime: slot.endTime,
+                                      }
+                                    : null;
+                                })
+                                .filter(Boolean);
+                              field.onChange(selectedSlots);
+                            }}
                           />
-                          <Input
-                            type="time"
-                            className="w-fit"
-                            {...methods.register(
-                              `timeSlot.${index}.endTime` as const
-                            )}
-                            placeholder="End Time"
-                          />
-                          <Button variant="outline" onClick={() => remove(index)} size="icon">
-                            <Icon name="remove" className="text-gray-400" />
-                          </Button>
-                        </div>
-                      ))}
+                        )}
+                      />
                     </div>
-                    <Button
-                    variant="link"
-                    className="px-0"
-                      onClick={() => append({ startTime: "", endTime: "" })}
-                    >
-                      <Icon name="add" />
-                      Add Time Slot
-                    </Button>
                   </div>
                   <SubmitButton label="Submit" />
                 </div>
@@ -226,7 +210,8 @@ const CalendarView = ({
                 classNames={{
                   months: "relative pt-10",
                   nav: "absolute top-0 left-1/2 transform -translate-x-1/2 w-1/2",
-                  month_caption: "absolute -top-3.5 left-1/2 transform -translate-x-1/2",
+                  month_caption:
+                    "absolute -top-3.5 left-1/2 transform -translate-x-1/2",
                   day_today: isToday(selectedDate) ? todayClass : defaultClass,
                   day_selected: isSelected(selectedDate)
                     ? selectedClass
@@ -235,7 +220,8 @@ const CalendarView = ({
                   head_row: "",
                   row: "",
                   day: "",
-                  day_button: "w-full h-full p-4 items-center justify-center hover:bg-gray-100 rounded-md",
+                  day_button:
+                    "w-full h-full p-4 items-center justify-center hover:bg-gray-100 rounded-md",
                   today: "bg-blue-50 p-0 rounded-md",
                   selected: "bg-[#84012A] text-white rounded-2xl",
                   nav_button: "row-reverse",
@@ -243,7 +229,7 @@ const CalendarView = ({
                   disabled: "text-gray-300",
                   day_range_start: "bg-green-200",
                   day_range_end: "bg-red-200",
-                  day_range_middle: "bg-yellow-200"
+                  day_range_middle: "bg-yellow-200",
                 }}
               />
             </FormControl>

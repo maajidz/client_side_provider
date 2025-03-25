@@ -1,3 +1,6 @@
+import { Provider } from "./alertInterface";
+import { UserDetails } from "./chartsInterface";
+
 export interface RecallsInterface {
   type: string;
   notes: string;
@@ -36,6 +39,8 @@ export interface RecallsData {
   status: string;
   createdAt: string;
   updatedAt: string;
+  userDetails: UserDetails;
+  provider: Provider;
 }
 
 export interface RecallsEditData {
@@ -48,4 +53,6 @@ export interface RecallsEditData {
   due_date_value: number;
   due_date_unit: string;
   auto_reminders: boolean;
+  userDetails: UserDetails;
+  provider: Provider;
 }

@@ -39,3 +39,19 @@ export const fetchUserConversations = async ({
   console.log(data);
   return data;
 };
+
+export const archiveChat = async ({
+  userID,
+  recipientId,
+}: {
+  userID: string;
+  recipientId: string;
+}) => {
+  const response = await ApiFetch({
+    url: `/chat/toggle-archive?fromUuid=${userID}&toUuid=${recipientId}`,
+    method: "PATCH",
+  });
+
+  const data = await response.data;
+  return data;
+};
