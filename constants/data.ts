@@ -477,3 +477,11 @@ export const insuranceTypes: InsuranceType[] = [
     type: "Other",
   },
 ];
+
+export const prior_auth_options = [
+  "Approved",
+  "Denied",
+  "Deferred",
+  "Not Required",
+  "Required",
+];
