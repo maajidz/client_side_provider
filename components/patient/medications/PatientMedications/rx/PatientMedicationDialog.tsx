@@ -30,7 +30,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import LoadingButton from "@/components/LoadingButton";
 import { Switch } from "@/components/ui/switch";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
@@ -248,10 +247,6 @@ const PatientMedicationDialog = ({
       }
     }
   };
-
-  if (loading.post) {
-    return <LoadingButton />;
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -733,7 +728,7 @@ const PatientMedicationDialog = ({
                     >
                       Cancel
                     </Button>
-                    <SubmitButton label="Save" />
+                    <SubmitButton label="Save" disabled={loading.post} />
                   </DialogFooter>
                 </div>
               </ScrollArea>

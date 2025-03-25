@@ -27,6 +27,7 @@ const MessageBody = () => {
   const [selectedConversation, setSelectedConversation] = useState<
     ConversationInterface | undefined
   >();
+  const [tabValue, setTabValue] = useState("inbox");
 
   const messagesTab = [
     {
@@ -58,12 +59,13 @@ const MessageBody = () => {
       console.log("Error", error);
     } finally {
       setLoading(false);
+      setSelectedConversation(undefined);
     }
   }, [providerDetails.providerId]);
 
   useEffect(() => {
     userConversation();
-  }, [userConversation]);
+  }, [userConversation, tabValue]);
 
   if (loading) {
     return <LoadingButton />;
@@ -93,7 +95,7 @@ const MessageBody = () => {
             />
           </div>
           <div>
-            <Tabs defaultValue="inbox" className="">
+            <Tabs value={tabValue} onValueChange={setTabValue}>
               <TabsList className={styles.tabList}>
                 {messagesTab.map((tab) => (
                   <CustomTabsTrigger value={tab.value} key={tab.value}>

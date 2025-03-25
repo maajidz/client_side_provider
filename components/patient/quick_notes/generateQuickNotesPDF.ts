@@ -23,8 +23,8 @@ const generateQuickNotesPDF = ({
     body: [
       [
         quickNotesData.note,
-        quickNotesData.providerDetails.id,
-        quickNotesData.createdAt,
+        quickNotesData.providerDetails.providerUniqueId,
+        `${quickNotesData.createdAt.split('T')[0]} at ${quickNotesData.createdAt.split('T')[1].split('.')[0]}`,
       ],
     ],
     styles: {
