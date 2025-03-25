@@ -34,7 +34,7 @@ export const editPrescriptionSchema = z.object({
   fromDate: z.string(),
   toDate: z.string(),
   internal_comments: z.string().optional(),
-  status: z.enum(["pending", "completed"]),
+  status: z.enum(["pending", "completed", "active"]),
 });
 
 export const filterPrescriptionSchema = z.object({

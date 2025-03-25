@@ -61,7 +61,7 @@ function EditAllergy({
       type: selectedAllergy?.type.id || "",
       Allergen: selectedAllergy?.allergen || "",
       observedOn: selectedAllergy?.observedOn.split("T")[0],
-      serverity: selectedAllergy?.severity || "",
+      severity: selectedAllergy?.severity || "",
       status: selectedAllergy?.status || "",
       reactions: Array.isArray(selectedAllergy?.reactions)
         ? selectedAllergy.reactions
@@ -94,7 +94,7 @@ function EditAllergy({
         type: selectedAllergy.type.id,
         Allergen: selectedAllergy.allergen,
         observedOn: selectedAllergy.observedOn.split("T")[0],
-        serverity: selectedAllergy.severity,
+        severity: selectedAllergy.severity,
         status: selectedAllergy.status,
         reactions: Array.isArray(selectedAllergy.reactions)
           ? selectedAllergy.reactions
@@ -110,7 +110,7 @@ function EditAllergy({
     const requestData: UpdateAllergenInterface = {
       Allergen: formData.Allergen,
       observedOn: formData.observedOn,
-      serverity: formData.serverity,
+      severity: formData.severity,
       status: formData.status,
       typeId: formData.type,
       reactions: formData.reactions,
@@ -175,6 +175,7 @@ function EditAllergy({
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
+                            disabled={selectedAllergy ? true : false}
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -227,7 +228,7 @@ function EditAllergy({
                   <td className="p-4">
                     <FormField
                       control={form.control}
-                      name={"serverity"}
+                      name={"severity"}
                       render={({ field }) => (
                         <FormItem>
                           <Select

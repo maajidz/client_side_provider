@@ -15,10 +15,11 @@ export const recallFormSchema = z.object({
     }),
   }),
   provider: z.string().min(1, { message: "Provider is required." }),
-  sendAutoReminders: z.boolean(),
+  sendAutoReminders: z.boolean().optional(),
 });
 
 export const filterRecallsSchema = z.object({
   type: z.string().optional(),
   status: z.string().optional()
 });
+
