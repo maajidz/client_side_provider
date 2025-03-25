@@ -1,8 +1,13 @@
 "use client";
 import PageContainer from "@/components/layout/page-container";
-import ViewRecalls from "@/components/patient/recalls/ViewRecalls";
+import PatientRecalls from "@/components/patient/recalls/PatientRecalls";
 import { useParams } from "next/navigation";
 
+// const breadcrumbItems = [
+//   { title: "Dashboard", link: "/dashboard" },
+//   { title: "Patients", link: "/dashboard/provider/patient" },
+//   { title: "Recalls", link: "" },
+// ];
 function Page() {
   const { userDetailsId } = useParams();
 
@@ -11,7 +16,10 @@ function Page() {
   }
   return (
     <PageContainer>
-      <ViewRecalls userDetailsId={userDetailsId} />
+      {/* <div className="space-y-4">
+        <Breadcrumbs items={breadcrumbItems} />
+      </div> */}
+      <PatientRecalls userDetailsId={userDetailsId} />
     </PageContainer>
   );
 }

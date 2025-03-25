@@ -36,6 +36,7 @@ import {
   createSOAPChart,
   updateSOAPChart,
 } from "@/services/chartsServices";
+import LoadingButton from "@/components/LoadingButton";
 import { Switch } from "@/components/ui/switch";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -257,6 +258,10 @@ const AddRx = ({
       }
     }
   };
+
+  if (loading.post) {
+    return <LoadingButton />;
+  }
 
   return (
     <Dialog>
@@ -743,7 +748,7 @@ const AddRx = ({
                     >
                       Cancel
                     </Button>
-                    <SubmitButton label="Save" disabled={loading.post}/>
+                    <SubmitButton label="Save" />
                   </DialogFooter>
                 </div>
               </ScrollArea>
