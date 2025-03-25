@@ -29,8 +29,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { recallFormSchema } from "@/schema/recallFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 import { useToast } from "@/hooks/use-toast";
 import { RecallsEditData } from "@/types/recallsInterface";
 import {
@@ -57,8 +55,7 @@ const RecallsDialog = ({
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
-  const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
-  const providerDetails = useSelector((state: RootState) => state.login);
+  // const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof recallFormSchema>>({
@@ -71,8 +68,8 @@ const RecallsDialog = ({
         value: recallsData?.due_date_value || 1,
         unit: recallsData?.due_date_unit || "",
       },
-      provider: `${providerDetails.firstName} ${providerDetails.lastName}`,
-      sendAutoReminders: false,
+      provider: recallsData?.providerId || "",
+      sendAutoReminders: recallsData?.auto_reminders || false,
     },
   });
 
@@ -106,16 +103,13 @@ const RecallsDialog = ({
           value: recallsData.due_date_value || 1,
           unit: recallsData.due_date_unit || "",
         },
+        provider: recallsData.providerId || "", 
         sendAutoReminders: recallsData.auto_reminders || false,
       });
-      if (recallsData?.providerId) {
-        setSelectedOwner(
-          ownersList.find(
-            (owner) => owner.providerDetails?.id === recallsData?.providerId
-          )
-        );
-        form.setValue("provider", selectedOwner?.providerDetails?.id ?? "");
-      }
+      const selected = ownersList.find(
+        (owner) => owner.providerDetails?.id === recallsData.providerId
+      );
+      form.setValue("provider", selected?.providerDetails?.id ?? "")
     } else {
       form.reset({
         type: "",
@@ -125,10 +119,11 @@ const RecallsDialog = ({
           value: 1,
           unit: "",
         },
+        provider: "", 
         sendAutoReminders: false,
       });
     }
-  }, [recallsData, form, selectedOwner, ownersList]);
+  }, [recallsData, form, ownersList]);
 
   const onSubmit = async (values: z.infer<typeof recallFormSchema>) => {
     console.log("Form Values:", values);
@@ -141,7 +136,7 @@ const RecallsDialog = ({
           due_date_period: values.dueDate.period,
           due_date_value: values.dueDate.value,
           due_date_unit: values.dueDate.unit,
-          auto_reminders: values.sendAutoReminders,
+          auto_reminders: values.sendAutoReminders ?? false,
         };
         await updateRecallsData({
           requestData: requestData,
@@ -151,11 +146,11 @@ const RecallsDialog = ({
         const requestData = {
           type: values.type,
           notes: values.notes,
-          providerId: providerDetails.providerId,
+          providerId: values.provider,
           due_date_period: values.dueDate.period,
           due_date_value: values.dueDate.value,
           due_date_unit: values.dueDate.unit,
-          auto_reminders: values.sendAutoReminders,
+          auto_reminders: values.sendAutoReminders ?? false,
           userDetailsId: userDetailsId,
         };
         await createRecalls({ requestData: requestData });
@@ -166,16 +161,16 @@ const RecallsDialog = ({
         message: "Recalls added successfully",
       });
       onClose();
+      form.reset();
     } catch (e) {
-      console.log("Error:", e);
+      console.error("Error:", e);
       showToast({
         toast,
         type: "error",
-        message: "Error while adding Recalls ",
+        message: "Error while adding Recalls",
       });
     } finally {
       setLoading(false);
-      form.reset();
     }
   };
 
@@ -304,10 +299,9 @@ const RecallsDialog = ({
                           value={field.value}
                           onValueChange={(value) => {
                             field.onChange(value);
-                            const selected = ownersList.find(
-                              (owner) => owner.providerDetails?.id === value
-                            );
-                            setSelectedOwner(selected);
+                            // const selected = ownersList.find(
+                            //   (owner) => owner.providerDetails?.id === value
+                            // );
                           }}
                         >
                           <SelectTrigger>
