@@ -175,8 +175,6 @@ const Recalls = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
                     due_date_value: row.original.due_date_value,
                     due_date_unit: row.original.due_date_unit,
                     auto_reminders: row.original.auto_reminders,
-                    userDetails: row.original.userDetails,
-                    provider: row.original.provider
                   });
                   setIsDialogOpen(true);
                 }}
