@@ -178,17 +178,17 @@ function EditPrescription({
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                  <span className="font-medium">Days of Supply:</span>
-                  <span className="font-semibold">
-                    {selectedPrescription?.days_of_supply ?? ""}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-medium">Refills:</span>
-                  <span className="font-semibold">
-                    {selectedPrescription?.additional_refills ?? ""}
-                  </span>
-                </div>
+                <span className="font-medium">Days of Supply:</span>
+                <span className="font-semibold">
+                  {selectedPrescription?.days_of_supply ?? ""}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="font-medium">Refills:</span>
+                <span className="font-semibold">
+                  {selectedPrescription?.additional_refills ?? ""}
+                </span>
+              </div>
               <div className="flex justify-between">
                 <FormField
                   control={form.control}
@@ -254,13 +254,15 @@ function EditPrescription({
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="font-medium">Status</FormLabel>
-                    <Select onValueChange={field.onChange}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select Status" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        {/* <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem> */}
                       </SelectContent>
                     </Select>
                     <FormMessage />
