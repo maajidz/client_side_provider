@@ -333,34 +333,36 @@ function VitalDialog({
                   control={form.control}
                   name="startingWeight"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem className="flex-none">
                       <FormLabel>Starting Weight</FormLabel>
                       <FormControl>
-                        <div className="relative">
-                          <Input
-                            {...field}
-                            type="number"
-                            value={field.value ?? ""}
-                            onChange={(event) =>
-                              field.onChange(event.target.valueAsNumber)
-                            }
-                          />
-                          <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
-                            lbs
-                          </span>
+                        <div>
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type="number"
+                              value={field.value ?? ""}
+                              onChange={(event) =>
+                                field.onChange(event.target.valueAsNumber)
+                              }
+                            />
+                            <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                              lbs
+                            </span>
+                          </div>
                         </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
+                <div></div>
                 {/* Goal Weight */}
                 <FormField
                   control={form.control}
                   name="goalWeight"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem className="flex-none">
                       <FormLabel>Goal Weight</FormLabel>
                       <FormControl>
                         <div className="relative">

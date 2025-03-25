@@ -32,6 +32,7 @@ import { fetchProviderListDetails } from "@/services/registerServices";
 import { Button } from "@/components/ui/button";
 import InjectionOrders from "@/components/injections/injection-orders/InjectionOrders";
 import DataListShimmer from "@/components/custom_buttons/shimmer/DataListShimmer";
+import { Search } from "lucide-react";
 
 const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -134,14 +135,14 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-row gap-2 w-fit"
+          className="flex gap-2 flex-row"
         >
           <FormField
             control={form.control}
             name="providerId"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Provider</FormLabel>
+              <FormItem className="flex-none">
+                <FormLabel className="w-fit">Provider</FormLabel>
                 <FormControl>
                   <Select
                     defaultValue={field.value}
@@ -153,7 +154,7 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
                       setSelectedOwner(selected);
                     }}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-fit text-sm font-medium">
                       <SelectValue placeholder="Select Owner" />
                     </SelectTrigger>
                     <SelectContent>
@@ -177,14 +178,14 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
             control={form.control}
             name="status"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-none">
                 <FormLabel>Status</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-fit text-sm font-medium">
                       <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -202,7 +203,9 @@ const ViewInjectionOrders = ({ userDetailsId }: { userDetailsId: string }) => {
             )}
           />
           <div className="flex items-end">
-            <Button variant={"secondary"}>Search</Button>
+            <Button type="submit" variant={"default"} className="bg-primary">
+              Search <Search />
+            </Button>
           </div>
         </form>
       </Form>

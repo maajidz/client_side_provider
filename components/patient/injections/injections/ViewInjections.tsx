@@ -15,13 +15,21 @@ import InjectionsDialog from "@/components/charts/Encounters/Details/Injections/
 import DataListShimmer from "@/components/custom_buttons/shimmer/DataListShimmer";
 
 const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
+  // Edit Data State
   const [editData, setEditData] = useState<InjectionsData | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
+  // Pagination State
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const limit = 3;
+
   // Data State
   const [injectionsData, setInjectionsData] = useState<InjectionsResponse>();
 
   // Loading State
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const { toast } = useToast();
 
   // GET Injections Data
@@ -29,20 +37,21 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
     setLoading(true);
     try {
       const response = await getInjection({
-        page: 1,
-        limit: 10,
+        page: page,
+        limit: limit,
         userDetailsId: userDetailsId,
       });
 
       if (response) {
         setInjectionsData(response);
+        setTotalPages(Math.ceil(response.total / limit));
       }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [userDetailsId]);
+  }, [userDetailsId, page, limit]);
 
   // Effects
   useEffect(() => {
@@ -96,74 +105,102 @@ const ViewInjections = ({ userDetailsId }: { userDetailsId: string }) => {
           {loading ? (
             <DataListShimmer />
           ) : (
-            injectionsData &&
-            injectionsData?.data &&
-            injectionsData?.data.map((injections) => (
-              <div
-                key={injections.id}
-                className="flex flex-row justify-between border rounded-md w-full p-3"
-              >
-                <div className="flex flex-col gap-4">
-                  <div className="font-semibold flex flex-col gap-2">
-                    {injections.injectionType.injection_name}
-                  </div>
-                  <div className="flex flex-row gap-1">
-                    <FormLabels label="Intake" value="" />
-                    <Badge>
-                      {injections.dosage_quantity} - {injections.dosage_unit}
-                    </Badge>
-                    <Badge>
-                      {injections.frequency} - {injections.period_number}{" "}
-                      {injections.period_unit}
-                    </Badge>
-                    <Badge>
-                      {injections.parental_route} - {injections.site}
-                    </Badge>
-                  </div>
-                  <div className="flex flex-row gap-4 flex-wrap">
-                    <FormLabels
-                      label="Lot number"
-                      value={`${injections.lot_number}`}
-                    />
-                    <FormLabels
-                      label="Expiration date"
-                      value={`${injections.expiration_date.split("T")[0]}`}
-                    />
-                    <FormLabels
-                      label="Note to nurse"
-                      value={`${injections.note_to_nurse}`}
-                    />
-                    <FormLabels
-                      label="Administered date"
-                      value={`${injections.administered_date.split("T")[0]}`}
-                    />
-                    <FormLabels
-                      label="comments"
-                      value={`${injections.comments}`}
-                    />
-                  </div>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row text-sm items-center gap-2 self-end">
+                <div className="text-gray-400">
+                  Page {page} of {totalPages}
                 </div>
-                <div className="flex flex-row">
+                <div className="space-x-2 ml-auto @[768px]:ml-0">
                   <Button
-                    variant={"ghost"}
-                    className="text-[#84012A]"
-                    onClick={() => {
-                      setEditData(injections);
-                      setIsDialogOpen(true);
-                    }}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(page - 1)}
+                    disabled={page <= 1}
                   >
-                    <Edit2Icon />
+                    Previous
                   </Button>
                   <Button
-                    variant={"ghost"}
-                    className="text-[#84012A]"
-                    onClick={() => handleDeleteInjection(injections.id)}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(page + 1)}
+                    disabled={page >= totalPages}
                   >
-                    <Trash2Icon />
+                    Next
                   </Button>
                 </div>
               </div>
-            ))
+              {injectionsData &&
+                injectionsData?.data &&
+                injectionsData?.data.map((injections) => (
+                  <div
+                    key={injections.id}
+                    className="flex flex-row justify-between border rounded-md w-full p-3"
+                  >
+                    <div className="flex flex-col gap-4">
+                      <div className="font-semibold flex flex-col gap-2">
+                        {injections.injectionType.injection_name}
+                      </div>
+                      <div className="flex flex-row gap-1">
+                        <FormLabels label="Intake" value="" />
+                        <Badge>
+                          {injections.dosage_quantity} -{" "}
+                          {injections.dosage_unit}
+                        </Badge>
+                        <Badge>
+                          {injections.frequency} - {injections.period_number}{" "}
+                          {injections.period_unit}
+                        </Badge>
+                        <Badge>
+                          {injections.parental_route} - {injections.site}
+                        </Badge>
+                      </div>
+                      <div className="flex flex-row gap-4 flex-wrap">
+                        <FormLabels
+                          label="Lot number"
+                          value={`${injections.lot_number}`}
+                        />
+                        <FormLabels
+                          label="Expiration date"
+                          value={`${injections.expiration_date.split("T")[0]}`}
+                        />
+                        <FormLabels
+                          label="Note to nurse"
+                          value={`${injections.note_to_nurse}`}
+                        />
+                        <FormLabels
+                          label="Administered date"
+                          value={`${
+                            injections.administered_date.split("T")[0]
+                          }`}
+                        />
+                        <FormLabels
+                          label="comments"
+                          value={`${injections.comments}`}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-row">
+                      <Button
+                        variant={"ghost"}
+                        className="text-[#84012A]"
+                        onClick={() => {
+                          setEditData(injections);
+                          setIsDialogOpen(true);
+                        }}
+                      >
+                        <Edit2Icon />
+                      </Button>
+                      <Button
+                        variant={"ghost"}
+                        className="text-[#84012A]"
+                        onClick={() => handleDeleteInjection(injections.id)}
+                      >
+                        <Trash2Icon />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+            </div>
           )}
           {injectionsData?.data.length === 0 && (
             <div className="flex flex-col justify-center items-center border rounded-md w-full h-full p-3 min-h-44">
