@@ -175,7 +175,7 @@ const ChartNotesAccordion = ({
       <div
         className="flex self-end text-xs text-gray-500"
       >
-        Last saved at: {formatSentAt(patientDetails?.chart.updatedAt)}
+        Last saved at: {formatSentAt(patientDetails?.chart?.updatedAt)}
       </div>
       <div className="flex flex-col gap-2">
         <h6>Chief Complaints</h6>

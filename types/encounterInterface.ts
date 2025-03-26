@@ -1,5 +1,6 @@
-import { UserChart } from "./chartsInterface";
-import { UserDetails } from "./userInterface";
+import { PastMedicalHistoryInterface } from "@/services/pastMedicalHistoryInterface";
+import { ActiveMedications, UserChart } from "./chartsInterface";
+import { SocialHistoryInterface } from "./socialHistoryInterface";
 
 export interface EncounterInterface {
   response?: EncounterResponse[];
@@ -22,6 +23,23 @@ export interface EncounterResponse {
   progressTracker: ProgressTracker;
 }
 
+export interface UserDetails {
+  userDetailsId: string
+  firstName: string
+  lastName: string
+  patientId: string
+  gender: string
+  height: number
+  heightType: string
+  weight: string
+  weightType: string
+  dob: string
+  phone_number: string
+  medication_history: PastMedicalHistoryInterface[]
+  history_of_present_illness: SocialHistoryInterface[]
+  active_medications: ActiveMedications[]
+}
+
 export interface ProgressTracker {
   id: string;
   currentWeight: string;
@@ -34,10 +52,10 @@ export interface ProgressTracker {
 }
 
 export interface BmiRecord {
-  id: string
-  date: string
-  currentBmi: number
-  goalBmi: number
-  createdAt: string
-  updatedAt: string
+  id: string;
+  date: string;
+  currentBmi: number;
+  goalBmi: number;
+  createdAt: string;
+  updatedAt: string;
 }

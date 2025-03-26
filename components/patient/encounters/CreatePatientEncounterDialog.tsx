@@ -39,7 +39,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { encounterSchema, EncounterSchema } from "@/schema/encounterSchema";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { useRouter } from "next/navigation";
 import { createEncounterRequest } from "@/services/chartsServices";
 import formStyles from "@/components/formStyles.module.css";
 import { getVisitTypes } from "@/services/enumServices";
@@ -57,7 +56,6 @@ const CreatePatientEncounterDialog = ({
   const [visitTypes, setVisitTypes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const providerDetails = useSelector((state: RootState) => state.login);
-  const router = useRouter();
 
   const methods = useForm<EncounterSchema>({
     resolver: zodResolver(encounterSchema),
@@ -106,7 +104,7 @@ const CreatePatientEncounterDialog = ({
           requestData: requestData,
         });
         if (encounterResponse) {
-          router.push(`/encounter/${encounterResponse.id}`);
+          window.open(`/encounter/${encounterResponse.id}`);
         }
       } catch (e) {
         console.log("Error", e);
@@ -124,13 +122,15 @@ const CreatePatientEncounterDialog = ({
           <DialogTitle>New Encounter</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col pb-2">
+        <div className="flex flex-col pb-2 gap-3">
           <div className={formStyles.formBody}>
             <div className="flex flex-col gap-3">
               <Label>Encounter with:</Label>
               <Input
                 placeholder="Provider Name"
                 value={`${providerDetails.firstName} ${providerDetails.lastName}`}
+                className="w-full"
+                disabled
               />
             </div>
           </div>
@@ -150,7 +150,7 @@ const CreatePatientEncounterDialog = ({
                               <Button
                                 variant={"outline"}
                                 className={cn(
-                                  "w-[280px] justify-start text-left font-normal",
+                                  "justify-start text-left font-normal",
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
