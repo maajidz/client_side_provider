@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
-import LoadingButton from "@/components/LoadingButton";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -55,8 +54,8 @@ const CreateOrderRecord = () => {
 
   // Loading State
   const [loading, setLoading] = useState({
-    patient: false,
-    patients: false,
+    lab: false,
+    provider: false,
   });
 
   // Toast State
@@ -162,10 +161,6 @@ const CreateOrderRecord = () => {
     }
   };
 
-  if (loading.patient || loading.patients) {
-    return <LoadingButton />;
-  }
-
   return (
     <>
       <div>
@@ -196,18 +191,20 @@ const CreateOrderRecord = () => {
                   <FormItem className={formStyles.formItem}>
                     <FormLabel>Ordered By:</FormLabel>
                     <FormControl>
-                      <div className="flex flex-col gap-2 items-start justify-start ">
-                        <Select
-                          value={field.value}
-                          onValueChange={(value: string) => {
-                            field.onChange(value);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {providerListData.data.map((providerList) => {
+                      <Select
+                        value={field.value}
+                        onValueChange={(value: string) => {
+                          field.onChange(value);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {loading.provider ? (
+                            <div>Loading...</div>
+                          ) : (
+                            providerListData.data.map((providerList) => {
                               const providerId =
                                 providerList.providerDetails?.id ??
                                 providerList.id;
@@ -217,10 +214,10 @@ const CreateOrderRecord = () => {
                                   value={providerId}
                                 >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
                               );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                            })
+                          )}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -233,12 +230,7 @@ const CreateOrderRecord = () => {
                   <FormItem className={formStyles.formItem}>
                     <FormLabel>Ordered Date</FormLabel>
                     <FormControl>
-                      <Input
-                        type="date"
-                        {...field}
-                        placeholder="Select date"
-                        className="w-fit"
-                      />
+                      <Input type="date" {...field} placeholder="Select date" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -270,25 +262,33 @@ const CreateOrderRecord = () => {
                           </button>
                         </PopoverTrigger>
                         <PopoverContent className="w-72 bg-white border rounded-md p-2">
-                          {labResponse?.data?.map((lab) => (
-                            <div
-                              key={lab.id}
-                              className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded"
-                              onClick={() => {
-                                // Toggle lab selection
-                                const updatedLabs = field.value.includes(lab.id)
-                                  ? field.value.filter((id) => id !== lab.id)
-                                  : [...field.value, lab.id];
+                          {loading.lab ? (
+                            <div>Loading...</div>
+                          ) : labResponse?.total > 0 ? (
+                            labResponse?.data?.map((lab) => (
+                              <div
+                                key={lab.id}
+                                className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded text-black"
+                                onClick={() => {
+                                  // Toggle lab selection
+                                  const updatedLabs = field.value.includes(
+                                    lab.id
+                                  )
+                                    ? field.value.filter((id) => id !== lab.id)
+                                    : [...field.value, lab.id];
 
-                                form.setValue("labs", updatedLabs);
-                              }}
-                            >
-                              <Checkbox
-                                checked={field.value.includes(lab.id)}
-                              />
-                              <span>{lab.name}</span>
-                            </div>
-                          ))}
+                                  form.setValue("labs", updatedLabs);
+                                }}
+                              >
+                                <Checkbox
+                                  checked={field.value.includes(lab.id)}
+                                />
+                                <span>{lab.name}</span>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="text-black">No data found</div>
+                          )}
                         </PopoverContent>
                       </Popover>
                     </FormControl>
@@ -327,7 +327,7 @@ const CreateOrderRecord = () => {
                             lab.tests.map((test) => (
                               <div
                                 key={test.id}
-                                className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded"
+                                className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-gray-100 rounded text-black"
                                 onClick={() => {
                                   // Toggle selection
                                   const updatedTests = field.value.includes(
