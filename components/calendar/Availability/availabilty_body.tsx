@@ -42,7 +42,7 @@ const AppointmentForm = () => {
   });
   const [isTimeSlotVisible, setIsTimeSlotVisible] = useState(false);
   const [date, setDate] = React.useState<Date>();
-  const providerID = useSelector((state: RootState) => state.login.providerId);
+  const provider = useSelector((state: RootState) => state.login);
 
   const { fields, append, remove } = useFieldArray({
     control: methods.control,
@@ -63,7 +63,7 @@ const AppointmentForm = () => {
       availabilities: [
         {
           date: formattedDate,
-          providerId: providerID,
+          providerId: provider.providerId,
           slots: formValues.timeSlot,
         },
       ],
@@ -87,7 +87,7 @@ const AppointmentForm = () => {
       <div className="flex flex-col gap-6 py-8 border-b">
         <div className="flex flex-row justify-between">
           <h2 className="font-medium">
-            Configure the regular working hours of Fahd Kazi at Pomegranate
+            Configure the regular working hours of {provider.firstName} {provider.lastName} at Pomegranate
             Health.
           </h2>
         </div>
