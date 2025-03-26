@@ -458,7 +458,9 @@ const TasksDialog = ({
                                         }
                                         onSelect={(date) => {
                                           if (date) {
-                                            field.onChange(date.toISOString());
+                                            field.onChange(
+                                              format(date, "yyyy-MM-dd")
+                                            );
                                           }
                                         }}
                                       />
