@@ -263,6 +263,7 @@ export const timeSlots = [
   "15:30",
 ];
 
+// Time Slots
 export const availabilityTimeSlots = [
   {
     id: "07:00-07:30",
