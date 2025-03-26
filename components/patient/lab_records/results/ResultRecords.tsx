@@ -1,4 +1,3 @@
-import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
 import {
@@ -27,6 +26,8 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 interface ResultRecordsProps {
   userDetailsId: string;
@@ -200,9 +201,10 @@ function ResultRecords({ userDetailsId }: ResultRecordsProps) {
               </FormItem>
             )}
           />
-
           <div className="flex items-end">
-            <SubmitButton label="Search" />
+            <Button type="submit" variant={"default"} className="bg-primary">
+              Search <Search />
+            </Button>
           </div>
         </form>
       </Form>

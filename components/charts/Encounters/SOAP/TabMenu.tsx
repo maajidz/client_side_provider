@@ -154,13 +154,9 @@ const TabMenu: React.FC<TabMenuProps> = ({
 
   return (
     <div className="flex flex-row gap-2">
-      {patientDetails.chart === null ? (
-        <div> </div>
-      ) : (
-        <Button onClick={handleSOAPSave} disabled={isSigned}>
-          Save
-        </Button>
-      )}
+      <Button onClick={handleSOAPSave} disabled={isSigned}>
+        Save
+      </Button>
       <Dialog>
         <DialogTrigger asChild>
           <Button variant={"outline"} className="px-2">

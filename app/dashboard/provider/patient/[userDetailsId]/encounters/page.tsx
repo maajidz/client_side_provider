@@ -3,11 +3,6 @@ import PageContainer from "@/components/layout/page-container";
 import PatientEncounters from "@/components/patient/encounters/PatientEncounters";
 import { useParams } from "next/navigation";
 
-// const breadcrumbItems = [
-//   { title: "Dashboard", link: "/dashboard" },
-//   { title: "Patients", link: "/dashboard/provider/patient" },
-//   { title: "Encounters", link: "" },
-// ];
 function Page() {
   const { userDetailsId } = useParams();
 
@@ -17,9 +12,6 @@ function Page() {
 
   return (
     <PageContainer>
-      {/* <div className="space-y-4">
-        <Breadcrumbs items={breadcrumbItems} />
-      </div> */}
       <PatientEncounters userDetailsId={userDetailsId} />
     </PageContainer>
   );

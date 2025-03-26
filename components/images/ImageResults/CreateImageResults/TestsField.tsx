@@ -1,4 +1,7 @@
-import { MultiSelectCheckbox, Option } from "@/components/ui/multiselectDropdown";
+import {
+  MultiSelectCheckbox,
+  Option,
+} from "@/components/ui/multiselectDropdown";
 import { FormField } from "@/components/ui/form";
 import { createImageResultsSchema } from "@/schema/createImageResultsSchema";
 import { ImagesTestData, TestInterface } from "@/types/chartsInterface";
@@ -17,7 +20,7 @@ export const TestsField = ({
   setSelectedTests: React.Dispatch<React.SetStateAction<TestInterface[]>>;
   tests: ImagesTestData[];
 }) => {
-  const options: Option[] = tests.map(test => ({
+  const options: Option[] = tests.map((test) => ({
     id: test.id,
     label: test.name,
   }));
@@ -30,11 +33,19 @@ export const TestsField = ({
         <MultiSelectCheckbox
           options={options}
           onChange={(selectedOptions) => {
-            const selectedTests = tests.filter(test => selectedOptions.includes(test.id));
+            const selectedTests = tests.filter((test) =>
+              selectedOptions.includes(test.id)
+            );
             setSelectedTests(selectedTests);
             field.onChange(selectedOptions);
+            const currentTestResults = form.getValues("testResults") || [];
+            const updatedTestResults = selectedTests.map(
+              (_, index) =>
+                currentTestResults[index] || { interpretation: "" }
+            );
+            form.setValue("testResults", updatedTestResults);
           }}
-          defaultSelected={selectedTests.map(test => test.id)}
+          defaultSelected={selectedTests.map((test) => test.id)}
           label="Select Tests"
         />
       )}

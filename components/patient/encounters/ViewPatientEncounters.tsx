@@ -98,7 +98,8 @@ const ViewPatientEncounters = ({
       defaultValue="lastvisit"
       value={activeTab}
       onValueChange={setActiveTab}
-      className="flex flex-col gap-5">
+      className="flex flex-col gap-5"
+    >
       <TabsList>
         {patientEncountersTab.map((tab) => (
           <CustomTabsTrigger value={tab.value} key={tab.value}>
@@ -112,10 +113,11 @@ const ViewPatientEncounters = ({
             {value === "lastvisit" ? (
               loading ? (
                 <DataListShimmer />
-              ) : chartList &&
-                chartList.response &&
-                chartList.response[0]?.chart ? (
-                <ChartNotes patientChart={chartList.response[0].chart} />
+              ) : chartList?.response?.[0]?.chart ? (
+                <ChartNotes
+                  patientChart={chartList.response[0].chart}
+                  patientDetails={{...chartList.response[0], chart: chartList.response[0].chart}}
+                />
               ) : (
                 <div className="flex flex-row p-4 items-center justify-center w-full h-full font-semibold">
                   No Chart Found!
