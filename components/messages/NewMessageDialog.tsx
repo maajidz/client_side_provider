@@ -114,8 +114,9 @@ const NewMessageDialog = ({
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, selectedUser, handleSearch]);
-
+  
   const handleSendMessage = () => {
+    console.log(selectedUser, 'SELECTED');
     const receiverID = selectedUser?.user?.userDetailsId ?? "";
 
     if (input.trim() && receiverID) {
@@ -149,6 +150,7 @@ const NewMessageDialog = ({
     console.log(message);
     setInput("");
   };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
