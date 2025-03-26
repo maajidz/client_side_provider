@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useCallback, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -19,9 +18,7 @@ import {
   ImagesTestsResponseInterface,
   TestInterface,
 } from "@/types/chartsInterface";
-import LoadingButton from "@/components/LoadingButton";
 import { createImageResultsSchema } from "@/schema/createImageResultsSchema";
-import UploadImageResults from "@/components/images/ImageResults/CreateImageResults/UploadImageResults";
 import { TestsField } from "@/components/images/ImageResults/CreateImageResults/TestsField";
 import CreateImageResultHeader from "@/components/images/ImageResults/CreateImageResults/CreateImageResultHeader";
 import { createImageResultRequest } from "@/services/imageResultServices";
@@ -33,6 +30,8 @@ import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ImageFileUploader from "@/components/images/ImageResults/CreateImageResults/ImageFileUploader";
 
 const CreatePatientImageResults = ({
   userDetailsId,
@@ -52,17 +51,16 @@ const CreatePatientImageResults = ({
     resolver: zodResolver(createImageResultsSchema),
     defaultValues: {
       patient: userDetailsId,
-      testResults: [
-        {
-          interpretation: "",
-        },
-      ],
+      testIds: [],
+      testResults: [],
     },
+    mode: "onChange",
   });
+
+  const testIds = form.watch("testIds");
 
   const handleUploadComplete = (images: string[]) => {
     setUploadedImages((prevImages) => [...prevImages, ...images]);
-    console.log("Received images:", images);
   };
 
   const fetchImageTestsData = useCallback(async () => {
@@ -84,18 +82,29 @@ const CreatePatientImageResults = ({
     fetchImageTestsData();
   }, [fetchImageTestsData]);
 
-  const onSubmit = async (values: z.infer<typeof createImageResultsSchema>) => {
-    console.log("Form Values:", values); // Debugging log
+  useEffect(() => {
+    const currentTestResults = form.getValues("testResults") || [];
+    const updatedTestResults = Array(testIds.length)
+      .fill(null)
+      .map((_, index) => currentTestResults[index] || { interpretation: "" });
+    form.setValue("testResults", updatedTestResults);
+  }, [testIds, form]);
 
+  const onSubmit = async (values: z.infer<typeof createImageResultsSchema>) => {
     try {
       const requestData: CreateImageResultInterface = {
         userDetailsId,
         reviewerId: providerDetails.providerId,
-        testResults: values.testResults.map((result, index) => ({
-          imageTestId: selectedTests[index]?.id ?? "",
-          interpretation: result?.interpretation,
+        testResults: selectedTests.map((test, index) => ({
+          imageTestId: test.id,
+          interpretation: values.testResults[index]?.interpretation || "",
           documents: uploadedImages,
         })),
+        // testResults: values.testResults.map((test, index) => ({
+        //   imageTestId: selectedTests[index]?.id ?? "",
+        //   interpretation: test?.interpretation,
+        //   documents: uploadedImages,
+        // })),
       };
 
       const response = await createImageResultRequest({ requestData });
@@ -107,6 +116,7 @@ const CreatePatientImageResults = ({
         });
         form.reset();
         setUploadedImages([]);
+        setSelectedTests([]);
       }
     } catch (e) {
       console.log("Error", e);
@@ -121,68 +131,71 @@ const CreatePatientImageResults = ({
     }
   };
 
-  if (loading) {
-    return <LoadingButton />;
-  }
-
   return (
     <>
-      <div>
+      <div className="space-y-4">
         <CreateImageResultHeader form={form} userDetailsId={userDetailsId} />
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className={`${formStyles.formBody} w-[30rem]`}
+            className="flex flex-col gap-4"
           >
-            {imageTestResponse?.data && (
-              <TestsField
-                form={form}
-                selectedTests={selectedTests}
-                setSelectedTests={setSelectedTests}
-                tests={imageTestResponse?.data}
-              />
+            {loading ? (
+              <div>Fetching...</div>
+            ) : (
+              imageTestResponse?.data && (
+                <TestsField
+                  form={form}
+                  selectedTests={selectedTests}
+                  setSelectedTests={setSelectedTests}
+                  tests={imageTestResponse?.data}
+                />
+              )
             )}
-            {selectedTests.map((test, index) => (
-              <div
-                key={index}
-                className="border border-gray-300 rounded-lg p-4 mb-4"
-              >
-                <h3 className="text-lg font-semibold">{`Test Results for ${test.name}`}</h3>
-                <div key={test.id}>
-                  <UploadImageResults
-                    onUploadComplete={(images) => handleUploadComplete(images)}
-                    userDetailsId={userDetailsId}
-                  />
-                  {uploadedImages &&
-                    uploadedImages.map((image) => (
-                      <Button key={image} variant={"link"}>
-                        {image}
-                      </Button>
-                    ))}
-                  <FormField
-                    control={form.control}
-                    name={`testResults.${index}.interpretation`}
-                    render={({ field }) => (
-                      <FormItem className={formStyles.formBody}>
-                        <FormLabel>Interpretation</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            placeholder="Interpretation"
-                            value={
-                              typeof field.value === "string" ? field.value : ""
-                            }
-                            onChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-            ))}
-            <SubmitButton label="Submit" />
+            <div className="flex gap-2 flex-wrap">
+              {selectedTests.map((test, index) => (
+                <Card className="w-full sm:w-1/2 lg:w-1/3" key={index}>
+                  <CardHeader>
+                    <CardTitle>{`Test Results for ${test.name}`}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="w-full">
+                    <div key={test.id} className="flex gap-4 w-full flex-col">
+                      <ImageFileUploader
+                        onUploadComplete={(images) =>
+                          handleUploadComplete(images)
+                        }
+                        userDetailsId={form.getValues().patient}
+                        testId={test.id}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`testResults.${index}.interpretation`}
+                        render={({ field }) => (
+                          <FormItem className={formStyles.formBody}>
+                            <FormLabel>Interpretation</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="text"
+                                placeholder="Interpretation"
+                                value={
+                                  typeof field.value === "string"
+                                    ? field.value
+                                    : ""
+                                }
+                                className="w-full"
+                                onChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <SubmitButton label="Submit" disabled={!form.formState.isValid} />
           </form>
         </Form>
       </div>

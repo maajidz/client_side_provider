@@ -61,8 +61,9 @@ const ViewPatientVitals = ({ userDetailsId }: { userDetailsId: string }) => {
 
   return (
     <div className="flex flex-col space-y-4">
-      {loading && <TableShimmer />}
-      {!loading && (
+      {loading ? (
+        <TableShimmer />
+      ) : (
         <DefaultDataTable
           title={"Vitals"}
           onAddClick={() => {

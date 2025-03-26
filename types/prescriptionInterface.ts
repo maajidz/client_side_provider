@@ -16,7 +16,7 @@ export interface PrescriptionDataInterface {
   additional_refills: number;
   Note_to_Pharmacy: string;
   earliest_fill_date: string;
-  status: "pending" | "completed";
+  status: "pending" | "completed" | "active";
   createdAt: string;
   updatedAt: string;
   dosages: Dosage[];
@@ -44,5 +44,5 @@ export interface UpdatePrescriptionInterface {
   fromDate: string;
   toDate: string;
   internalComments?: string;
-  status: "pending" | "completed";
+  status: "pending" | "completed" | "active";
 }

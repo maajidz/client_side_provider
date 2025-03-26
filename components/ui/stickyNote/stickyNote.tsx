@@ -115,13 +115,11 @@ export function StickyNote({
     }
   }, [isExpanded, isNewNote]);
 
-  const saveChanges = useCallback(
-    () => {
-      if (onUpdate) {
-        onUpdate(id, currentTitle, currentDescription, currentColor);
-      }
-    }, [id, currentTitle, currentDescription, currentColor, onUpdate]
-  );
+  const saveChanges = useCallback(() => {
+    if (onUpdate) {
+      onUpdate(id, currentTitle, currentDescription, currentColor);
+    }
+  }, [id, currentTitle, currentDescription, currentColor, onUpdate]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -143,7 +141,14 @@ export function StickyNote({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isExpanded, currentTitle, currentDescription, currentColor, onClose, saveChanges]);
+  }, [
+    isExpanded,
+    currentTitle,
+    currentDescription,
+    currentColor,
+    onClose,
+    saveChanges,
+  ]);
 
   const handleDelete = (e: React.MouseEvent | React.KeyboardEvent) => {
     if (e && e.stopPropagation) {

@@ -65,7 +65,7 @@ function AllergiesDialog({
         {
           type: "",
           Allergen: "",
-          serverity: "",
+          severity: "",
           observedOn: "",
           status: "",
           reactions: "",
@@ -124,7 +124,7 @@ function AllergiesDialog({
         const requestData: AllergeyRequestInterface = {
           allergies: data.allergens.map((allergen) => ({
             typeId: allergen.type,
-            severity: allergen.serverity,
+            severity: allergen.severity,
             observedOn: allergen.observedOn,
             allergen: allergen.Allergen,
             status: allergen.status,
@@ -243,7 +243,7 @@ function AllergiesDialog({
                     <td className="p-2">
                       <FormField
                         control={form.control}
-                        name={`allergens.${index}.serverity`}
+                        name={`allergens.${index}.severity`}
                         render={({ field }) => (
                           <FormItem>
                             <Select
@@ -349,7 +349,7 @@ function AllergiesDialog({
                   append({
                     type: "",
                     Allergen: "",
-                    serverity: "Severe",
+                    severity: "Severe",
                     observedOn: "",
                     status: "Active",
                     reactions: "",

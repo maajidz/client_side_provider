@@ -1,6 +1,5 @@
 "use client";
 
-import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -53,8 +52,6 @@ const CreateResultRecord = () => {
   const [loading, setLoading] = useState({
     lab: false,
     provider: false,
-    patient: false,
-    patients: false,
   });
 
   // User Details ID extracted from query parameters
@@ -220,10 +217,6 @@ const CreateResultRecord = () => {
     }
   };
 
-  if (loading.provider || loading.patient || loading.patients || loading.lab) {
-    return <LoadingButton />;
-  }
-
   return (
     <>
       <PageContainer>
@@ -258,18 +251,20 @@ const CreateResultRecord = () => {
                     <FormItem className={formStyles.formItem}>
                       <FormLabel className="">Reviewer:</FormLabel>
                       <FormControl>
-                        <div className="flex flex-col gap-2 items-start justify-start ">
-                          <Select
-                            value={field.value}
-                            onValueChange={(value: string) => {
-                              field.onChange(value);
-                            }}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {providerListData.data.map((providerList) => {
+                        <Select
+                          value={field.value}
+                          onValueChange={(value: string) => {
+                            field.onChange(value);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {loading.provider ? (
+                              <div>Loading...</div>
+                            ) : (
+                              providerListData.data.map((providerList) => {
                                 const providerId =
                                   providerList.providerDetails?.id ??
                                   providerList.id;
@@ -279,10 +274,10 @@ const CreateResultRecord = () => {
                                     value={providerId}
                                   >{`${providerList.firstName} ${providerList.lastName}`}</SelectItem>
                                 );
-                              })}
-                            </SelectContent>
-                          </Select>
-                        </div>
+                              })
+                            )}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -300,7 +295,6 @@ const CreateResultRecord = () => {
                         type="datetime-local"
                         {...field}
                         placeholder="Select date and time"
-                        className="w-fit"
                       />
                     </FormControl>
                     <FormMessage />
@@ -325,14 +319,19 @@ const CreateResultRecord = () => {
                           <SelectValue placeholder="Select a lab" />
                         </SelectTrigger>
                         <SelectContent>
-                          {labResponse &&
+                          {loading.lab ? (
+                            <div>Loading...</div>
+                          ) : labResponse &&
                             labResponse.data &&
-                            labResponse.data.length > 0 &&
+                            labResponse.data.length > 0 ? (
                             labResponse.data.map((lab) => (
                               <SelectItem key={lab.id} value={lab.id}>
                                 {lab.name}
                               </SelectItem>
-                            ))}
+                            ))
+                          ) : (
+                            <div>No Labs Found!</div>
+                          )}
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -366,90 +365,100 @@ const CreateResultRecord = () => {
                                   <Input
                                     placeholder="Parameter Name"
                                     {...field}
+                                    className="w-full"
                                   />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-
-                          <FormField
-                            control={form.control}
-                            name={`testResults.${groupIndex}.result`}
-                            render={({ field }) => (
-                              <FormItem className={formStyles.formItem}>
-                                <FormLabel>Result</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Result" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name={`testResults.${groupIndex}.unit`}
-                            render={({ field }) => (
-                              <FormItem className={formStyles.formItem}>
-                                <FormLabel>Unit</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Unit" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name={`testResults.${groupIndex}.referenceMin`}
-                            render={({ field }) => (
-                              <FormItem className={formStyles.formItem}>
-                                <FormLabel>Min</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    {...field}
-                                    type="number"
-                                    placeholder="Min"
-                                    value={field.value}
-                                    onChange={(e) => {
-                                      const value = e.target.value;
-                                      field.onChange(
-                                        value ? parseFloat(value) : undefined
-                                      );
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name={`testResults.${groupIndex}.referenceMax`}
-                            render={({ field }) => (
-                              <FormItem className={formStyles.formItem}>
-                                <FormLabel>Max</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    placeholder="Max"
-                                    {...field}
-                                    onChange={(e) => {
-                                      const value = e.target.value;
-                                      field.onChange(
-                                        value ? parseFloat(value) : undefined
-                                      );
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
+                          <div className="flex flex-row justify-between gap-3">
+                            <FormField
+                              control={form.control}
+                              name={`testResults.${groupIndex}.result`}
+                              render={({ field }) => (
+                                <FormItem className={formStyles.formItem}>
+                                  <FormLabel>Result</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Result"
+                                      {...field}
+                                      className="w-full"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`testResults.${groupIndex}.unit`}
+                              render={({ field }) => (
+                                <FormItem className={formStyles.formItem}>
+                                  <FormLabel>Unit</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Unit"
+                                      {...field}
+                                      className="w-full"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="flex flex-row justify-between gap-3">
+                            <FormField
+                              control={form.control}
+                              name={`testResults.${groupIndex}.referenceMin`}
+                              render={({ field }) => (
+                                <FormItem className={formStyles.formItem}>
+                                  <FormLabel>Min</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      type="number"
+                                      placeholder="Min"
+                                      value={field.value}
+                                      onChange={(e) => {
+                                        const value = e.target.value;
+                                        field.onChange(
+                                          value ? parseFloat(value) : undefined
+                                        );
+                                      }}
+                                      className="w-full"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`testResults.${groupIndex}.referenceMax`}
+                              render={({ field }) => (
+                                <FormItem className={formStyles.formItem}>
+                                  <FormLabel>Max</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      placeholder="Max"
+                                      {...field}
+                                      onChange={(e) => {
+                                        const value = e.target.value;
+                                        field.onChange(
+                                          value ? parseFloat(value) : undefined
+                                        );
+                                      }}
+                                      className="w-full"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
                           <FormField
                             control={form.control}
                             name={`testResults.${groupIndex}.interpretation`}
@@ -460,6 +469,7 @@ const CreateResultRecord = () => {
                                   <Input
                                     placeholder="Interpretation"
                                     {...field}
+                                    className="w-full"
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -480,7 +490,7 @@ const CreateResultRecord = () => {
                   <FormItem className={formStyles.formItem}>
                     <FormLabel>Tags</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter tags" {...field} />
+                      <Input placeholder="Enter tags" {...field} className="w-full" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -542,7 +552,7 @@ export function DropdownMenuCheckboxesField({
                 : "Select tests"}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
+          <DropdownMenuContent>
             <DropdownMenuLabel>Select Tests</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {tests.map((test) => (

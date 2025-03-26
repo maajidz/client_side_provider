@@ -36,14 +36,18 @@ import formStyles from "@/components/formStyles.module.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { createPrescriptions } from "@/services/chartsServices";
+import {
+  createPrescriptions,
+  fetchDiagnosesType,
+} from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
+import { prior_auth_options } from "@/constants/data";
+import { DiagnosesTypeData } from "@/types/chartsInterface";
 
 const PatientMedicationDialog = ({
-  // userDetailsId,
   isOpen,
   onClose,
 }: {
@@ -55,12 +59,30 @@ const PatientMedicationDialog = ({
     post: false,
     dosage: false,
     frequency: false,
+    diagnoses: false,
   });
   const [drugName, setDrugName] = useState<string>("");
   const [showPrescriptionForm, setShowPrescriptionForm] =
     useState<boolean>(false);
   const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
   const { toast } = useToast();
+
+  // Diagnoses Type State
+  const [diagnosesTypeData, setDiagnosesTypeData] = useState<
+    DiagnosesTypeData[]
+  >([]);
+  const [selectedPrimaryDiagnoses, setSelectedPrimaryDiagnoses] =
+    useState<DiagnosesTypeData | null>(null);
+  const [selectedSecondaryDiagnoses, setSelectedSecondaryDiagnoses] =
+    useState<DiagnosesTypeData | null>(null);
+
+  // search States
+  const [primarySearchTerm, setPrimarySearchTerm] = useState<string>("");
+  const [secondarySearchTerm, setSecondarySearchTerm] = useState<string>("");
+  const [visiblePrimarySearchList, setVisiblePrimarySearchList] =
+    useState<boolean>(false);
+  const [visibleSecondarySearchList, setVisibleSecondarySearchList] =
+    useState<boolean>(false);
 
   // Frequency Data
   const [frequencyData, setFrequencyData] = useState<string[]>([]);
@@ -132,6 +154,34 @@ const PatientMedicationDialog = ({
     watch,
   ]);
 
+  // Fetch Patient Data
+  const fetchDiagnosesList = useCallback(
+    async (searchTerm: string) => {
+      if (!searchTerm) return;
+      setLoading((prev) => ({ ...prev, diagnoses: true }));
+      try {
+        const response = await fetchDiagnosesType({
+          page: 1,
+          limit: 10,
+          search: searchTerm,
+        });
+        if (response) {
+          setDiagnosesTypeData(response.data || []);
+        }
+      } catch (e) {
+        console.log("Error", e);
+        showToast({
+          toast,
+          type: "error",
+          message: "Failed to fetch diagnoses",
+        });
+      } finally {
+        setLoading((prev) => ({ ...prev, diagnoses: false }));
+      }
+    },
+    [toast]
+  );
+
   // GET Frequency Data
   const fetchFrequency = useCallback(async () => {
     setLoading((prev) => ({ ...prev, frequency: true }));
@@ -196,6 +246,44 @@ const PatientMedicationDialog = ({
     form.setValue("directions", directions); // Update the directions field
   }, [form, generateDirections]);
 
+  // Diagnoses useEffect
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (primarySearchTerm.trim()) {
+        fetchDiagnosesList(primarySearchTerm);
+      } else {
+        setDiagnosesTypeData([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [primarySearchTerm, fetchDiagnosesList]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (secondarySearchTerm.trim()) {
+        fetchDiagnosesList(secondarySearchTerm);
+      } else {
+        setDiagnosesTypeData([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [secondarySearchTerm, fetchDiagnosesList]);
+
+  // Filter Diagnoses for Primary and Secondary
+  const filteredPrimaryDiagnoses = diagnosesTypeData.filter((diagnoses) =>
+    diagnoses.diagnosis_name
+      .toLowerCase()
+      .includes(primarySearchTerm.toLowerCase())
+  );
+
+  const filteredSecondaryDiagnoses = diagnosesTypeData.filter((diagnoses) =>
+    diagnoses.diagnosis_name
+      .toLowerCase()
+      .includes(secondarySearchTerm.toLowerCase())
+  );
+
   useEffect(() => {
     fetchFrequency();
     fetchDosageUnits();
@@ -255,305 +343,198 @@ const PatientMedicationDialog = ({
           <DialogTitle>Add Prescription</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        {showPrescriptionForm ? (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <ScrollArea className="h-[40rem]">
-                <div className={formStyles.formBody}>
-                  <div className="flex gap-8 flex-row justify-between">
-                    <FormItem className="flex flex-1">
-                      <FormLabel>Drug Name</FormLabel>
-                      <Input
-                        value={drugName}
-                        className="w-full"
-                        onChange={(e) => setDrugName(e.target.value)}
-                        placeholder="Enter drug name"
-                      />
-                    </FormItem>
-                    <FormItem className="inline-flex flex-row items-end gap-2 mb-3 flex-none">
-                      <FormLabel>Dispense as Written</FormLabel>
-                      <Switch
-                        checked={dispenseAsWritten}
-                        onCheckedChange={(value) => setDispenseAsWritten(value)}
-                      />
-                    </FormItem>
-                  </div>
-                  <div className={formStyles.formItem}>
-                    <div className="flex w-full gap-3 items-end">
-                      <FormField
-                        control={form.control}
-                        name="primary_diagnosis"
-                        render={({ field }) => (
-                          <FormItem className={`${formStyles.formItem} w-full`}>
-                            <FormLabel>Diagnosis</FormLabel>
-                            <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger className="mt-0">
-                                  <SelectValue
-                                    placeholder="Select"
-                                    className="w-full"
-                                  />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="diagnosis1">
-                                    Diagnosis 1
-                                  </SelectItem>
-                                  <SelectItem value="diagnosis2">
-                                    Diagnosis 2
-                                  </SelectItem>
-                                  <SelectItem value="diagnosis3">
-                                    Diagnosis 3
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="secondary_diagnosis"
-                        render={({ field }) => (
-                          <FormItem className={`${formStyles.formItem} w-full`}>
-                            <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger className="mt-0">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="diagnosis1">
-                                    Diagnosis 1
-                                  </SelectItem>
-                                  <SelectItem value="diagnosis2">
-                                    Diagnosis 2
-                                  </SelectItem>
-                                  <SelectItem value="diagnosis3">
-                                    Diagnosis 3
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Label>Dosage:</Label>
-                    <div className="flex gap-3 flex-wrap bg-gray-50 p-4 rounded-md">
-                      <FormField
-                        control={form.control}
-                        name="dosage_quantity"
-                        render={({ field }) => (
-                          <FormItem className="flex-none">
-                            <FormLabel>Qty</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="Qty"
-                                className="bg-white"
-                                value={field.value ?? ""}
-                                onChange={(e) =>
-                                  field.onChange(e.target.valueAsNumber || "")
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="dosage_unit"
-                        render={({ field }) => (
-                          <FormItem className="flex-none">
-                            <FormLabel>Unit</FormLabel>
-                            <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger className="mt-0">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {dosageUnits.map((unit) => (
-                                    <SelectItem key={unit} value={unit}>
-                                      {unit}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="route"
-                        render={({ field }) => (
-                          <FormItem className="flex-none">
-                            <FormLabel>Route</FormLabel>
-                            <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger className="mt-0">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="route1">
-                                    Route 1
-                                  </SelectItem>
-                                  <SelectItem value="route2">
-                                    Route 2
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="frequency"
-                        render={({ field }) => (
-                          <FormItem className="flex-none">
-                            <FormLabel>Frequency</FormLabel>
-                            <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger className="mt-0">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {loading.frequency ? (
-                                    <div>Loading...</div>
-                                  ) : (
-                                    frequencyData.map((frequency) => (
-                                      <SelectItem
-                                        key={frequency}
-                                        value={frequency}
-                                      >
-                                        {frequency}
-                                      </SelectItem>
-                                    ))
-                                  )}
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="when"
-                        render={({ field }) => (
-                          <FormItem className="flex-none">
-                            <FormLabel>When</FormLabel>
-                            <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger className="mt-0">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="frequency1">
-                                    Frequency 1
-                                  </SelectItem>
-                                  <SelectItem value="frequency2">
-                                    Frequency 2
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="duration_quantity"
-                        render={({ field }) => (
-                          <FormItem className="flex-none">
-                            <FormLabel>Duration</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="duration_unit"
-                        render={({ field }) => (
-                          <FormItem className="flex-none">
-                            <FormLabel>Duration Unit</FormLabel>
-                            <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger className="mt-0">
-                                  <SelectValue placeholder="duration type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="days">Days</SelectItem>
-                                  <SelectItem value="weeks">Weeks</SelectItem>
-                                  <SelectItem value="years">Years</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="directions"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Directions</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Directions" {...field} />
-                        </FormControl>
-                        <FormMessage />
+        {chartId ? (
+          // If chartID 
+          showPrescriptionForm ? (
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <ScrollArea className="h-[40rem]">
+                  <div className={formStyles.formBody}>
+                    <div className="flex gap-8 flex-row justify-between">
+                      <FormItem className="flex flex-1">
+                        <FormLabel>Drug Name</FormLabel>
+                        <Input
+                          value={drugName}
+                          className="w-full"
+                          onChange={(e) => setDrugName(e.target.value)}
+                          placeholder="Enter drug name"
+                        />
                       </FormItem>
-                    )}
-                  />
-                  <div className="flex w-full gap-3 flex-wrap">
-                    <div className={`${formStyles.formItem}`}>
-                      <FormLabel>Dispense</FormLabel>
-                      <div className="flex gap-3">
+                      <FormItem className="inline-flex flex-row items-end gap-2 mb-3 flex-none">
+                        <FormLabel>Dispense as Written</FormLabel>
+                        <Switch
+                          checked={dispenseAsWritten}
+                          onCheckedChange={(value) =>
+                            setDispenseAsWritten(value)
+                          }
+                        />
+                      </FormItem>
+                    </div>
+                    <div className={formStyles.formItem}>
+                      <div className="flex w-full gap-3 items-end">
                         <FormField
                           control={form.control}
-                          name="dispense_quantity"
+                          name="primary_diagnosis"
                           render={({ field }) => (
-                            <FormItem className={`${formStyles.formItem}`}>
+                            <FormItem
+                              className={`${formStyles.formItem} w-full`}
+                            >
+                              <FormLabel>Diagnosis</FormLabel>
+                              <FormControl>
+                                <div className="relative">
+                                  <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                                    <Input
+                                      placeholder="Search Diagnoses or ICD Code "
+                                      value={primarySearchTerm}
+                                      onChange={(e) => {
+                                        const value = e.target.value;
+                                        setPrimarySearchTerm(value);
+                                        setVisiblePrimarySearchList(true);
+
+                                        if (!value) {
+                                          field.onChange("");
+                                        }
+                                      }}
+                                      className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                                    />
+                                    <div className="px-3 py-1 text-base">
+                                      {" "}
+                                      {selectedPrimaryDiagnoses?.ICD_Code}
+                                    </div>
+                                  </div>
+                                  {primarySearchTerm &&
+                                    visiblePrimarySearchList && (
+                                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
+                                        {loading.diagnoses ? (
+                                          <div>Loading...</div>
+                                        ) : filteredPrimaryDiagnoses.length >
+                                          0 ? (
+                                          filteredPrimaryDiagnoses.map(
+                                            (diagnoses) => (
+                                              <div
+                                                key={diagnoses.id}
+                                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                                onClick={() => {
+                                                  field.onChange(
+                                                    diagnoses.diagnosis_name
+                                                  );
+                                                  setPrimarySearchTerm(
+                                                    diagnoses.diagnosis_name
+                                                  );
+                                                  setVisiblePrimarySearchList(
+                                                    false
+                                                  );
+                                                  setSelectedPrimaryDiagnoses(
+                                                    diagnoses
+                                                  );
+                                                }}
+                                              >
+                                                {`${diagnoses.diagnosis_name} - ${diagnoses.ICD_Code}`}
+                                              </div>
+                                            )
+                                          )
+                                        ) : (
+                                          <div className="px-4 py-2 text-gray-500">
+                                            No results found
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="secondary_diagnosis"
+                          render={({ field }) => (
+                            <FormItem
+                              className={`${formStyles.formItem} w-full`}
+                            >
+                              <FormControl>
+                                <div className="relative">
+                                  <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                                    <Input
+                                      placeholder="Search Diagnoses or ICD Code "
+                                      value={secondarySearchTerm}
+                                      onChange={(e) => {
+                                        const value = e.target.value;
+                                        setSecondarySearchTerm(value);
+                                        setVisibleSecondarySearchList(true);
+
+                                        if (!value) {
+                                          field.onChange("");
+                                        }
+                                      }}
+                                      className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                                    />
+                                    <div className="px-3 py-1 text-base">
+                                      {" "}
+                                      {selectedSecondaryDiagnoses?.ICD_Code}
+                                    </div>
+                                  </div>
+                                  {secondarySearchTerm &&
+                                    visibleSecondarySearchList && (
+                                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
+                                        {loading.diagnoses ? (
+                                          <div>Loading...</div>
+                                        ) : filteredSecondaryDiagnoses.length >
+                                          0 ? (
+                                          filteredSecondaryDiagnoses.map(
+                                            (diagnoses) => (
+                                              <div
+                                                key={diagnoses.id}
+                                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                                onClick={() => {
+                                                  field.onChange(
+                                                    diagnoses.diagnosis_name
+                                                  );
+                                                  setSecondarySearchTerm(
+                                                    diagnoses.diagnosis_name
+                                                  );
+                                                  setVisibleSecondarySearchList(
+                                                    false
+                                                  );
+                                                  setSelectedSecondaryDiagnoses(
+                                                    diagnoses
+                                                  );
+                                                }}
+                                              >
+                                                {`${diagnoses.diagnosis_name} - ${diagnoses.ICD_Code}`}
+                                              </div>
+                                            )
+                                          )
+                                        ) : (
+                                          <div className="px-4 py-2 text-gray-500">
+                                            No results found
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label>Dosage:</Label>
+                      <div className="flex gap-3 flex-wrap bg-gray-50 p-4 rounded-md">
+                        <FormField
+                          control={form.control}
+                          name="dosage_quantity"
+                          render={({ field }) => (
+                            <FormItem className="flex-none">
+                              <FormLabel>Qty</FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
-                                  placeholder="Quantity"
-                                  className="w-28"
+                                  placeholder="Qty"
+                                  className="bg-white"
                                   value={field.value ?? ""}
                                   onChange={(e) =>
                                     field.onChange(e.target.valueAsNumber || "")
@@ -566,11 +547,10 @@ const PatientMedicationDialog = ({
                         />
                         <FormField
                           control={form.control}
-                          name="dispense_unit"
+                          name="dosage_unit"
                           render={({ field }) => (
-                            <FormItem
-                              className={`${formStyles.formItem} w-full`}
-                            >
+                            <FormItem className="flex-none">
+                              <FormLabel>Unit</FormLabel>
                               <FormControl>
                                 <Select
                                   onValueChange={field.onChange}
@@ -580,8 +560,142 @@ const PatientMedicationDialog = ({
                                     <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="gram">Gram</SelectItem>
-                                    <SelectItem value="lts">Lts</SelectItem>
+                                    {dosageUnits.map((unit) => (
+                                      <SelectItem key={unit} value={unit}>
+                                        {unit}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="route"
+                          render={({ field }) => (
+                            <FormItem className="flex-none">
+                              <FormLabel>Route</FormLabel>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <SelectTrigger className="mt-0">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="route1">
+                                      Route 1
+                                    </SelectItem>
+                                    <SelectItem value="route2">
+                                      Route 2
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="frequency"
+                          render={({ field }) => (
+                            <FormItem className="flex-none">
+                              <FormLabel>Frequency</FormLabel>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <SelectTrigger className="mt-0">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {loading.frequency ? (
+                                      <div>Loading...</div>
+                                    ) : (
+                                      frequencyData.map((frequency) => (
+                                        <SelectItem
+                                          key={frequency}
+                                          value={frequency}
+                                        >
+                                          {frequency}
+                                        </SelectItem>
+                                      ))
+                                    )}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="when"
+                          render={({ field }) => (
+                            <FormItem className="flex-none">
+                              <FormLabel>When</FormLabel>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <SelectTrigger className="mt-0">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="frequency1">
+                                      Frequency 1
+                                    </SelectItem>
+                                    <SelectItem value="frequency2">
+                                      Frequency 2
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="duration_quantity"
+                          render={({ field }) => (
+                            <FormItem className="flex-none">
+                              <FormLabel>Duration</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="duration_unit"
+                          render={({ field }) => (
+                            <FormItem className="flex-none">
+                              <FormLabel>Duration Unit</FormLabel>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <SelectTrigger className="mt-0">
+                                    <SelectValue placeholder="duration type" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="days">Days</SelectItem>
+                                    <SelectItem value="weeks">Weeks</SelectItem>
+                                    <SelectItem value="months">
+                                      Months
+                                    </SelectItem>
+                                    <SelectItem value="years">Years</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </FormControl>
@@ -593,171 +707,249 @@ const PatientMedicationDialog = ({
                     </div>
                     <FormField
                       control={form.control}
-                      name="days_of_supply"
+                      name="directions"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Days Supply</FormLabel>
+                          <FormLabel>Directions</FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              placeholder=""
-                              value={field.value ?? ""}
-                              onChange={(e) =>
-                                field.onChange(e.target.valueAsNumber || "")
-                              }
-                            />
+                            <Textarea placeholder="Directions" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name="earliest_fill_date"
-                      render={({ field }) => (
-                        <FormItem className={`${formStyles.formItem}`}>
-                          <FormLabel>Earliest Fill Date</FormLabel>
-                          <FormControl>
-                            <Input type="date" placeholder="" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex gap-3 ">
-                    <div className={`${formStyles.formItem}`}>
-                      <div className="flex gap-3 items-end">
-                        <FormField
-                          control={form.control}
-                          name="prior_auth"
-                          render={({ field }) => (
-                            <FormItem className={`${formStyles.formItem}`}>
-                              <FormLabel>Prior Auth</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Prior Auth" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="prior_auth_decision"
-                          render={({ field }) => (
-                            <FormItem className={`${formStyles.formItem}`}>
-                              <FormControl>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                >
-                                  <SelectTrigger className="mt-0">
-                                    <SelectValue placeholder="Select" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="option1">
-                                      option 1
-                                    </SelectItem>
-                                    <SelectItem value="option2">
-                                      option 2
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                    <div className="flex w-full gap-3 flex-wrap">
+                      <div className={`${formStyles.formItem}`}>
+                        <FormLabel>Dispense</FormLabel>
+                        <div className="flex gap-3">
+                          <FormField
+                            control={form.control}
+                            name="dispense_quantity"
+                            render={({ field }) => (
+                              <FormItem className={`${formStyles.formItem}`}>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    placeholder="Quantity"
+                                    className="w-28"
+                                    value={field.value ?? ""}
+                                    onChange={(e) =>
+                                      field.onChange(
+                                        e.target.valueAsNumber || ""
+                                      )
+                                    }
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="dispense_unit"
+                            render={({ field }) => (
+                              <FormItem
+                                className={`${formStyles.formItem} w-full`}
+                              >
+                                <FormControl>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                  >
+                                    <SelectTrigger className="mt-0">
+                                      <SelectValue placeholder="Select" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {dosageUnits.map((unit) => (
+                                        <SelectItem key={unit} value={unit}>
+                                          {unit}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
+                      <FormField
+                        control={form.control}
+                        name="days_of_supply"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Days Supply</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder=""
+                                value={field.value ?? ""}
+                                onChange={(e) =>
+                                  field.onChange(e.target.valueAsNumber || "")
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="earliest_fill_date"
+                        render={({ field }) => (
+                          <FormItem className={`${formStyles.formItem}`}>
+                            <FormLabel>Earliest Fill Date</FormLabel>
+                            <FormControl>
+                              <Input type="date" placeholder="" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
-                    <FormField
-                      control={form.control}
-                      name="additional_refills"
-                      render={({ field }) => (
-                        <FormItem className={`${formStyles.formItem}`}>
-                          <FormLabel>Additional Refills</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder=""
-                              value={field.value ?? ""}
-                              onChange={(e) =>
-                                field.onChange(e.target.valueAsNumber || "")
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="flex gap-3 ">
+                      <div className={`${formStyles.formItem}`}>
+                        <div className="flex gap-3 items-end">
+                          <FormField
+                            control={form.control}
+                            name="prior_auth"
+                            render={({ field }) => (
+                              <FormItem className={`${formStyles.formItem}`}>
+                                <FormLabel>Prior Auth</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Prior Auth" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="prior_auth_decision"
+                            render={({ field }) => (
+                              <FormItem className={`${formStyles.formItem}`}>
+                                <FormControl>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                  >
+                                    <SelectTrigger className="mt-0">
+                                      <SelectValue placeholder="Select" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {prior_auth_options.map((option) => (
+                                        <SelectItem value={option} key={option}>
+                                          {option}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name="additional_refills"
+                        render={({ field }) => (
+                          <FormItem className={`${formStyles.formItem}`}>
+                            <FormLabel>Additional Refills</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder=""
+                                value={field.value ?? ""}
+                                onChange={(e) =>
+                                  field.onChange(e.target.valueAsNumber || "")
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="flex gap-3 items-center w-full">
+                      <FormField
+                        control={form.control}
+                        name="internal_comments"
+                        render={({ field }) => (
+                          <FormItem className={`${formStyles.formItem} w-full`}>
+                            <FormLabel>Internal Comments</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} className="w-full" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="Note_to_Pharmacy"
+                        render={({ field }) => (
+                          <FormItem className={`${formStyles.formItem} w-full`}>
+                            <FormLabel>Note to Pharmacy</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} className="w-full" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <DialogFooter className="flex justify-end gap-2">
+                      <Button
+                        variant={"outline"}
+                        onClick={() =>
+                          setShowPrescriptionForm(!showPrescriptionForm)
+                        }
+                      >
+                        Cancel
+                      </Button>
+                      <SubmitButton
+                        label={loading.post ? "Saving" : "Save"}
+                        disabled={loading.post}
+                      />
+                    </DialogFooter>
                   </div>
-                  <div className="flex gap-3 items-center w-full">
-                    <FormField
-                      control={form.control}
-                      name="internal_comments"
-                      render={({ field }) => (
-                        <FormItem className={`${formStyles.formItem} w-full`}>
-                          <FormLabel>Internal Comments</FormLabel>
-                          <FormControl>
-                            <Textarea {...field} className="w-full" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="Note_to_Pharmacy"
-                      render={({ field }) => (
-                        <FormItem className={`${formStyles.formItem} w-full`}>
-                          <FormLabel>Note to Pharmacy</FormLabel>
-                          <FormControl>
-                            <Textarea {...field} className="w-full" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <DialogFooter className="flex justify-end gap-2">
-                    <Button
-                      variant={"outline"}
-                      onClick={() =>
-                        setShowPrescriptionForm(!showPrescriptionForm)
-                      }
-                    >
-                      Cancel
-                    </Button>
-                    <SubmitButton label="Save" disabled={loading.post} />
-                  </DialogFooter>
+                </ScrollArea>
+              </form>
+            </Form>
+          ) : (
+            <div className="flex flex-col w-full gap-2">
+              {/* <RxPatientDetailsSection userDetailsId={userDetailsId} /> */}
+              <div className="flex flex-1 flex-col gap-4 items-start">
+                <div className="flex flex-col gap-2 justify-between w-full">
+                  <Label>Search & Add Rx</Label>
+                  <Input
+                    value={drugName}
+                    placeholder="Enter drug name"
+                    className="w-full rounded-md"
+                    onChange={(e) => setDrugName(e.target.value)}
+                  />
                 </div>
-              </ScrollArea>
-            </form>
-          </Form>
-        ) : (
-          <div className="flex flex-col w-full gap-2">
-            {/* <RxPatientDetailsSection userDetailsId={userDetailsId} /> */}
-            <div className="flex flex-1 flex-col gap-4 items-start">
-              <div className="flex flex-col gap-2 justify-between w-full">
-                <Label>Search & Add Rx</Label>
-                <Input
-                  value={drugName}
-                  placeholder="Enter drug name"
-                  className="w-full rounded-md"
-                  onChange={(e) => setDrugName(e.target.value)}
-                />
-              </div>
-              <div className="flex flex-row items-center">
-                <Label>or</Label>
-                <Button
-                  variant={"link"}
-                  onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
-                  className="text-[#84012A] font-semibold ml-1"
-                >
-                  Add custom drug
-                </Button>
+                <div className="flex flex-row items-center">
+                  <Label>or</Label>
+                  <Button
+                    variant={"link"}
+                    onClick={() =>
+                      setShowPrescriptionForm(!showPrescriptionForm)
+                    }
+                    className="text-[#84012A] font-semibold ml-1"
+                  >
+                    Add custom drug
+                  </Button>
+                </div>
               </div>
             </div>
+          )
+        ) : (
+          <div className="flex flex-col justify-center h-28 font-medium">
+            Can&apos;t add prescription, no chart Id found.
           </div>
         )}
       </DialogContent>

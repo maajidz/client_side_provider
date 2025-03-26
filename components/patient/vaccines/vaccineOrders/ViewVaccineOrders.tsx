@@ -29,6 +29,7 @@ import {
 import { Button } from "@/components/ui/button";
 import VaccineOrders from "@/components/injections/vaccine-orders/VaccineOrders";
 import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
+import { Search } from "lucide-react";
 
 function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
   // Data State
@@ -136,14 +137,14 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
             control={form.control}
             name="providerId"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ordered By</FormLabel>
+              <FormItem className="flex-none">
+                <FormLabel className="w-fit">Ordered By</FormLabel>
                 <FormControl>
                   <Select
                     defaultValue={field.value}
                     onValueChange={field.onChange}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-fit text-sm font-medium">
                       <SelectValue placeholder="Filter by Ordered by" />
                     </SelectTrigger>
                     <SelectContent>
@@ -180,11 +181,11 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
             control={form.control}
             name="status"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-none">
                 <FormLabel>Status</FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-fit text-sm font-medium">
                       <SelectValue placeholder="Filter by Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -210,7 +211,9 @@ function ViewVaccineOrders({ userDetailsId }: { userDetailsId: string }) {
             )}
           />
           <div className="flex items-end">
-            <Button variant={"secondary"}>Search</Button>
+            <Button type="submit" variant={"default"} className="bg-primary">
+              Search <Search />
+            </Button>
           </div>
         </form>
       </Form>
