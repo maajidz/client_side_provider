@@ -344,6 +344,7 @@ const PatientMedicationDialog = ({
           <DialogDescription></DialogDescription>
         </DialogHeader>
         {chartId ? (
+          // If chartID 
           showPrescriptionForm ? (
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
