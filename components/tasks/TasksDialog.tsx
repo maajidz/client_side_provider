@@ -65,7 +65,7 @@ const TasksDialog = ({
   const [patients, setPatients] = useState<UserData[]>([]);
   const [showPatientSpecific, setShowPatientSpecific] =
     useState<boolean>(false);
-  const [showDueDate, setShowDueDate] = useState(false);
+  const [showDueDate, setShowDueDate] = useState(!!tasksData?.dueDate);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
   const [searchTerm, setSearchTerm] = useState("");
@@ -150,8 +150,8 @@ const TasksDialog = ({
           .toISOString()
           .split("T")[0];
         form.setValue("dueDate", formattedDueDate);
-        setShowDueDate(!!tasksData.dueDate);
       }
+      setShowDueDate(!!tasksData?.dueDate);
       setShowPatientSpecific(!!tasksData.userDetailsId);
       setSelectedOwner(
         ownersList.find((owner) => owner.id === tasksData.assignerProvider?.id)
@@ -408,7 +408,10 @@ const TasksDialog = ({
                   <div className="flex items-center space-x-3">
                     <Checkbox
                       id="assignDueDate"
-                      onCheckedChange={() => setShowDueDate(!showDueDate)}
+                      checked={showDueDate}
+                      onCheckedChange={(checked) =>
+                        setShowDueDate(Boolean(checked))
+                      }
                     />
                     <label
                       htmlFor="assignDueDate"

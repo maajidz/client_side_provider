@@ -16,7 +16,6 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectTrigger,
@@ -44,6 +43,11 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 const EditPatientTaskDialog = ({
   tasksData,
@@ -62,7 +66,7 @@ const EditPatientTaskDialog = ({
   onFetchTasks: (page: number, userDetailsId: string) => Promise<void>;
   tasksListData: TaskTypeResponse | null;
 }) => {
-  const [showDueDate, setShowDueDate] = useState(false);
+  const [showDueDate, setShowDueDate] = useState(!!tasksData?.dueDate);
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
   const [selectedTask, setSelectedTask] = useState<TaskTypeList>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -112,6 +116,7 @@ const EditPatientTaskDialog = ({
         (owner) => owner.providerDetails?.id === tasksData.assignerProvider?.id
       );
       setSelectedOwner(selectedTaskOwner);
+      setShowDueDate(!!tasksData?.dueDate);
     }
   }, [form, tasksData, tasksListData, ownersList]);
 
@@ -315,7 +320,39 @@ const EditPatientTaskDialog = ({
                             <FormItem className="flex gap-2">
                               <FormLabel>From Date:</FormLabel>
                               <FormControl>
-                                <Input type="date" {...field} />
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <Button
+                                      variant={"outline"}
+                                      className={cn(
+                                        "justify-start text-left font-normal",
+                                        !field.value && "text-muted-foreground"
+                                      )}
+                                    >
+                                      <CalendarIcon />
+                                      {field.value
+                                        ? format(new Date(field.value), "PPP")
+                                        : "Select a date"}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-auto p-0 pointer-events-auto">
+                                    <Calendar
+                                      mode="single"
+                                      selected={
+                                        field.value
+                                          ? new Date(field.value)
+                                          : undefined
+                                      }
+                                      onSelect={(date) => {
+                                        if (date) {
+                                          field.onChange(
+                                            format(date, "yyyy-MM-dd")
+                                          );
+                                        }
+                                      }}
+                                    />
+                                  </PopoverContent>
+                                </Popover>
                               </FormControl>
                               <FormMessage />
                             </FormItem>
