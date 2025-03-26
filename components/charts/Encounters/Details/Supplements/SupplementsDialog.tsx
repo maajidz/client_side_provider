@@ -113,7 +113,7 @@ function SupplementsDialog({
   const form = useForm<z.infer<typeof supplementsFormSchema>>({
     resolver: zodResolver(supplementsFormSchema),
     defaultValues: {
-      supplement: selectedSupplement?.type.id|| "",
+      supplement: "",
       manufacturer: selectedSupplement?.manufacturer || "",
       fromDate:
         selectedSupplement?.fromDate.split("T")[0] ||
@@ -228,7 +228,6 @@ function SupplementsDialog({
     if (selectedSupplement) {
       setSearchTerm(selectedSupplement.type.supplement_name);
       form.reset({
-        supplement: selectedSupplement?.type.id || "",
         manufacturer: selectedSupplement?.manufacturer || "",
         fromDate:
           selectedSupplement?.fromDate.split("T")[0] ||
@@ -249,7 +248,6 @@ function SupplementsDialog({
       }
     } else {
       form.reset({
-        supplement: "",
         manufacturer: "",
         fromDate: new Date().toISOString().split("T")[0],
         toDate: new Date().toISOString().split("T")[0],

@@ -59,7 +59,7 @@ function ViewRecallDialog({
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium text-gray-600">Provider:</span>
-            <span>{selectedRecallData?.provider.firstName} {selectedRecallData?.provider.lastName}</span>
+            <span>{selectedRecallData?.providerId}</span>
           </div>
           {/* <div className="flex flex-col gap-1">
             <span  className="text-sm font-medium text-gray-600">Visit Date:</span>
