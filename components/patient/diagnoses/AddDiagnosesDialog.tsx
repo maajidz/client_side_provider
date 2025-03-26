@@ -77,6 +77,7 @@ const AddDiagnosesDialog = ({
   // Track the active input index
   const [activeInputIndex, setActiveInputIndex] = useState<number | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const notesRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
 
   // Focus the active input after any state change that might cause a re-render
   useEffect(() => {
@@ -116,6 +117,9 @@ const AddDiagnosesDialog = ({
           i === index ? { ...row, [field]: value } : row
         )
       );
+      if (field === "notes" && notesRefs.current[index]) {
+        notesRefs.current[index].value = value;
+      }
     },
     []
   );
@@ -171,11 +175,14 @@ const AddDiagnosesDialog = ({
         return newListVisible;
       });
 
-      // Add a new row and focus the input of the new row
       handleAddRow();
-      setActiveInputIndex(rows.length); // Set the new row as active
+
+      setTimeout(() => {
+        notesRefs.current[index]?.focus();
+      }, 100);
     },
-    [handleChange, handleAddRow, rows.length]
+
+    [handleAddRow, handleChange]
   );
 
   const handleClearRow = useCallback(
@@ -190,22 +197,42 @@ const AddDiagnosesDialog = ({
 
   const handleSubmit = async () => {
     try {
-      if (chartId) {
-        const requestData: CreateDiagnosesRequestBody = {
-          userDetailsId,
-          providerId: providerDetails.providerId,
-          diagnoses: rows.map((row) => ({
-            ...row,
-            chartId,
-          })),
-        };
-        await createDiagnoses({ requestData });
-        showToast({
-          toast,
-          type: "success",
-          message: "Diagnosis created successfully",
-        });
-      }
+      if (!chartId) return;
+
+      const requestData: CreateDiagnosesRequestBody = {
+        userDetailsId,
+        providerId: providerDetails.providerId,
+        diagnoses: rows
+          .map((row) => {
+            // * POST issue solution
+            // Ensure required fields exist and remove falsy optional fields
+            const filteredRow = Object.fromEntries(
+              Object.entries({ ...row, chartId }) // Ensure chartId is always present
+                .filter(
+                  ([key, value]) =>
+                    Boolean(value) ||
+                    key === "diagnosis_Id" ||
+                    key === "chartId"
+                )
+            );
+
+            return filteredRow as {
+              diagnosis_Id: string;
+              chartId: string;
+              notes?: string;
+              status?: "active" | "inactive";
+              fromDate?: string;
+              toDate?: string;
+            };
+          })
+          .filter((row) => row.diagnosis_Id), // Ensure only valid rows remain
+      };
+      await createDiagnoses({ requestData });
+      showToast({
+        toast,
+        type: "success",
+        message: "Diagnosis created successfully",
+      });
     } catch (e) {
       showToast({
         toast,
@@ -291,8 +318,14 @@ const AddDiagnosesDialog = ({
           <Input
             type="text"
             placeholder="Enter notes"
-            value={row.original.notes}
-            onChange={(e) => handleChange(row.index, "notes", e.target.value)}
+            // value={row.original.notes}
+            ref={(el) => {
+              if (el) {
+                notesRefs.current[row.index] = el;
+                el.value = row.original.notes;
+              }
+            }}
+            onBlur={(e) => handleChange(row.index, "notes", e.target.value)}
           />
         ),
       },
@@ -330,7 +363,7 @@ const AddDiagnosesDialog = ({
         resetRows();
       }}
     >
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-3xl overflow-y-scroll">
         <DialogHeader>
           <DialogTitle>Add Diagnosis</DialogTitle>
         </DialogHeader>

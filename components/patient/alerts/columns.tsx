@@ -64,7 +64,11 @@ export const columns = ({
     cell: ({ row }) => {
       const providerDetails = row.original.providerPatientDetails;
       return (
-        <div className="cursor-pointer">{`${providerDetails.provider.firstName} ${providerDetails.provider.lastName}`}</div>
+        <div className="cursor-pointer">
+          {providerDetails.provider
+            ? `${providerDetails?.provider?.firstName} ${providerDetails?.provider?.lastName}`
+            : "N/A"}
+        </div>
       );
     },
   },
@@ -73,9 +77,7 @@ export const columns = ({
     header: "Alert Name",
     cell: ({ row }) => {
       const alertName = row.original.alert.alertType.alertName;
-      return (
-        <div className="cursor-pointer">{alertName}</div>
-      );
+      return <div className="cursor-pointer">{alertName}</div>;
     },
   },
   {
@@ -83,9 +85,7 @@ export const columns = ({
     header: "Alert Description",
     cell: ({ row }) => {
       const alertDescription = row.original.alert.alertDescription;
-      return (
-        <div className="cursor-pointer">{alertDescription}</div>
-      );
+      return <div className="cursor-pointer">{alertDescription}</div>;
     },
   },
   {
@@ -103,7 +103,7 @@ export const columns = ({
               <DropdownMenuItem
                 onClick={() => {
                   setEditData({
-                    alertName: row.original.alert.alertType.alertName,
+                    alertName: row.original.alert?.alertType?.alertName,
                     alertDescription: row.original.alert.alertDescription,
                     alertId: row.original.alert.id,
                   });

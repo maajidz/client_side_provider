@@ -32,6 +32,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import TableShimmer from "@/components/custom_buttons/shimmer/TableShimmer";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
   const providerDetails = useSelector((state: RootState) => state.login);
@@ -46,49 +48,60 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
     view: false,
   });
   const [editData, setEditData] = useState<RecallsEditData | null>(null);
+  const [filters, setFilters] = useState({
+    type: "",
+    status: "",
+  });
+
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof filterRecallsSchema>>({
     resolver: zodResolver(filterRecallsSchema),
     defaultValues: {
-      type: "all",
-      status: "all",
+      type: "",
+      status: "",
     },
   });
 
-  const filters = form.watch();
+  function onSubmit(values: z.infer<typeof filterRecallsSchema>) {
+    setFilters((prev) => ({
+      ...prev,
 
-  const fetchRecalls = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await getRecallsData({
-        page,
-        limit,
-        userDetailsId,
-        providerId: providerDetails.providerId,
-        category: filters.type === "all" ? "" : filters.type,
-        status: filters.status === "all" ? "" : filters.status,
-      });
-      if (response) {
-        setResultList(response);
-        setTotalPages(Math.ceil(response.total / limit));
+      status: values.status === "all" ? "" : values.status || "",
+      type: values.type === "all" ? "" : values.type || "",
+    }));
+
+    setPage(1);
+  }
+
+  const fetchRecalls = useCallback(
+    async (page: number, status?: string, type?: string) => {
+      setLoading(true);
+      try {
+        const response = await getRecallsData({
+          page: page,
+          limit,
+          userDetailsId,
+          providerId: providerDetails.providerId,
+          category: type || filters.type,
+          status: status || filters.status,
+        });
+        if (response) {
+          setResultList(response);
+          setTotalPages(Math.ceil(response.total / limit));
+        }
+      } catch (e) {
+        console.log("Error", e);
+      } finally {
+        setLoading(false);
       }
-    } catch (e) {
-      console.log("Error", e);
-    } finally {
-      setLoading(false);
-    }
-  }, [
-    filters.type,
-    filters.status,
-    providerDetails.providerId,
-    page,
-    userDetailsId,
-  ]);
+    },
+    [filters, providerDetails.providerId, userDetailsId]
+  );
 
   useEffect(() => {
-    fetchRecalls();
-  }, [fetchRecalls]);
+    fetchRecalls(page, filters.status, filters.type);
+  }, [fetchRecalls, filters, page]);
 
   return (
     <>
@@ -96,24 +109,27 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
         userDetailsId={userDetailsId}
         onClose={() => {
           setIsDialogOpen((prev) => ({ ...prev, create: false }));
-          fetchRecalls();
+          fetchRecalls(page);
         }}
         isOpen={isDialogOpen.create}
       />
       <Form {...form}>
-        <form className="flex gap-2 w-fit">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex gap-2 flex-row"
+        >
           <FormField
             control={form.control}
             name="type"
             render={({ field }) => (
-              <FormItem className="">
+              <FormItem className="flex-none">
                 <FormLabel className="w-fit">Type</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-64 text-sm font-medium">
                       <SelectValue placeholder="Choose Category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -135,14 +151,14 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
             control={form.control}
             name="status"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
+              <FormItem className="flex-none">
+                <FormLabel className="w-64">Status</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-64 text-sm font-medium">
                       <SelectValue
                         placeholder="Select Status"
                         className="capitalize"
@@ -164,6 +180,11 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
               </FormItem>
             )}
           />
+          <div className="flex items-end">
+            <Button type="submit" variant={"default"} className="bg-primary">
+              Search <Search />
+            </Button>
+          </div>
         </form>
       </Form>
 
@@ -172,31 +193,29 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
         {loading ? (
           <TableShimmer />
         ) : (
-          resultList?.data && (
-            <DefaultDataTable
-              title={"Patient Recalls"}
-              onAddClick={() => {
-                setIsDialogOpen((prev) => ({ ...prev, create: true }));
-              }}
-              columns={columns({
-                setEditData,
-                setIsDialogOpen,
-                setLoading,
-                showToast: ({ type, message }) => {
-                  showToast({
-                    toast,
-                    type: type === "success" ? "success" : "error",
-                    message,
-                  });
-                },
-                fetchRecalls: () => fetchRecalls(),
-              })}
-              data={resultList?.data || []}
-              pageNo={page}
-              totalPages={totalPages}
-              onPageChange={(newPage: number) => setPage(newPage)}
-            />
-          )
+          <DefaultDataTable
+            title={"Patient Recalls"}
+            onAddClick={() => {
+              setIsDialogOpen((prev) => ({ ...prev, create: true }));
+            }}
+            columns={columns({
+              setEditData,
+              setIsDialogOpen,
+              setLoading,
+              showToast: ({ type, message }) => {
+                showToast({
+                  toast,
+                  type: type === "success" ? "success" : "error",
+                  message,
+                });
+              },
+              fetchRecalls: () => fetchRecalls(page),
+            })}
+            data={resultList?.data || []}
+            pageNo={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: number) => setPage(newPage)}
+          />
         )}
 
         <RecallsDialog
@@ -204,7 +223,7 @@ const ViewRecalls = ({ userDetailsId }: { userDetailsId: string }) => {
           recallsData={editData}
           onClose={() => {
             setIsDialogOpen((prev) => ({ ...prev, edit: false }));
-            fetchRecalls();
+            fetchRecalls(page);
           }}
           isOpen={isDialogOpen.edit}
         />

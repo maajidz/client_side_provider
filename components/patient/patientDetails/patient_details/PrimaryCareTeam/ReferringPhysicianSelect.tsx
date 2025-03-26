@@ -3,6 +3,7 @@ import styles from "./patient_care_team.module.css";
 import { Input } from "@/components/ui/input";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
 import { searchProviders } from "@/services/registerServices";
+import LoadingButton from "@/components/LoadingButton";
 
 const ReferringPhysicianSelect = () => {
   const [providers, setProviders] = useState<FetchProviderList[]>([]);
@@ -70,7 +71,7 @@ const ReferringPhysicianSelect = () => {
       {/* Loading State */}
       {loading && (
         <div className="flex justify-center mt-2">
-          Loading...
+          <LoadingButton />
         </div>
       )}
 

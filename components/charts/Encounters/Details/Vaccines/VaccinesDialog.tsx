@@ -186,6 +186,15 @@ function VaccinesDialog({
     if (vaccinesData) {
       form.reset(vaccinesData);
       setSearchTerm(vaccinesData.vaccine_name);
+    } else {
+      form.reset({
+        vaccine_name: "",
+        in_series: "",
+        date: new Date().toISOString().split("T")[0],
+        source: "",
+        notes: "",
+      });
+      setSearchTerm("");
     }
   }, [form, vaccinesData]);
 
