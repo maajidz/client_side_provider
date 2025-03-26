@@ -367,29 +367,37 @@ const AddDiagnosesDialog = ({
         <DialogHeader>
           <DialogTitle>Add Diagnosis</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-4">
-          <DefaultDataTable
-            columns={columns}
-            data={rows}
-            pageNo={1}
-            totalPages={1}
-            onPageChange={() => {}}
-          />
-        </div>
-        <DialogFooter>
-          <Button
-            variant={"outline"}
-            onClick={() => {
-              resetRows();
-              onClose();
-            }}
-          >
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} disabled={loading}>
-            {loading ? "Loading..." : "Save"}
-          </Button>
-        </DialogFooter>
+        {chartId ? (
+          <>
+            <div className="flex flex-col gap-4">
+              <DefaultDataTable
+                columns={columns}
+                data={rows}
+                pageNo={1}
+                totalPages={1}
+                onPageChange={() => {}}
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                variant={"outline"}
+                onClick={() => {
+                  resetRows();
+                  onClose();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleSubmit} disabled={loading}>
+                {loading ? "Loading..." : "Save"}
+              </Button>
+            </DialogFooter>
+          </>
+        ) : (
+          <div className="flex flex-col justify-center h-28 font-medium">
+            Can&apos;t add diagnoses, no chart Id found.
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
