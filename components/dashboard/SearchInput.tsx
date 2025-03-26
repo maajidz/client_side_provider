@@ -32,6 +32,8 @@ function UserList({ users }: { users: UserData[] }) {
   const [isMessageDialogOpen, setIsMessageDialogOpen] =
     useState<boolean>(false);
 
+  const [userInfo, setUserInfo] = useState<UserData>();
+
   const openStickyDialog = () => setIsStickyDialogOpen(true);
   const closeStickyDialog = () => setIsStickyDialogOpen(false);
 
@@ -138,6 +140,7 @@ function UserList({ users }: { users: UserData[] }) {
                       key={link.label}
                       className="font-medium group hover:first:text-sky-600 hover:text-sky-600  flex flex-1 w-full"
                       onClick={() => {
+                        setUserInfo(user);
                         openMessageDialog();
                       }}
                     >
@@ -168,13 +171,13 @@ function UserList({ users }: { users: UserData[] }) {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <MessagesDialog
-            userInfo={user}
-            onClose={closeMessageDialog}
-            isOpen={isMessageDialogOpen}
-          />
         </div>
       ))}
+      <MessagesDialog
+        userInfo={userInfo}
+        onClose={closeMessageDialog}
+        isOpen={isMessageDialogOpen}
+      />
       <StickyNotesDialog
         chartId=""
         onClose={closeStickyDialog}
