@@ -124,6 +124,7 @@ const AppointmentForm = () => {
                 <div className="flex flex-col gap-3">
                   <div>
                     <div className=" flex flex-col gap-3 text-sm font-normal text-[#444444]">
+                      {/* time slots */}
                       <label>Time Slot:</label>
                       {fields.map((field, index) => (
                         <div
