@@ -7,11 +7,12 @@ const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, 
-  // ref
+  ref
 ) => {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const [isRow, setIsRow] = useState(false);
 
+  console.log(ref)
   useEffect(() => {
     if (parentRef.current) {
       const computedStyle = window.getComputedStyle(parentRef.current);

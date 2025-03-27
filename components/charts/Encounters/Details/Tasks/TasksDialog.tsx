@@ -280,7 +280,7 @@ function TasksDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{tasksData ? "Edit Task" : "Add Task"}</DialogTitle>
+          <DialogTitle asChild>{tasksData ? "Edit Task" : "Add Task"}</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[90dvh] h-auto">

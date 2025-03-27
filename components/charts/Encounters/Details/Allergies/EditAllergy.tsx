@@ -148,7 +148,7 @@ function EditAllergy({
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
-          <DialogTitle>Edit Allergy</DialogTitle>
+          <DialogTitle asChild>Edit Allergy</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>

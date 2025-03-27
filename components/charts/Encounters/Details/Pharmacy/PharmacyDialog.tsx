@@ -182,7 +182,7 @@ function PharmacyDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
-          <DialogTitle>Add Pharmacy</DialogTitle>
+          <DialogTitle asChild>Add Pharmacy</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[30rem] min-h-32">

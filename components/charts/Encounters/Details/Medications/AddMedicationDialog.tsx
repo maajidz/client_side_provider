@@ -18,7 +18,7 @@ function AddMedicationDialog({ userDetailsId, onClose, isOpen }: AddMedicationDi
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Add Medications</DialogTitle>
+          <DialogTitle asChild>Add Medications</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <AddMedicationBody userDetailsId={userDetailsId} />

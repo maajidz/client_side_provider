@@ -136,7 +136,7 @@ const AddDx = ({
   );
 
   const handleSearch = useCallback(
-    debounce(async (searchTerm: string, index: number) => {
+    async (searchTerm: string, index: number) => {
       console.log(`Searching for ${searchTerm} in row ${index}`);
 
       if (searchTerm.length < 2) {
@@ -171,7 +171,7 @@ const AddDx = ({
       } finally {
         setLoading(false);
       }
-    }, 500),
+    },
     [setIsListVisible, setDiagnosesTypeData]
   );
 
@@ -282,7 +282,8 @@ const AddDx = ({
                 const value = e.target.value;
                 handleChange(row.index, "searchTerm", value);
                 if (value.length >= 2) {
-                  handleSearch(value, row.index);
+                  const debouncedSearch = debounce(handleSearch, 500);
+                  debouncedSearch(value, row.index);
                 } else {
                   setIsListVisible((prev) => {
                     const newListVisible = [...prev];
@@ -374,7 +375,7 @@ const AddDx = ({
       </DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Add Diagnosis</DialogTitle>
+          <DialogTitle asChild>Add Diagnosis</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <DefaultDataTable

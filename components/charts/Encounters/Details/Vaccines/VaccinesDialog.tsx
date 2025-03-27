@@ -217,7 +217,7 @@ function VaccinesDialog({
     <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[425px] flex flex-col gap-6">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle asChild>
             {vaccinesData ? "Edit Vaccine" : "Add vaccine"}
           </DialogTitle>
           <DialogDescription></DialogDescription>

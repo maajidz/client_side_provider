@@ -41,7 +41,7 @@ const SOAPSection = ({
       >
         <Icon name="close" />
       </Button>
-      <DetailsComponent patientDetails={patientDetails} />
+      <DetailsComponent patientDetails={patientDetails} onRefresh={onRefresh} />
       <Tabs defaultValue="chartNotes" className="w-full px-4 py-1">
         <div className="flex flex-row justify-between">
           <TabsList>

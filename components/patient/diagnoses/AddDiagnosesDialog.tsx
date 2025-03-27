@@ -125,7 +125,7 @@ const AddDiagnosesDialog = ({
   );
 
   const handleSearch = useCallback(
-    debounce(async (searchTerm: string, index: number) => {
+    async (searchTerm: string, index: number) => {
       console.log(`Searching for ${searchTerm} in row ${index}`);
 
       if (searchTerm.length < 2) {
@@ -160,8 +160,8 @@ const AddDiagnosesDialog = ({
       } finally {
         setLoading(false);
       }
-    }, 500),
-    [setIsListVisible, setLoading, fetchDiagnosesType, setDiagnosesTypeData]
+    },
+    [setIsListVisible, setLoading, setDiagnosesTypeData]
   );
 
   const handleSelectDiagnosis = useCallback(
@@ -266,7 +266,8 @@ const AddDiagnosesDialog = ({
                 const value = e.target.value;
                 handleChange(row.index, "searchTerm", value);
                 if (value.length >= 2) {
-                  handleSearch(value, row.index);
+                  const debouncedSearch = debounce(handleSearch, 500);
+                  debouncedSearch(value, row.index);
                 } else {
                   setIsListVisible((prev) => {
                     const newListVisible = [...prev];
