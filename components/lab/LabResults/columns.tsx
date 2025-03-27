@@ -95,7 +95,7 @@ export const columns = (): ColumnDef<Result>[] => [
     },
   },
   {
-    accessorKey: "testResults",
+    id: "comments",
     header: "Comments",
     cell: ({ row }) => {
       const testResults = row.getValue("testResults") as Result["testResults"];

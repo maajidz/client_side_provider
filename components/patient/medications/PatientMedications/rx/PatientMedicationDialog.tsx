@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { prescriptionSchema } from "@/schema/prescriptionSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -43,9 +42,15 @@ import {
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
-import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
-import { prior_auth_options } from "@/constants/data";
+import {
+  getDosageUnits,
+  getFrequencyData,
+  getPriorAuth,
+} from "@/services/enumServices";
 import { DiagnosesTypeData } from "@/types/chartsInterface";
+import { DrugTypeInterface } from "@/types/prescriptionInterface";
+import { getDrugType } from "@/services/prescriptionsServices";
+import { z } from "zod";
 
 const PatientMedicationDialog = ({
   isOpen,
@@ -57,11 +62,13 @@ const PatientMedicationDialog = ({
 }) => {
   const [loading, setLoading] = useState({
     post: false,
+    drug: false,
     dosage: false,
     frequency: false,
     diagnoses: false,
+    prior_auth: false,
   });
-  const [drugName, setDrugName] = useState<string>("");
+  const [drugID, setDrugID] = useState<string>("");
   const [showPrescriptionForm, setShowPrescriptionForm] =
     useState<boolean>(false);
   const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
@@ -77,18 +84,26 @@ const PatientMedicationDialog = ({
     useState<DiagnosesTypeData | null>(null);
 
   // search States
+  const [drugSearchTerm, setDrugSearchTerm] = useState("");
   const [primarySearchTerm, setPrimarySearchTerm] = useState<string>("");
   const [secondarySearchTerm, setSecondarySearchTerm] = useState<string>("");
+  const [visibleDrugSearchList, setVisibleDrugSearchList] = useState(false);
   const [visiblePrimarySearchList, setVisiblePrimarySearchList] =
     useState<boolean>(false);
   const [visibleSecondarySearchList, setVisibleSecondarySearchList] =
     useState<boolean>(false);
+
+  // Drug Types Data
+  const [drugNames, setDrugNames] = useState<DrugTypeInterface[]>([]);
 
   // Frequency Data
   const [frequencyData, setFrequencyData] = useState<string[]>([]);
 
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
+
+  // Prior Auth Data
+  const [priorAuthData, setPriorAuthData] = useState<string[]>([]);
 
   // Chart State
   const chartId = useSelector((state: RootState) => state.user.chartId);
@@ -154,7 +169,31 @@ const PatientMedicationDialog = ({
     watch,
   ]);
 
-  // Fetch Patient Data
+  const fetchDrugName = useCallback(
+    async (searchTerm: string) => {
+      setLoading((prev) => ({ ...prev, drug: true }));
+
+      try {
+        const response = await getDrugType({ search: searchTerm });
+
+        if (response) {
+          setDrugNames(response.data);
+        }
+      } catch (err) {
+        console.log(err);
+        showToast({
+          toast,
+          type: "error",
+          message: "Failed to fetch drug names",
+        });
+      } finally {
+        setLoading((prev) => ({ ...prev, drug: false }));
+      }
+    },
+    [toast]
+  );
+
+  // Fetch Diagnoses Data
   const fetchDiagnosesList = useCallback(
     async (searchTerm: string) => {
       if (!searchTerm) return;
@@ -240,11 +279,53 @@ const PatientMedicationDialog = ({
     }
   }, [toast]);
 
+  // GET prior_auth
+  const fetchPriorAuth = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, prior_auth: true }));
+
+    try {
+      const response = await getPriorAuth();
+
+      if (response) {
+        setPriorAuthData(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch prior auth ",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, prior_auth: false }));
+    }
+  }, [toast]);
+
   // Update the directions field whenever the relevant fields change
   useEffect(() => {
     const directions = generateDirections();
     form.setValue("directions", directions); // Update the directions field
   }, [form, generateDirections]);
+
+  // Drug Type useEffect
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (drugSearchTerm.trim()) {
+        fetchDrugName(drugSearchTerm);
+      } else {
+        setDrugNames([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [drugSearchTerm, fetchDrugName]);
 
   // Diagnoses useEffect
   useEffect(() => {
@@ -287,14 +368,15 @@ const PatientMedicationDialog = ({
   useEffect(() => {
     fetchFrequency();
     fetchDosageUnits();
-  }, [fetchFrequency, fetchDosageUnits]);
+    fetchPriorAuth();
+  }, [fetchFrequency, fetchDosageUnits, fetchPriorAuth]);
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
 
     if (chartId) {
       const requestData = {
-        drug_name: drugName,
+        drug_type_Id: drugID,
         dispense_as_written: dispenseAsWritten,
         primary_diagnosis: values.primary_diagnosis,
         secondary_diagnosis: values.secondary_diagnosis,
@@ -336,6 +418,10 @@ const PatientMedicationDialog = ({
     }
   };
 
+  const filteredDrugNames = drugNames.filter((name) =>
+    name.drug_name.toLowerCase().includes(drugSearchTerm.toLowerCase())
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-fit">
@@ -344,21 +430,52 @@ const PatientMedicationDialog = ({
           <DialogDescription></DialogDescription>
         </DialogHeader>
         {chartId ? (
-          // If chartID 
+          // If chartID
           showPrescriptionForm ? (
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <ScrollArea className="h-[40rem]">
                   <div className={formStyles.formBody}>
                     <div className="flex gap-8 flex-row justify-between">
+                      {/* <FormField name="drug_name" control={form.control} render={({field}) => ()} /> */}
                       <FormItem className="flex flex-1">
                         <FormLabel>Drug Name</FormLabel>
-                        <Input
-                          value={drugName}
-                          className="w-full"
-                          onChange={(e) => setDrugName(e.target.value)}
-                          placeholder="Enter drug name"
-                        />
+                        <div className="relative">
+                          <Input
+                            value={drugSearchTerm}
+                            placeholder="Search by name"
+                            className="w-full"
+                            onChange={(e) => {
+                              setDrugSearchTerm(e.target.value);
+                              setVisibleDrugSearchList(true);
+                            }}
+                          />
+                          {drugSearchTerm && visibleDrugSearchList && (
+                            <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
+                              {loading.drug ? (
+                                <div>Loading...</div>
+                              ) : filteredDrugNames.length > 0 ? (
+                                filteredDrugNames.map((name) => (
+                                  <div
+                                    key={name.id}
+                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                    onClick={() => {
+                                      setDrugID(name.id);
+                                      setDrugSearchTerm(name.drug_name);
+                                      setVisibleDrugSearchList(false);
+                                    }}
+                                  >
+                                    {name.drug_name}
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="px-4 py-2 text-gray-500">
+                                  No results found
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </FormItem>
                       <FormItem className="inline-flex flex-row items-end gap-2 mb-3 flex-none">
                         <FormLabel>Dispense as Written</FormLabel>
@@ -838,7 +955,7 @@ const PatientMedicationDialog = ({
                                       <SelectValue placeholder="Select" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      {prior_auth_options.map((option) => (
+                                      {priorAuthData.map((option) => (
                                         <SelectItem value={option} key={option}>
                                           {option}
                                         </SelectItem>
@@ -925,12 +1042,43 @@ const PatientMedicationDialog = ({
               <div className="flex flex-1 flex-col gap-4 items-start">
                 <div className="flex flex-col gap-2 justify-between w-full">
                   <Label>Search & Add Rx</Label>
-                  <Input
-                    value={drugName}
-                    placeholder="Enter drug name"
-                    className="w-full rounded-md"
-                    onChange={(e) => setDrugName(e.target.value)}
-                  />
+                  <div className="relative">
+                    <Input
+                      value={drugSearchTerm}
+                      placeholder="Search by name"
+                      className="w-full"
+                      onChange={(e) => {
+                        setDrugSearchTerm(e.target.value);
+                        setVisibleDrugSearchList(true);
+                      }}
+                    />
+                    {drugSearchTerm && visibleDrugSearchList && (
+                      <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
+                        {loading.drug ? (
+                          <div>Loading...</div>
+                        ) : filteredDrugNames.length > 0 ? (
+                          filteredDrugNames.map((name) => (
+                            <div
+                              key={name.id}
+                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                              onClick={() => {
+                                setDrugID(name.id);
+                                setDrugSearchTerm(name.drug_name);
+                                setVisibleDrugSearchList(false);
+                                setShowPrescriptionForm(true)
+                              }}
+                            >
+                              {name.drug_name}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="px-4 py-2 text-gray-500">
+                            No results found
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex flex-row items-center">
                   <Label>or</Label>

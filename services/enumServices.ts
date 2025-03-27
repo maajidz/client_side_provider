@@ -77,3 +77,16 @@ export const getInjectionSite = async ({route}: {route: string}) => {
   const data = await response.data;
   return data;
 };
+
+export const getPriorAuth = async () => {
+  const response = await ApiFetch({
+    url: `/enums/prior-auth`,
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.data;
+  return data;
+};

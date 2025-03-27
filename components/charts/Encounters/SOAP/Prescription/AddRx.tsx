@@ -29,11 +29,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { UserEncounterData } from "@/types/chartsInterface";
+import { DiagnosesTypeData, UserEncounterData } from "@/types/chartsInterface";
 import formStyles from "@/components/formStyles.module.css";
 import {
   createPrescriptions,
   createSOAPChart,
+  fetchDiagnosesType,
   updateSOAPChart,
 } from "@/services/chartsServices";
 import LoadingButton from "@/components/LoadingButton";
@@ -41,9 +42,15 @@ import { Switch } from "@/components/ui/switch";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
-import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
+import {
+  getDosageUnits,
+  getFrequencyData,
+  getPriorAuth,
+} from "@/services/enumServices";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
+import { DrugTypeInterface } from "@/types/prescriptionInterface";
+import { getDrugType } from "@/services/prescriptionsServices";
 
 const AddRx = ({
   patientDetails,
@@ -55,21 +62,49 @@ const AddRx = ({
   signed: boolean;
 }) => {
   const [loading, setLoading] = useState({
+    drug: false,
     post: false,
     dosage: false,
     frequency: false,
+    diagnoses: false,
+    prior_auth: false,
   });
-  const [drugName, setDrugName] = useState<string>("");
+  const [drugID, setDrugID] = useState<string>("");
   const [showPrescriptionForm, setShowPrescriptionForm] =
     useState<boolean>(false);
   const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
   const { toast } = useToast();
 
+  // Diagnoses Type State
+  const [diagnosesTypeData, setDiagnosesTypeData] = useState<
+    DiagnosesTypeData[]
+  >([]);
+  const [selectedPrimaryDiagnoses, setSelectedPrimaryDiagnoses] =
+    useState<DiagnosesTypeData | null>(null);
+  const [selectedSecondaryDiagnoses, setSelectedSecondaryDiagnoses] =
+    useState<DiagnosesTypeData | null>(null);
+
+  // search States
+  const [drugSearchTerm, setDrugSearchTerm] = useState("");
+  const [primarySearchTerm, setPrimarySearchTerm] = useState<string>("");
+  const [secondarySearchTerm, setSecondarySearchTerm] = useState<string>("");
+  const [visibleDrugSearchList, setVisibleDrugSearchList] = useState(false);
+  const [visiblePrimarySearchList, setVisiblePrimarySearchList] =
+    useState<boolean>(false);
+  const [visibleSecondarySearchList, setVisibleSecondarySearchList] =
+    useState<boolean>(false);
+
   // Frequency Data
   const [frequencyData, setFrequencyData] = useState<string[]>([]);
 
+  // Drug Types
+  const [drugNames, setDrugNames] = useState<DrugTypeInterface[]>([]);
+
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
+
+  // Prior Auth Data
+  const [priorAuthData, setPriorAuthData] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof prescriptionSchema>>({
     resolver: zodResolver(prescriptionSchema),
@@ -132,6 +167,58 @@ const AddRx = ({
     watch,
   ]);
 
+  const fetchDrugName = useCallback(
+    async (searchTerm: string) => {
+      setLoading((prev) => ({ ...prev, drug: true }));
+
+      try {
+        const response = await getDrugType({ search: searchTerm });
+
+        if (response) {
+          setDrugNames(response.data);
+        }
+      } catch (err) {
+        console.log(err);
+        showToast({
+          toast,
+          type: "error",
+          message: "Failed to fetch drug names",
+        });
+      } finally {
+        setLoading((prev) => ({ ...prev, drug: false }));
+      }
+    },
+    [toast]
+  );
+
+  // Fetch Diagnoses Data
+  const fetchDiagnosesList = useCallback(
+    async (searchTerm: string) => {
+      if (!searchTerm) return;
+      setLoading((prev) => ({ ...prev, diagnoses: true }));
+      try {
+        const response = await fetchDiagnosesType({
+          page: 1,
+          limit: 10,
+          search: searchTerm,
+        });
+        if (response) {
+          setDiagnosesTypeData(response.data || []);
+        }
+      } catch (e) {
+        console.log("Error", e);
+        showToast({
+          toast,
+          type: "error",
+          message: "Failed to fetch diagnoses",
+        });
+      } finally {
+        setLoading((prev) => ({ ...prev, diagnoses: false }));
+      }
+    },
+    [toast]
+  );
+
   // GET Frequency Data
   const fetchFrequency = useCallback(async () => {
     setLoading((prev) => ({ ...prev, frequency: true }));
@@ -190,23 +277,91 @@ const AddRx = ({
     }
   }, [toast]);
 
+  // GET prior_auth
+  const fetchPriorAuth = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, prior_auth: true }));
+
+    try {
+      const response = await getPriorAuth();
+
+      if (response) {
+        setPriorAuthData(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch prior auth ",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, prior_auth: false }));
+    }
+  }, [toast]);
+
   // Update the directions field whenever the relevant fields change
   useEffect(() => {
     const directions = generateDirections();
     form.setValue("directions", directions); // Update the directions field
   }, [form, generateDirections]);
 
+  // Diagnoses useEffect
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (primarySearchTerm.trim()) {
+        fetchDiagnosesList(primarySearchTerm);
+      } else {
+        setDiagnosesTypeData([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [primarySearchTerm, fetchDiagnosesList]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (secondarySearchTerm.trim()) {
+        fetchDiagnosesList(secondarySearchTerm);
+      } else {
+        setDiagnosesTypeData([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [secondarySearchTerm, fetchDiagnosesList]);
+
   useEffect(() => {
     fetchFrequency();
     fetchDosageUnits();
-  }, [fetchFrequency, fetchDosageUnits]);
+    fetchPriorAuth();
+  }, [fetchFrequency, fetchDosageUnits, fetchPriorAuth]);
+
+  // Filter Diagnoses for Primary and Secondary
+  const filteredPrimaryDiagnoses = diagnosesTypeData.filter((diagnoses) =>
+    diagnoses.diagnosis_name
+      .toLowerCase()
+      .includes(primarySearchTerm.toLowerCase())
+  );
+
+  const filteredSecondaryDiagnoses = diagnosesTypeData.filter((diagnoses) =>
+    diagnoses.diagnosis_name
+      .toLowerCase()
+      .includes(secondarySearchTerm.toLowerCase())
+  );
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
 
     if (patientDetails.chart.id) {
       const requestData = {
-        drug_name: drugName,
+        drug_name: drugID,
         dispense_as_written: dispenseAsWritten,
         primary_diagnosis: values.primary_diagnosis,
         secondary_diagnosis: values.secondary_diagnosis,
@@ -259,6 +414,23 @@ const AddRx = ({
     }
   };
 
+  // Drug Type useEffect
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (drugSearchTerm.trim()) {
+        fetchDrugName(drugSearchTerm);
+      } else {
+        setDrugNames([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [drugSearchTerm, fetchDrugName]);
+
+  const filteredDrugNames = drugNames.filter((name) =>
+    name.drug_name.toLowerCase().includes(drugSearchTerm.toLowerCase())
+  );
+
   if (loading.post) {
     return <LoadingButton />;
   }
@@ -285,12 +457,42 @@ const AddRx = ({
                   <div className="flex gap-8 flex-row justify-between">
                     <FormItem className="flex flex-1">
                       <FormLabel>Drug Name</FormLabel>
-                      <Input
-                        value={drugName}
-                        className="w-full"
-                        onChange={(e) => setDrugName(e.target.value)}
-                        placeholder="Enter drug name"
-                      />
+                      <div className="relative">
+                        <Input
+                          value={drugSearchTerm}
+                          placeholder="Search by name"
+                          className="w-full"
+                          onChange={(e) => {
+                            setDrugSearchTerm(e.target.value);
+                            setVisibleDrugSearchList(true);
+                          }}
+                        />
+                        {drugSearchTerm && visibleDrugSearchList && (
+                          <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
+                            {loading.drug ? (
+                              <div>Loading...</div>
+                            ) : filteredDrugNames.length > 0 ? (
+                              filteredDrugNames.map((name) => (
+                                <div
+                                  key={name.id}
+                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                  onClick={() => {
+                                    setDrugID(name.id);
+                                    setDrugSearchTerm(name.drug_name);
+                                    setVisibleDrugSearchList(false);
+                                  }}
+                                >
+                                  {name.drug_name}
+                                </div>
+                              ))
+                            ) : (
+                              <div className="px-4 py-2 text-gray-500">
+                                No results found
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </FormItem>
                     <FormItem className="inline-flex flex-row items-end gap-2 mb-3 flex-none">
                       <FormLabel>Dispense as Written</FormLabel>
@@ -309,28 +511,66 @@ const AddRx = ({
                           <FormItem className={`${formStyles.formItem} w-full`}>
                             <FormLabel>Diagnosis</FormLabel>
                             <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger className="mt-0">
-                                  <SelectValue
-                                    placeholder="Select"
-                                    className="w-full"
+                              <div className="relative">
+                                <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                                  <Input
+                                    placeholder="Search Diagnoses or ICD Code "
+                                    value={primarySearchTerm}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      setPrimarySearchTerm(value);
+                                      setVisiblePrimarySearchList(true);
+
+                                      if (!value) {
+                                        field.onChange("");
+                                      }
+                                    }}
+                                    className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
                                   />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="diagnosis1">
-                                    Diagnosis 1
-                                  </SelectItem>
-                                  <SelectItem value="diagnosis2">
-                                    Diagnosis 2
-                                  </SelectItem>
-                                  <SelectItem value="diagnosis3">
-                                    Diagnosis 3
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
+                                  <div className="px-3 py-1 text-base">
+                                    {" "}
+                                    {selectedPrimaryDiagnoses?.ICD_Code}
+                                  </div>
+                                </div>
+                                {primarySearchTerm &&
+                                  visiblePrimarySearchList && (
+                                    <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
+                                      {loading.diagnoses ? (
+                                        <div>Loading...</div>
+                                      ) : filteredPrimaryDiagnoses.length >
+                                        0 ? (
+                                        filteredPrimaryDiagnoses.map(
+                                          (diagnoses) => (
+                                            <div
+                                              key={diagnoses.id}
+                                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                              onClick={() => {
+                                                field.onChange(
+                                                  diagnoses.diagnosis_name
+                                                );
+                                                setPrimarySearchTerm(
+                                                  diagnoses.diagnosis_name
+                                                );
+                                                setVisiblePrimarySearchList(
+                                                  false
+                                                );
+                                                setSelectedPrimaryDiagnoses(
+                                                  diagnoses
+                                                );
+                                              }}
+                                            >
+                                              {`${diagnoses.diagnosis_name} - ${diagnoses.ICD_Code}`}
+                                            </div>
+                                          )
+                                        )
+                                      ) : (
+                                        <div className="px-4 py-2 text-gray-500">
+                                          No results found
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -342,25 +582,66 @@ const AddRx = ({
                         render={({ field }) => (
                           <FormItem className={`${formStyles.formItem} w-full`}>
                             <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger className="mt-0">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="diagnosis1">
-                                    Diagnosis 1
-                                  </SelectItem>
-                                  <SelectItem value="diagnosis2">
-                                    Diagnosis 2
-                                  </SelectItem>
-                                  <SelectItem value="diagnosis3">
-                                    Diagnosis 3
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
+                              <div className="relative">
+                                <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                                  <Input
+                                    placeholder="Search Diagnoses or ICD Code "
+                                    value={secondarySearchTerm}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      setSecondarySearchTerm(value);
+                                      setVisibleSecondarySearchList(true);
+
+                                      if (!value) {
+                                        field.onChange("");
+                                      }
+                                    }}
+                                    className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                                  />
+                                  <div className="px-3 py-1 text-base">
+                                    {" "}
+                                    {selectedSecondaryDiagnoses?.ICD_Code}
+                                  </div>
+                                </div>
+                                {secondarySearchTerm &&
+                                  visibleSecondarySearchList && (
+                                    <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
+                                      {loading.diagnoses ? (
+                                        <div>Loading...</div>
+                                      ) : filteredSecondaryDiagnoses.length >
+                                        0 ? (
+                                        filteredSecondaryDiagnoses.map(
+                                          (diagnoses) => (
+                                            <div
+                                              key={diagnoses.id}
+                                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                              onClick={() => {
+                                                field.onChange(
+                                                  diagnoses.diagnosis_name
+                                                );
+                                                setSecondarySearchTerm(
+                                                  diagnoses.diagnosis_name
+                                                );
+                                                setVisibleSecondarySearchList(
+                                                  false
+                                                );
+                                                setSelectedSecondaryDiagnoses(
+                                                  diagnoses
+                                                );
+                                              }}
+                                            >
+                                              {`${diagnoses.diagnosis_name} - ${diagnoses.ICD_Code}`}
+                                            </div>
+                                          )
+                                        )
+                                      ) : (
+                                        <div className="px-4 py-2 text-gray-500">
+                                          No results found
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -677,12 +958,11 @@ const AddRx = ({
                                     <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="option1">
-                                      option 1
-                                    </SelectItem>
-                                    <SelectItem value="option2">
-                                      option 2
-                                    </SelectItem>
+                                    {priorAuthData.map((option) => (
+                                      <SelectItem value={option} key={option}>
+                                        {option}
+                                      </SelectItem>
+                                    ))}
                                   </SelectContent>
                                 </Select>
                               </FormControl>
@@ -764,12 +1044,43 @@ const AddRx = ({
             <div className="flex flex-col gap-4">
               <div className="flex gap-2 flex-col">
                 <Label>Search & Add Rx</Label>
-                <Input
-                  value={drugName}
-                  placeholder="Enter drug name"
-                  className="w-full rounded-md"
-                  onChange={(e) => setDrugName(e.target.value)}
-                />
+                <div className="relative">
+                  <Input
+                    value={drugSearchTerm}
+                    placeholder="Search by name"
+                    className="w-full"
+                    onChange={(e) => {
+                      setDrugSearchTerm(e.target.value);
+                      setVisibleDrugSearchList(true);
+                    }}
+                  />
+                  {drugSearchTerm && visibleDrugSearchList && (
+                    <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
+                      {loading.drug ? (
+                        <div>Loading...</div>
+                      ) : filteredDrugNames.length > 0 ? (
+                        filteredDrugNames.map((name) => (
+                          <div
+                            key={name.id}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                              setDrugID(name.id);
+                              setDrugSearchTerm(name.drug_name);
+                              setVisibleDrugSearchList(false);
+                              setShowPrescriptionForm(true);
+                            }}
+                          >
+                            {name.drug_name}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-4 py-2 text-gray-500">
+                          No results found
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex flex-row items-center">
                 <Label>or</Label>

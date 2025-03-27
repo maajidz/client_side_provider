@@ -87,7 +87,7 @@ const EditPatientTaskDialog = ({
       priority: tasksData?.priority ?? "low",
       dueDate: tasksData?.dueDate
         ? new Date(tasksData.dueDate).toISOString().split("T")[0]
-        : "",
+        : "N/A",
       sendReminder: [],
       comments: tasksData?.description ?? "",
       userDetailsId: tasksData?.userDetailsId ?? "",
@@ -129,18 +129,24 @@ const EditPatientTaskDialog = ({
 
     try {
       const requestData: UpdateTaskType = {
-        category: selectedTask?.id ?? "",
+        categoryId: selectedTask?.id ?? "",
         description: values.comments ?? "",
         priority: values.priority,
         status: "PENDING",
         notes: values.task,
-        dueDate: values.dueDate,
         reminder: values.sendReminder,
         assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
         assignerProviderId: providerDetails.providerId,
         assignedByAdmin: true,
         userDetailsId: values?.userDetailsId ?? "",
       };
+
+      if (tasksData?.dueDate) {
+        const formattedDueDate = new Date(tasksData.dueDate)
+          .toISOString()
+          .split("T")[0];
+        form.setValue("dueDate", formattedDueDate);
+      }
       if (tasksData) {
         await updateTask({ requestData, id: tasksData.id });
         showToast({

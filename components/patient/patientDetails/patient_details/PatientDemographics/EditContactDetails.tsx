@@ -273,6 +273,7 @@ const EditContactDetails = ({
                             }
                             className="font-normal text-base"
                             autoFocus={true}
+                            disabled
                           />
                         </FormControl>
                         <FormMessage />
@@ -291,6 +292,7 @@ const EditContactDetails = ({
                             type="email"
                             {...field}
                             className="font-normal text-base"
+                            disabled
                           />
                         </FormControl>
                         <FormMessage />

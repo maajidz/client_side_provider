@@ -13,6 +13,7 @@ import {
   Venus,
   ExternalLink,
   ChevronDown,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StickyNotesDialog from "../charts/Encounters/Details/StickyNotes/StickyNotesDialog";
@@ -263,6 +264,95 @@ export function SearchInput() {
           </div>
         </div>
       </div>
+      <div className="absolute w-full flex justify-center">
+        {loading && <UserCardShimmer />}
+        {!selectedUser && userData.length > 0 ? (
+          <UserList users={userData} />
+        ) : (
+          !selectedUser &&
+          !loading &&
+          userData.length === 0 &&
+          searchTerm.length > 1 && (
+            <p className="absolute top-14 left-0 shadow-md rounded-lg text-md text-gray-500 space-y-2 w-full p-4 bg-white">
+              No results found.
+            </p>
+          )
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function SearchPatients() {
+  const [showInputField, setShowInputField] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [userData, setUserData] = useState<UserData[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSearch = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchUserDataResponse({
+        firstName: searchTerm,
+      });
+
+      if (response) {
+        setUserData(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim() && !selectedUser) {
+        handleSearch();
+      } else {
+        setUserData([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, selectedUser, handleSearch]);
+
+  return (
+    <div className="relative flex flex-col w-full">
+      {showInputField ? (
+        <div className="flex flex-col relative w-full">
+          <div className="flex flex-col w-full relative justify-center gap-2">
+            <div className="flex flex-1 items-center peer-focus-visible:bg-red-700">
+              <Input
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setSelectedUser(null);
+                }}
+                placeholder="eg. Frederick Norman or PAT567378..."
+                className="w-full h-11 focus-visible:ring-pink-100 focus-visible:ring-2 focus-visible:border-pink-300 hover:border-gray-300 peer"
+              />
+              <SearchIcon
+                size={20}
+                className="text-[#D5D7DA] absolute right-2 peer-focus-visible:text-[#84012A]"
+              />
+            </div>
+            <X
+              size={20}
+              onClick={() => setShowInputField(!showInputField)}
+              className="text-[#84012A] absolute -right-6 peer-focus-visible:text-[#84012A]"
+            />
+          </div>
+        </div>
+      ) : (
+        <SearchIcon
+          onClick={() => setShowInputField(!showInputField)}
+          size={20}
+          className="text-[#D5D7DA] right-2 "
+        />
+      )}
       <div className="absolute w-full flex justify-center">
         {loading && <UserCardShimmer />}
         {!selectedUser && userData.length > 0 ? (
