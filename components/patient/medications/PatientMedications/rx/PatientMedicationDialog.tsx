@@ -42,8 +42,11 @@ import {
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
-import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
-import { prior_auth_options } from "@/constants/data";
+import {
+  getDosageUnits,
+  getFrequencyData,
+  getPriorAuth,
+} from "@/services/enumServices";
 import { DiagnosesTypeData } from "@/types/chartsInterface";
 import { DrugTypeInterface } from "@/types/prescriptionInterface";
 import { getDrugType } from "@/services/prescriptionsServices";
@@ -63,6 +66,7 @@ const PatientMedicationDialog = ({
     dosage: false,
     frequency: false,
     diagnoses: false,
+    prior_auth: false,
   });
   const [drugID, setDrugID] = useState<string>("");
   const [showPrescriptionForm, setShowPrescriptionForm] =
@@ -97,6 +101,9 @@ const PatientMedicationDialog = ({
 
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
+
+  // Prior Auth Data
+  const [priorAuthData, setPriorAuthData] = useState<string[]>([]);
 
   // Chart State
   const chartId = useSelector((state: RootState) => state.user.chartId);
@@ -186,7 +193,7 @@ const PatientMedicationDialog = ({
     [toast]
   );
 
-  // Fetch Patient Data
+  // Fetch Diagnoses Data
   const fetchDiagnosesList = useCallback(
     async (searchTerm: string) => {
       if (!searchTerm) return;
@@ -272,6 +279,35 @@ const PatientMedicationDialog = ({
     }
   }, [toast]);
 
+  // GET prior_auth
+  const fetchPriorAuth = useCallback(async () => {
+    setLoading((prev) => ({ ...prev, prior_auth: true }));
+
+    try {
+      const response = await getPriorAuth();
+
+      if (response) {
+        setPriorAuthData(response);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showToast({
+          toast,
+          type: "error",
+          message: "Could not fetch prior auth ",
+        });
+      } else {
+        showToast({
+          toast,
+          type: "error",
+          message: "An unknown error occurred",
+        });
+      }
+    } finally {
+      setLoading((prev) => ({ ...prev, prior_auth: false }));
+    }
+  }, [toast]);
+
   // Update the directions field whenever the relevant fields change
   useEffect(() => {
     const directions = generateDirections();
@@ -332,7 +368,8 @@ const PatientMedicationDialog = ({
   useEffect(() => {
     fetchFrequency();
     fetchDosageUnits();
-  }, [fetchFrequency, fetchDosageUnits]);
+    fetchPriorAuth();
+  }, [fetchFrequency, fetchDosageUnits, fetchPriorAuth]);
 
   const onSubmit = async (values: z.infer<typeof prescriptionSchema>) => {
     setLoading((prev) => ({ ...prev, post: true }));
@@ -918,7 +955,7 @@ const PatientMedicationDialog = ({
                                       <SelectValue placeholder="Select" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      {prior_auth_options.map((option) => (
+                                      {priorAuthData.map((option) => (
                                         <SelectItem value={option} key={option}>
                                           {option}
                                         </SelectItem>
@@ -1028,6 +1065,7 @@ const PatientMedicationDialog = ({
                                 setDrugID(name.id);
                                 setDrugSearchTerm(name.drug_name);
                                 setVisibleDrugSearchList(false);
+                                setShowPrescriptionForm(true)
                               }}
                             >
                               {name.drug_name}
