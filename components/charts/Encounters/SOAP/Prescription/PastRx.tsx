@@ -921,6 +921,7 @@ const PastRx = ({
                               setDrugID(name.id);
                               setDrugSearchTerm(name.drug_name);
                               setVisibleDrugSearchList(false);
+                              setShowPrescriptionForm(true);
                             }}
                           >
                             {name.drug_name}
