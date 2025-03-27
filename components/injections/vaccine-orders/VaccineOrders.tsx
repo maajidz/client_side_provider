@@ -259,7 +259,7 @@ function VaccineOrders({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>
-          <DialogTitle>Add Vaccine Order</DialogTitle>
+          <DialogTitle asChild>Add Vaccine Order</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>

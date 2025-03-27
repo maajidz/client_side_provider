@@ -176,7 +176,7 @@ const TabMenu: React.FC<TabMenuProps> = ({
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Preview SOAP Note</DialogTitle>
+            <DialogTitle asChild>Preview SOAP Note</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-4">

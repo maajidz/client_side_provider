@@ -119,7 +119,7 @@ const CreatePatientEncounterDialog = ({
     <Dialog open={isDialogOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>New Encounter</DialogTitle>
+          <DialogTitle asChild>New Encounter</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col pb-2 gap-3">

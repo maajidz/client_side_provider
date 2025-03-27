@@ -140,7 +140,7 @@ const ReferralDialog = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[98rem]">
         <DialogHeader>
-          <DialogTitle>Patient Details</DialogTitle>
+          <DialogTitle asChild>Patient Details</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         {patientDetails && (
@@ -290,7 +290,7 @@ const ReferralDialog = ({
                           </DialogTrigger>
                           <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
-                              <DialogTitle>Diagnoses</DialogTitle>
+                              <DialogTitle asChild>Diagnoses</DialogTitle>
                               <DialogDescription></DialogDescription>
                               <DiagnosesClient
                                 onSelectionChange={handleSelectedDiagnoses}

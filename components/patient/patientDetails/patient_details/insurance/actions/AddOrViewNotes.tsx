@@ -81,7 +81,7 @@ function AddOrViewNotes({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Notes</DialogTitle>
+          <DialogTitle asChild>Add Notes</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Textarea onChange={(e) => setNotesData(e.target.value)} />

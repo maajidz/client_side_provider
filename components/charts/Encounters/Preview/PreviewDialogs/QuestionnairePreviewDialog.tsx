@@ -91,7 +91,7 @@ function QuestionnairePreviewDialog() {
         </DialogTrigger>
         <DialogContent className="max-w-lg">
           <DialogHeader className=" p-4 rounded-t-lg">
-            <DialogTitle>Add Questionnaire</DialogTitle>
+            <DialogTitle asChild>Add Questionnaire</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4 my-4">
@@ -127,7 +127,7 @@ function QuestionnairePreviewDialog() {
       <Dialog open={isSecondModalOpen} onOpenChange={setIsSecondModalOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader className="p-4 rounded-t-lg">
-            <DialogTitle className="text-lg font-bold text-gray-800">
+            <DialogTitle className="text-lg font-bold text-gray-800" asChild>
               General Information
             </DialogTitle>
           </DialogHeader>

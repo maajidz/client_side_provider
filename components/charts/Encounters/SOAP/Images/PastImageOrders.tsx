@@ -86,7 +86,7 @@ const PastImageOrders = ({ userDetailsId }: { userDetailsId: string }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Past Orders</DialogTitle>
+          <DialogTitle asChild>Past Orders</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <>

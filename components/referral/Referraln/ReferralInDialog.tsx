@@ -219,7 +219,7 @@ const ReferralInDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[98rem]">
         <DialogHeader>
-          <DialogTitle>Add Referral In</DialogTitle>
+          <DialogTitle asChild>Add Referral In</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -469,7 +469,7 @@ const ReferralInDialog = ({
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                           <DialogHeader>
-                            <DialogTitle>Diagnoses</DialogTitle>
+                            <DialogTitle asChild>Diagnoses</DialogTitle>
                             <DialogDescription></DialogDescription>
                             <DiagnosesClient
                               onSelectionChange={handleSelectedDiagnoses}
@@ -515,7 +515,7 @@ const ReferralInDialog = ({
                                             </DialogTrigger>
                                             <DialogContent className="sm:max-w-[425px]">
                                                 <DialogHeader>
-                                                    <DialogTitle>Insurance</DialogTitle>
+                                                    <DialogTitle asChild>Insurance</DialogTitle>
                                                     <DialogDescription></DialogDescription>
                                                 </DialogHeader>
                                             </DialogContent>

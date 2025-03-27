@@ -325,7 +325,7 @@ const FollowUpDialog = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Follow Up</DialogTitle>
+          <DialogTitle asChild>Add Follow Up</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">

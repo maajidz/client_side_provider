@@ -361,7 +361,7 @@ function InjectionOrders({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[540px]">
         <DialogHeader>
-          <DialogTitle>Add Injection Order</DialogTitle>
+          <DialogTitle asChild>Add Injection Order</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[80dvh]">

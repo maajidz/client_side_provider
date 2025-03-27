@@ -63,7 +63,7 @@ const PastPrescriptionsDialog = ({
     <Dialog open={isDialogOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
-          <DialogTitle>Add Prescription</DialogTitle>
+          <DialogTitle asChild>Add Prescription</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <>

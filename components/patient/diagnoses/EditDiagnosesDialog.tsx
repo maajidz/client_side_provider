@@ -145,129 +145,134 @@ export default function EditDiagnosisDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[90dvh] h-auto">
         <DialogHeader>
-          <DialogTitle>Edit Diagnosis</DialogTitle>
+          <DialogTitle asChild>Edit Diagnosis</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[30rem] h-auto flex gap-6 flex-col">
           <div className="flex flex-col gap-6">
-          <table className="w-full border rounded-md">
-            <thead>
-              <tr className="border-b bg-[#eeeeee] ">
-                <th className="px-3 py-2 text-left">Code</th>
-                <th className="px-3 py-2 text-left">Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="px-3 py-2">{diagnosisData?.type.ICD_Code}</td>
-                <td className="px-3 py-2">{diagnosisData?.type.diagnosis_name}</td>
-              </tr>
-            </tbody>
-          </table>
+            <table className="w-full border rounded-md">
+              <thead>
+                <tr className="border-b bg-[#eeeeee] ">
+                  <th className="px-3 py-2 text-left">Code</th>
+                  <th className="px-3 py-2 text-left">Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="px-3 py-2">{diagnosisData?.type.ICD_Code}</td>
+                  <td className="px-3 py-2">
+                    {diagnosisData?.type.diagnosis_name}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              {/* From Date */}
-              <div className="flex flex-col gap-6">
-                <div className="flex flex-row gap-2 items-end">
-                <FormField
-                  control={form.control}
-                  name="fromDate"
-                  render={({ field }) => (
-                    <FormItem >
-                      <label>From Date</label>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                {/* From Date */}
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-row gap-2 items-end">
+                    <FormField
+                      control={form.control}
+                      name="fromDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <label>From Date</label>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                {/* To Date */}
-                <FormField
-                  control={form.control}
-                  name="toDate"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel>To Date</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                </div>
-
-                {/* Status */}
-                <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel>Select Status</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="active" className="cursor-pointer">
-                            Active
-                          </SelectItem>
-                          <SelectItem
-                            value="inactive"
-                            className="cursor-pointer"
-                          >
-                            Inactive
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Notes */}
-                <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel>Notes</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          {...field}
-                          placeholder="Enter notes"
-                          value={field.value}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <DialogFooter>
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="outline"
-                      type="button"
-                      onClick={() => {
-                        onClose();
-                        form.reset();
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <SubmitButton label="Save" disabled={loading} />
+                    {/* To Date */}
+                    <FormField
+                      control={form.control}
+                      name="toDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>To Date</FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                </DialogFooter>
-              </div>
-            </form>
-          </Form>
+
+                  {/* Status */}
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Select Status</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem
+                              value="active"
+                              className="cursor-pointer"
+                            >
+                              Active
+                            </SelectItem>
+                            <SelectItem
+                              value="inactive"
+                              className="cursor-pointer"
+                            >
+                              Inactive
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Notes */}
+                  <FormField
+                    control={form.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Notes</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder="Enter notes"
+                            value={field.value}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <DialogFooter>
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        type="button"
+                        onClick={() => {
+                          onClose();
+                          form.reset();
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <SubmitButton label="Save" disabled={loading} />
+                    </div>
+                  </DialogFooter>
+                </div>
+              </form>
+            </Form>
           </div>
         </ScrollArea>
       </DialogContent>

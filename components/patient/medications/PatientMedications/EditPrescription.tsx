@@ -146,7 +146,7 @@ function EditPrescription({
     <Dialog open={isOpen} onOpenChange={handleIsOpen}>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
-          <DialogTitle>Edit Prescription</DialogTitle>
+          <DialogTitle asChild>Edit Prescription</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>

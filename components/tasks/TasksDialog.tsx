@@ -233,7 +233,7 @@ const TasksDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{tasksData ? "Edit Task" : "Add Task"}</DialogTitle>
+          <DialogTitle asChild>{tasksData ? "Edit Task" : "Add Task"}</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>

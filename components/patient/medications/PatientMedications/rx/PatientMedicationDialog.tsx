@@ -340,7 +340,7 @@ const PatientMedicationDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-fit">
         <DialogHeader>
-          <DialogTitle>Add Prescription</DialogTitle>
+          <DialogTitle asChild>Add Prescription</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         {chartId ? (

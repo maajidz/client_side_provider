@@ -187,7 +187,7 @@ const EditPatientTaskDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Patient Task</DialogTitle>
+          <DialogTitle asChild>Edit Patient Task</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>

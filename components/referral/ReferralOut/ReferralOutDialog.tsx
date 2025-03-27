@@ -207,7 +207,7 @@ const ReferralOutDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[98rem]">
         <DialogHeader>
-          <DialogTitle>Add Referral Out</DialogTitle>
+          <DialogTitle asChild>Add Referral Out</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -245,7 +245,9 @@ const ReferralOutDialog = ({
                                       key={patient.id}
                                       className="px-4 py-2 cursor-pointer hover:bg-gray-100 capitalize"
                                       onClick={() => {
-                                        field.onChange(patient.user.userDetailsId);
+                                        field.onChange(
+                                          patient.user.userDetailsId
+                                        );
                                         setSearchTerm(
                                           `${patient.user.firstName} ${patient.user.lastName}`
                                         );
@@ -293,7 +295,7 @@ const ReferralOutDialog = ({
                                 {providerList.map((provider) => (
                                   <SelectItem
                                     key={provider.id}
-                                    value={provider.providerDetails?.id ?? ''}
+                                    value={provider.providerDetails?.id ?? ""}
                                   >
                                     {provider.firstName} {provider.lastName}
                                   </SelectItem>
@@ -415,7 +417,7 @@ const ReferralOutDialog = ({
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                           <DialogHeader>
-                            <DialogTitle>Diagnoses</DialogTitle>
+                            <DialogTitle asChild>Diagnoses</DialogTitle>
                             <DialogDescription></DialogDescription>
                             <DiagnosesClient
                               onSelectionChange={handleSelectedDiagnoses}
@@ -461,7 +463,7 @@ const ReferralOutDialog = ({
                                             </DialogTrigger>
                                             <DialogContent className="sm:max-w-[425px]">
                                                 <DialogHeader>
-                                                    <DialogTitle>Insurance</DialogTitle>
+                                                    <DialogTitle asChild>Insurance</DialogTitle>
                                                     <DialogDescription></DialogDescription>
                                                 </DialogHeader>
                                             </DialogContent>

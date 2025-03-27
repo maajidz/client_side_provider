@@ -291,7 +291,7 @@ const PastRx = ({
       </DialogTrigger>
       <DialogContent className="max-w-fit">
         <DialogHeader>
-          <DialogTitle>Past Prescriptions</DialogTitle>
+          <DialogTitle asChild>Past Prescriptions</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         {showPrescriptionForm ? (

@@ -20,7 +20,7 @@ const PastDx = ({ patientDetails }: { patientDetails: UserEncounterData }) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Past Diagnoses</DialogTitle>
+          <DialogTitle asChild>Past Diagnoses</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <PastDxBody patientDetails={patientDetails} />

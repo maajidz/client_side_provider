@@ -89,7 +89,7 @@ const StickyNotesDialog = ({
         }]`}
       >
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle asChild>
             <div className="flex gap-2">
               <Button
                 variant={"outline"}

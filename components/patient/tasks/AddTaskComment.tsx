@@ -107,7 +107,7 @@ function AddTaskComment({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-auto">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle asChild>
             {tasksData?.description ? "Edit comment" : "Add comment"}
           </DialogTitle>
           <DialogDescription></DialogDescription>

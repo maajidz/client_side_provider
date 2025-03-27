@@ -366,7 +366,7 @@ const AddDiagnosesDialog = ({
     >
       <DialogContent className="max-w-3xl overflow-y-scroll">
         <DialogHeader>
-          <DialogTitle>Add Diagnosis</DialogTitle>
+          <DialogTitle asChild>Add Diagnosis</DialogTitle>
         </DialogHeader>
         {chartId ? (
           <>
