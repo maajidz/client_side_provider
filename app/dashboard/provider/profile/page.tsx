@@ -1,6 +1,6 @@
 //dashboard/provider/profile
 "use client";
-import { Breadcrumbs } from "@/components/breadcrumbs";
+// import { Breadcrumbs } from "@/components/breadcrumbs";
 import { UserDetailsForm } from "@/components/forms/user-details-form";
 import PageContainer from "@/components/layout/page-container";
 import LoadingButton from "@/components/LoadingButton";
@@ -10,10 +10,10 @@ import { ProviderDetails } from "@/types/providerDetailsInterface";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/dashboard" },
-  { title: "Profile", link: "/dashboard/provider/profile" },
-];
+// const breadcrumbItems = [
+//   { title: "Dashboard", link: "/dashboard" },
+//   { title: "Profile", link: "/dashboard/provider/profile" },
+// ];
 
 export default function Profile() {
   const savedProviderAuthId = useSelector(
@@ -75,7 +75,7 @@ export default function Profile() {
   return (
     <PageContainer>
       <div className="space-y-4">
-        <Breadcrumbs items={breadcrumbItems} />
+        {/* <Breadcrumbs items={breadcrumbItems} /> */}
         {initialData ? (
           <UserDetailsForm
             initialData={initialData}

@@ -50,7 +50,7 @@ function AccountIcon() {
       <AvatarImage src="https://i.pravatar.cc/150?img=3" />
     </Avatar>
       {showDropdown && (
-        <div className="flex flex-col gap-6 absolute left-0 bottom-0 translate-x-[10%] mt-2 w-[450px] p-4 bg-white shadow-lg rounded-xl z-50">
+        <div className="flex flex-col gap-6 absolute right-8 translate-x-[10%] mt-2 w-[450px] p-4 bg-white shadow-lg rounded-xl z-50">
           <div className="flex items-center gap-3">
             <User
               color="#84012A"
