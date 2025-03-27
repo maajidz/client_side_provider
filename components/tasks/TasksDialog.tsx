@@ -65,7 +65,7 @@ const TasksDialog = ({
   const [patients, setPatients] = useState<UserData[]>([]);
   const [showPatientSpecific, setShowPatientSpecific] =
     useState<boolean>(false);
-  const [showDueDate, setShowDueDate] = useState(false);
+  const [showDueDate, setShowDueDate] = useState(!!tasksData?.dueDate);
   const [ownersList, setOwnersList] = useState<FetchProviderList[]>([]);
   const [selectedOwner, setSelectedOwner] = useState<FetchProviderList>();
   const [searchTerm, setSearchTerm] = useState("");
@@ -150,8 +150,8 @@ const TasksDialog = ({
           .toISOString()
           .split("T")[0];
         form.setValue("dueDate", formattedDueDate);
-        setShowDueDate(!!tasksData.dueDate);
       }
+      setShowDueDate(!!tasksData?.dueDate);
       setShowPatientSpecific(!!tasksData.userDetailsId);
       setSelectedOwner(
         ownersList.find((owner) => owner.id === tasksData.assignerProvider?.id)
@@ -209,6 +209,25 @@ const TasksDialog = ({
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
+
+  const todayClass = "w-full bg-[#84012A] text-[#84012A] ";
+  const selectedClass =
+    "w-full bg-[#84012A] text-white rounded-2xl hover:bg-[#84012A] hover:text-white";
+  const defaultClass = "w-full bg-white text-black";
+
+  const isToday = (date: Date | undefined) => {
+    if (!date) return false;
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
+
+  const isSelected = (date: Date | undefined) => {
+    return date?.getTime() === (date?.getTime() || 0);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -408,7 +427,10 @@ const TasksDialog = ({
                   <div className="flex items-center space-x-3">
                     <Checkbox
                       id="assignDueDate"
-                      onCheckedChange={() => setShowDueDate(!showDueDate)}
+                      checked={showDueDate}
+                      onCheckedChange={(checked) =>
+                        setShowDueDate(Boolean(checked))
+                      }
                     />
                     <label
                       htmlFor="assignDueDate"
@@ -458,8 +480,41 @@ const TasksDialog = ({
                                         }
                                         onSelect={(date) => {
                                           if (date) {
-                                            field.onChange(date.toISOString());
+                                            field.onChange(
+                                              format(date, "yyyy-MM-dd")
+                                            );
                                           }
+                                        }}
+                                        classNames={{
+                                          months: "relative pt-10",
+                                          nav: "absolute top-0 left-1/2 transform -translate-x-1/2 w-1/2 p-3.5",
+                                          month_caption:
+                                            "absolute -top-3.5 left-1/2 transform -translate-x-1/2 pt-3.5",
+                                          day_today: isToday(
+                                            new Date(field.value ?? "")
+                                          )
+                                            ? todayClass
+                                            : defaultClass,
+                                          day_selected: isSelected(
+                                            new Date(field.value ?? "")
+                                          )
+                                            ? selectedClass
+                                            : defaultClass,
+                                          month: "font-medium text-[#344054]",
+                                          head_row: "",
+                                          row: "",
+                                          day: "",
+                                          day_button:
+                                            "w-full h-full p-4 items-center justify-center hover:bg-gray-100 rounded-md",
+                                          today: "bg-blue-50 p-0 rounded-md",
+                                          selected:
+                                            "bg-[#84012A] text-white rounded-2xl",
+                                          nav_button: "row-reverse",
+                                          outside: "text-gray-400",
+                                          disabled: "text-gray-300",
+                                          day_range_start: "bg-green-200",
+                                          day_range_end: "bg-red-200",
+                                          day_range_middle: "bg-yellow-200",
                                         }}
                                       />
                                     </PopoverContent>
