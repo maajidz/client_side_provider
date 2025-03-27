@@ -1,11 +1,4 @@
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useState } from "react";
@@ -27,9 +20,9 @@ import {
 import { Icon } from "../ui/icon";
 import { Button } from "../ui/button";
 import { renderAppointmentTime } from "@/utils/utils";
-import { getStatusBadgeStyles, getStatusIcon } from "@/utils/appointmentUtils";
 import { Badge } from "../ui/badge";
 import { updateAppointment } from "@/services/providerAppointments";
+import StatusSelect from "../custom_buttons/buttons/StatusSelect";
 
 export const CalendarListViewComponent = ({
   appointment,
@@ -94,6 +87,13 @@ export const CalendarListViewComponent = ({
     }
   };
 
+  const statusOptions = [
+    { value: "Confirmed", label: "Confirmed" },
+    { value: "Consulted", label: "Consulted" },
+    { value: "No Show", label: "No Show" },
+    { value: "Scheduled", label: "Scheduled" },
+  ];
+
   return (
     <>
       {loading ? (
@@ -129,7 +129,13 @@ export const CalendarListViewComponent = ({
                       appointment.endtimeOfAppointment || ""
                     )}
                   </span>
-                  <Select
+                  <StatusSelect
+                    statusOptions={statusOptions}
+                    selectedValue={appointment.status}
+                    statusValue={statusValue}
+                    handleStatusChange={handleStatusChange}
+                  />
+                  {/* <Select
                     onValueChange={handleStatusChange}
                     value={appointment.status}
                   >
@@ -151,7 +157,7 @@ export const CalendarListViewComponent = ({
                         <SelectItem value="Scheduled">Scheduled</SelectItem>
                       </SelectGroup>
                     </SelectContent>
-                  </Select>
+                  </Select> */}
                 </div>
               </div>
             </CardTitle>
