@@ -1,21 +1,21 @@
 //dashboard/provider/calendar
 'use client'
-import { Breadcrumbs } from '@/components/breadcrumbs';
+// import { Breadcrumbs } from '@/components/breadcrumbs';
 import { CalendarBody } from '@/components/calendar/CalendarBody';
 import PageContainer from '@/components/layout/page-container';
 
 
 
-const breadcrumbItems = [
-  { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Calendar', link: '/dashboard/provider/calendar' }
-];
+// const breadcrumbItems = [
+//   { title: 'Dashboard', link: '/dashboard' },
+//   { title: 'Calendar', link: '/dashboard/provider/calendar' }
+// ];
 export default function Calendar() {
   
   return (
     <PageContainer>
       <div className="space-y-4">
-        <Breadcrumbs items={breadcrumbItems} />
+        {/* <Breadcrumbs items={breadcrumbItems} /> */}
         <CalendarBody />
       </div>
     </PageContainer>
