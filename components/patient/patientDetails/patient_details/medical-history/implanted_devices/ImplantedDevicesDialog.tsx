@@ -174,7 +174,7 @@ const ImplantedDevicesDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="min-w-fit">
         <DialogHeader>
-          <DialogTitle>Add Device</DialogTitle>
+          <DialogTitle asChild>Add Device</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         {showImplantedDeviceDetails ? (

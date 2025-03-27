@@ -30,7 +30,7 @@ function ViewRecallDialog({
     <Dialog open={isOpen} onOpenChange={handleDialogIsOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>View Recalls</DialogTitle>
+          <DialogTitle asChild>View Recalls</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="grid md:grid-cols-2 flex-col items-start gap-6 w-full max-w-md font-medium">

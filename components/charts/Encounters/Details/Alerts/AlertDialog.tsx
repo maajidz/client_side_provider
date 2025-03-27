@@ -142,7 +142,7 @@ const AlertDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{alertData ? "Update Alert" : "Add Alert"}</DialogTitle>
+          <DialogTitle asChild>{alertData ? "Update Alert" : "Add Alert"}</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>

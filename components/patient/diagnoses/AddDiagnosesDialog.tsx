@@ -125,7 +125,7 @@ const AddDiagnosesDialog = ({
   );
 
   const handleSearch = useCallback(
-    debounce(async (searchTerm: string, index: number) => {
+    async (searchTerm: string, index: number) => {
       console.log(`Searching for ${searchTerm} in row ${index}`);
 
       if (searchTerm.length < 2) {
@@ -160,8 +160,8 @@ const AddDiagnosesDialog = ({
       } finally {
         setLoading(false);
       }
-    }, 500),
-    [setIsListVisible, setLoading, fetchDiagnosesType, setDiagnosesTypeData]
+    },
+    [setIsListVisible, setLoading, setDiagnosesTypeData]
   );
 
   const handleSelectDiagnosis = useCallback(
@@ -266,7 +266,8 @@ const AddDiagnosesDialog = ({
                 const value = e.target.value;
                 handleChange(row.index, "searchTerm", value);
                 if (value.length >= 2) {
-                  handleSearch(value, row.index);
+                  const debouncedSearch = debounce(handleSearch, 500);
+                  debouncedSearch(value, row.index);
                 } else {
                   setIsListVisible((prev) => {
                     const newListVisible = [...prev];
@@ -365,31 +366,39 @@ const AddDiagnosesDialog = ({
     >
       <DialogContent className="max-w-3xl overflow-y-scroll">
         <DialogHeader>
-          <DialogTitle>Add Diagnosis</DialogTitle>
+          <DialogTitle asChild>Add Diagnosis</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-4">
-          <DefaultDataTable
-            columns={columns}
-            data={rows}
-            pageNo={1}
-            totalPages={1}
-            onPageChange={() => {}}
-          />
-        </div>
-        <DialogFooter>
-          <Button
-            variant={"outline"}
-            onClick={() => {
-              resetRows();
-              onClose();
-            }}
-          >
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} disabled={loading}>
-            {loading ? "Loading..." : "Save"}
-          </Button>
-        </DialogFooter>
+        {chartId ? (
+          <>
+            <div className="flex flex-col gap-4">
+              <DefaultDataTable
+                columns={columns}
+                data={rows}
+                pageNo={1}
+                totalPages={1}
+                onPageChange={() => {}}
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                variant={"outline"}
+                onClick={() => {
+                  resetRows();
+                  onClose();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleSubmit} disabled={loading}>
+                {loading ? "Loading..." : "Save"}
+              </Button>
+            </DialogFooter>
+          </>
+        ) : (
+          <div className="flex flex-col justify-center h-28 font-medium">
+            Can&apos;t add diagnoses, no chart Id found.
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

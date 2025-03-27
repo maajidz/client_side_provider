@@ -170,7 +170,7 @@ const ViewFollowUps = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
-          <DialogTitle>View Follow-ups</DialogTitle>
+          <DialogTitle asChild>View Follow-ups</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-5">

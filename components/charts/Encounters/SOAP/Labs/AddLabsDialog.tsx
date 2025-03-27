@@ -166,7 +166,7 @@ const AddLabsDialog = ({ userDetailsId, signed }: { userDetailsId: string; signe
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Lab Orders</DialogTitle>
+          <DialogTitle asChild>Add Lab Orders</DialogTitle>
           {/* <DialogDescription>
             Add lab orders to the patient.
           </DialogDescription> */}

@@ -76,7 +76,7 @@ export const CalendarListViewComponent = ({
         requestData: requestData,
       });
       if (response) {
-        router.push(`/encounter/${response.id}`);
+        router.push(`/dashboard/encounter/${response.id}`);
         showToast({
           toast,
           type: "success",
@@ -190,7 +190,7 @@ export const CalendarListViewComponent = ({
             <div className="flex flex-row gap-2">
               {appointment.encounter?.id ? (
                 <Link
-                  href={`/encounter/${appointment.encounter?.id}`}
+                  href={`/dashboard/encounter/${appointment.encounter?.id}`}
                   className="font-medium text-blue-600"
                 >
                   Start Encounter

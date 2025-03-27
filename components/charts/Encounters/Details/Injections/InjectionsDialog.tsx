@@ -356,7 +356,7 @@ const InjectionsDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle asChild>
             {injectionsData ? "Edit Injections" : "Add Injections"}
           </DialogTitle>
           <DialogDescription></DialogDescription>

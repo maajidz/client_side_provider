@@ -126,7 +126,7 @@ function PastMedicalHistoryDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add Past Medical History</DialogTitle>
+          <DialogTitle asChild>Add Past Medical History</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>

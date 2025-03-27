@@ -266,11 +266,13 @@ const AddRx = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"ghost"} disabled={signed}>Add Rx</Button>
+        <Button variant={"ghost"} disabled={signed}>
+          Add Rx
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-fit">
         <DialogHeader>
-          <DialogTitle>Add Prescription</DialogTitle>
+          <DialogTitle asChild>Add Prescription</DialogTitle>
           {/* <DialogDescription>
             Add a prescription to the patient's chart.
           </DialogDescription> */}

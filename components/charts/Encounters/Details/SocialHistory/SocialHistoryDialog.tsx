@@ -154,7 +154,7 @@ function SocialHistoryDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle asChild>
             {socialHistoryData ? "Update Social History" : "Add Social History"}
           </DialogTitle>
           <DialogDescription></DialogDescription>

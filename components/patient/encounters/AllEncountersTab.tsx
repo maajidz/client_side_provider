@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { columns } from "@/components/tables/charts/columns";
-import { useRouter } from "next/navigation";
 import { EncounterInterface } from "@/types/encounterInterface";
 import { DefaultDataTable } from "@/components/custom_buttons/table/DefaultDataTable";
 import CreatePatientEncounterDialog from "./CreatePatientEncounterDialog";
@@ -18,9 +17,8 @@ const AllEncountersTab = ({
   setPage: (page: number) => void;
   userDetailsId: string;
 }) => {
-  const router = useRouter();
   const handleRowClick = (id: string) => {
-    router.push(`/encounter/${id}`);
+    window.open(`/dashboard/encounter/${id}`);
   };
 
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);

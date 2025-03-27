@@ -61,7 +61,7 @@ const PastOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       header: "Lab Name",
       accessorKey: "labs",
       cell: ({ getValue }) => {
-        const labs = getValue() as LabOrdersData['labs'];
+        const labs = getValue() as LabOrdersData["labs"];
         return (
           <div>
             {labs.map((lab) => (
@@ -75,7 +75,7 @@ const PastOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       header: "Test Name",
       accessorKey: "tests",
       cell: ({ getValue }) => {
-        const tests = getValue() as LabOrdersData['tests'];
+        const tests = getValue() as LabOrdersData["tests"];
         return (
           <div>
             {tests.map((test) => (
@@ -89,11 +89,13 @@ const PastOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       header: "Created At",
       accessorKey: "tests",
       cell: ({ getValue }) => {
-        const tests = getValue() as LabOrdersData['tests'];
+        const tests = getValue() as LabOrdersData["tests"];
         return (
           <div>
             {tests.map((test) => (
-              <div key={test.id}>{formatDate(new Date(test.updatedAt), 'd MMMM, yyyy')}</div>
+              <div key={test.id}>
+                {formatDate(new Date(test.updatedAt), "d MMMM, yyyy")}
+              </div>
             ))}
           </div>
         );
@@ -110,7 +112,7 @@ const PastOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Past Orders</DialogTitle>
+          <DialogTitle asChild>Past Orders</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <DefaultDataTable

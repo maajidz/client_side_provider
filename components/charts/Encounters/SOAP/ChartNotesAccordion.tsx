@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import FormLabels from "@/components/custom_buttons/FormLabels";
 import {
   Form,
   FormControl,
@@ -19,7 +18,6 @@ import {
 import "@/app/editor.css";
 import { PlateEditor } from "@/components/ui/plate-editor/PlateEditor";
 import { Descendant } from "slate";
-import TwoInput from "@/components/ui/TwoInput";
 import { formatSentAt } from "@/utils/dateUtils";
 
 const formSchema = z.object({
@@ -93,8 +91,12 @@ const ChartNotesAccordion = ({
     if (patientDetails?.userDetails) {
       form.setValue("weightInLbs", Number(patientDetails?.userDetails?.weight));
       form.setValue("heightInFt", Number(patientDetails?.userDetails?.height));
+      form.setValue(
+        "goalWeight",
+        Number(patientDetails?.progressTracker?.targetWeight)
+      );
     }
-  }, [subjective, patientDetails?.userDetails, form]);
+  }, [subjective, patientDetails?.userDetails, form, patientDetails?.progressTracker]);
 
   const weightLbs = form.watch("weightInLbs");
   const weightOzs = form.watch("weightInOzs");
@@ -172,10 +174,8 @@ const ChartNotesAccordion = ({
 
   return (
     <div className="flex flex-col gap-2">
-      <div
-        className="flex self-end text-xs text-gray-500"
-      >
-        Last saved at: {formatSentAt(patientDetails?.chart.updatedAt)}
+      <div className="flex self-end text-xs text-gray-500">
+        Last saved at: {formatSentAt(patientDetails?.chart?.updatedAt)}
       </div>
       <div className="flex flex-col gap-2">
         <h6>Chief Complaints</h6>
@@ -202,54 +202,108 @@ const ChartNotesAccordion = ({
           <form className="[&_input]:!w-24 [&_input+label]:!absolute [&_input+label]:top-1/2 [&_input+label]:-translate-y-1/2 [&_input+label]:right-2 [&_input+label]:!text-xs [&_input+label]:!text-gray-500 [&_input+label]:!font-semibold">
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap gap-6">
-                <FormLabels
-                  className="flex-col !items-start"
-                  label="Weight"
-                  value={
-                    <FormField
-                      control={form.control}
-                      name="weightInLbs"
-                      render={({ field }) => (
-                        <TwoInput
-                          postfixFirst="lbs"
-                          postfixSecond="ozs"
-                          focusAfter={3}
-                          idFirst="weight-first-input"
-                          idSecond="weight-second-input"
-                          onChange={({ first, second }) => {
-                            field.onChange(first);
-                            form.setValue("weightInOzs", second);
-                          }}
-                          disabled={signed}
-                        />
-                      )}
-                    />
-                  }
-                />
-                <FormLabels
-                  label="Height"
-                  className="flex-col !items-start"
-                  value={
-                    <FormField
-                      control={form.control}
-                      name="heightInFt"
-                      render={({ field }) => (
-                        <TwoInput
-                          postfixFirst="ft"
-                          postfixSecond="in"
-                          focusAfter={1}
-                          idFirst="height-first-input"
-                          idSecond="height-second-input"
-                          onChange={({ first, second }) => {
-                            field.onChange(first);
-                            form.setValue("heightInInches", second);
-                          }}
-                          disabled={signed}
-                        />
-                      )}
-                    />
-                  }
-                />
+                <div className="flex gap-3 w-full items-end">
+                  <FormField
+                    control={form.control}
+                    name="weightInLbs"
+                    render={({ field }) => (
+                      <FormItem className="flex gap-1 items-start">
+                        <FormLabel className="w-fit">Weight</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              type="number"
+                              value={field.value ?? ""}
+                              onChange={(event) =>
+                                field.onChange(event.target.valueAsNumber)
+                              }
+                            />
+                            <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                              lbs
+                            </span>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="weightInOzs"
+                    render={({ field }) => (
+                      <FormItem className="flex gap-1 items-start">
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type="number"
+                              className="w-fit"
+                              value={field.value ?? ""}
+                              onChange={(event) =>
+                                field.onChange(event.target.valueAsNumber)
+                              }
+                            />
+                            <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                              ozs
+                            </span>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="heightInFt"
+                    render={({ field }) => (
+                      <FormItem className="flex gap-1 items-start">
+                        <FormLabel className="w-fit">Height</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type="number"
+                              className="w-fit"
+                              value={field.value ?? ""}
+                              onChange={(event) =>
+                                field.onChange(event.target.valueAsNumber)
+                              }
+                            />
+                            <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                              feet
+                            </span>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="heightInInches"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type="number"
+                              className="w-fit"
+                              value={field.value ?? ""}
+                              onChange={(event) =>
+                                field.onChange(event.target.valueAsNumber)
+                              }
+                            />
+                            <span className="flex items-center text-xs bg-gray-50 pl-2 pr-2 h-9 text-gray-500 font-semibold absolute top-0 right-0 border border-l-0 rounded-md rounded-l-none">
+                              inches
+                            </span>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <FormField
                   control={form.control}
                   name="bmi"

@@ -28,6 +28,17 @@ import {
 } from "@/services/chartsServices";
 import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface TabMenuProps {
   patientDetails: UserEncounterData;
@@ -154,13 +165,9 @@ const TabMenu: React.FC<TabMenuProps> = ({
 
   return (
     <div className="flex flex-row gap-2">
-      {patientDetails.chart === null ? (
-        <div> </div>
-      ) : (
-        <Button onClick={handleSOAPSave} disabled={isSigned}>
-          Save
-        </Button>
-      )}
+      <Button onClick={handleSOAPSave} disabled={isSigned}>
+        Save
+      </Button>
       <Dialog>
         <DialogTrigger asChild>
           <Button variant={"outline"} className="px-2">
@@ -169,7 +176,7 @@ const TabMenu: React.FC<TabMenuProps> = ({
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Preview SOAP Note</DialogTitle>
+            <DialogTitle asChild>Preview SOAP Note</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-4">
@@ -196,9 +203,23 @@ const TabMenu: React.FC<TabMenuProps> = ({
           </div>
         </DialogContent>
       </Dialog>
-      <Button variant={"outline"} className="" onClick={handleChartSign}>
-        {isSigned ? "Unsign" : "Sign"}
-      </Button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">{isSigned ? "Unsign" : "Sign"}</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription></AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleChartSign}>
+              {isSigned ? "Unsign" : "Sign"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="px-2">

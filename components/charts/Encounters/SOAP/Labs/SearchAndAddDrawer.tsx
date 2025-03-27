@@ -136,13 +136,17 @@ const SearchAndAddDialog = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant={"ghost"} onClick={() => fetchAndSetResponse(1)} disabled={signed}>
+        <Button
+          variant={"ghost"}
+          onClick={() => fetchAndSetResponse(1)}
+          disabled={signed}
+        >
           Search & Add
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Search & Add Labs</DialogTitle>
+          <DialogTitle asChild>Search & Add Labs</DialogTitle>
         </DialogHeader>
         {loadingLabs ? (
           <LoadingButton />

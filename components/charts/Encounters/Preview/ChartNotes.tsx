@@ -1,6 +1,5 @@
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { UserChart, UserEncounterData } from "@/types/chartsInterface";
 import React from "react";
@@ -12,7 +11,11 @@ const ChartNotes = ({
   patientChart?: UserChart;
 }) => {
   return (
-    <ScrollArea className={cn("min-h-0 flex-grow")}>
+    <div
+      className={cn(
+        `relative flex-none duration-500 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 scrollbar-corner-rounded-full scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-track-gray-100 h-[calc(100dvh-18rem)] hover:scrollbar-thumb-gray-100 active:scrollbar-thumb-gray-300`
+      )}
+    >
       <div className="flex flex-col gap-4">
         <Card className="flex flex-col gap-3 border-b">
           <CardTitle className="text-md gap-2 items-center border-b border-gray-100 pb-3 w-full">
@@ -70,14 +73,21 @@ const ChartNotes = ({
                   {patientDetails?.userDetails?.active_medications &&
                   patientDetails.userDetails.active_medications.length > 0 ? (
                     <>
-                    <ChartSubLabel label={`Active Medications (${patientDetails?.userDetails?.active_medications?.length})`} />
-                      {patientDetails.userDetails.active_medications.map((data) => (
-                        <div className="flex flex-col gap-1" key={data.id}>
-                          <div>
-                            {data.medicationName.productName} {data.medicationName.strength} {data.medicationName.route} {data.medicationName.doseForm}
+                      <ChartSubLabel
+                        label={`Active Medications (${patientDetails?.userDetails?.active_medications?.length})`}
+                      />
+                      {patientDetails.userDetails.active_medications.map(
+                        (data) => (
+                          <div className="flex flex-col gap-1" key={data.id}>
+                            <div>
+                              {data.medicationName.productName}{" "}
+                              {data.medicationName.strength}{" "}
+                              {data.medicationName.route}{" "}
+                              {data.medicationName.doseForm}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </>
                   ) : (
                     <>
@@ -134,7 +144,7 @@ const ChartNotes = ({
           </CardDescription>
         </Card>
       </div>
-    </ScrollArea>
+    </div>
   );
 };
 

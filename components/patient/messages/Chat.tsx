@@ -1,4 +1,5 @@
 "use client";
+import PlateEditor from "@/components/ui/plate-editor/PlateEditor";
 import { Message, UserMessagesInterface } from "@/types/messageInterface";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
@@ -9,9 +10,9 @@ import { SendHorizonalIcon } from "lucide-react";
 import { fetchMessages } from "@/services/messageService";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
-import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
+import { Descendant } from "slate";
 
 export default function ChatPage({
   userId,
@@ -24,7 +25,12 @@ export default function ChatPage({
   const socketRef = useRef<Socket | null>(null);
   const [connectionAttempts, setConnectionAttempts] = useState<number>(0);
   const [messages, setMessages] = useState<UserMessagesInterface[]>([]);
-  const [input, setInput] = useState<string>("");
+  const [editorValue, setEditorValue] = useState<Descendant[]>([
+    {
+      type: "paragraph",
+      children: [{ text: "" }],
+    },
+  ]);
   const [page, setPage] = useState<number>(1);
   const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -133,19 +139,37 @@ export default function ChatPage({
   }, [connectSocket]);
 
   const handleSendMessage = () => {
-    if (input.trim()) {
+    const messageText = editorValue
+      .map((node) => {
+        if ("children" in node) {
+          return node.children
+            .map((child) => ("text" in child ? child.text : ""))
+            .join(" ");
+        }
+        return "";
+      })
+      .join("\n")
+      .trim();
+
+    if (messageText) {
       const message: Message = {
         id: uuidv4(),
         senderID: userId,
         receiverID: recipientId,
-        content: input,
+        content: messageText,
         timestamp: new Date(),
         sender: "me",
         isArchived: false,
         sentAt: new Date().toISOString(),
       };
-      console.log(message);
       sendMessage(message);
+
+      setEditorValue([
+        {
+          type: "paragraph",
+          children: [{ text: "" }],
+        },
+      ]);
     }
   };
 
@@ -160,7 +184,13 @@ export default function ChatPage({
       const updatedMessages = [...prevMessages, message];
       return updatedMessages;
     });
-    setInput("");
+
+    setEditorValue([
+      {
+        type: "paragraph",
+        children: [{ text: "" }],
+      },
+    ]);
   };
 
   return (
@@ -201,8 +231,8 @@ export default function ChatPage({
                     <AvatarImage src="" className="border-2 border-[#FFE7E7]" />
                     <AvatarFallback className="text-[#84012A] bg-rose-50 p-1">
                       <span className="text-xs font-semibold">
-                      {userDetails.firstName?.split(" ")[0].charAt(0)}
-                      {userDetails.lastName?.split(" ")[0].charAt(0)}
+                        {userDetails.firstName?.split(" ")[0].charAt(0)}
+                        {userDetails.lastName?.split(" ")[0].charAt(0)}
                       </span>
                     </AvatarFallback>
                   </Avatar>
@@ -241,11 +271,11 @@ export default function ChatPage({
         </div>
       </div>
       <div className="flex flex-row gap-3 border-t pt-6 border-gray-100 items-start">
-        <Textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type a message..."
-          className="resize-none"
+        <PlateEditor
+          placeholder="Type a Message..."
+          value={editorValue}
+          className="w-full"
+          onChange={(value) => setEditorValue(value)}
         />
         <Button onClick={() => handleSendMessage()}>
           Send

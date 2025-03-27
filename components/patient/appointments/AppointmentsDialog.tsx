@@ -227,7 +227,7 @@ export function AppointmentsDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className=" w-[50rem]">
         <DialogHeader>
-          <DialogTitle className="capitalize">
+          <DialogTitle className="capitalize" asChild>
             {appointmentsData
               ? `Edit Appointment for ${appointmentsData.patientName}`
               : `New Appointment for ${userData?.firstName}

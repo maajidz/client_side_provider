@@ -34,7 +34,7 @@ function ViewAppointment({
           <DialogContent className="w-fit">
             <div className="flex flex-col gap-4 group relative">
               <DialogHeader className="flex flex-row justify-between">
-                <DialogTitle>Appointment Details</DialogTitle>
+                <DialogTitle asChild>Appointment Details</DialogTitle>
               </DialogHeader>
               <Button className="text-gray-500 absolute right-0 top-10 text-xs invisible group-hover:visible" variant="link" onClick={() => handleEditAppointment(true)}>
                 <Icon name="edit" size={16} />

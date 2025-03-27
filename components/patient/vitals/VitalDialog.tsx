@@ -172,7 +172,9 @@ function VitalDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle>{vitalsData ? "Edit Vital" : "Add Vital"}</DialogTitle>
+          <DialogTitle asChild>
+            {vitalsData ? "Edit Vital" : "Add Vital"}
+          </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>

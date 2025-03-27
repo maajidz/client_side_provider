@@ -202,7 +202,7 @@ const ProceduresSurgeriesAndHospitalizationDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle asChild>
             {procedureData ? "Update Procedure" : "Add Procedure"}
           </DialogTitle>
           <DialogDescription></DialogDescription>

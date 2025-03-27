@@ -63,7 +63,7 @@ export const ChartsClient = () => {
 
   // Navigation handler
   const handleRowClick = (id: string) => {
-    router.push(`/encounter/${id}`);
+    router.push(`/dashboard/encounter/${id}`);
   };
 
   return (

@@ -18,7 +18,7 @@ const PatientConfirmationScreen = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Patient Created Succesfully!</DialogTitle>
+          <DialogTitle asChild>Patient Created Succesfully!</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         To get Login Details check your email.

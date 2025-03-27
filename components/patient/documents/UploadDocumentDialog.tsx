@@ -169,7 +169,7 @@ function UploadDocumentDialog({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[30rem]">
         <DialogHeader>
-          <DialogTitle>Upload Document</DialogTitle>
+          <DialogTitle asChild>Upload Document</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -183,7 +183,7 @@ function UploadDocumentDialog({
                   <FormItem className={formStyles.formItem}>
                     <FormLabel>Documents</FormLabel>
                     <FormControl>
-                      <>
+                      <div>
                         <ul className="text-sm mt-2">
                           {images.map((file, index) => (
                             <li
@@ -200,7 +200,7 @@ function UploadDocumentDialog({
                           multiple
                           onChange={handleFileInput}
                         />
-                      </>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

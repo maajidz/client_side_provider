@@ -115,7 +115,7 @@ const QuickNotesDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle asChild>
             {quickNotesData ? "Update Notes" : "Add Notes"}
           </DialogTitle>
           <DialogDescription></DialogDescription>

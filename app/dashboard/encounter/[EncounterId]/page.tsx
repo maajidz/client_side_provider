@@ -14,8 +14,8 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
-  { title: "All Encounters", link: "/encounter" },
-  { title: "Encounter Details", link: "/encounter/[EncounterId]" },
+  { title: "All Encounters", link: "/dashboard/provider/charts" },
+  { title: "Encounter Details", link: "/dashboard/encounter/[EncounterId]" },
 ];
 
 const Encounter = ({

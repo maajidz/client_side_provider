@@ -163,7 +163,7 @@ function AllergiesDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
-          <DialogTitle>Add Allergies</DialogTitle>
+          <DialogTitle asChild>Add Allergies</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>

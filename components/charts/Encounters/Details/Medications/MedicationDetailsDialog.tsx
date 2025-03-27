@@ -111,7 +111,7 @@ const MedicationDetailsDialog = ({
     <Dialog open={isOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Medication</DialogTitle>
+          <DialogTitle asChild>Add Medication</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         {loading ? (

@@ -129,7 +129,7 @@ function EditMedicationPrescription({
       </DialogTrigger>
       <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
-          <DialogTitle>Edit Prescription</DialogTitle>
+          <DialogTitle asChild>Edit Prescription</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>

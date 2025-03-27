@@ -140,7 +140,7 @@ const AddImagesDialog = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Images</DialogTitle>
+          <DialogTitle asChild>Add Images</DialogTitle>
           {/* <DialogDescription>Add images to the patient.</DialogDescription> */}
         </DialogHeader>
         {loadingImages || loadingTests ? (

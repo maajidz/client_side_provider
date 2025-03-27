@@ -138,7 +138,7 @@ const CreateEncounterDialog = ({
           requestData: requestData,
         });
         if (encounterResponse) {
-          router.push(`/encounter/${encounterResponse.id}`);
+          router.push(`/dashboard/encounter/${encounterResponse.id}`);
         }
       } catch (e) {
         console.log("Error", e);
@@ -153,7 +153,7 @@ const CreateEncounterDialog = ({
     <Dialog open={isDialogOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>New Encounter</DialogTitle>
+          <DialogTitle asChild>New Encounter</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col pb-2">

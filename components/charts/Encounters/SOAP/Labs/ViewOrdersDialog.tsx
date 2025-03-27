@@ -111,7 +111,7 @@ const ViewOrdersDialog = ({ userDetailsId }: { userDetailsId: string }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>View Orders</DialogTitle>
+          <DialogTitle asChild>View Orders</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         {loading ? (

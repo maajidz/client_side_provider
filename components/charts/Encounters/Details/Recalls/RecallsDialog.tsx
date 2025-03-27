@@ -178,7 +178,7 @@ const RecallsDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle asChild>
             {recallsData ? "Update Recall" : "Add Recall"}
           </DialogTitle>
           <DialogDescription></DialogDescription>

@@ -199,7 +199,7 @@ function InsuranceDialog({
     <Dialog open={isOpen} onOpenChange={handleIsDialogOpen}>
       <DialogContent className="flex flex-col gap-8 max-w-[880px] max-h-[828px] w-full rounded-2xl overflow-x-hidden">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle asChild>
             {!selectedInsurance
               ? "Add Insurance Data"
               : "Update Insurance Data"}

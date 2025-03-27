@@ -169,7 +169,7 @@ function FamilyHistoryDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle asChild>
             {familyHistoryData ? "Edit Family History" : "Add Family History"}
           </DialogTitle>
           <DialogDescription></DialogDescription>
