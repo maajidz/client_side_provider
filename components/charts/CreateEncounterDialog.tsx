@@ -138,7 +138,7 @@ const CreateEncounterDialog = ({
           requestData: requestData,
         });
         if (encounterResponse) {
-          router.push(`/encounter/${encounterResponse.id}`);
+          router.push(`/dashboard/encounter/${encounterResponse.id}`);
         }
       } catch (e) {
         console.log("Error", e);

@@ -104,7 +104,7 @@ const CreatePatientEncounterDialog = ({
           requestData: requestData,
         });
         if (encounterResponse) {
-          window.open(`/encounter/${encounterResponse.id}`);
+          window.open(`/dashboard/encounter/${encounterResponse.id}`);
         }
       } catch (e) {
         console.log("Error", e);

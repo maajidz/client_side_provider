@@ -18,7 +18,7 @@ const AllEncountersTab = ({
   userDetailsId: string;
 }) => {
   const handleRowClick = (id: string) => {
-    window.open(`/encounter/${id}`);
+    window.open(`/dashboard/encounter/${id}`);
   };
 
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
