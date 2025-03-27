@@ -57,15 +57,21 @@ export const columns = (): ColumnDef<PrescriptionDataInterface>[] => [
     accessorKey: "fromDate",
     header: "From Date",
     cell: ({ row }) => (
-      <div>{new Date(row.original.fromDate).toLocaleDateString("en-US")}</div>
+      <div>
+        {new Date(row.original.earliest_fill_date).toLocaleDateString("en-US")}
+      </div>
     ),
   },
   {
     accessorKey: "toDate",
     header: "To Date",
-    cell: ({ row }) => (
-      <div>{new Date(row.original.toDate).toLocaleDateString("en-US")}</div>
-    ),
+    cell: ({ row }) => {
+      const earliestFillDate = new Date(row.original.earliest_fill_date);
+      const daysOfSupply = row.original.days_of_supply || 0;
+      const toDate = new Date(earliestFillDate);
+      toDate.setDate(earliestFillDate.getDate() + daysOfSupply);
+      return <div>{toDate.toLocaleDateString("en-US")}</div>;
+    },
   },
   {
     accessorKey: "signed",
