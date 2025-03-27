@@ -66,7 +66,7 @@ function AddTaskComment({
   const onSubmit = async (values: z.infer<typeof addCommentToTasksSchema>) => {
     if (tasksData) {
       const requestData: UpdateTaskType = {
-        category: tasksData?.categoryId,
+        categoryId: tasksData?.categoryId,
         description: values?.comments,
         priority: tasksData?.priority,
         status: tasksData?.status,

@@ -34,10 +34,11 @@ import { showToast } from "@/utils/utils";
 import { useToast } from "@/hooks/use-toast";
 import { UserData } from "@/types/userInterface";
 import { fetchUserDataResponse } from "@/services/userServices";
-import SubmitButton from "../custom_buttons/buttons/SubmitButton";
 import formStyles from "@/components/formStyles.module.css";
 import { DefaultDataTable } from "../custom_buttons/table/DefaultDataTable";
 import TableShimmer from "../custom_buttons/shimmer/TableShimmer";
+import { Button } from "../ui/button";
+import { Search } from "lucide-react";
 
 const ViewTasks = () => {
   // Provider Details
@@ -229,214 +230,216 @@ const ViewTasks = () => {
 
   return (
     <>
-        {/* Filter Form */}
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className={formStyles.formFilterBody}
-          >
-            {/* Category Filter */}
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
-                  <FormLabel>Category</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Choose Category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        {loading ? (
-                          <div>Loading...</div>
-                        ) : (
-                          taskTypes.map((type) => (
-                            <SelectItem key={type.id} value={type.name}>
-                              {type.name}
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Status Filter */}
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        {taskStatus.map((status) => (
-                          <SelectItem
-                            key={status.value}
-                            value={status.value.toUpperCase()}
-                          >
-                            {status.label}
+      {/* Filter Form */}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={formStyles.formFilterBody}
+        >
+          {/* Category Filter */}
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Category</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      {loading ? (
+                        <div>Loading...</div>
+                      ) : (
+                        taskTypes.map((type) => (
+                          <SelectItem key={type.id} value={type.name}>
+                            {type.name}
                           </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Priority Filter */}
-            <FormField
-              control={form.control}
-              name="priority"
-              render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
-                  <FormLabel>Priority</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Choose Priority" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        {priority.map((priority) => (
-                          <SelectItem value={priority} key={priority}>
-                            {priority}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            {/* Patient Filter */}
-            <FormField
-              control={form.control}
-              name="userDetailsId"
-              render={({ field }) => (
-                <FormItem className={formStyles.formFilterItem}>
-                  <FormLabel>Patient</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <div className="flex gap-2 border pr-2 rounded-md items-baseline">
-                        <Input
-                          placeholder="Search Patient "
-                          value={searchTerm}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            setSearchTerm(value);
-                            setVisibleSearchList(true);
-
-                            if (!value) {
-                              field.onChange("");
-                            }
-                          }}
-                          className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
-                        />
-                        <div className="px-3 py-1 text-base">
-                          {" "}
-                          {selectedUser?.patientId}
-                        </div>
-                      </div>
-                      {searchTerm && visibleSearchList && (
-                        <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
-                          {patientLoading ? (
-                            <div>Loading...</div>
-                          ) : filteredPatients.length > 0 ? (
-                            filteredPatients.map((patient) => (
-                              <div
-                                key={patient.id}
-                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                onClick={() => {
-                                  field.onChange(patient.id);
-                                  setSearchTerm(
-                                    `${patient.user.firstName} ${patient.user.lastName}`
-                                  );
-                                  setVisibleSearchList(false);
-                                  setSelectedUser(patient);
-                                }}
-                              >
-                                {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
-                              </div>
-                            ))
-                          ) : (
-                            <div className="px-4 py-2 text-gray-500">
-                              No results found
-                            </div>
-                          )}
-                        </div>
+                        ))
                       )}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Status Filter */}
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Status</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      {taskStatus.map((status) => (
+                        <SelectItem
+                          key={status.value}
+                          value={status.value.toUpperCase()}
+                        >
+                          {status.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Priority Filter */}
+          <FormField
+            control={form.control}
+            name="priority"
+            render={({ field }) => (
+              <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Priority</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose Priority" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      {priority.map((priority) => (
+                        <SelectItem value={priority} key={priority}>
+                          {priority}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          {/* Patient Filter */}
+          <FormField
+            control={form.control}
+            name="userDetailsId"
+            render={({ field }) => (
+              <FormItem className={formStyles.formFilterItem}>
+                <FormLabel>Patient</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <div className="flex gap-2 border pr-2 rounded-md items-baseline">
+                      <Input
+                        placeholder="Search Patient "
+                        value={searchTerm}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setSearchTerm(value);
+                          setVisibleSearchList(true);
+
+                          if (!value) {
+                            field.onChange("");
+                          }
+                        }}
+                        className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 "
+                      />
+                      <div className="px-3 py-1 text-base">
+                        {" "}
+                        {selectedUser?.patientId}
+                      </div>
                     </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                    {searchTerm && visibleSearchList && (
+                      <div className="absolute bg-white border border-gray-300 mt-1 rounded shadow-lg w-full z-50">
+                        {patientLoading ? (
+                          <div>Loading...</div>
+                        ) : filteredPatients.length > 0 ? (
+                          filteredPatients.map((patient) => (
+                            <div
+                              key={patient.id}
+                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                              onClick={() => {
+                                field.onChange(patient.id);
+                                setSearchTerm(
+                                  `${patient.user.firstName} ${patient.user.lastName}`
+                                );
+                                setVisibleSearchList(false);
+                                setSelectedUser(patient);
+                              }}
+                            >
+                              {`${patient.user.firstName} ${patient.user.lastName} - ${patient.patientId}`}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="px-4 py-2 text-gray-500">
+                            No results found
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex items-end w-full">
+            <Button type="submit" variant={"default"} className="bg-primary">
+              Search <Search />
+            </Button>
+          </div>
+        </form>
+      </Form>
+      <TasksDialog
+        tasksData={editData}
+        onClose={handleEditDialogClose}
+        isOpen={isDialogOpen}
+      />
+      {/* Results Table */}
+      <div className="space-y-3">
+        {dataLoading ? (
+          <TableShimmer />
+        ) : (
+          resultList?.data && (
+            <DefaultDataTable
+              title="Tasks"
+              onAddClick={() => {
+                setIsDialogOpen(true);
+              }}
+              columns={columns({
+                setEditData,
+                setIsCommentDialogOpen: () => {},
+                setIsEditDialogOpen: setIsDialogOpen,
+                setTaskLoading: setLoading,
+                showToast: () =>
+                  showToast({
+                    toast,
+                    type: "success",
+                    message: "Deleted Successfully",
+                  }),
+                fetchTasksList: () => fetchTasksList(page),
+                isPatientTask: false,
+              })}
+              data={resultList?.data}
+              pageNo={page}
+              totalPages={totalPages}
+              onPageChange={(newPage: number) => setPage(newPage)}
             />
-            <div className="flex items-end w-full">
-              <SubmitButton label="Search" />
-            </div>
-          </form>
-        </Form>
-        <TasksDialog
-          tasksData={editData}
-          onClose={handleEditDialogClose}
-          isOpen={isDialogOpen}
-        />
-        {/* Results Table */}
-        <div className="space-y-3">
-          {dataLoading ? (
-            <TableShimmer />
-          ) : (
-            resultList?.data && (
-              <DefaultDataTable
-                title="Tasks"
-                onAddClick={() => {
-                  setIsDialogOpen(true);
-                }}
-                columns={columns({
-                  setEditData,
-                  setIsCommentDialogOpen: () => {},
-                  setIsEditDialogOpen: setIsDialogOpen,
-                  setTaskLoading: setLoading,
-                  showToast: () =>
-                    showToast({
-                      toast,
-                      type: "success",
-                      message: "Deleted Successfully",
-                    }),
-                  fetchTasksList: () => fetchTasksList(page),
-                  isPatientTask: false,
-                })}
-                data={resultList?.data}
-                pageNo={page}
-                totalPages={totalPages}
-                onPageChange={(newPage: number) => setPage(newPage)}
-              />
-            )
-          )}
-        </div>
+          )
+        )}
+      </div>
     </>
   );
 };

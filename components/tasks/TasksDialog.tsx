@@ -31,13 +31,18 @@ import { tasksSchema } from "@/schema/tasksSchema";
 import {
   CreateTaskType,
   TasksResponseDataInterface,
+  TaskTypeList,
   UpdateTaskType,
 } from "@/types/tasksInterface";
-import { createTask, updateTask } from "@/services/chartDetailsServices";
+import {
+  createTask,
+  getTasksTypes,
+  updateTask,
+} from "@/services/chartDetailsServices";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { FetchProviderList } from "@/types/providerDetailsInterface";
-import { categoryOptions, priority, reminderOptions } from "@/constants/data";
+import { priority, reminderOptions } from "@/constants/data";
 import { fetchProviderListDetails } from "@/services/registerServices";
 import { useToast } from "@/hooks/use-toast";
 import { showToast } from "@/utils/utils";
@@ -72,6 +77,8 @@ const TasksDialog = ({
   const [visibleSearchList, setVisibleSearchList] = useState<boolean>(false);
   const { toast } = useToast();
   const [loading, setLoading] = useState<boolean>(false);
+  // Task Types List Data State
+  const [taskTypes, setTaskTypes] = useState<TaskTypeList[]>([]);
 
   const providerDetails = useSelector((state: RootState) => state.login);
 
@@ -82,12 +89,34 @@ const TasksDialog = ({
       task: "",
       owner: "",
       priority: "low",
-      dueDate: "",
+      dueDate: tasksData?.dueDate
+        ? new Date(tasksData.dueDate).toISOString().split("T")[0]
+        : "N/A",
       sendReminder: [],
       comments: "",
       userDetailsId: "",
     },
   });
+
+  // Fetch Task Types Data
+  const fetchTaskTypes = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await getTasksTypes({
+        page: 1,
+        limit: 10,
+      });
+
+      if (response) {
+        setTaskTypes(response.taskTypes);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const fetchPatientList = useCallback(async () => {
     if (!searchTerm) return;
@@ -130,9 +159,10 @@ const TasksDialog = ({
   }, [toast]);
 
   useEffect(() => {
+    fetchTaskTypes();
     fetchOwnersList();
     fetchPatientList();
-  }, [fetchOwnersList, fetchPatientList]);
+  }, [fetchTaskTypes, fetchOwnersList, fetchPatientList]);
 
   useEffect(() => {
     if (tasksData) {
@@ -161,20 +191,27 @@ const TasksDialog = ({
 
   const onSubmit = async (values: z.infer<typeof tasksSchema>) => {
     setLoading(true);
+    console.log(values.category, 'IDIDIDIIDIID');
     try {
       const requestData: CreateTaskType | UpdateTaskType = {
-        category: values.category,
+        categoryId: values.category,
         description: values.comments ?? "",
         priority: values.priority,
         status: "PENDING",
         notes: values.task,
-        dueDate: `${values.dueDate}`,
         assignedProviderId: selectedOwner?.providerDetails?.id ?? "",
         assignerProviderId: providerDetails.providerId,
         assignedByAdmin: true,
         userDetailsId: values?.userDetailsId ?? "",
         reminder: values?.sendReminder,
       };
+
+      if (tasksData?.dueDate) {
+        const formattedDueDate = new Date(tasksData.dueDate)
+          .toISOString()
+          .split("T")[0];
+        form.setValue("dueDate", formattedDueDate);
+      }
       if (!tasksData) {
         await createTask({ requestBody: requestData });
         showToast({
@@ -230,7 +267,13 @@ const TasksDialog = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={() => {
+        onClose();
+        form.reset();
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{tasksData ? "Edit Task" : "Add Task"}</DialogTitle>
@@ -250,23 +293,23 @@ const TasksDialog = ({
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Choose Category" />
                             </SelectTrigger>
                             <SelectContent>
-                              {loading ? (
-                                <div>Loading...</div>
-                              ) : (
-                                categoryOptions.map((option) => (
+                              {taskTypes ? (
+                                taskTypes.map((category) => (
                                   <SelectItem
-                                    key={option.value}
-                                    value={option.value}
+                                    key={category.id}
+                                    value={category.id}
                                   >
-                                    {option.label}
+                                    {category.name}
                                   </SelectItem>
                                 ))
+                              ) : (
+                                <div>No Tasks Found</div>
                               )}
                             </SelectContent>
                           </Select>
@@ -303,6 +346,7 @@ const TasksDialog = ({
                               );
                               setSelectedOwner(selected);
                             }}
+                            defaultValue={field.value}
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Select Owner" />
@@ -582,16 +626,21 @@ const TasksDialog = ({
                   />
                 </div>
               </ScrollArea>
-              <div className="flex gap-3 justify-between w-full">
+              <div className="flex gap-3 justify-end">
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={onClose}
-                  className="w-full"
+                  onClick={() => {
+                    onClose();
+                    form.reset();
+                  }}
                 >
                   Cancel
                 </Button>
-                <SubmitButton label={tasksData ? "Update" : "Create"} />
+                <SubmitButton
+                  label={tasksData ? "Update" : "Add"}
+                  disabled={loading}
+                />
               </div>
             </div>
           </form>

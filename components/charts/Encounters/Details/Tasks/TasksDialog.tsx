@@ -171,7 +171,7 @@ function TasksDialog({
       if (!tasksData) {
         if (values.dueDate) {
           const requestData: CreateTaskType = {
-            category: values.category,
+            categoryId: values.category,
             description: values.comments ?? "",
             priority: values.priority,
             status: "PENDING",
@@ -186,7 +186,7 @@ function TasksDialog({
           await createTask({ requestBody: requestData });
         } else {
           const requestData: CreateTaskType = {
-            category: values.category,
+            categoryId: values.category,
             description: values.comments ?? "",
             priority: values.priority,
             status: "PENDING",
@@ -208,7 +208,7 @@ function TasksDialog({
       } else {
         if (values.dueDate) {
           const requestData: UpdateTaskType = {
-            category: values.category,
+            categoryId: values.category,
             description: values.comments ?? "",
             priority: values.priority,
             status: "PENDING",
@@ -223,7 +223,7 @@ function TasksDialog({
           await updateTask({ requestData, id: tasksData.id });
         } else {
           const requestData: UpdateTaskType = {
-            category: values.category,
+            categoryId: values.category,
             description: values.comments ?? "",
             priority: values.priority,
             status: "PENDING",
