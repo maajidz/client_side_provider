@@ -158,7 +158,7 @@ function EditPrescription({
               <div className="flex items-center gap-3">
                 <span className="font-medium">Drug:</span>
                 <span className="font-semibold">
-                  {selectedPrescription?.drug_name}
+                  {selectedPrescription?.prescription_drug_type.drug_name}
                 </span>
               </div>
               <div className="flex items-center gap-3">

@@ -28,9 +28,9 @@ function AllergiesAndMedications({
     PrescriptionDataInterface[]
   >([]);
 
-  const [supplementsData, setSupplementsData] = useState<SupplementInterfaceResponse[]>(
-    []
-  );
+  const [supplementsData, setSupplementsData] = useState<
+    SupplementInterfaceResponse[]
+  >([]);
 
   // Loading State
   const [loading, setLoading] = useState<boolean>(false);
@@ -129,16 +129,28 @@ function AllergiesAndMedications({
   }
 
   // Sort allergies, prescriptions, and supplements by active status
-  const sortedAllergies = allergies.sort((a, b) => 
-    a.status.toLowerCase() === "active" ? -1 : b.status.toLowerCase() === "active" ? 1 : 0
+  const sortedAllergies = allergies.sort((a, b) =>
+    a.status.toLowerCase() === "active"
+      ? -1
+      : b.status.toLowerCase() === "active"
+      ? 1
+      : 0
   );
 
-  const sortedPrescriptions = userPrescriptions.sort((a, b) => 
-    a.status.toLowerCase() === "completed" ? -1 : b.status.toLowerCase() === "completed" ? 1 : 0
+  const sortedPrescriptions = userPrescriptions.sort((a, b) =>
+    a.status.toLowerCase() === "completed"
+      ? -1
+      : b.status.toLowerCase() === "completed"
+      ? 1
+      : 0
   );
 
-  const sortedSupplements = supplementsData.sort((a, b) => 
-    a.status.toLowerCase() === "active" ? -1 : b.status.toLowerCase() === "active" ? 1 : 0
+  const sortedSupplements = supplementsData.sort((a, b) =>
+    a.status.toLowerCase() === "active"
+      ? -1
+      : b.status.toLowerCase() === "active"
+      ? 1
+      : 0
   );
 
   return (
@@ -151,27 +163,52 @@ function AllergiesAndMedications({
               sortedAllergies.map((allergy) => (
                 <Card
                   key={allergy.id}
-                  className={`${allergy.status.toLowerCase() === "inactive" ? "opacity-60" : ""} w-full sm:w-1/2 md:w-1/3 lg:w-1/4`}
+                  className={`${
+                    allergy.status.toLowerCase() === "inactive"
+                      ? "opacity-60"
+                      : ""
+                  } w-full sm:w-1/2 md:w-1/3 lg:w-1/4`}
                 >
                   <CardTitle className="font-medium gap-2 justify-between w-full">
                     {allergy.allergen}
-                    <Badge variant={statusBadgeMap[allergy.status.toLowerCase() as keyof typeof statusBadgeMap]} showIndicator>
+                    <Badge
+                      variant={
+                        statusBadgeMap[
+                          allergy.status.toLowerCase() as keyof typeof statusBadgeMap
+                        ]
+                      }
+                      showIndicator
+                    >
                       {allergy.status}
                     </Badge>
                   </CardTitle>
                   <CardDescription className="flex flex-col gap-1">
-                    <div className={`${severityBadgeMap[allergy.severity.toLowerCase() as keyof typeof severityBadgeMap]} font-bold uppercase tracking-wider text-xs`}>
+                    <div
+                      className={`${
+                        severityBadgeMap[
+                          allergy.severity.toLowerCase() as keyof typeof severityBadgeMap
+                        ]
+                      } font-bold uppercase tracking-wider text-xs`}
+                    >
                       {allergy.severity}
                     </div>
-                    <span className="text-xs text-gray-600 font-medium">{allergy.reactions.map((reaction) => reaction.name).join(", ")}</span>
+                    <span className="text-xs text-gray-600 font-medium">
+                      {allergy.reactions
+                        .map((reaction) => reaction.name)
+                        .join(", ")}
+                    </span>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium text-gray-500">{format(new Date(allergy.observedOn), "do MMMM, yyyy")}</span>
+                      <span className="text-xs font-medium text-gray-500">
+                        {format(new Date(allergy.observedOn), "do MMMM, yyyy")}
+                      </span>
                     </div>
                   </CardDescription>
                 </Card>
               ))
             ) : (
-              <p className="text-center text-xs text-gray-500">No recorded allergies</p>
+              <p className="text-center text-xs text-gray-500">
+                No recorded allergies
+              </p>
             )}
           </div>
         </div>
@@ -185,8 +222,14 @@ function AllergiesAndMedications({
                   className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
                 >
                   <CardTitle className="font-medium gap-2 justify-between w-full">
-                    {prescription.drug_name}
-                    <Badge variant={statusBadgeMap[prescription.status.toLowerCase() as keyof typeof statusBadgeMap]}>
+                    {prescription.prescription_drug_type.drug_name}
+                    <Badge
+                      variant={
+                        statusBadgeMap[
+                          prescription.status.toLowerCase() as keyof typeof statusBadgeMap
+                        ]
+                      }
+                    >
                       {prescription.status}
                     </Badge>
                   </CardTitle>
@@ -194,8 +237,8 @@ function AllergiesAndMedications({
                     <>
                       {prescription?.dosages?.map((dosage) => (
                         <div key={dosage?.id}>
-                          Dosage: {dosage?.duration_quantity} {dosage.dosage_unit}{" "}
-                          {dosage.route}
+                          Dosage: {dosage?.duration_quantity}{" "}
+                          {dosage.dosage_unit} {dosage.route}
                         </div>
                       ))}
                     </>
@@ -217,13 +260,17 @@ function AllergiesAndMedications({
           <div className="flex flex-row gap-3">
             {sortedSupplements.length > 0 ? (
               sortedSupplements.map((supplement) => (
-                <Card
-                  key={supplement.id}
-                  className="flex-1"
-                >
+                <Card key={supplement.id} className="flex-1">
                   <CardTitle className="font-medium gap-2 justify-between w-full">
                     {supplement.type.supplement_name || "Supplement 1"}
-                    <Badge variant={statusBadgeMap[supplement.status.toLowerCase() as keyof typeof statusBadgeMap]} showIndicator>
+                    <Badge
+                      variant={
+                        statusBadgeMap[
+                          supplement.status.toLowerCase() as keyof typeof statusBadgeMap
+                        ]
+                      }
+                      showIndicator
+                    >
                       {supplement.status}
                     </Badge>
                   </CardTitle>

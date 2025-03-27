@@ -486,7 +486,7 @@ export interface TestInterface {
 }
 
 export interface CreatePrescriptionInterface {
-  drug_name: string;
+  drug_type_Id?: string;
   dispense_as_written: boolean;
   primary_diagnosis: string;
   secondary_diagnosis: string;

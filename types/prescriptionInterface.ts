@@ -2,7 +2,6 @@ import { Dosage } from "./chartsInterface";
 
 export interface PrescriptionDataInterface {
   id: string;
-  drug_name: string;
   dispense_as_written: boolean;
   primary_diagnosis: string;
   secondary_diagnosis: string;
@@ -28,6 +27,7 @@ export interface PrescriptionDataInterface {
   };
   provideName: string;
   providerId: null;
+  prescription_drug_type: DrugTypeInterface;
 }
 
 export interface PrescriptionResponseInterface {
@@ -45,4 +45,17 @@ export interface UpdatePrescriptionInterface {
   toDate: string;
   internalComments?: string;
   status: "pending" | "completed" | "active";
+}
+
+export interface DrugTypeInterface {
+  id: string;
+  drug_name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DrugTypeInterfaceResponse {
+  data: DrugTypeInterface[];
+  totalCount: number;
 }

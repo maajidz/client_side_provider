@@ -12,7 +12,9 @@ export const columns = (): ColumnDef<PrescriptionDataInterface>[] => [
       const prescription: PrescriptionDataInterface = row.original;
       return (
         <div className="flex flex-col gap-1 text-[13px] font-medium cursor-pointer">
-          <div className="font-semibold text-sm">{prescription.drug_name}</div>
+          <div className="font-semibold text-sm">
+            {prescription.prescription_drug_type.drug_name}
+          </div>
           <div>
             {prescription.directions}
             {", "}for {prescription.days_of_supply} days

@@ -1,5 +1,6 @@
 import ApiFetch from "@/config/api";
 import {
+  DrugTypeInterfaceResponse,
   PrescriptionResponseInterface,
   UpdatePrescriptionInterface,
 } from "@/types/prescriptionInterface";
@@ -30,6 +31,19 @@ export const getUserPrescriptionsData = async ({
 
   const data: PrescriptionResponseInterface = await response.data;
   return data;
+};
+
+export const getDrugType = async ({search}: {search: string}) => {
+  const response = await ApiFetch({
+    method: "GET",
+    url: `/provider/prescriptions/drug-types/all?search=${search}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: DrugTypeInterfaceResponse = await response.data;
+  return data
 };
 
 export const updateUserPrescription = async ({
