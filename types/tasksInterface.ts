@@ -15,7 +15,7 @@ export interface TasksInterface {
 }
 
 export interface CreateTaskType {
-  category: string;
+  categoryId: string;
   description?: string;
   status?: string;
   reminder?: string[];
