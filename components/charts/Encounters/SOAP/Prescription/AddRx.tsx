@@ -44,6 +44,8 @@ import SubmitButton from "@/components/custom_buttons/buttons/SubmitButton";
 import { getDosageUnits, getFrequencyData } from "@/services/enumServices";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
+import { DrugTypeInterface } from "@/types/prescriptionInterface";
+import { getDrugType } from "@/services/prescriptionsServices";
 
 const AddRx = ({
   patientDetails,
@@ -55,18 +57,25 @@ const AddRx = ({
   signed: boolean;
 }) => {
   const [loading, setLoading] = useState({
+    drug: false,
     post: false,
     dosage: false,
     frequency: false,
   });
-  const [drugName, setDrugName] = useState<string>("");
+  const [drugID, setDrugID] = useState<string>("");
   const [showPrescriptionForm, setShowPrescriptionForm] =
     useState<boolean>(false);
   const [dispenseAsWritten, setDispenseAsWritten] = useState<boolean>(false);
   const { toast } = useToast();
 
+  const [visibleDrugSearchList, setVisibleDrugSearchList] = useState(false);
+  const [drugSearchTerm, setDrugSearchTerm] = useState("");
+
   // Frequency Data
   const [frequencyData, setFrequencyData] = useState<string[]>([]);
+
+  // Drug Types
+  const [drugNames, setDrugNames] = useState<DrugTypeInterface[]>([]);
 
   // Dosage Units
   const [dosageUnits, setDosageUnits] = useState<string[]>([]);
@@ -131,6 +140,30 @@ const AddRx = ({
     route,
     watch,
   ]);
+
+  const fetchDrugName = useCallback(
+    async (searchTerm: string) => {
+      setLoading((prev) => ({ ...prev, drug: true }));
+
+      try {
+        const response = await getDrugType({ search: searchTerm });
+
+        if (response) {
+          setDrugNames(response.data);
+        }
+      } catch (err) {
+        console.log(err);
+        showToast({
+          toast,
+          type: "error",
+          message: "Failed to fetch drug names",
+        });
+      } finally {
+        setLoading((prev) => ({ ...prev, drug: false }));
+      }
+    },
+    [toast]
+  );
 
   // GET Frequency Data
   const fetchFrequency = useCallback(async () => {
@@ -206,7 +239,7 @@ const AddRx = ({
 
     if (patientDetails.chart.id) {
       const requestData = {
-        drug_name: drugName,
+        drug_name: drugID,
         dispense_as_written: dispenseAsWritten,
         primary_diagnosis: values.primary_diagnosis,
         secondary_diagnosis: values.secondary_diagnosis,
@@ -259,6 +292,23 @@ const AddRx = ({
     }
   };
 
+  // Drug Type useEffect
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (drugSearchTerm.trim()) {
+        fetchDrugName(drugSearchTerm);
+      } else {
+        setDrugNames([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [drugSearchTerm, fetchDrugName]);
+
+  const filteredDrugNames = drugNames.filter((name) =>
+    name.drug_name.toLowerCase().includes(drugSearchTerm.toLowerCase())
+  );
+
   if (loading.post) {
     return <LoadingButton />;
   }
@@ -285,12 +335,42 @@ const AddRx = ({
                   <div className="flex gap-8 flex-row justify-between">
                     <FormItem className="flex flex-1">
                       <FormLabel>Drug Name</FormLabel>
-                      <Input
-                        value={drugName}
-                        className="w-full"
-                        onChange={(e) => setDrugName(e.target.value)}
-                        placeholder="Enter drug name"
-                      />
+                      <div className="relative">
+                        <Input
+                          value={drugSearchTerm}
+                          placeholder="Search by name"
+                          className="w-full"
+                          onChange={(e) => {
+                            setDrugSearchTerm(e.target.value);
+                            setVisibleDrugSearchList(true);
+                          }}
+                        />
+                        {drugSearchTerm && visibleDrugSearchList && (
+                          <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
+                            {loading.drug ? (
+                              <div>Loading...</div>
+                            ) : filteredDrugNames.length > 0 ? (
+                              filteredDrugNames.map((name) => (
+                                <div
+                                  key={name.id}
+                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                  onClick={() => {
+                                    setDrugID(name.id);
+                                    setDrugSearchTerm(name.drug_name);
+                                    setVisibleDrugSearchList(false);
+                                  }}
+                                >
+                                  {name.drug_name}
+                                </div>
+                              ))
+                            ) : (
+                              <div className="px-4 py-2 text-gray-500">
+                                No results found
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </FormItem>
                     <FormItem className="inline-flex flex-row items-end gap-2 mb-3 flex-none">
                       <FormLabel>Dispense as Written</FormLabel>
@@ -764,12 +844,42 @@ const AddRx = ({
             <div className="flex flex-col gap-4">
               <div className="flex gap-2 flex-col">
                 <Label>Search & Add Rx</Label>
-                <Input
-                  value={drugName}
-                  placeholder="Enter drug name"
-                  className="w-full rounded-md"
-                  onChange={(e) => setDrugName(e.target.value)}
-                />
+                <div className="relative">
+                  <Input
+                    value={drugSearchTerm}
+                    placeholder="Search by name"
+                    className="w-full"
+                    onChange={(e) => {
+                      setDrugSearchTerm(e.target.value);
+                      setVisibleDrugSearchList(true);
+                    }}
+                  />
+                  {drugSearchTerm && visibleDrugSearchList && (
+                    <div className="absolute bg-white border border-gray-200 text-sm font-medium mt-1 rounded shadow-md w-full">
+                      {loading.drug ? (
+                        <div>Loading...</div>
+                      ) : filteredDrugNames.length > 0 ? (
+                        filteredDrugNames.map((name) => (
+                          <div
+                            key={name.id}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                              setDrugID(name.id);
+                              setDrugSearchTerm(name.drug_name);
+                              setVisibleDrugSearchList(false);
+                            }}
+                          >
+                            {name.drug_name}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-4 py-2 text-gray-500">
+                          No results found
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex flex-row items-center">
                 <Label>or</Label>

@@ -92,7 +92,9 @@ export const columns = ({
 
       return (
         <div className="flex flex-col gap-1 text-[13px] font-medium cursor-pointer">
-          <div className="font-semibold text-sm">{prescription.drug_name}</div>
+          <div className="font-semibold text-sm">
+            {prescription.prescription_drug_type.drug_name}
+          </div>
           <div>
             {prescription.directions}
             {", "}for {prescription.days_of_supply} days
@@ -147,7 +149,7 @@ export const columns = ({
       const earliestFillDate = new Date(row.original.earliest_fill_date);
       const daysOfSupply = row.original.days_of_supply || 0;
       const toDate = new Date(earliestFillDate);
-      toDate.setDate(earliestFillDate.getDate() + daysOfSupply); 
+      toDate.setDate(earliestFillDate.getDate() + daysOfSupply);
       return <div>{toDate.toLocaleDateString("en-US")}</div>;
     },
   },
